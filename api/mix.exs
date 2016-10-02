@@ -19,7 +19,7 @@ defmodule Mirror.Mixfile do
   def application do
     [mod: {Mirror, []},
      applications: [:phoenix, :phoenix_pubsub, :cowboy, :logger, :gettext,
-                    :phoenix_ecto, :mariaex]]
+                    :phoenix_ecto, :mariaex, :comeonin]]
   end
 
   # Specifies which paths to compile per environment.
@@ -38,6 +38,8 @@ defmodule Mirror.Mixfile do
      {:gettext, "~> 0.11"},
      {:cowboy, "~> 1.0"},
      {:cors_plug, "~> 1.1"},
+     {:guardian, "~> 0.13.0"},
+     {:comeonin, "~> 2.5"},
     ]
   end
 
