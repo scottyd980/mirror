@@ -40,6 +40,7 @@ defmodule Mirror.Mixfile do
      {:cors_plug, "~> 1.1"},
      {:guardian, "~> 0.13.0"},
      {:comeonin, "~> 2.5"},
+     {:ja_serializer, "~> 0.11.0"},
     ]
   end
 
