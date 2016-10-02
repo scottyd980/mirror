@@ -1,0 +1,14 @@
+<div class="container">
+  <div class="row">
+    <div class="col s12 m8 offset-m2">
+      {{#x-card onsubmit=(route-action 'doLogin') title='Login to Mirror' buttonText='Login'}}
+        <div class="row">
+          {{x-input classNames='col s12' type='email' label='Username' value=model.username}}
+        </div>
+        <div class="row">
+          {{x-input classNames='col s12' type='password' label='Password' value=model.password}}
+        </div>
+      {{/x-card}}
+    </div>
+  </div>
+</div>
