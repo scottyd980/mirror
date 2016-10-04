@@ -1,0 +1,36 @@
+$brand-primary:         #4ABDAC;
+$brand-success:         #02C8A7;
+$brand-info:            #7CDBD5;
+$brand-warning:         #F9BE02;
+$brand-danger:          #F53240;
+
+$brand-dark:            #273135;
+$white:                 #FFFFFF;
+
+$navbar-custom-link-color: #000;
+$navbar-custom-link-hover-color: $navbar-custom-link-color;
+$navbar-custom-link-active-color: $navbar-custom-link-color;
+$navbar-custom-link-disabled-color: $navbar-custom-link-color;
+
+$navbar-custom-link-bg: transparent;
+$navbar-custom-link-hover-bg: $navbar-custom-link-bg;
+$navbar-custom-link-active-bg: $navbar-custom-link-bg;
+$navbar-custom-link-disabled-bg: $navbar-custom-link-bg;
+
+$navbar-custom-bg: rgba(255,255,255,0.9);
+$navbar-custom-border: transparent;
+
+$navbar-custom-brand-color: #000;
+$navbar-custom-brand-hover-color: $navbar-custom-brand-color;
+
+$navbar-custom-brand-hover-bg: transparent;
+
+$navbar-custom-color: #000;
+
+$navbar-custom-toggle-border-color: #000;
+$navbar-custom-toggle-hover-bg: transparent;
+$navbar-custom-toggle-icon-bar-bg: #000;
+
+$navbar-custom-button-color: $brand-danger;
+$navbar-custom-button-hover-color: #fff;
+$navbar-custom-button-border: $brand-danger;

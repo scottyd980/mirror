@@ -1,3 +1,37 @@
+@import 'bootstrap';
+
+@import 'bootstrap-custom/variables';
+@import 'bootstrap-custom/navbar';
+
+html {
+  position: relative;
+  min-height: 100%;
+}
+footer {
+  position: absolute;
+  bottom: 0;
+  width: 100%;
+  /* Set the fixed height of the footer here */
+  height: 60px;
+  background-color: $brand-dark;
+  color: $white;
+  font-family: 'Montserrat';
+  text-align: center;
+  line-height: 60px;
+}
+
 body {
-  background-color: #000;
+  //padding-top: 70px;
+  font-family: 'Roboto', sans-serif;
+  font-weight: 300;
+  background: #F4F4F4;
+  margin-bottom: 60px;
+}
+
+.hero {
+  background: linear-gradient(rgba(0,0,0,0.15), rgba(0,0,0,0.15)), url('../img/hero2.jpg') top center;
+  background-repeat: no-repeat;
+  background-size: cover;
+  height: 600px;
+  position: relative;
 }
