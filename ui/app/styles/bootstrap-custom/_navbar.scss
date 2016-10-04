@@ -6,9 +6,15 @@
 
   .navbar-brand,
   .navbar-nav li a {
-      line-height: 80px;
-      height: 80px;
-      padding: 0 15px;
+    @media (max-width: $screen-xs-max) {
+      line-height: 1.2;
+      height: auto;
+      padding: 15px;
+    }
+
+    line-height: 80px;
+    height: 80px;
+    padding: 0 15px;
   }
 
   .navbar-brand {
@@ -41,6 +47,11 @@
       &:hover {
         -webkit-transform: translateY(-5px);
         transform: translateY(-5px);
+
+        @media (max-width: $screen-xs-max) {
+          -webkit-transform: none;
+          transform: none;
+        }
       }
     }
     > .active > a {
