@@ -1,7 +1,10 @@
+// These 2 need to come first
 @import 'bootstrap';
-
 @import 'bootstrap-custom/variables';
+
 @import 'bootstrap-custom/navbar';
+@import 'bootstrap-custom/buttons';
+@import 'bootstrap-custom/forms';
 
 html {
   position: relative;
@@ -44,7 +47,8 @@ body {
   }
 }
 
-.test {
+.card {
   background: rgba(255,255,255,0.8);
   padding: 20px;
+  border-radius: 4px;
 }
