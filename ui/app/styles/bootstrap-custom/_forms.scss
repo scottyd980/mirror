@@ -11,6 +11,27 @@
     }
 }
 
+.input-group-icon {
+  position: relative;
+}
+
+.input-group-icon > .fa {
+  position: absolute;
+  top: 18px;
+  left: 15px;
+  font-size: 16px;
+  color: $brand-dark;
+}
+
+.input-group-icon > .form-control {
+  padding-left: 45px;
+}
+
+.form-control:focus + .fa {
+    color: $brand-success;
+    transition: color 0.15s ease-in-out;
+}
+
 .input-group-addon {
   background-color: $white;
   color: $brand-success;
@@ -19,4 +40,14 @@
 .input-group .form-control:last-child, .input-group-addon:last-child, .input-group-btn:last-child > .btn, .input-group-btn:last-child > .btn-group > .btn, .input-group-btn:last-child > .dropdown-toggle, .input-group-btn:first-child > .btn:not(:first-child), .input-group-btn:first-child > .btn-group:not(:first-child) > .btn {
   border-left: 0;
   padding-left: 0;
+}
+
+.has-error .form-control, .has-error .form-control:focus {
+  border-color: $brand-danger;
+  box-shadow: none;
+  -webkit-box-shadow: none;
+}
+
+.has-error .help-block, .has-error .control-label, .has-error .radio, .has-error .checkbox, .has-error .radio-inline, .has-error .checkbox-inline, .has-error.radio label, .has-error.checkbox label, .has-error.radio-inline label, .has-error.checkbox-inline label {
+  color: $brand-danger;
 }
