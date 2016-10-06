@@ -3,19 +3,13 @@
     <div class="col-sm-8 col-sm-offset-2 col-md-6 col-md-offset-3">
       <div class="card">
         <form>
-          <div class="form-group">
-            <label class="sr-only" for="login-username">Username</label>
-            <div class="input-group">
-              <div class="input-group-addon">{{fa-icon "user" fixedWidth=true}}</div>
-              {{input type="text" class="form-control" id="login-username" placeholder="Username" value=model.username}}
-            </div>
+          <div class="form-group input-group-icon">
+            {{input type="text" class="form-control" id="login-username" placeholder="Username" value=model.username}}
+            {{fa-icon "user" fixedWidth=true}}
           </div>
-          <div class="form-group">
-            <label class="sr-only" for="login-password">Password</label>
-            <div class="input-group">
-              <div class="input-group-addon">{{fa-icon "key" fixedWidth=true}}</div>
-              {{input type="password" class="form-control" id="login-password" placeholder="Password" value=model.password}}
-            </div>
+          <div class="form-group input-group-icon">
+            {{input type="password" class="form-control" id="login-password" placeholder="Password" value=model.password}}
+            {{fa-icon "key" fixedWidth=true}}
           </div>
           <button {{action "doLogin"}} type="submit" class="btn btn-success btn-lg btn-block">Log In</button>
         </form>
