@@ -10,13 +10,20 @@ export default Ember.Route.extend({
       password: ''
     };
   },
+  setupController(controller, model) {
+    this._super(controller, model);
+    controller.set('errors', false);
+  },
   actions: {
     doLogin() {
+      var _this = this;
       const user = this.get('currentModel');
       this.get('session')
         .authenticate(
           'authenticator:mirror', user.username, user.password
-        );
+        ).catch((resp) => {
+          _this.controller.set('errors', true);
+        });
     }
   }
 });

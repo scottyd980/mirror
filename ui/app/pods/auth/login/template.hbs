@@ -1,7 +1,17 @@
+<div class="pad-bottom-md text-center">
+  {{fa-icon "medium" fixedWidth=true size=2}}
+  <h2 class="pad-top-sm">Log In</h2>
+</div>
+
 <div class="container">
   <div class="row">
     <div class="col-sm-8 col-sm-offset-2 col-md-6 col-md-offset-3">
       <div class="card">
+        {{#if errors}}
+          <div class="alert alert-danger" role="alert">
+            {{fa-icon "exclamation-triangle"}} Invalid username or password.
+          </div>
+        {{/if}}
         <form>
           <div class="form-group input-group-icon">
             {{input type="text" class="form-control" id="login-username" placeholder="Username" value=model.username}}

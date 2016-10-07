@@ -24,11 +24,14 @@ export default Ember.Route.extend({
     }
   },
   _createErrors(errors) {
-    var validations = {};
+    var validations = {
+      length: 0
+    };
 
     errors.forEach(function(item, index) {
       var pointer = item.source.pointer.substring(item.source.pointer.lastIndexOf('/') + 1) + "-error";
       validations[pointer] = item.detail + ".";
+      validations.length++;
     });
 
     return validations;
