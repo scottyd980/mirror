@@ -70,6 +70,19 @@
         background-color: $navbar-custom-link-disabled-bg;
       }
     }
+
+    &.navbar-auth > li > a {
+      &:hover {
+        -webkit-transform: none;
+        transform: none;
+      }
+    }
+
+    .dropdown-menu > li > a {
+      padding: 3px 20px;
+      line-height: 20px;
+      height: auto;
+    }
   }
 
   .navbar-toggle {
