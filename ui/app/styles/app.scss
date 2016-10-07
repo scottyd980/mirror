@@ -1,10 +1,12 @@
-// These 2 need to come first
+// These 3 need to come first
 @import 'bootstrap';
 @import 'bootstrap-custom/variables';
+@import 'helper-classes';
 
 @import 'bootstrap-custom/navbar';
 @import 'bootstrap-custom/buttons';
 @import 'bootstrap-custom/forms';
+@import 'bootstrap-custom/alerts';
 
 html {
   position: relative;
@@ -31,12 +33,19 @@ body {
   margin-bottom: 60px;
 }
 
+h1, .h1, h2, .h2, h3, .h3 {
+  margin-top: 0;
+}
+
 .hero {
-  background: linear-gradient(rgba(0,0,0,0.15), rgba(0,0,0,0.15)), url('../img/hero2.jpg') top center;
-  background-repeat: no-repeat;
-  background-size: cover;
-  height: 600px;
+  background-repeat: no-repeat !important;
+  background-size: cover !important;
   position: relative;
+
+  &.front-page {
+    background: linear-gradient(rgba(0,0,0,0.15), rgba(0,0,0,0.15)), url('../img/hero.png') top center;
+    height: 600px;
+  }
 }
 
 .nav-push {

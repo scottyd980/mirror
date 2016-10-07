@@ -1,0 +1,9 @@
+@mixin alert($bg, $border, $color) {
+  background-color: $bg;
+  border-color: $border;
+  color: $color;
+}
+
+.alert-danger {
+  @include alert($brand-danger, $brand-danger, $white);
+}

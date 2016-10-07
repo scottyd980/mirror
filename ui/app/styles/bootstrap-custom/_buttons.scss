@@ -1,5 +1,4 @@
 @mixin btn-base($bg, $color, $border) {
-  background: transparent;
   transition: background 0.25s ease-in-out, color 0.25s ease-in-out;
 
   &:hover {

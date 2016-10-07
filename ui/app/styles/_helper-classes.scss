@@ -1,0 +1,29 @@
+@mixin add-padding($location, $size) {
+  padding-#{$location}: $size;
+}
+
+.pad-top-sm {
+  @include add-padding(top, 10px);
+}
+.pad-right-sm {
+  @include add-padding(right, 10px);
+}
+.pad-bottom-sm {
+  @include add-padding(bottom, 10px);
+}
+.pad-left-sm {
+  @include add-padding(left, 10px);
+}
+
+.pad-top-md {
+  @include add-padding(top, 20px);
+}
+.pad-right-md {
+  @include add-padding(right, 20px);
+}
+.pad-bottom-md {
+  @include add-padding(bottom, 20px);
+}
+.pad-left-md {
+  @include add-padding(left, 20px);
+}
