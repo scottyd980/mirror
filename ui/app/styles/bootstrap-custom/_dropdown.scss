@@ -1,0 +1,17 @@
+.dropdown-menu {
+  background: $brand-dark;
+  border: 0;
+
+  > li > a {
+    color: #fff;
+
+    &:hover, &:focus {
+      color: #fff;
+      background: lighten($brand-dark, 20%);
+    }
+  }
+}
+
+.navbar-nav > li > .dropdown-menu {
+  margin-top: 0;
+}
