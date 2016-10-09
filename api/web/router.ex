@@ -19,6 +19,8 @@ defmodule Mirror.Router do
     post "/register", RegistrationController, :create
     # Login
     post "/token", SessionController, :create, as: :login
+
+    resources "/teams", TeamController
   end
 
   scope "/api", Mirror do
