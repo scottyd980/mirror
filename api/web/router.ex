@@ -19,12 +19,11 @@ defmodule Mirror.Router do
     post "/register", RegistrationController, :create
     # Login
     post "/token", SessionController, :create, as: :login
-
-    resources "/teams", TeamController
   end
 
   scope "/api", Mirror do
     pipe_through :api_auth
     get "/user/current", UserController, :current
+    resources "/teams", TeamController
   end
 end
