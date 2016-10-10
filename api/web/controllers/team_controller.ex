@@ -3,14 +3,26 @@ defmodule Mirror.TeamController do
 
   alias Mirror.Team
 
+  import Logger
+
   def index(conn, _params) do
     teams = Repo.all(Team)
+    |> Repo.preload([:admin])
     render(conn, "index.json", teams: teams)
   end
 
-  def create(conn, %{"team" => team_params}) do
-    changeset = Team.changeset(%Team{}, team_params)
+  def create(conn, %{"data" => %{"type" => "teams",
+    "attributes" => %{
+      "name" => name,
+      "is-anonymous" => isAnonymous,
+      "avatar" => avatar,
+      "admin" => admin}}}) do
 
+    changeset = %Team{}
+      |> Team.changeset(%{name: name, isAnonymous: isAnonymous, avatar: avatar})
+      |> Ecto.Changeset.put_assoc(:admin, Repo.get(Mirror.User, admin))
+
+     # Logger.info changeset
     case Repo.insert(changeset) do
       {:ok, team} ->
         conn
@@ -26,6 +38,7 @@ defmodule Mirror.TeamController do
 
   def show(conn, %{"id" => id}) do
     team = Repo.get!(Team, id)
+    |> Repo.preload([:admin])
     render(conn, "show.json", team: team)
   end
 

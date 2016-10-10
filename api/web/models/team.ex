@@ -6,7 +6,7 @@ defmodule Mirror.Team do
     field :isAnonymous, :boolean, default: false
     field :avatar, :string
     belongs_to :admin, Mirror.User
-    many_to_many :members, Mirror.User, join_through: "users_teams"
+    # many_to_many :members, Mirror.User, join_through: Mirror.UserTeam
 
     timestamps()
   end
@@ -17,6 +17,8 @@ defmodule Mirror.Team do
   def changeset(struct, params \\ %{}) do
     struct
     |> cast(params, [:name, :isAnonymous, :avatar])
+    |> cast_assoc(:admin)
     |> validate_required([:name, :isAnonymous, :avatar])
+    |> assoc_constraint(:admin)
   end
 end
