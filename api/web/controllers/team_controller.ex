@@ -3,7 +3,7 @@ defmodule Mirror.TeamController do
 
   alias Mirror.Team
 
-  import Logger
+  plug Guardian.Plug.EnsureAuthenticated, handler: Mirror.AuthErrorHandler
 
   def index(conn, _params) do
     teams = Repo.all(Team)
@@ -18,6 +18,7 @@ defmodule Mirror.TeamController do
       "avatar" => avatar,
       "admin" => admin}}}) do
 
+    # This really should create the admin as the current logged in user
     changeset = %Team{}
       |> Team.changeset(%{name: name, isAnonymous: isAnonymous, avatar: avatar})
       |> Ecto.Changeset.put_assoc(:admin, Repo.get(Mirror.User, admin))
@@ -42,6 +43,7 @@ defmodule Mirror.TeamController do
     render(conn, "show.json", team: team)
   end
 
+  # Need to finish update
   def update(conn, %{"id" => id, "team" => team_params}) do
     team = Repo.get!(Team, id)
     changeset = Team.changeset(team, team_params)
