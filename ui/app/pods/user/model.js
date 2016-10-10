@@ -1,8 +1,12 @@
-import DS from 'ember-data';
+import Model from 'ember-data/model';
+import attr from 'ember-data/attr';
+import { hasMany } from 'ember-data/relationships';
 
-export default DS.Model.extend({
-  username: DS.attr('string'),
-  email: DS.attr('string'),
-  password: DS.attr('string'),
-  passwordConfirmation: DS.attr('string')
+export default Model.extend({
+  username: attr('string'),
+  email: attr('string'),
+  password: attr('string'),
+  passwordConfirmation: attr('string'),
+  teamAdmin: hasMany('team', {inverse: 'admin'}),
+  teams: hasMany('team', {inverse: 'members'}),
 });

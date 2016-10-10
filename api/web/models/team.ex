@@ -6,7 +6,7 @@ defmodule Mirror.Team do
     field :isAnonymous, :boolean, default: false
     field :avatar, :string
     belongs_to :admin, Mirror.User
-    # many_to_many :members, Mirror.User, join_through: Mirror.UserTeam
+    many_to_many :members, Mirror.User, join_through: Mirror.UserTeam
 
     timestamps()
   end
