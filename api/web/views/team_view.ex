@@ -1,6 +1,8 @@
 defmodule Mirror.TeamView do
   use Mirror.Web, :view
 
+  import Logger
+
   def render("index.json", %{teams: teams}) do
     %{data: render_many(teams, Mirror.TeamView, "team.json")}
   end
@@ -10,10 +12,26 @@ defmodule Mirror.TeamView do
   end
 
   def render("team.json", %{team: team}) do
-    %{id: team.id,
-      name: team.name,
-      isAnonymous: team.isAnonymous,
-      avatar: team.avatar,
-      admin: team.admin}
+    # Logger.info team
+    %{
+    	"type": "team",
+    	"id": team.id,
+    	"attributes": %{
+        "name": team.name,
+        "isAnonymous": team.isAnonymous,
+        "avatar": team.avatar
+    	},
+      "relationships": %{
+        "admin": %{
+          "links": %{
+            "self": "/api/users/#{team.admin.id}"
+          },
+          "data": %{
+            "type": "user",
+            "id": team.admin.id
+          }
+      	}
+      }
+    }
   end
 end

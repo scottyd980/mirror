@@ -9,7 +9,9 @@ defmodule Mirror.User do
     # Two virtual fields for password confirmation
     field :password, :string, virtual: true
     field :password_confirmation, :string, virtual: true
-    many_to_many :teams, Mirror.Team, join_through: "users_teams"
+
+    # Relationships
+    # many_to_many :teams, Mirror.Team, join_through: Mirror.UserTeam
 
     timestamps()
   end
