@@ -1,12 +1,6 @@
 import Ember from 'ember';
+import UnauthenticatedRouteMixin from 'ember-simple-auth/mixins/unauthenticated-route-mixin';
 
 const { Route, inject } = Ember;
 
-export default Route.extend({
-  session: inject.service(),
-  beforeModel() {
-    if(this.get('session').get('isAuthenticated')) {
-      this.transitionTo('app.index');
-    }
-  }
-});
+export default Route.extend(UnauthenticatedRouteMixin);
