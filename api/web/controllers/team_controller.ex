@@ -18,10 +18,9 @@ defmodule Mirror.TeamController do
       "avatar" => avatar,
       "admin" => admin}}}) do
 
-    # This really should create the admin as the current logged in user
     changeset = %Team{}
       |> Team.changeset(%{name: name, isAnonymous: isAnonymous, avatar: avatar})
-      |> Ecto.Changeset.put_assoc(:admin, Repo.get(Mirror.User, admin))
+      |> Ecto.Changeset.put_assoc(:admin, Guardian.Plug.current_resource(conn))
 
      # Logger.info changeset
     case Repo.insert(changeset) do
