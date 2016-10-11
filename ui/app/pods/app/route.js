@@ -1,16 +1,13 @@
 import Ember from 'ember';
 import config from '../../config/environment';
 import fetch from 'ember-network/fetch';
+import AuthenticatedRouteMixin from 'ember-simple-auth/mixins/authenticated-route-mixin';
 
 const { Route, inject } = Ember;
 
-export default Route.extend({
+export default Route.extend(AuthenticatedRouteMixin, {
   session: inject.service(),
-  beforeModel() {
-    if(!this.get('session').get('isAuthenticated')) {
-      this.transitionTo('auth.login');
-    }
-  },
+
   afterModel() {
     return fetch(`${config.DS.host}/${config.DS.namespace}/user/current`, {
       type: 'GET',
