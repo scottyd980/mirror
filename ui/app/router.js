@@ -11,7 +11,14 @@ Router.map(function() {
     this.route('login');
     this.route('register');
   });
-  this.route('app', function() {});
+  this.route('app', function() {
+    this.route('teams', function() {
+      this.route('create');
+      this.route('team', { path: '/:id' }, function() {
+        this.route('dashboard');
+      });
+    });
+  });
 });
 
 export default Router;
