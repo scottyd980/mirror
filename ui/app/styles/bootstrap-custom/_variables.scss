@@ -33,11 +33,11 @@ $btn-warning-hover-bg: $brand-warning;
 $btn-warning-hover-color: $white;
 $btn-warning-bg: $white;
 
-$btn-danger-color: $brand-danger;
+$btn-danger-color: $white;
 $btn-danger-border: $brand-danger;
-$btn-danger-hover-bg: $brand-danger;
+$btn-danger-hover-bg: darken($brand-danger, 5%);
 $btn-danger-hover-color: $white;
-$btn-danger-bg: $white;
+$btn-danger-bg: $brand-danger;
 
 $navbar-custom-link-color: #000;
 $navbar-custom-link-hover-color: $navbar-custom-link-color;
