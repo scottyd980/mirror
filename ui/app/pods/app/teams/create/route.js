@@ -8,12 +8,24 @@ export default Ember.Route.extend({
     this._super(controller, model);
     controller.set('errors', {});
     controller.set('teamMemberEmails', Ember.A());
+    controller.set('newMemberIndex', 0);
   },
   actions: {
-    addTeamMemberEmail() {
+    addTeamMemberEmail(teamMember) { 
       var _this = this;
-      _this.controller.get('teamMemberEmails').pushObject(_this.controller.get('newTeamMemberEmail'));
+      var idx = _this.controller.get('newMemberIndex');
+
+      _this.controller.get('teamMemberEmails').pushObject({
+        email: teamMember,
+        index: idx
+      });
+      _this.controller.set('newMemberIndex', idx + 1);
       _this.controller.set('newTeamMemberEmail', '');
+      $('#team-member-add').focus();
+    },
+    removeTeamMemberEmail(teamMember) {
+      var _this = this;
+      _this.controller.get('teamMemberEmails').removeObject(teamMember);
     }
   }
 });
