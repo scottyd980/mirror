@@ -3,7 +3,7 @@ defmodule Mirror.SessionController do
 
   import Ecto.Query, only: [where: 2]
   import Comeonin.Bcrypt
-  import Logger
+  require Logger
 
   alias Mirror.User
 
@@ -29,7 +29,7 @@ defmodule Mirror.SessionController do
 
         true ->
           # Unsuccessful login
-          Logger.warning "User " <> username <> " just failed to login"
+          Logger.warn "User " <> username <> " just failed to login"
           conn
           |> put_status(401)
           |> render(Mirror.ErrorView, "401.json") # 401
@@ -44,7 +44,7 @@ defmodule Mirror.SessionController do
     end
   end
 
-  def create(conn, %{"grant_type" => _}) do
+  def create(_, %{"grant_type" => _}) do
     ## Handle unknown grant type
     throw "Unsupported grant_type"
   end

@@ -21,7 +21,9 @@ export default Ember.Route.extend({
       this.get('session')
         .authenticate(
           'authenticator:mirror', user.username, user.password
-        ).catch((resp) => {
+        ).then(() => {
+          this.send('invalidateApplicationModel');
+        }).catch((resp) => {
           _this.controller.set('errors', true);
         });
     }

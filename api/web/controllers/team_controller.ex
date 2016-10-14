@@ -11,19 +11,16 @@ defmodule Mirror.TeamController do
     render(conn, "index.json", teams: teams)
   end
 
-  def create(conn, %{"data" => %{"type" => "teams",
-    "attributes" => %{
-      "name" => name,
-      "is-anonymous" => isAnonymous,
-      "avatar" => avatar,
-      "admin" => admin}}}) do
+  def create(conn, %{"data" => %{"attributes" => attributes, "relationships" => _, "type" => "teams"}}) do
 
-    changeset = %Team{}
-      |> Team.changeset(%{name: name, isAnonymous: isAnonymous, avatar: avatar})
+    team_changeset =
+      %Team{}
+      |> Team.changeset(%{name: attributes["name"], isAnonymous: true, avatar: "default.png"})
       |> Ecto.Changeset.put_assoc(:admin, Guardian.Plug.current_resource(conn))
 
-     # Logger.info changeset
-    case Repo.insert(changeset) do
+    # member_changeset =
+
+    case Repo.insert(team_changeset) do
       {:ok, team} ->
         conn
         |> put_status(:created)

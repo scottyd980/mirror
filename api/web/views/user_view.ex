@@ -16,7 +16,21 @@ defmodule Mirror.UserView do
     	"attributes": %{
         "username": user.username,
     		"email": user.email
-    	}
+    	},
+      "relationships": %{
+        "teams": %{
+          "links": %{
+            "self": "/api/teams/"
+          },
+          "data": []
+      	},
+        "retrospectives": %{
+          "links": %{
+            "self": "/api/retrospectives/"
+          },
+          "data": []
+        }
+      }
     }
   end
 end

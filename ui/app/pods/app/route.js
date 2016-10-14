@@ -7,7 +7,6 @@ const { Route, inject } = Ember;
 
 export default Route.extend(AuthenticatedRouteMixin, {
   session: inject.service(),
-
   afterModel() {
     return fetch(`${config.DS.host}/${config.DS.namespace}/user/current`, {
       type: 'GET',
