@@ -1,6 +1,7 @@
 import Ember from 'ember';
 
 export default Ember.Route.extend({
+  session: Ember.inject.service('session'),
   model() {
     return this.store.createRecord('team');
   },
@@ -11,7 +12,7 @@ export default Ember.Route.extend({
     controller.set('newMemberIndex', 0);
   },
   actions: {
-    addTeamMemberEmail(teamMember) { 
+    addTeamMemberEmail(teamMember) {
       var _this = this;
       var idx = _this.controller.get('newMemberIndex');
 
@@ -26,6 +27,11 @@ export default Ember.Route.extend({
     removeTeamMemberEmail(teamMember) {
       var _this = this;
       _this.controller.get('teamMemberEmails').removeObject(teamMember);
+    },
+    createTeam() {
+      var _this = this;
+      _this.get('currentModel').set('admin', _this.get('session').get('currentUser'));
+      _this.get('currentModel').save();
     }
   }
 });

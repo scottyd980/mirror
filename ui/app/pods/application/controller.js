@@ -4,8 +4,6 @@ export default Ember.Controller.extend({
   session: Ember.inject.service('session'),
   actions: {
     navbarCollapse(target) {
-
-      console.log('test');
       // Do not collapse on desktop (i.e. if the button navbar toggle is hidden)
       if (Ember.$('button.navbar-toggle').is(':hidden')) {
         return;
