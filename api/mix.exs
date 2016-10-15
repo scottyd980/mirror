@@ -41,6 +41,7 @@ defmodule Mirror.Mixfile do
      {:guardian, "~> 0.13.0"},
      {:comeonin, "~> 2.5"},
      {:ja_serializer, "~> 0.11.0"},
+     {:hashids, "~> 2.0"}
     ]
   end
 

@@ -3,6 +3,13 @@ defmodule Mirror.TeamController do
 
   alias Mirror.Team
 
+  require Logger
+
+  @hashconfig Hashids.new([
+    salt: "?d[]?a5$~<).hU%L}0k-krUz>^[xJ@Y(yAna%`-k4Hs{^=5T6@/k]PFqkJ;FlbV+",  # using a custom salt helps producing unique cipher text
+    min_len: 6,   # minimum length of the cipher text (1 by default)
+  ])
+
   plug Guardian.Plug.EnsureAuthenticated, handler: Mirror.AuthErrorHandler
 
   def index(conn, _params) do
@@ -11,7 +18,9 @@ defmodule Mirror.TeamController do
     render(conn, "index.json", teams: teams)
   end
 
-  def create(conn, %{"data" => %{"attributes" => attributes, "relationships" => _, "type" => "teams"}}) do
+  def create(conn, %{"data" => %{"attributes" => attributes, "relationships" => relationships, "type" => "teams"}}) do
+
+    # Logger.info "#{inspect relationships}"
 
     team_changeset =
       %Team{}
@@ -20,8 +29,16 @@ defmodule Mirror.TeamController do
 
     # member_changeset =
 
+    # Repo.transaction fn ->
+    #   team = Repo.insert!(team_changeset)
+    #
+    # end
+
     case Repo.insert(team_changeset) do
       {:ok, team} ->
+
+        # Logger.info generate_unique_id team.id
+
         conn
         |> put_status(:created)
         |> put_resp_header("location", team_path(conn, :show, team))
@@ -62,5 +79,9 @@ defmodule Mirror.TeamController do
     Repo.delete!(team)
 
     send_resp(conn, :no_content, "")
+  end
+
+  defp generate_unique_id(team_id) do
+    Hashids.encode(@hashconfig, team_id)
   end
 end
