@@ -21,21 +21,21 @@ defmodule Mirror.TeamController do
 
   def create(conn, %{"data" => %{"attributes" => attributes, "relationships" => relationships, "type" => "teams"}}) do
 
-    case Repo.transaction(fn ->
-      with {:ok, team} <- create_team(conn, attributes),
-           {:ok, updated_team} <- add_unique_id_to_team(conn, team) do
-             conn
-             |> put_status(:created)
-             |> put_resp_header("location", team_path(conn, :show, updated_team))
-             |> render("show.json", team: updated_team)
-      else
-        {:error, _} ->
-          Repo.rollback
-          conn
-          |> put_status(:unprocessable_entity)
-          |> render(Mirror.ChangesetView, "error.json", changeset: %{})
-      end
-    end)
+    # Repo.transaction(fn ->
+    #   with {:ok, team} <- create_team(conn, attributes),
+    #        {:ok, updated_team} <- add_unique_id_to_team(conn, team) do
+    #          conn
+    #          |> put_status(:created)
+    #          |> put_resp_header("location", team_path(conn, :show, updated_team))
+    #          |> render("show.json", team: updated_team)
+    #   else
+    #     {:error, _} ->
+    #       Repo.rollback
+    #       conn
+    #       |> put_status(:unprocessable_entity)
+    #       |> render(Mirror.ChangesetView, "error.json", changeset: %{})
+    #   end
+    # end)
 
     # Repo.transaction fn ->
     #   # team = Repo.insert!(team_changeset)
@@ -64,10 +64,7 @@ defmodule Mirror.TeamController do
     #
     # case create_team(conn, attributes) do
     #   {:ok, team} ->
-    #     team_unique_id = generate_unique_id(team.id)
-    #     changeset = Team.changeset(team, %{uuid: team_unique_id})
-    #
-    #     case Repo.update(changeset) do
+    #     case add_unique_id_to_team(conn, team) do
     #       {:ok, team} ->
     #         conn
     #         |> put_status(:created)
@@ -83,6 +80,21 @@ defmodule Mirror.TeamController do
     #     |> put_status(:unprocessable_entity)
     #     |> render(Mirror.ChangesetView, "error.json", changeset: changeset)
     # end
+
+    params = %{"attributes" => attributes, "admin" => Guardian.Plug.current_resource(conn)}
+
+    case create_team(params) do
+      {:ok, team} ->
+        Logger.info "#{inspect team}"
+        conn
+        |> put_status(:created)
+        |> render("show.json", team: team)
+      {:error, changeset} ->
+        conn
+        |> put_status(:unprocessable_entity)
+        |> render(Mirror.ChangesetView, "error.json", changeset: changeset)
+    end
+
   end
 
   def show(conn, %{"id" => id}) do
@@ -120,14 +132,42 @@ defmodule Mirror.TeamController do
     Hashids.encode(@hashconfig, id)
   end
 
-  defp create_team(conn, attributes) do
+  # defp create_team(params) do
+  #   Repo.transaction fn ->
+  #     case insert_team(params) do
+  #       {:ok, team} ->
+  #         case add_unique_id_to_team(team) do
+  #           {:ok, updated_team} ->
+  #             updated_team
+  #           {:error, changeset} ->
+  #             changeset
+  #         end
+  #       {:error, changeset} ->
+  #         Repo.rollback changeset
+  #     end
+  #   end
+  # end
+
+  defp create_team(params) do
+    Repo.transaction fn ->
+      with {:ok, team} <- insert_team(params),
+           {:ok, updated_team} <- add_unique_id_to_team(team) do
+             updated_team
+      else
+        {:error, changeset} ->
+          Repo.rollback changeset
+      end
+    end
+  end
+
+  defp insert_team(params) do
     %Team{}
-    |> Team.changeset(%{name: attributes["name"], isAnonymous: true, avatar: "default.png"})
-    |> Ecto.Changeset.put_assoc(:admin, Guardian.Plug.current_resource(conn))
+    |> Team.changeset(%{name: params["attributes"]["name"], isAnonymous: true, avatar: "default.png"})
+    |> Ecto.Changeset.put_assoc(:admin, params["admin"])
     |> Repo.insert
   end
 
-  defp add_unique_id_to_team(conn, team) do
+  defp add_unique_id_to_team(team) do
     team_unique_id = generate_unique_id(team.id)
 
     team
