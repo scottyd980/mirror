@@ -82,6 +82,7 @@ defmodule Mirror.TeamController do
   end
 
   defp generate_unique_id(team_id) do
-    Hashids.encode(@hashconfig, team_id)
+    # System time to make it random, need to figure out how to make this work with guarantee of uniqueness
+    Hashids.encode(@hashconfig, team_id + :os.system_time(:seconds))
   end
 end
