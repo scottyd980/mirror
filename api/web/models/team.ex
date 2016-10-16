@@ -5,6 +5,7 @@ defmodule Mirror.Team do
     field :name, :string
     field :isAnonymous, :boolean, default: false
     field :avatar, :string
+    field :uuid, :string
     belongs_to :admin, Mirror.User
     many_to_many :members, Mirror.User, join_through: Mirror.UserTeam
 
@@ -16,7 +17,7 @@ defmodule Mirror.Team do
   """
   def changeset(struct, params \\ %{}) do
     struct
-    |> cast(params, [:name, :isAnonymous, :avatar])
+    |> cast(params, [:name, :isAnonymous, :avatar, :uuid])
     |> cast_assoc(:admin)
     |> validate_required([:name, :isAnonymous, :avatar])
     |> assoc_constraint(:admin)
