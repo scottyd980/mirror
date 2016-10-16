@@ -2,6 +2,7 @@ defmodule Mirror.TeamController do
   use Mirror.Web, :controller
 
   alias Mirror.Team
+  alias Ecto.Multi
 
   require Logger
 
@@ -20,34 +21,68 @@ defmodule Mirror.TeamController do
 
   def create(conn, %{"data" => %{"attributes" => attributes, "relationships" => relationships, "type" => "teams"}}) do
 
-    # Logger.info "#{inspect relationships}"
-
-    team_changeset =
-      %Team{}
-      |> Team.changeset(%{name: attributes["name"], isAnonymous: true, avatar: "default.png"})
-      |> Ecto.Changeset.put_assoc(:admin, Guardian.Plug.current_resource(conn))
-
-    # member_changeset =
+    case Repo.transaction(fn ->
+      with {:ok, team} <- create_team(conn, attributes),
+           {:ok, updated_team} <- add_unique_id_to_team(conn, team) do
+             conn
+             |> put_status(:created)
+             |> put_resp_header("location", team_path(conn, :show, updated_team))
+             |> render("show.json", team: updated_team)
+      else
+        {:error, _} ->
+          Repo.rollback
+          conn
+          |> put_status(:unprocessable_entity)
+          |> render(Mirror.ChangesetView, "error.json", changeset: %{})
+      end
+    end)
 
     # Repo.transaction fn ->
-    #   team = Repo.insert!(team_changeset)
+    #   # team = Repo.insert!(team_changeset)
+    #   case Repo.insert!(team_changeset) do
+    #     {:ok, team} ->
+    #       team_unique_id = generate_unique_id(team.id)
+    #       changeset = Team.changeset(team, %{uuid: team_unique_id})
     #
+    #       case Repo.update!(changeset) do
+    #         {:ok, team} ->
+    #           conn
+    #           |> put_status(:created)
+    #           |> put_resp_header("location", team_path(conn, :show, team))
+    #           |> render("show.json", team: team)
+    #         {:error, changeset} ->
+    #           conn
+    #           |> put_status(:unprocessable_entity)
+    #           |> render(Mirror.ChangesetView, "error.json", changeset: changeset)
+    #       end
+    #     {:error, changeset} ->
+    #       conn
+    #       |> put_status(:unprocessable_entity)
+    #       |> render(Mirror.ChangesetView, "error.json", changeset: changeset)
+    #   end
     # end
-
-    case Repo.insert(team_changeset) do
-      {:ok, team} ->
-
-        # Logger.info generate_unique_id team.id
-
-        conn
-        |> put_status(:created)
-        |> put_resp_header("location", team_path(conn, :show, team))
-        |> render("show.json", team: team)
-      {:error, changeset} ->
-        conn
-        |> put_status(:unprocessable_entity)
-        |> render(Mirror.ChangesetView, "error.json", changeset: changeset)
-    end
+    #
+    # case create_team(conn, attributes) do
+    #   {:ok, team} ->
+    #     team_unique_id = generate_unique_id(team.id)
+    #     changeset = Team.changeset(team, %{uuid: team_unique_id})
+    #
+    #     case Repo.update(changeset) do
+    #       {:ok, team} ->
+    #         conn
+    #         |> put_status(:created)
+    #         |> put_resp_header("location", team_path(conn, :show, team))
+    #         |> render("show.json", team: team)
+    #       {:error, changeset} ->
+    #         conn
+    #         |> put_status(:unprocessable_entity)
+    #         |> render(Mirror.ChangesetView, "error.json", changeset: changeset)
+    #     end
+    #   {:error, changeset} ->
+    #     conn
+    #     |> put_status(:unprocessable_entity)
+    #     |> render(Mirror.ChangesetView, "error.json", changeset: changeset)
+    # end
   end
 
   def show(conn, %{"id" => id}) do
@@ -81,8 +116,22 @@ defmodule Mirror.TeamController do
     send_resp(conn, :no_content, "")
   end
 
-  defp generate_unique_id(team_id) do
-    # System time to make it random, need to figure out how to make this work with guarantee of uniqueness
-    Hashids.encode(@hashconfig, team_id + :os.system_time(:seconds))
+  defp generate_unique_id(id) do
+    Hashids.encode(@hashconfig, id)
+  end
+
+  defp create_team(conn, attributes) do
+    %Team{}
+    |> Team.changeset(%{name: attributes["name"], isAnonymous: true, avatar: "default.png"})
+    |> Ecto.Changeset.put_assoc(:admin, Guardian.Plug.current_resource(conn))
+    |> Repo.insert
+  end
+
+  defp add_unique_id_to_team(conn, team) do
+    team_unique_id = generate_unique_id(team.id)
+
+    team
+    |> Team.changeset(%{uuid: team_unique_id})
+    |> Repo.update
   end
 end
