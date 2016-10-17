@@ -22,7 +22,7 @@ defmodule Mirror.UserView do
           "links": %{
             "self": "/api/teams/"
           },
-          "data": []
+          "data": render_many(user.teams, Mirror.UserView, "team.json", as: :team)
       	},
         "retrospectives": %{
           "links": %{
@@ -31,6 +31,13 @@ defmodule Mirror.UserView do
           "data": []
         }
       }
+    }
+  end
+
+  def render("team.json", %{team: team}) do
+    %{
+      "type": "team",
+      "id": team.id
     }
   end
 end
