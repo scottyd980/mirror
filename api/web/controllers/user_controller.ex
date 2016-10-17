@@ -10,8 +10,6 @@ defmodule Mirror.UserController do
     |> Guardian.Plug.current_resource
     |> Repo.preload([:teams])
 
-    Logger.info "#{inspect user}"
-
     conn
     |> render(Mirror.UserView, "show.json", user: user)
   end
