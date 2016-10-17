@@ -28,7 +28,6 @@ defmodule Mirror.TeamController do
 
     case create_team(params) do
       {:ok, team} ->
-        Logger.info "#{inspect team}"
         conn
         |> put_status(:created)
         |> render("show.json", team: team)

@@ -31,8 +31,9 @@ export default Ember.Route.extend({
     createTeam() {
       var _this = this;
       _this.get('currentModel').set('admin', _this.get('session').get('currentUser'));
-      _this.get('currentModel').save();
-      _this.send('invalidateApplicationModel');
+      _this.get('currentModel').save().then(() => {
+        _this.send('invalidateApplicationModel');
+      });
     }
   }
 });
