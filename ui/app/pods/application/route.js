@@ -14,7 +14,7 @@ export default Ember.Route.extend(ApplicationRouteMixin, {
     _this._super(controller, models);
 
     if(_this.get('session.isAuthenticated')) {
-        models.filteredTeams = _this.get('session.currentUser').get('teams');
+      models.filteredTeams = _this.get('session.currentUser').get('teams');
     }
 
     controller.setProperties(models);
