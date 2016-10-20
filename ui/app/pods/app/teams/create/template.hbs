@@ -1,39 +1,37 @@
-<div class="nav-push">
-  <div class="container">
-    <div class="row">
-      <div class="col-md-8">
-        <div class="card">
-          {{#if errors.length}}
-            <div class="alert alert-danger" role="alert">
-              {{fa-icon "exclamation-triangle"}} Please correct the highlighted fields below.
-            </div>
-          {{/if}}
-          <div class="form-group">
-            {{input type="text" class="form-control" placeholder="Team Name" value=model.name}}
+<div class="container">
+  <div class="row">
+    <div class="col-md-8">
+      <div class="card">
+        {{#if errors.length}}
+          <div class="alert alert-danger" role="alert">
+            {{fa-icon "exclamation-triangle"}} Please correct the highlighted fields below.
           </div>
-          <hr/>
-          <form {{action "addTeamMemberEmail" newTeamMemberEmail on="submit"}}>
-            <div class="form-group input-group">
-              {{input type="text" class="form-control" id="team-member-add" placeholder="Team Member Email" value=newTeamMemberEmail}}
-              <span class="input-group-btn">
-                <button class="btn btn-success simple-action" type="submit">+</button>
-              </span>
-            </div>
-          </form>
-          {{#each teamMemberEmails as |teamMemberEmail|}}
-            <div class="form-group input-group">
-              {{input type="text" class="form-control" placeholder="Team Member Email" value=teamMemberEmail.email}}
-              <span class="input-group-btn">
-                <button {{action "removeTeamMemberEmail" teamMemberEmail}} class="btn btn-danger simple-action" type="button">-</button>
-              </span>
-            </div>
-          {{/each}}
+        {{/if}}
+        <div class="form-group">
+          {{input type="text" class="form-control" placeholder="Team Name" value=model.name}}
         </div>
+        <hr/>
+        <form {{action "addTeamMemberEmail" newTeamMemberEmail on="submit"}}>
+          <div class="form-group input-group">
+            {{input type="text" class="form-control" id="team-member-add" placeholder="Team Member Email" value=newTeamMemberEmail}}
+            <span class="input-group-btn">
+              <button class="btn btn-success simple-action" type="submit">+</button>
+            </span>
+          </div>
+        </form>
+        {{#each teamMemberEmails as |teamMemberEmail|}}
+          <div class="form-group input-group">
+            {{input type="text" class="form-control" placeholder="Team Member Email" value=teamMemberEmail.email}}
+            <span class="input-group-btn">
+              <button {{action "removeTeamMemberEmail" teamMemberEmail}} class="btn btn-danger simple-action" type="button">-</button>
+            </span>
+          </div>
+        {{/each}}
       </div>
-      <div class="col-md-4">
-        <div class="card">
-          <button {{action "createTeam"}} type="submit" class="btn btn-success btn-lg btn-block">Create Team</button>
-        </div>
+    </div>
+    <div class="col-md-4">
+      <div class="card">
+        <button {{action "createTeam"}} type="submit" class="btn btn-success btn-lg btn-block">Create Team</button>
       </div>
     </div>
   </div>
