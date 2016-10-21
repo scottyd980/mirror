@@ -17,6 +17,21 @@
     padding: 0 15px;
   }
 
+  &.navbar-logged-in {
+    .navbar-brand,
+    .navbar-nav li a {
+      line-height: 1.2;
+      height: auto;
+      padding: 15px;
+    }
+
+    .dropdown-menu {
+      margin-top: 4px;
+    }
+
+    border-bottom: 1px solid $brand-light;
+  }
+
   .navbar-brand {
     color: $navbar-custom-brand-color;
     &:hover,
