@@ -40,9 +40,19 @@ defmodule Mirror.TeamController do
   end
 
   def show(conn, %{"id" => id}) do
+    current_user = Guardian.Plug.current_resource(conn)
+
     team = Repo.get!(Team, id)
-    |> Repo.preload([:admin])
-    render(conn, "show.json", team: team)
+    |> Repo.preload([:admin, :members])
+
+    case Enum.member?(team.members, current_user) do
+      true ->
+        render(conn, "show.json", team: team)
+      _ ->
+        conn
+        |> put_status(404)
+        |> render(Mirror.ErrorView, "404.json")
+    end
   end
 
   # Need to finish update
