@@ -1,0 +1,26 @@
+.card {
+  background: rgba(255,255,255,0.8);
+  border-radius: 2px;
+  border: 1px solid $brand-border;
+  margin-bottom: 30px;
+
+  .card-title {
+    padding: 15px 20px;
+    border-bottom: 1px solid $brand-border;
+
+    h3 {
+      text-transform: uppercase;
+      font-size: 14px;
+      margin-bottom: 0;
+      font-weight: 500;
+    }
+  }
+
+  .card-body {
+    padding: 20px;
+  }
+
+  .card-footer {
+
+  }
+}

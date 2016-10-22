@@ -16,9 +16,9 @@ Router.map(function() {
       this.route('create');
       this.route('team', { path: '/:id' }, function() {
         this.route('dashboard', function() {
-          this.route('index');
           this.route('members');
           this.route('history');
+          this.route('retrospectives');
         });
       });
     });
