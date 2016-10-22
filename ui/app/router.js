@@ -19,6 +19,7 @@ Router.map(function() {
           this.route('members');
           this.route('history');
           this.route('retrospectives');
+          this.route('admin');
         });
       });
     });
