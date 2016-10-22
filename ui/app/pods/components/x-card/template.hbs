@@ -1,14 +1,8 @@
-<div class="card-content">
-  {{#if title}}
-    <span class="card-title">{{title}}</span>
-  {{/if}}
-  {{yield}}
-</div>
-{{#if attrs.onsubmit}}
-  <div class="card-action right-align">
-    <button disabled={{buttonDisabled}} class="btn-flat {{if buttonDisabled "disabled" "green white-text"}}"
-      onclick={{attrs.onsubmit}}>
-      {{buttonText}}
-    </button>
+{{#if title}}
+  <div class="card-title">
+    <h3>{{title}}</h3>
   </div>
 {{/if}}
+<div class="card-body">
+  {{yield}}
+</div>

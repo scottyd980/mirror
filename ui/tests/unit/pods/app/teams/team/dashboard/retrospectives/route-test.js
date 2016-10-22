@@ -1,6 +1,6 @@
 import { moduleFor, test } from 'ember-qunit';
 
-moduleFor('route:app/teams/team/dashboard/index', 'Unit | Route | app/teams/team/dashboard/index', {
+moduleFor('route:app/teams/team/dashboard/retrospectives', 'Unit | Route | app/teams/team/dashboard/retrospectives', {
   // Specify the other units that are required for this test.
   // needs: ['controller:foo']
 });
