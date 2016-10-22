@@ -1,23 +1,20 @@
 <header class="contextual-nav">
-
-</header>
-<div class="container">
-  {{model.team.name}}
-  <div class="row">
-    <div class="col-md-4">
-      <div class="card">
-
-      </div>
-    </div>
-    <div class="col-md-4">
-      <div class="card">
-
-      </div>
-    </div>
-    <div class="col-md-4">
-      <div class="card">
-        <h3>Team Members</h3>
+  <div class="container">
+    <div class="row">
+      <div class="col-md-12">
+        <div class="title-pane">
+          <h2 class="text-center">{{model.team.name}}</h2>
+        </div>
+        <div class="tab-pane">
+          <ul class="title-tabs">
+            <li>{{#link-to "app.teams.team.dashboard.index" model.team}}Dashboard{{/link-to}}</li>
+            <li>{{#link-to "app.teams.team.dashboard.members" model.team}}Members{{/link-to}}</li>
+            <li>{{#link-to "app.teams.team.dashboard.history" model.team}}History{{/link-to}}</li>
+          </ul>
+        </div>
       </div>
     </div>
   </div>
-</div>
+</header>
+
+{{outlet}}

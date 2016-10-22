@@ -29,7 +29,7 @@
       margin-top: 4px;
     }
 
-    border-bottom: 1px solid $brand-light;
+    border-bottom: 1px solid rgba(73,80,84,.15);
   }
 
   .navbar-brand {
@@ -218,6 +218,51 @@
 .contextual-nav {
   background-color: $navbar-custom-bg;
   border-color: $navbar-custom-border;
-  height: 40px;
-  padding-top:52px;
+  margin-top: 52px;
+  margin-bottom: 30px;
+  border-bottom: 1px solid rgba(73,80,84,.15);
+
+  .title-pane {
+    margin-top: 7px;
+
+    h2 {
+      font-size: 24px;
+      font-weight: 700;
+    }
+  }
+
+  .tab-pane {
+    text-align: center;
+
+    ul.title-tabs {
+      display: inline-block;
+      margin: 0;
+      padding: 0;
+
+      li {
+        display: inline-block;
+        margin-right: 20px;
+        padding-bottom: 6px;
+
+        a {
+          color: $brand-light-text;
+          padding-bottom: 8px;
+          transition-duration: .2s;
+          transition-property: box-shadow, color;
+          text-decoration: none;
+
+          &.active, &:hover {
+            color: $brand-dark-text;
+            box-shadow: inset 0 -3px $brand-success;
+            -moz-box-shadow: inset 0 -3px $brand-success;
+            -webkit-box-shadow: inset 0 -3px $brand-success;
+          }
+        }
+
+        &:last-of-type {
+          margin-right: 0;
+        }
+      }
+    }
+  }
 }

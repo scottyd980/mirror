@@ -24,7 +24,7 @@
           <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Teams <span class="caret"></span></a>
           <ul class="dropdown-menu">
             {{#each filteredTeams as |team|}}
-              <li>{{#link-to "app.teams.team.dashboard" team}}{{team.name}}{{/link-to}}</li>
+              <li>{{#link-to "app.teams.team.dashboard.index" team}}{{team.name}}{{/link-to}}</li>
             {{/each}}
             {{#if filteredTeams}}
               <li class="divider"></li>
