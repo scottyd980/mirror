@@ -25,6 +25,15 @@ export default Ember.Route.extend(ApplicationRouteMixin, {
     },
     invalidateApplicationModel() {
       this.refresh();
+    },
+    scrollToLearnMore() {
+      this.transitionTo('index').then(function() {
+        setTimeout(function() {
+          $('html, body').animate({
+              scrollTop: $("#learn-more").offset().top - 80
+          }, 500);
+        }, 100);  
+      });
     }
   }
 });
