@@ -14,6 +14,7 @@ Router.map(function() {
   this.route('app', function() {
     this.route('teams', function() {
       this.route('create');
+
       this.route('team', { path: '/:id' }, function() {
         this.route('dashboard', function() {
           this.route('members');
@@ -21,6 +22,14 @@ Router.map(function() {
           this.route('retrospectives');
           this.route('preferences');
         });
+      });
+    });
+
+    this.route('users', function() {
+      this.route('profile');
+
+      this.route('user', { path: '/:id' }, function() {
+        this.route('profile');
       });
     });
   });
