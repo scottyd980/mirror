@@ -7,6 +7,9 @@
   .card-title {
     padding: 15px 20px;
     border-bottom: 1px solid $brand-border;
+    box-shadow: inset 3px 0 #02C8A7;
+    -moz-box-shadow: inset 3px 0 #02C8A7;
+    -webkit-box-shadow: inset 3px 0 #02C8A7;
 
     h3 {
       text-transform: uppercase;
