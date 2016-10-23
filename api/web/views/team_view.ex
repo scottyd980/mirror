@@ -18,7 +18,7 @@ defmodule Mirror.TeamView do
     	"id": team.id,
     	"attributes": %{
         "name": team.name,
-        "isAnonymous": team.isAnonymous,
+        "is-anonymous": team.isAnonymous,
         "avatar": team.avatar
     	},
       "relationships": %{

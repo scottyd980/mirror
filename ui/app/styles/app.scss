@@ -10,6 +10,7 @@
 @import 'bootstrap-custom/dropdown';
 
 @import 'card';
+@import 'icons';
 
 html {
   position: relative;
@@ -82,10 +83,14 @@ h1, .h1, h2, .h2, h3, .h3, h4, .h4 {
 }
 
 .nav-push {
-  padding-top: 110px;
+  padding-top: 80px;
 
-  @media (max-width: $screen-xs-max) {
-    padding-top: 80px;
+  &.pre-login {
+    padding-top: 110px;
+
+    @media (max-width: $screen-xs-max) {
+      padding-top: 80px;
+    }
   }
 }
 
@@ -93,4 +98,53 @@ h1, .h1, h2, .h2, h3, .h3, h4, .h4 {
   height: 14px;
   width: 14px;
   border-radius: 7px;
+}
+
+ul.tips {
+  padding-left: 0px;
+  list-style: none;
+
+  li {
+    padding-left: 20px;
+    position: relative;
+    padding-bottom: 10px;
+
+    &:last-of-type {
+      padding-bottom: 0;
+    }
+
+    &:before {
+      position: absolute;
+      content: "\f00c"; /* FontAwesome Unicode */
+      font-family: FontAwesome;
+      margin-left: -20px; /* same as padding-left set on li */
+      width: 20px; /* same as padding-left set on li */
+      color: $brand-success;
+    }
+  }
+}
+
+ul.action-list {
+  padding-left: 0;
+  list-style: none;
+  margin-bottom: 0;
+
+  li {
+    padding-bottom: 10px;
+    border-bottom: 1px solid $brand-border;
+
+    .list-actions {
+      display: inline-block;
+      padding-right: 10px;
+    }
+
+    .list-item {
+      vertical-align: middle;
+    }
+
+    &:last-of-type {
+      border-bottom: none;
+      padding-bottom: 0;
+    }
+  }
 }

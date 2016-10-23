@@ -1,9 +1,39 @@
 <div class="container">
   <div class="row">
-    <div class="col-md-12">
+    <div class="{{if isAdmin 'col-md-8' 'col-md-12'}}">
       {{#x-card title="Members"}}
-        Test
+        <ul class="action-list">
+          {{#each model.members as |member|}}
+            <li>
+              {{#if isAdmin}}
+                <span class="list-actions">
+                  <a class="btn btn-info btn-outline btn-xs">{{fa-icon "user" fixedWidth=true}}</a>
+                  <a class="btn btn-danger btn-outline btn-xs">{{fa-icon "close" fixedWidth=true}}</a>
+                </span>
+              {{/if}}
+              <span class="list-item">{{member.username}}</span>
+            </li>
+          {{else}}
+          {{/each}}
+        </ul>
       {{/x-card}}
     </div>
+    {{#if isAdmin}}
+      <div class="col-md-4">
+        {{#x-card title="Helpful Tips"}}
+          <ul class="tips">
+            <li>
+              Use the <span class="info-text">{{fa-icon "user"}}</span> button
+              to view the team member's profile.
+            </li>
+            <li>
+              To remove a member from the team, select the respective
+              <span class="danger-text">{{fa-icon "close"}}</span>
+              button.
+            </li>
+          </ul>
+        {{/x-card}}
+      </div>
+    {{/if}}
   </div>
 </div>
