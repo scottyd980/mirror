@@ -83,5 +83,49 @@
 }
 
 .white-bg {
-  background: #fff;
+  background-color: $white;
+}
+
+.primary-bg {
+  background-color: $brand-primary;
+}
+
+.success-bg {
+  background-color: $brand-success;
+}
+
+.info-bg {
+  background-color: $brand-info;
+}
+
+.warning-bg {
+  background-color: $brand-warning;
+}
+
+.danger-bg {
+  background-color: $brand-danger;
+}
+
+.white-text {
+  color: $white;
+}
+
+.primary-text {
+  color: $brand-primary;
+}
+
+.success-text {
+  color: $brand-success;
+}
+
+.info-text {
+  color: $brand-info;
+}
+
+.warning-text {
+  color: $brand-warning;
+}
+
+.danger-text {
+  color: $brand-danger;
 }
