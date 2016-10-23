@@ -2,6 +2,13 @@
   padding-#{$location}: $size;
 }
 
+.pad-sm {
+  @include add-padding(top, 10px);
+  @include add-padding(right, 10px);
+  @include add-padding(bottom, 10px);
+  @include add-padding(left, 10px);
+}
+
 .pad-top-sm {
   @include add-padding(top, 10px);
 }
@@ -15,6 +22,13 @@
   @include add-padding(left, 10px);
 }
 
+.pad-md {
+  @include add-padding(top, 20px);
+  @include add-padding(right, 20px);
+  @include add-padding(bottom, 20px);
+  @include add-padding(left, 20px);
+}
+
 .pad-top-md {
   @include add-padding(top, 20px);
 }
@@ -26,4 +40,48 @@
 }
 .pad-left-md {
   @include add-padding(left, 20px);
+}
+
+.pad-lg {
+  @include add-padding(top, 30px);
+  @include add-padding(right, 30px);
+  @include add-padding(bottom, 30px);
+  @include add-padding(left, 30px);
+}
+
+.pad-top-lg {
+  @include add-padding(top, 30px);
+}
+.pad-right-lg {
+  @include add-padding(right, 30px);
+}
+.pad-bottom-lg {
+  @include add-padding(bottom, 30px);
+}
+.pad-left-lg {
+  @include add-padding(left, 30px);
+}
+
+.pad-xl {
+  @include add-padding(top, 50px);
+  @include add-padding(right, 50px);
+  @include add-padding(bottom, 50px);
+  @include add-padding(left, 50px);
+}
+
+.pad-top-xl {
+  @include add-padding(top, 50px);
+}
+.pad-right-xl {
+  @include add-padding(right, 50px);
+}
+.pad-bottom-xl {
+  @include add-padding(bottom, 50px);
+}
+.pad-left-xl {
+  @include add-padding(left, 50px);
+}
+
+.white-bg {
+  background: #fff;
 }

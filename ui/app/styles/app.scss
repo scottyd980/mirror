@@ -21,7 +21,6 @@ footer {
   width: 100%;
   /* Set the fixed height of the footer here */
   height: 60px;
-  margin-top: 30px;
   background-color: $brand-dark;
   color: $white;
   font-family: 'Montserrat';
@@ -34,11 +33,12 @@ body {
   font-family: 'Roboto', sans-serif;
   font-weight: 300;
   background: #F4F4F4;
-  margin-bottom: 90px;
+  margin-bottom: 60px;
 }
 
-h1, .h1, h2, .h2, h3, .h3 {
+h1, .h1, h2, .h2, h3, .h3, h4, .h4 {
   margin-top: 0;
+  font-weight: 300;
 }
 
 .hero {
@@ -49,6 +49,22 @@ h1, .h1, h2, .h2, h3, .h3 {
   &.front-page {
     background: linear-gradient(rgba(0,0,0,0.15), rgba(0,0,0,0.15)), url('../img/hero2.jpg') top center;
     height: 700px;
+  }
+}
+
+.marketing-icon {
+  width: 100px;
+  height: 100px;
+  margin-bottom: 20px;
+}
+
+.marketing-block {
+  @media (max-width: $screen-xs-max) {
+    padding-bottom: 50px;
+
+    &:last-of-type {
+      padding-bottom: 0;
+    }
   }
 }
 

@@ -245,6 +245,10 @@
         padding-bottom: 6px;
 
         a {
+          @media (max-width: $screen-xs-max) {
+            font-size: 12px;
+          }
+
           color: $brand-light-text;
           padding-bottom: 8px;
           transition-duration: .2s;
