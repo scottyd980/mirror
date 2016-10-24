@@ -27,7 +27,13 @@ defmodule Mirror.TeamView do
             "self": "/api/users/"
           },
           "data": render_many(team.admins, Mirror.TeamView, "user.json", as: :user)
-      	}
+      	},
+        "members": %{
+          "links": %{
+            "self": "/api/users/"
+          },
+          "data": render_many(team.members, Mirror.TeamView, "user.json", as: :user)
+        }
       }
     }
   end
