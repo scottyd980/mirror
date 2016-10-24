@@ -22,16 +22,20 @@ defmodule Mirror.TeamView do
         "avatar": team.avatar
     	},
       "relationships": %{
-        "admin": %{
+        "admins": %{
           "links": %{
-            "self": "/api/users/#{team.admin.id}"
+            "self": "/api/users/"
           },
-          "data": %{
-            "type": "user",
-            "id": team.admin.id
-          }
+          "data": render_many(team.admins, Mirror.TeamView, "user.json", as: :user)
       	}
       }
+    }
+  end
+
+  def render("user.json", %{user: user}) do
+    %{
+      "type": "user",
+      "id": user.id
     }
   end
 end
