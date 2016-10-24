@@ -7,6 +7,6 @@ export default Model.extend({
   name: attr('string'),
   avatar: attr('string'),
   isAnonymous: attr('string'),
-  admin: belongsTo('user'),
+  admins: hasMany('user'),
   members: hasMany('user'),
 });

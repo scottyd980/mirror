@@ -7,6 +7,6 @@ export default Model.extend({
   email: attr('string'),
   password: attr('string'),
   passwordConfirmation: attr('string'),
-  teamAdmin: hasMany('team', {inverse: 'admin'}),
+  teamAdmin: hasMany('team', {inverse: 'admins'}),
   teams: hasMany('team', {inverse: 'members'}),
 });

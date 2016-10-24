@@ -3,6 +3,7 @@ defmodule Mirror.TeamController do
 
   alias Mirror.Team
   alias Mirror.UserTeam
+  alias Mirror.TeamAdmin
   alias Ecto.Multi
 
   require Logger
@@ -16,15 +17,16 @@ defmodule Mirror.TeamController do
 
   def index(conn, _params) do
     teams = Repo.all(Team)
-    |> Repo.preload([:admin])
+    |> Repo.preload([:admins])
     render(conn, "index.json", teams: teams)
   end
 
   def create(conn, %{"data" => %{"attributes" => attributes, "relationships" => relationships, "type" => "teams"}}) do
 
     team_members = [Guardian.Plug.current_resource(conn)]
+    team_admins = [Guardian.Plug.current_resource(conn)]
 
-    params = %{"attributes" => attributes, "admin" => Guardian.Plug.current_resource(conn), "members" => team_members}
+    params = %{"attributes" => attributes, "admins" => team_admins, "members" => team_members}
 
     case create_team(params) do
       {:ok, team} ->
@@ -43,7 +45,7 @@ defmodule Mirror.TeamController do
     current_user = Guardian.Plug.current_resource(conn)
 
     team = Repo.get!(Team, id)
-    |> Repo.preload([:admin, :members])
+    |> Repo.preload([:admins, :members])
 
     case Enum.member?(team.members, current_user) do
       true ->
@@ -88,8 +90,10 @@ defmodule Mirror.TeamController do
     Repo.transaction fn ->
       with {:ok, team} <- insert_team(params),
            {:ok, updated_team} <- add_unique_id_to_team(team),
+           [{:ok, team_admins}] <- add_team_admins(team, params["admins"]),
            [{:ok, team_members}] <- add_team_members(team, params["members"]) do
              updated_team
+             |> Repo.preload([:admins])
       else
         {:error, changeset} ->
           Repo.rollback changeset
@@ -100,7 +104,6 @@ defmodule Mirror.TeamController do
   defp insert_team(params) do
     %Team{}
     |> Team.changeset(%{name: params["attributes"]["name"], isAnonymous: true, avatar: "default.png"})
-    |> Ecto.Changeset.put_assoc(:admin, params["admin"])
     |> Repo.insert
   end
 
@@ -116,6 +119,14 @@ defmodule Mirror.TeamController do
     Enum.map users, fn user ->
       %UserTeam{}
       |> UserTeam.changeset(%{user_id: user.id, team_id: team.id})
+      |> Repo.insert
+    end
+  end
+
+  defp add_team_admins(team, admins) do
+    Enum.map admins, fn admin ->
+      %TeamAdmin{}
+      |> TeamAdmin.changeset(%{user_id: admin.id, team_id: team.id})
       |> Repo.insert
     end
   end
