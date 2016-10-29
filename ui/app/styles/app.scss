@@ -133,23 +133,58 @@ ul.action-list {
     padding-bottom: 10px;
     border-bottom: 1px solid $brand-border;
     padding-top: 10px;
+    min-height: 43px;
+
+    &.three-actions {
+      .list-actions {
+        width: 90px;
+        position: absolute;
+        right: 35px;
+      }
+
+      .list-item {
+        margin-right: 120px;
+        overflow: hidden;
+        position: relative;
+        padding-left: 120px;
+        left: -120px;
+        top: 2px;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+      }
+    }
+
+    &:after {
+      clear: both;
+      content: ".";
+      visibility: hidden;
+      display: block;
+      height: 0;
+    }
 
     .list-actions {
-      display: inline-block;
-      padding-right: 10px;
+      float: left;
     }
 
     .list-item {
+      float: left;
       vertical-align: middle;
+      width: 100%;
     }
 
     &:first-of-type {
       padding-top: 0;
+      min-height: 33px;
     }
 
     &:last-of-type {
       border-bottom: none;
       padding-bottom: 0;
+      min-height: 33px;
     }
   }
+}
+
+.gravatar-image {
+  margin-right: 2px;
 }
