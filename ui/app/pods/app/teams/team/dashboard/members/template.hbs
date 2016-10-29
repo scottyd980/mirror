@@ -4,15 +4,15 @@
       {{#x-card title="Members"}}
         <ul class="action-list">
           {{#each model.members as |member|}}
-            <li>
+            <li class="three-actions">
+              <div class="list-item">{{gravatar-image class="gravatar-nav" email=member.email}} {{member.username}}</div>
               {{#if isAdmin}}
-                <span class="list-actions">
+                <div class="list-actions">
                   <a class="btn btn-info btn-outline btn-xs">{{fa-icon "user" fixedWidth=true}}</a>
                   <a class="btn btn-warning btn-outline btn-xs">{{fa-icon "lock" fixedWidth=true}}</a>
                   <a class="btn btn-danger btn-outline btn-xs">{{fa-icon "close" fixedWidth=true}}</a>
-                </span>
+                </div>
               {{/if}}
-              <span class="list-item">{{member.username}}</span>
             </li>
           {{else}}
           {{/each}}
