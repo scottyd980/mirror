@@ -26,7 +26,7 @@ defmodule Mirror.TeamController do
 
     team_members = [Guardian.Plug.current_resource(conn)]
     team_admins = [Guardian.Plug.current_resource(conn)]
-    team_member_delegates = ["scott@scottyd.net"]
+    team_member_delegates = attributes["member-delegates"]
 
     params = %{"attributes" => attributes, "admins" => team_admins, "members" => team_members, "delegates" => team_member_delegates}
 
