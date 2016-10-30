@@ -9,7 +9,7 @@ export default Ember.Route.extend({
     this._super(controller, model);
     controller.set('errors', {});
     controller.set('teamMemberEmails', Ember.A());
-    controller.set('newMemberIndex', 0);
+    controller.set('newMemberIndex', 1);
   },
   actions: {
     addTeamMemberEmail(teamMember) {
@@ -29,8 +29,19 @@ export default Ember.Route.extend({
       _this.controller.get('teamMemberEmails').removeObject(teamMember);
     },
     createTeam() {
-      var _this = this;
+      var _this = this,
+        delegates = [];
+
       _this.get('currentModel').set('admin', _this.get('session').get('currentUser'));
+
+      var membersToAdd = _this.controller.get('teamMemberEmails');
+
+      membersToAdd.map((item, index, enumerable) => {
+        delegates.push(item.email);
+      });
+
+      _this.get('currentModel').set('memberDelegates', delegates);
+
       _this.get('currentModel').save().then(() => {
         _this.send('invalidateApplicationModel');
       });

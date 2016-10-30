@@ -2,6 +2,7 @@ import Model from 'ember-data/model';
 import attr from 'ember-data/attr';
 import { hasMany } from 'ember-data/relationships';
 import { belongsTo } from 'ember-data/relationships';
+import { array } from 'model-fragments/attributes';
 
 export default Model.extend({
   name: attr('string'),
@@ -9,4 +10,5 @@ export default Model.extend({
   isAnonymous: attr('string'),
   admins: hasMany('user'),
   members: hasMany('user'),
+  memberDelegates: array()
 });
