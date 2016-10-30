@@ -4,6 +4,7 @@ defmodule Mirror.TeamController do
   alias Mirror.Team
   alias Mirror.UserTeam
   alias Mirror.TeamAdmin
+  alias Mirror.MemberDelegate
   alias Ecto.Multi
 
   require Logger
@@ -25,8 +26,9 @@ defmodule Mirror.TeamController do
 
     team_members = [Guardian.Plug.current_resource(conn)]
     team_admins = [Guardian.Plug.current_resource(conn)]
+    team_member_delegates = ["scott@scottyd.net"]
 
-    params = %{"attributes" => attributes, "admins" => team_admins, "members" => team_members}
+    params = %{"attributes" => attributes, "admins" => team_admins, "members" => team_members, "delegates" => team_member_delegates}
 
     case create_team(params) do
       {:ok, team} ->
@@ -91,9 +93,10 @@ defmodule Mirror.TeamController do
       with {:ok, team} <- insert_team(params),
            {:ok, updated_team} <- add_unique_id_to_team(team),
            [{:ok, team_admins}] <- add_team_admins(team, params["admins"]),
+           [{:ok, team_member_delegates}] <- add_team_member_delegates(team, params["delegates"]),
            [{:ok, team_members}] <- add_team_members(team, params["members"]) do
              updated_team
-             |> Repo.preload([:admins])
+             |> Repo.preload([:admins, :members])
       else
         {:error, changeset} ->
           Repo.rollback changeset
@@ -119,6 +122,14 @@ defmodule Mirror.TeamController do
     Enum.map users, fn user ->
       %UserTeam{}
       |> UserTeam.changeset(%{user_id: user.id, team_id: team.id})
+      |> Repo.insert
+    end
+  end
+
+  defp add_team_member_delegates(team, delegates) do
+    Enum.map delegates, fn delegate ->
+      %MemberDelegate{}
+      |> MemberDelegate.changeset(%{email: delegate, team_id: team.id})
       |> Repo.insert
     end
   end

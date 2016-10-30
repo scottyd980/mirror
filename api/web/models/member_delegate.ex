@@ -21,19 +21,20 @@ defmodule Mirror.MemberDelegate do
   """
   def changeset(struct, params \\ %{}) do
     struct
-    |> cast(params, [:email, :access_code, :is_accessed])
-    |> validate_required([:email, :is_accessed])
+    |> cast(params, [:email, :access_code, :is_accessed, :team_id])
+    |> validate_required([:email, :is_accessed, :team_id])
     |> validate_format(:email, ~r/@/)
     |> create_access_code()
   end
 
   defp create_access_code(%{valid?: false} = changeset), do: changeset
   defp create_access_code(%{valid?: true} = changeset) do
-      access_code = generate_access_code(Ecto.Changeset.get_field(changeset, :password))
+      access_code = generate_access_code(Ecto.Changeset.get_field(changeset, :team_id), Ecto.Changeset.get_field(changeset, :email))
       Ecto.Changeset.put_change(changeset, :access_code, access_code)
   end
 
-  defp generate_access_code(id) do
-    Hashids.encode(@hashconfig, id)
+  defp generate_access_code(team_id, email) do
+    email_chars = String.to_char_list(email)
+    Hashids.encode(@hashconfig, [team_id | email_chars])
   end
 end
