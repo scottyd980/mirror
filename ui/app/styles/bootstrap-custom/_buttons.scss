@@ -45,21 +45,37 @@
 .btn-primary {
   @include button-variant($btn-primary-color, $btn-primary-bg, $btn-primary-border);
   @include btn-base($btn-primary-hover-bg, $btn-primary-hover-color, $btn-primary-border);
+
+  &.btn-outline {
+    @include btn-outline($brand-primary, $brand-primary, $brand-primary);
+  }
 }
 // Success appears as green
 .btn-success {
   @include button-variant($btn-success-color, $btn-success-bg, $btn-success-border);
   @include btn-base($btn-success-hover-bg, $btn-success-hover-color, $btn-success-border);
+
+  &.btn-outline {
+    @include btn-outline($brand-success, $brand-success, $brand-success);
+  }
 }
 // Info appears as blue-green
 .btn-info {
   @include button-variant($btn-info-color, $btn-info-bg, $btn-info-border);
   @include btn-base($btn-info-hover-bg, $btn-info-hover-color, $btn-info-border);
+
+  &.btn-outline {
+    @include btn-outline($brand-info, $brand-info, $brand-info);
+  }
 }
 // Warning appears as orange
 .btn-warning {
   @include button-variant($btn-warning-color, $btn-warning-bg, $btn-warning-border);
   @include btn-base($btn-warning-hover-bg, $btn-warning-hover-color, $btn-warning-border);
+
+  &.btn-outline {
+    @include btn-outline($brand-warning, $brand-warning, $brand-warning);
+  }
 }
 // Danger and error appear as red
 .btn-danger {
