@@ -14,6 +14,8 @@ Router.map(function() {
   this.route('app', function() {
     this.route('teams', function() {
       this.route('create');
+      this.route('join');
+      this.route('access', {path: '/join/:access_code'});
 
       this.route('team', { path: '/:id' }, function() {
         this.route('dashboard', function() {

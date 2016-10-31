@@ -1,47 +1,52 @@
 <div class="container">
   <div class="row">
-    <div class="{{if isAdmin 'col-md-8' 'col-md-12'}}">
+    <div class="col-md-8">
       {{#x-card title="Members"}}
         <ul class="action-list">
           {{#each model.members as |member|}}
             <li class="three-actions">
               <div class="list-item">{{gravatar-image class="gravatar-nav" email=member.email}} {{member.username}}</div>
-              {{#if isAdmin}}
-                <div class="list-actions">
-                  <a class="btn btn-success btn-outline btn-xs">{{fa-icon "user-plus" fixedWidth=true}}</a>
-                  <a class="btn btn-danger btn-outline btn-xs">{{fa-icon "close" fixedWidth=true}}</a>
-                  <a class="btn btn-info btn-outline btn-xs">{{fa-icon "arrow-right" fixedWidth=true}}</a>
-                </div>
-              {{/if}}
+              <div class="list-actions">
+                {{#if isAdmin}}
+                  <a class="btn btn-success btn-outline btn-xs">{{fa-icon "arrow-up" fixedWidth=true}}</a>
+                  <a class="btn btn-danger btn-outline btn-xs">{{fa-icon "user-times" fixedWidth=true}}</a>
+                  <a class="btn btn-info btn-outline btn-xs">{{fa-icon "user-circle" fixedWidth=true}}</a>
+                {{else}}
+                  <a class="btn btn-danger btn-outline btn-xs">{{fa-icon "user-times" fixedWidth=true}}</a>
+                  <a class="btn btn-info btn-outline btn-xs">{{fa-icon "user-circle" fixedWidth=true}}</a>
+                {{/if}}
+              </div>
             </li>
           {{else}}
           {{/each}}
         </ul>
       {{/x-card}}
     </div>
-    {{#if isAdmin}}
-      <div class="col-md-4">
-        {{#x-card title="Helpful Tips"}}
-          <ul class="tips">
+    <div class="col-md-4">
+      {{#x-card title="Helpful Tips"}}
+        <ul class="tips">
+          {{#if isAdmin}}
             <li>
               Make another team member a team admin using
-              the <span class="success-text">{{fa-icon "user-plus"}}</span>
-              button.
-            </li>
-            
-            <li>
-              To remove a member from the team, select the respective
-              <span class="danger-text">{{fa-icon "close"}}</span>
+              the <span class="success-text">{{fa-icon "arrow-up"}}</span>
               button.
             </li>
 
             <li>
-              Use the <span class="info-text">{{fa-icon "arrow-right"}}</span> button
-              to view the team member's profile.
+              To remove a member from the team, select the respective
+              <span class="danger-text">{{fa-icon "user-times"}}</span>
+              button.
             </li>
-          </ul>
-        {{/x-card}}
-      </div>
-    {{/if}}
+          {{else}}
+            
+          {{/if}}
+
+          <li>
+            Use the <span class="info-text">{{fa-icon "user-circle"}}</span> button
+            to view the team member's profile.
+          </li>
+        </ul>
+      {{/x-card}}
+    </div>
   </div>
 </div>

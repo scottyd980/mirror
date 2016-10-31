@@ -59,6 +59,15 @@ defmodule Mirror.TeamController do
     end
   end
 
+  def join(conn, params) do
+    # params still not working
+
+    current_user = Guardian.Plug.current_resource(conn)
+
+    member_delegate = Repo.get_by!(MemberDelegate, access_code: params["access_code"])
+    |> Repo.preload([:team])
+  end
+
   # Need to finish update
   def update(conn, %{"id" => id, "team" => team_params}) do
     team = Repo.get!(Team, id)
