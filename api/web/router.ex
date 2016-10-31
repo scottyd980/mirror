@@ -24,7 +24,10 @@ defmodule Mirror.Router do
   scope "/api", Mirror do
     pipe_through :api_auth
     get "/user/current", UserController, :current
+
     resources "/teams", TeamController
+    post "/teams/join", TeamController, :join
+
     resources "/users", UserController, only: [:show]
   end
 end
