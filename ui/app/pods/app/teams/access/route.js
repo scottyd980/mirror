@@ -9,13 +9,14 @@ export default Ember.Route.extend({
     };
   },
   afterModel(model) {
-    return fetch(`${config.DS.host}/${config.DS.namespace}/teams/join`, {
+    return fetch(`${config.DS.host}/${config.DS.namespace}/team_users`, {
       method: 'POST',
       headers: {
-        'Authorization': `Bearer ${this.get('session').get('session.content.authenticated.access_token')}`
+        'Authorization': `Bearer ${this.get('session').get('session.content.authenticated.access_token')}`,
+        'Content-Type': 'application/vnd.api+json'
       },
       body: JSON.stringify({
-        access_code: model.access_code
+        "access-code": model.access_code
       })
     }).then((raw) => {
       console.log(raw);

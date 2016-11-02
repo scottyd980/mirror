@@ -26,8 +26,8 @@ defmodule Mirror.Router do
     get "/user/current", UserController, :current
 
     resources "/teams", TeamController
-    post "/teams/join", TeamController, :join
 
+    resources "/team_users", UserTeamController, only: [:create]
     resources "/users", UserController, only: [:show]
   end
 end
