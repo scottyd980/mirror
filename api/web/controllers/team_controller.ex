@@ -71,6 +71,7 @@ defmodule Mirror.TeamController do
   # Need to finish update
   def update(conn, %{"id" => id, "team" => team_params}) do
     team = Repo.get!(Team, id)
+    |> Repo.preload([:admins, :members])
     changeset = Team.changeset(team, team_params)
 
     case Repo.update(changeset) do
@@ -128,18 +129,28 @@ defmodule Mirror.TeamController do
   end
 
   defp add_team_members(team, users) do
-    Enum.map users, fn user ->
-      %UserTeam{}
-      |> UserTeam.changeset(%{user_id: user.id, team_id: team.id})
-      |> Repo.insert
+    cond do
+      length(users) > 0 ->
+        Enum.map users, fn user ->
+          %UserTeam{}
+          |> UserTeam.changeset(%{user_id: user.id, team_id: team.id})
+          |> Repo.insert
+        end
+      true ->
+        [{:ok, nil}]
     end
   end
 
   defp add_team_member_delegates(team, delegates) do
-    Enum.map delegates, fn delegate ->
-      %MemberDelegate{}
-      |> MemberDelegate.changeset(%{email: delegate, team_id: team.id})
-      |> Repo.insert
+    cond do
+      length(delegates) > 0 ->
+        Enum.map delegates, fn delegate ->
+          %MemberDelegate{}
+          |> MemberDelegate.changeset(%{email: delegate, team_id: team.id})
+          |> Repo.insert
+        end
+      true ->
+        [{:ok, nil}]
     end
   end
 
