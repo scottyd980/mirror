@@ -10,7 +10,9 @@ defmodule Mirror.Mixfile do
      build_embedded: Mix.env == :prod,
      start_permanent: Mix.env == :prod,
      aliases: aliases(),
-     deps: deps()]
+     deps: deps(),
+     test_coverage: [tool: ExCoveralls],
+     preferred_cli_env: [coveralls: :test, "coveralls.detail": :test, "coveralls.html": :test]]
   end
 
   # Configuration for the OTP application.
@@ -41,7 +43,8 @@ defmodule Mirror.Mixfile do
      {:guardian, "~> 0.13.0"},
      {:comeonin, "~> 2.5"},
      {:ja_serializer, "~> 0.11.0"},
-     {:hashids, "~> 2.0"}
+     {:hashids, "~> 2.0"},
+     {:excoveralls, "~> 0.5", only: :test}
     ]
   end
 
