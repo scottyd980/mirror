@@ -25,6 +25,7 @@ defmodule Mirror.SessionController do
           # Encode a JWT
           { :ok, jwt, _} = Guardian.encode_and_sign(user, :token)
           conn
+          |> put_status(201)
           |> json(%{access_token: jwt}) # Return token to the client
 
         true ->
@@ -44,8 +45,9 @@ defmodule Mirror.SessionController do
     end
   end
 
-  def create(_, %{"grant_type" => _}) do
-    ## Handle unknown grant type
-    throw "Unsupported grant_type"
+  def create(conn, _) do
+    conn
+    |> put_status(401)
+    |> render(Mirror.ErrorView, "401.json")
   end
 end

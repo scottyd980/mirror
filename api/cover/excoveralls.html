@@ -455,7 +455,7 @@ function find(y) {
           </li>
         
           <li>
-            <span class='cov high'>75</span>
+            <span class='cov high'>80</span>
             <a href='#web/controllers/registration_controller.ex'>
               
               
@@ -466,7 +466,7 @@ function find(y) {
           </li>
         
           <li>
-            <span class='cov terrible'>0</span>
+            <span class='cov high'>100</span>
             <a href='#web/controllers/session_controller.ex'>
               
               
@@ -500,6 +500,17 @@ function find(y) {
         
           <li>
             <span class='cov terrible'>0</span>
+            <a href='#web/controllers/user_team_controller.ex'>
+              
+              
+                <span class='dirname'>web/controllers/</span>
+              
+              <span class='basename'>user_team_controller.ex</span>
+            </a>
+          </li>
+        
+          <li>
+            <span class='cov terrible'>0</span>
             <a href='#web/gettext.ex'>
               
               
@@ -510,7 +521,7 @@ function find(y) {
           </li>
         
           <li>
-            <span class='cov high'>85.7</span>
+            <span class='cov high'>100</span>
             <a href='#web/models/member_delegate.ex'>
               
               
@@ -543,7 +554,7 @@ function find(y) {
           </li>
         
           <li>
-            <span class='cov medium'>50</span>
+            <span class='cov high'>100</span>
             <a href='#web/models/team_admin.ex'>
               
               
@@ -565,7 +576,7 @@ function find(y) {
           </li>
         
           <li>
-            <span class='cov medium'>50</span>
+            <span class='cov high'>100</span>
             <a href='#web/models/user_team.ex'>
               
               
@@ -609,7 +620,7 @@ function find(y) {
           </li>
         
           <li>
-            <span class='cov medium'>60</span>
+            <span class='cov high'>80</span>
             <a href='#web/views/error_view.ex'>
               
               
@@ -627,6 +638,17 @@ function find(y) {
                 <span class='dirname'>web/views/</span>
               
               <span class='basename'>team_view.ex</span>
+            </a>
+          </li>
+        
+          <li>
+            <span class='cov terrible'>0</span>
+            <a href='#web/views/user_team_view.ex'>
+              
+              
+                <span class='dirname'>web/views/</span>
+              
+              <span class='basename'>user_team_view.ex</span>
             </a>
           </li>
         
@@ -655,10 +677,10 @@ function find(y) {
       </div>
 
       <div id='stats' class='medium'>
-        <div class='percentage'>67.4</div>
-        <div class='sloc'>138</div>
-        <div class='hits'>298</div>
-        <div class='misses'>45</div>
+        <div class='percentage'>73.7</div>
+        <div class='sloc'>152</div>
+        <div class='hits'>357</div>
+        <div class='misses'>40</div>
       </div>
       <div id='files'>
         
@@ -667,7 +689,7 @@ function find(y) {
             <div id='stats' class='high'>
               <div class='percentage'>100</div>
               <div class='sloc'>1</div>
-              <div class='hits'>10</div>
+              <div class='hits'>11</div>
               <div class='misses'>0</div>
             </div>
             <table id='source'>
@@ -730,7 +752,7 @@ function find(y) {
                   
                       <tr class='hit'>
                         <td class='line'>6</td>
-                        <td class='hits'>10</td>
+                        <td class='hits'>11</td>
                         <td class='source'>  def for_token(user = %User{}), do: { :ok, &quot;User:#{user.id}&quot; }</td>
                       </tr>
                     
@@ -1820,7 +1842,7 @@ function find(y) {
             <div id='stats' class='high'>
               <div class='percentage'>100</div>
               <div class='sloc'>4</div>
-              <div class='hits'>45</div>
+              <div class='hits'>58</div>
               <div class='misses'>0</div>
             </div>
             <table id='source'>
@@ -1971,7 +1993,7 @@ function find(y) {
                   
                       <tr class='hit'>
                         <td class='line'>17</td>
-                        <td class='hits'>3</td>
+                        <td class='hits'>4</td>
                         <td class='source'>  using do</td>
                       </tr>
                     
@@ -2115,7 +2137,7 @@ function find(y) {
                   
                       <tr class='hit'>
                         <td class='line'>35</td>
-                        <td class='hits'>15</td>
+                        <td class='hits'>19</td>
                         <td class='source'>    :ok = Ecto.Adapters.SQL.Sandbox.checkout(Mirror.Repo)</td>
                       </tr>
                     
@@ -2131,7 +2153,7 @@ function find(y) {
                   
                       <tr class='hit'>
                         <td class='line'>37</td>
-                        <td class='hits'>15</td>
+                        <td class='hits'>19</td>
                         <td class='source'>    unless tags[:async] do</td>
                       </tr>
                     
@@ -2139,7 +2161,7 @@ function find(y) {
                   
                       <tr class='hit'>
                         <td class='line'>38</td>
-                        <td class='hits'>12</td>
+                        <td class='hits'>16</td>
                         <td class='source'>      Ecto.Adapters.SQL.Sandbox.mode(Mirror.Repo, {:shared, self()})</td>
                       </tr>
                     
@@ -3190,9 +3212,9 @@ function find(y) {
           <div class='file'>
             <h2 id='web/controllers/registration_controller.ex'>web/controllers/registration_controller.ex</h1>
             <div id='stats' class='high'>
-              <div class='percentage'>75</div>
-              <div class='sloc'>4</div>
-              <div class='hits'>3</div>
+              <div class='percentage'>80</div>
+              <div class='sloc'>5</div>
+              <div class='hits'>4</div>
               <div class='misses'>1</div>
             </div>
             <table id='source'>
@@ -3365,8 +3387,24 @@ function find(y) {
                   
                 
                   
-                      <tr>
+                      <tr class='hit'>
                         <td class='line'>20</td>
+                        <td class='hits'>1</td>
+                        <td class='source'>        user = user</td>
+                      </tr>
+                    
+                
+                  
+                      <tr>
+                        <td class='line'>21</td>
+                        <td class='hits'></td>
+                        <td class='source'>        |&gt; Repo.preload([:teams])</td>
+                      </tr>
+                  
+                
+                  
+                      <tr>
+                        <td class='line'>22</td>
                         <td class='hits'></td>
                         <td class='source'>        conn</td>
                       </tr>
@@ -3374,7 +3412,7 @@ function find(y) {
                 
                   
                       <tr>
-                        <td class='line'>21</td>
+                        <td class='line'>23</td>
                         <td class='hits'></td>
                         <td class='source'>        |&gt; put_status(:created)</td>
                       </tr>
@@ -3382,7 +3420,7 @@ function find(y) {
                 
                   
                       <tr class='hit'>
-                        <td class='line'>22</td>
+                        <td class='line'>24</td>
                         <td class='hits'>1</td>
                         <td class='source'>        |&gt; render(Mirror.UserView, &quot;show.json&quot;, user: user)</td>
                       </tr>
@@ -3390,7 +3428,7 @@ function find(y) {
                 
                   
                       <tr>
-                        <td class='line'>23</td>
+                        <td class='line'>25</td>
                         <td class='hits'></td>
                         <td class='source'>      {:error, changeset} -&gt;</td>
                       </tr>
@@ -3398,7 +3436,7 @@ function find(y) {
                 
                   
                       <tr>
-                        <td class='line'>24</td>
+                        <td class='line'>26</td>
                         <td class='hits'></td>
                         <td class='source'>        conn</td>
                       </tr>
@@ -3406,7 +3444,7 @@ function find(y) {
                 
                   
                       <tr>
-                        <td class='line'>25</td>
+                        <td class='line'>27</td>
                         <td class='hits'></td>
                         <td class='source'>        |&gt; put_status(:unprocessable_entity)</td>
                       </tr>
@@ -3414,7 +3452,7 @@ function find(y) {
                 
                   
                       <tr class='miss'>
-                        <td class='line'>26</td>
+                        <td class='line'>28</td>
                         <td class='hits'>0</td>
                         <td class='source'>        |&gt; render(Mirror.ChangesetView, &quot;error.json&quot;, changeset: changeset)</td>
                       </tr>
@@ -3422,7 +3460,7 @@ function find(y) {
                 
                   
                       <tr>
-                        <td class='line'>27</td>
+                        <td class='line'>29</td>
                         <td class='hits'></td>
                         <td class='source'>    end</td>
                       </tr>
@@ -3430,7 +3468,7 @@ function find(y) {
                 
                   
                       <tr>
-                        <td class='line'>28</td>
+                        <td class='line'>30</td>
                         <td class='hits'></td>
                         <td class='source'></td>
                       </tr>
@@ -3438,7 +3476,7 @@ function find(y) {
                 
                   
                       <tr>
-                        <td class='line'>29</td>
+                        <td class='line'>31</td>
                         <td class='hits'></td>
                         <td class='source'>  end</td>
                       </tr>
@@ -3446,7 +3484,7 @@ function find(y) {
                 
                   
                       <tr>
-                        <td class='line'>30</td>
+                        <td class='line'>32</td>
                         <td class='hits'></td>
                         <td class='source'>end</td>
                       </tr>
@@ -3458,11 +3496,11 @@ function find(y) {
         
           <div class='file'>
             <h2 id='web/controllers/session_controller.ex'>web/controllers/session_controller.ex</h1>
-            <div id='stats' class='terrible'>
-              <div class='percentage'>0</div>
+            <div id='stats' class='high'>
+              <div class='percentage'>100</div>
               <div class='sloc'>14</div>
-              <div class='hits'>0</div>
-              <div class='misses'>14</div>
+              <div class='hits'>20</div>
+              <div class='misses'>0</div>
             </div>
             <table id='source'>
               <thead>
@@ -3578,9 +3616,9 @@ function find(y) {
                   
                 
                   
-                      <tr class='miss'>
+                      <tr class='hit'>
                         <td class='line'>13</td>
-                        <td class='hits'>0</td>
+                        <td class='hits'>3</td>
                         <td class='source'>    try do</td>
                       </tr>
                     
@@ -3602,9 +3640,9 @@ function find(y) {
                   
                 
                   
-                      <tr class='miss'>
+                      <tr class='hit'>
                         <td class='line'>16</td>
-                        <td class='hits'>0</td>
+                        <td class='hits'>3</td>
                         <td class='source'>      user = User</td>
                       </tr>
                     
@@ -3626,9 +3664,9 @@ function find(y) {
                   
                 
                   
-                      <tr class='miss'>
+                      <tr class='hit'>
                         <td class='line'>19</td>
-                        <td class='hits'>0</td>
+                        <td class='hits'>2</td>
                         <td class='source'>      cond do</td>
                       </tr>
                     
@@ -3642,9 +3680,9 @@ function find(y) {
                   
                 
                   
-                      <tr class='miss'>
+                      <tr class='hit'>
                         <td class='line'>21</td>
-                        <td class='hits'>0</td>
+                        <td class='hits'>2</td>
                         <td class='source'>        checkpw(password, user.password_hash) -&gt;</td>
                       </tr>
                     
@@ -3658,9 +3696,9 @@ function find(y) {
                   
                 
                   
-                      <tr class='miss'>
+                      <tr class='hit'>
                         <td class='line'>23</td>
-                        <td class='hits'>0</td>
+                        <td class='hits'>1</td>
                         <td class='source'>          Logger.info &quot;User &quot; &lt;&gt; username &lt;&gt; &quot; just logged in&quot;</td>
                       </tr>
                     
@@ -3674,9 +3712,9 @@ function find(y) {
                   
                 
                   
-                      <tr class='miss'>
+                      <tr class='hit'>
                         <td class='line'>25</td>
-                        <td class='hits'>0</td>
+                        <td class='hits'>1</td>
                         <td class='source'>          { :ok, jwt, _} = Guardian.encode_and_sign(user, :token)</td>
                       </tr>
                     
@@ -3690,26 +3728,26 @@ function find(y) {
                   
                 
                   
-                      <tr class='miss'>
+                      <tr>
                         <td class='line'>27</td>
-                        <td class='hits'>0</td>
+                        <td class='hits'></td>
+                        <td class='source'>          |&gt; put_status(201)</td>
+                      </tr>
+                  
+                
+                  
+                      <tr class='hit'>
+                        <td class='line'>28</td>
+                        <td class='hits'>1</td>
                         <td class='source'>          |&gt; json(%{access_token: jwt}) # Return token to the client</td>
                       </tr>
                     
                 
                   
                       <tr>
-                        <td class='line'>28</td>
-                        <td class='hits'></td>
-                        <td class='source'></td>
-                      </tr>
-                  
-                
-                  
-                      <tr>
                         <td class='line'>29</td>
                         <td class='hits'></td>
-                        <td class='source'>        true -&gt;</td>
+                        <td class='source'></td>
                       </tr>
                   
                 
@@ -3717,21 +3755,29 @@ function find(y) {
                       <tr>
                         <td class='line'>30</td>
                         <td class='hits'></td>
+                        <td class='source'>        true -&gt;</td>
+                      </tr>
+                  
+                
+                  
+                      <tr>
+                        <td class='line'>31</td>
+                        <td class='hits'></td>
                         <td class='source'>          # Unsuccessful login</td>
                       </tr>
                   
                 
                   
-                      <tr class='miss'>
-                        <td class='line'>31</td>
-                        <td class='hits'>0</td>
+                      <tr class='hit'>
+                        <td class='line'>32</td>
+                        <td class='hits'>1</td>
                         <td class='source'>          Logger.warn &quot;User &quot; &lt;&gt; username &lt;&gt; &quot; just failed to login&quot;</td>
                       </tr>
                     
                 
                   
                       <tr>
-                        <td class='line'>32</td>
+                        <td class='line'>33</td>
                         <td class='hits'></td>
                         <td class='source'>          conn</td>
                       </tr>
@@ -3739,23 +3785,23 @@ function find(y) {
                 
                   
                       <tr>
-                        <td class='line'>33</td>
+                        <td class='line'>34</td>
                         <td class='hits'></td>
                         <td class='source'>          |&gt; put_status(401)</td>
                       </tr>
                   
                 
                   
-                      <tr class='miss'>
-                        <td class='line'>34</td>
-                        <td class='hits'>0</td>
+                      <tr class='hit'>
+                        <td class='line'>35</td>
+                        <td class='hits'>1</td>
                         <td class='source'>          |&gt; render(Mirror.ErrorView, &quot;401.json&quot;) # 401</td>
                       </tr>
                     
                 
                   
                       <tr>
-                        <td class='line'>35</td>
+                        <td class='line'>36</td>
                         <td class='hits'></td>
                         <td class='source'>      end</td>
                       </tr>
@@ -3763,39 +3809,39 @@ function find(y) {
                 
                   
                       <tr>
-                        <td class='line'>36</td>
+                        <td class='line'>37</td>
                         <td class='hits'></td>
                         <td class='source'>    rescue</td>
                       </tr>
                   
                 
                   
-                      <tr class='miss'>
-                        <td class='line'>37</td>
-                        <td class='hits'>0</td>
+                      <tr class='hit'>
+                        <td class='line'>38</td>
+                        <td class='hits'>1</td>
                         <td class='source'>      e -&gt;</td>
                       </tr>
                     
                 
                   
-                      <tr class='miss'>
-                        <td class='line'>38</td>
-                        <td class='hits'>0</td>
+                      <tr class='hit'>
+                        <td class='line'>39</td>
+                        <td class='hits'>1</td>
                         <td class='source'>        IO.inspect e # Print error to the console for debugging</td>
                       </tr>
                     
                 
                   
-                      <tr class='miss'>
-                        <td class='line'>39</td>
-                        <td class='hits'>0</td>
+                      <tr class='hit'>
+                        <td class='line'>40</td>
+                        <td class='hits'>1</td>
                         <td class='source'>        Logger.error &quot;Unexpected error while attempting to login user &quot; &lt;&gt; username</td>
                       </tr>
                     
                 
                   
                       <tr>
-                        <td class='line'>40</td>
+                        <td class='line'>41</td>
                         <td class='hits'></td>
                         <td class='source'>        conn</td>
                       </tr>
@@ -3803,23 +3849,23 @@ function find(y) {
                 
                   
                       <tr>
-                        <td class='line'>41</td>
+                        <td class='line'>42</td>
                         <td class='hits'></td>
                         <td class='source'>        |&gt; put_status(401)</td>
                       </tr>
                   
                 
                   
-                      <tr class='miss'>
-                        <td class='line'>42</td>
-                        <td class='hits'>0</td>
+                      <tr class='hit'>
+                        <td class='line'>43</td>
+                        <td class='hits'>1</td>
                         <td class='source'>        |&gt; render(Mirror.ErrorView, &quot;401.json&quot;) # 401</td>
                       </tr>
                     
                 
                   
                       <tr>
-                        <td class='line'>43</td>
+                        <td class='line'>44</td>
                         <td class='hits'></td>
                         <td class='source'>    end</td>
                       </tr>
@@ -3827,17 +3873,9 @@ function find(y) {
                 
                   
                       <tr>
-                        <td class='line'>44</td>
-                        <td class='hits'></td>
-                        <td class='source'>  end</td>
-                      </tr>
-                  
-                
-                  
-                      <tr>
                         <td class='line'>45</td>
                         <td class='hits'></td>
-                        <td class='source'></td>
+                        <td class='source'>  end</td>
                       </tr>
                   
                 
@@ -3845,7 +3883,7 @@ function find(y) {
                       <tr>
                         <td class='line'>46</td>
                         <td class='hits'></td>
-                        <td class='source'>  def create(_, %{&quot;grant_type&quot; =&gt; _}) do</td>
+                        <td class='source'></td>
                       </tr>
                   
                 
@@ -3853,21 +3891,37 @@ function find(y) {
                       <tr>
                         <td class='line'>47</td>
                         <td class='hits'></td>
-                        <td class='source'>    ## Handle unknown grant type</td>
+                        <td class='source'>  def create(conn, _) do</td>
                       </tr>
                   
                 
                   
-                      <tr class='miss'>
+                      <tr>
                         <td class='line'>48</td>
-                        <td class='hits'>0</td>
-                        <td class='source'>    throw &quot;Unsupported grant_type&quot;</td>
+                        <td class='hits'></td>
+                        <td class='source'>    conn</td>
+                      </tr>
+                  
+                
+                  
+                      <tr>
+                        <td class='line'>49</td>
+                        <td class='hits'></td>
+                        <td class='source'>    |&gt; put_status(401)</td>
+                      </tr>
+                  
+                
+                  
+                      <tr class='hit'>
+                        <td class='line'>50</td>
+                        <td class='hits'>1</td>
+                        <td class='source'>    |&gt; render(Mirror.ErrorView, &quot;401.json&quot;)</td>
                       </tr>
                     
                 
                   
                       <tr>
-                        <td class='line'>49</td>
+                        <td class='line'>51</td>
                         <td class='hits'></td>
                         <td class='source'>  end</td>
                       </tr>
@@ -3875,7 +3929,7 @@ function find(y) {
                 
                   
                       <tr>
-                        <td class='line'>50</td>
+                        <td class='line'>52</td>
                         <td class='hits'></td>
                         <td class='source'>end</td>
                       </tr>
@@ -5560,6 +5614,307 @@ function find(y) {
           </div>
         
           <div class='file'>
+            <h2 id='web/controllers/user_team_controller.ex'>web/controllers/user_team_controller.ex</h1>
+            <div id='stats' class='terrible'>
+              <div class='percentage'>0</div>
+              <div class='sloc'>8</div>
+              <div class='hits'>0</div>
+              <div class='misses'>8</div>
+            </div>
+            <table id='source'>
+              <thead>
+                <tr>
+                  <th>Line</th>
+                  <th>Hits</th>
+                  <th>Source</th>
+                </tr>
+              <tbody>
+                
+                  
+                      <tr>
+                        <td class='line'>0</td>
+                        <td class='hits'></td>
+                        <td class='source'>defmodule Mirror.UserTeamController do</td>
+                      </tr>
+                  
+                
+                  
+                      <tr>
+                        <td class='line'>1</td>
+                        <td class='hits'></td>
+                        <td class='source'>  use Mirror.Web, :controller</td>
+                      </tr>
+                  
+                
+                  
+                      <tr>
+                        <td class='line'>2</td>
+                        <td class='hits'></td>
+                        <td class='source'></td>
+                      </tr>
+                  
+                
+                  
+                      <tr>
+                        <td class='line'>3</td>
+                        <td class='hits'></td>
+                        <td class='source'>  alias Mirror.User</td>
+                      </tr>
+                  
+                
+                  
+                      <tr>
+                        <td class='line'>4</td>
+                        <td class='hits'></td>
+                        <td class='source'>  alias Mirror.Team</td>
+                      </tr>
+                  
+                
+                  
+                      <tr>
+                        <td class='line'>5</td>
+                        <td class='hits'></td>
+                        <td class='source'>  alias Mirror.UserTeam</td>
+                      </tr>
+                  
+                
+                  
+                      <tr>
+                        <td class='line'>6</td>
+                        <td class='hits'></td>
+                        <td class='source'>  alias Mirror.MemberDelegate</td>
+                      </tr>
+                  
+                
+                  
+                      <tr>
+                        <td class='line'>7</td>
+                        <td class='hits'></td>
+                        <td class='source'></td>
+                      </tr>
+                  
+                
+                  
+                      <tr>
+                        <td class='line'>8</td>
+                        <td class='hits'></td>
+                        <td class='source'>  plug Guardian.Plug.EnsureAuthenticated, handler: Mirror.AuthErrorHandler</td>
+                      </tr>
+                  
+                
+                  
+                      <tr>
+                        <td class='line'>9</td>
+                        <td class='hits'></td>
+                        <td class='source'></td>
+                      </tr>
+                  
+                
+                  
+                      <tr>
+                        <td class='line'>10</td>
+                        <td class='hits'></td>
+                        <td class='source'>  def create(conn, %{&quot;access-code&quot; =&gt; access_code}) do</td>
+                      </tr>
+                  
+                
+                  
+                      <tr>
+                        <td class='line'>11</td>
+                        <td class='hits'></td>
+                        <td class='source'></td>
+                      </tr>
+                  
+                
+                  
+                      <tr class='miss'>
+                        <td class='line'>12</td>
+                        <td class='hits'>0</td>
+                        <td class='source'>    current_user = Guardian.Plug.current_resource(conn)</td>
+                      </tr>
+                    
+                
+                  
+                      <tr>
+                        <td class='line'>13</td>
+                        <td class='hits'></td>
+                        <td class='source'></td>
+                      </tr>
+                  
+                
+                  
+                      <tr class='miss'>
+                        <td class='line'>14</td>
+                        <td class='hits'>0</td>
+                        <td class='source'>    member_delegate = Repo.get_by!(MemberDelegate, access_code: access_code)</td>
+                      </tr>
+                    
+                
+                  
+                      <tr>
+                        <td class='line'>15</td>
+                        <td class='hits'></td>
+                        <td class='source'>    |&gt; Repo.preload([:team])</td>
+                      </tr>
+                  
+                
+                  
+                      <tr>
+                        <td class='line'>16</td>
+                        <td class='hits'></td>
+                        <td class='source'></td>
+                      </tr>
+                  
+                
+                  
+                      <tr class='miss'>
+                        <td class='line'>17</td>
+                        <td class='hits'>0</td>
+                        <td class='source'>    changeset = UserTeam.changeset %UserTeam{}, %{</td>
+                      </tr>
+                    
+                
+                  
+                      <tr class='miss'>
+                        <td class='line'>18</td>
+                        <td class='hits'>0</td>
+                        <td class='source'>      user_id: current_user.id,</td>
+                      </tr>
+                    
+                
+                  
+                      <tr class='miss'>
+                        <td class='line'>19</td>
+                        <td class='hits'>0</td>
+                        <td class='source'>      team_id: member_delegate.team.id</td>
+                      </tr>
+                    
+                
+                  
+                      <tr>
+                        <td class='line'>20</td>
+                        <td class='hits'></td>
+                        <td class='source'>    }</td>
+                      </tr>
+                  
+                
+                  
+                      <tr>
+                        <td class='line'>21</td>
+                        <td class='hits'></td>
+                        <td class='source'></td>
+                      </tr>
+                  
+                
+                  
+                      <tr class='miss'>
+                        <td class='line'>22</td>
+                        <td class='hits'>0</td>
+                        <td class='source'>    case Repo.insert changeset do</td>
+                      </tr>
+                    
+                
+                  
+                      <tr>
+                        <td class='line'>23</td>
+                        <td class='hits'></td>
+                        <td class='source'>      {:ok, user_team} -&gt;</td>
+                      </tr>
+                  
+                
+                  
+                      <tr>
+                        <td class='line'>24</td>
+                        <td class='hits'></td>
+                        <td class='source'>        conn</td>
+                      </tr>
+                  
+                
+                  
+                      <tr>
+                        <td class='line'>25</td>
+                        <td class='hits'></td>
+                        <td class='source'>        |&gt; put_status(:created)</td>
+                      </tr>
+                  
+                
+                  
+                      <tr class='miss'>
+                        <td class='line'>26</td>
+                        <td class='hits'>0</td>
+                        <td class='source'>        |&gt; render(Mirror.UserTeamView, &quot;show.json&quot;, user_team: user_team)</td>
+                      </tr>
+                    
+                
+                  
+                      <tr>
+                        <td class='line'>27</td>
+                        <td class='hits'></td>
+                        <td class='source'>      {:error, changeset} -&gt;</td>
+                      </tr>
+                  
+                
+                  
+                      <tr>
+                        <td class='line'>28</td>
+                        <td class='hits'></td>
+                        <td class='source'>        conn</td>
+                      </tr>
+                  
+                
+                  
+                      <tr>
+                        <td class='line'>29</td>
+                        <td class='hits'></td>
+                        <td class='source'>        |&gt; put_status(:unprocessable_entity)</td>
+                      </tr>
+                  
+                
+                  
+                      <tr class='miss'>
+                        <td class='line'>30</td>
+                        <td class='hits'>0</td>
+                        <td class='source'>        |&gt; render(Mirror.ChangesetView, &quot;error.json&quot;, changeset: changeset)</td>
+                      </tr>
+                    
+                
+                  
+                      <tr>
+                        <td class='line'>31</td>
+                        <td class='hits'></td>
+                        <td class='source'>    end</td>
+                      </tr>
+                  
+                
+                  
+                      <tr>
+                        <td class='line'>32</td>
+                        <td class='hits'></td>
+                        <td class='source'></td>
+                      </tr>
+                  
+                
+                  
+                      <tr>
+                        <td class='line'>33</td>
+                        <td class='hits'></td>
+                        <td class='source'>  end</td>
+                      </tr>
+                  
+                
+                  
+                      <tr>
+                        <td class='line'>34</td>
+                        <td class='hits'></td>
+                        <td class='source'>end</td>
+                      </tr>
+                  
+                
+              </tbody>
+            </table>
+          </div>
+        
+          <div class='file'>
             <h2 id='web/gettext.ex'>web/gettext.ex</h1>
             <div id='stats' class='terrible'>
               <div class='percentage'>0</div>
@@ -5775,10 +6130,10 @@ function find(y) {
           <div class='file'>
             <h2 id='web/models/member_delegate.ex'>web/models/member_delegate.ex</h1>
             <div id='stats' class='high'>
-              <div class='percentage'>85.7</div>
+              <div class='percentage'>100</div>
               <div class='sloc'>7</div>
-              <div class='hits'>9</div>
-              <div class='misses'>1</div>
+              <div class='hits'>14</div>
+              <div class='misses'>0</div>
             </div>
             <table id='source'>
               <thead>
@@ -5854,9 +6209,9 @@ function find(y) {
                   
                 
                   
-                      <tr class='miss'>
+                      <tr class='hit'>
                         <td class='line'>8</td>
-                        <td class='hits'>0</td>
+                        <td class='hits'>5</td>
                         <td class='source'>  schema &quot;member_delegate&quot; do</td>
                       </tr>
                     
@@ -6331,7 +6686,7 @@ function find(y) {
             <div id='stats' class='high'>
               <div class='percentage'>100</div>
               <div class='sloc'>2</div>
-              <div class='hits'>17</div>
+              <div class='hits'>16</div>
               <div class='misses'>0</div>
             </div>
             <table id='source'>
@@ -6370,7 +6725,7 @@ function find(y) {
                   
                       <tr class='hit'>
                         <td class='line'>3</td>
-                        <td class='hits'>8</td>
+                        <td class='hits'>7</td>
                         <td class='source'>  schema &quot;teams&quot; do</td>
                       </tr>
                     
@@ -6549,11 +6904,11 @@ function find(y) {
         
           <div class='file'>
             <h2 id='web/models/team_admin.ex'>web/models/team_admin.ex</h1>
-            <div id='stats' class='medium'>
-              <div class='percentage'>50</div>
+            <div id='stats' class='high'>
+              <div class='percentage'>100</div>
               <div class='sloc'>2</div>
-              <div class='hits'>2</div>
-              <div class='misses'>1</div>
+              <div class='hits'>4</div>
+              <div class='misses'>0</div>
             </div>
             <table id='source'>
               <thead>
@@ -6597,9 +6952,9 @@ function find(y) {
                   
                 
                   
-                      <tr class='miss'>
+                      <tr class='hit'>
                         <td class='line'>4</td>
-                        <td class='hits'>0</td>
+                        <td class='hits'>2</td>
                         <td class='source'>  schema &quot;team_admin&quot; do</td>
                       </tr>
                     
@@ -6709,7 +7064,7 @@ function find(y) {
             <div id='stats' class='high'>
               <div class='percentage'>100</div>
               <div class='sloc'>5</div>
-              <div class='hits'>29</div>
+              <div class='hits'>40</div>
               <div class='misses'>0</div>
             </div>
             <table id='source'>
@@ -6748,7 +7103,7 @@ function find(y) {
                   
                       <tr class='hit'>
                         <td class='line'>3</td>
-                        <td class='hits'>15</td>
+                        <td class='hits'>26</td>
                         <td class='source'>  schema &quot;users&quot; do</td>
                       </tr>
                     
@@ -7039,11 +7394,11 @@ function find(y) {
         
           <div class='file'>
             <h2 id='web/models/user_team.ex'>web/models/user_team.ex</h1>
-            <div id='stats' class='medium'>
-              <div class='percentage'>50</div>
+            <div id='stats' class='high'>
+              <div class='percentage'>100</div>
               <div class='sloc'>2</div>
-              <div class='hits'>2</div>
-              <div class='misses'>1</div>
+              <div class='hits'>3</div>
+              <div class='misses'>0</div>
             </div>
             <table id='source'>
               <thead>
@@ -7087,9 +7442,9 @@ function find(y) {
                   
                 
                   
-                      <tr class='miss'>
+                      <tr class='hit'>
                         <td class='line'>4</td>
-                        <td class='hits'>0</td>
+                        <td class='hits'>1</td>
                         <td class='source'>  schema &quot;user_team&quot; do</td>
                       </tr>
                     
@@ -7199,7 +7554,7 @@ function find(y) {
             <div id='stats' class='high'>
               <div class='percentage'>100</div>
               <div class='sloc'>2</div>
-              <div class='hits'>12</div>
+              <div class='hits'>16</div>
               <div class='misses'>0</div>
             </div>
             <table id='source'>
@@ -7246,7 +7601,7 @@ function find(y) {
                   
                       <tr class='hit'>
                         <td class='line'>4</td>
-                        <td class='hits'>2</td>
+                        <td class='hits'>6</td>
                         <td class='source'>  pipeline :api do</td>
                       </tr>
                     
@@ -7439,7 +7794,7 @@ function find(y) {
                       <tr>
                         <td class='line'>28</td>
                         <td class='hits'></td>
-                        <td class='source'>    post &quot;/teams/join&quot;, TeamController, :join</td>
+                        <td class='source'></td>
                       </tr>
                   
                 
@@ -7447,7 +7802,7 @@ function find(y) {
                       <tr>
                         <td class='line'>29</td>
                         <td class='hits'></td>
-                        <td class='source'></td>
+                        <td class='source'>    resources &quot;/team_users&quot;, UserTeamController, only: [:create]</td>
                       </tr>
                   
                 
@@ -7899,11 +8254,11 @@ function find(y) {
         
           <div class='file'>
             <h2 id='web/views/error_view.ex'>web/views/error_view.ex</h1>
-            <div id='stats' class='medium'>
-              <div class='percentage'>60</div>
+            <div id='stats' class='high'>
+              <div class='percentage'>80</div>
               <div class='sloc'>5</div>
-              <div class='hits'>9</div>
-              <div class='misses'>2</div>
+              <div class='hits'>11</div>
+              <div class='misses'>1</div>
             </div>
             <table id='source'>
               <thead>
@@ -7963,9 +8318,9 @@ function find(y) {
                   
                 
                   
-                      <tr class='miss'>
+                      <tr class='hit'>
                         <td class='line'>6</td>
-                        <td class='hits'>0</td>
+                        <td class='hits'>3</td>
                         <td class='source'>    |&gt; JaSerializer.ErrorSerializer.format</td>
                       </tr>
                     
@@ -8085,7 +8440,7 @@ function find(y) {
                   
                       <tr class='hit'>
                         <td class='line'>21</td>
-                        <td class='hits'>4</td>
+                        <td class='hits'>3</td>
                         <td class='source'>    |&gt; JaSerializer.ErrorSerializer.format</td>
                       </tr>
                     
@@ -8546,6 +8901,195 @@ function find(y) {
                   
                       <tr>
                         <td class='line'>46</td>
+                        <td class='hits'></td>
+                        <td class='source'>end</td>
+                      </tr>
+                  
+                
+              </tbody>
+            </table>
+          </div>
+        
+          <div class='file'>
+            <h2 id='web/views/user_team_view.ex'>web/views/user_team_view.ex</h1>
+            <div id='stats' class='terrible'>
+              <div class='percentage'>0</div>
+              <div class='sloc'>5</div>
+              <div class='hits'>0</div>
+              <div class='misses'>5</div>
+            </div>
+            <table id='source'>
+              <thead>
+                <tr>
+                  <th>Line</th>
+                  <th>Hits</th>
+                  <th>Source</th>
+                </tr>
+              <tbody>
+                
+                  
+                      <tr>
+                        <td class='line'>0</td>
+                        <td class='hits'></td>
+                        <td class='source'>defmodule Mirror.UserTeamView do</td>
+                      </tr>
+                  
+                
+                  
+                      <tr>
+                        <td class='line'>1</td>
+                        <td class='hits'></td>
+                        <td class='source'>  use Mirror.Web, :view</td>
+                      </tr>
+                  
+                
+                  
+                      <tr>
+                        <td class='line'>2</td>
+                        <td class='hits'></td>
+                        <td class='source'></td>
+                      </tr>
+                  
+                
+                  
+                      <tr>
+                        <td class='line'>3</td>
+                        <td class='hits'></td>
+                        <td class='source'>  def render(&quot;index.json&quot;, %{user_teams: user_teams}) do</td>
+                      </tr>
+                  
+                
+                  
+                      <tr class='miss'>
+                        <td class='line'>4</td>
+                        <td class='hits'>0</td>
+                        <td class='source'>    %{data: render_many(user_teams, Mirror.UserTeamView, &quot;user_team.json&quot;)}</td>
+                      </tr>
+                    
+                
+                  
+                      <tr>
+                        <td class='line'>5</td>
+                        <td class='hits'></td>
+                        <td class='source'>  end</td>
+                      </tr>
+                  
+                
+                  
+                      <tr>
+                        <td class='line'>6</td>
+                        <td class='hits'></td>
+                        <td class='source'></td>
+                      </tr>
+                  
+                
+                  
+                      <tr>
+                        <td class='line'>7</td>
+                        <td class='hits'></td>
+                        <td class='source'>  def render(&quot;show.json&quot;, %{user_team: user_team}) do</td>
+                      </tr>
+                  
+                
+                  
+                      <tr class='miss'>
+                        <td class='line'>8</td>
+                        <td class='hits'>0</td>
+                        <td class='source'>    %{data: render_one(user_team, Mirror.UserTeamView, &quot;user_team.json&quot;)}</td>
+                      </tr>
+                    
+                
+                  
+                      <tr>
+                        <td class='line'>9</td>
+                        <td class='hits'></td>
+                        <td class='source'>  end</td>
+                      </tr>
+                  
+                
+                  
+                      <tr>
+                        <td class='line'>10</td>
+                        <td class='hits'></td>
+                        <td class='source'></td>
+                      </tr>
+                  
+                
+                  
+                      <tr>
+                        <td class='line'>11</td>
+                        <td class='hits'></td>
+                        <td class='source'>  def render(&quot;user_team.json&quot;, %{user_team: user_team}) do</td>
+                      </tr>
+                  
+                
+                  
+                      <tr class='miss'>
+                        <td class='line'>12</td>
+                        <td class='hits'>0</td>
+                        <td class='source'>    %{</td>
+                      </tr>
+                    
+                
+                  
+                      <tr>
+                        <td class='line'>13</td>
+                        <td class='hits'></td>
+                        <td class='source'>    	&quot;type&quot;: &quot;user_team&quot;,</td>
+                      </tr>
+                  
+                
+                  
+                      <tr>
+                        <td class='line'>14</td>
+                        <td class='hits'></td>
+                        <td class='source'>      &quot;attributes&quot;: %{</td>
+                      </tr>
+                  
+                
+                  
+                      <tr class='miss'>
+                        <td class='line'>15</td>
+                        <td class='hits'>0</td>
+                        <td class='source'>      	&quot;team_id&quot;: user_team.team_id,</td>
+                      </tr>
+                    
+                
+                  
+                      <tr class='miss'>
+                        <td class='line'>16</td>
+                        <td class='hits'>0</td>
+                        <td class='source'>        &quot;user_id&quot;: user_team.user_id</td>
+                      </tr>
+                    
+                
+                  
+                      <tr>
+                        <td class='line'>17</td>
+                        <td class='hits'></td>
+                        <td class='source'>    	}</td>
+                      </tr>
+                  
+                
+                  
+                      <tr>
+                        <td class='line'>18</td>
+                        <td class='hits'></td>
+                        <td class='source'>    }</td>
+                      </tr>
+                  
+                
+                  
+                      <tr>
+                        <td class='line'>19</td>
+                        <td class='hits'></td>
+                        <td class='source'>  end</td>
+                      </tr>
+                  
+                
+                  
+                      <tr>
+                        <td class='line'>20</td>
                         <td class='hits'></td>
                         <td class='source'>end</td>
                       </tr>
