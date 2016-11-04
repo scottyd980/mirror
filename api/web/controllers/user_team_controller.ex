@@ -6,6 +6,8 @@ defmodule Mirror.UserTeamController do
   alias Mirror.UserTeam
   alias Mirror.MemberDelegate
 
+  import Logger
+
   plug Guardian.Plug.EnsureAuthenticated, handler: Mirror.AuthErrorHandler
 
   def create(conn, %{"access-code" => access_code}) do
@@ -20,16 +22,30 @@ defmodule Mirror.UserTeamController do
       team_id: member_delegate.team.id
     }
 
-    case Repo.insert changeset do
-      {:ok, user_team} ->
-        conn
-        |> put_status(:created)
-        |> render(Mirror.UserTeamView, "show.json", user_team: user_team)
-      {:error, changeset} ->
+    case user_is_member(member_delegate.team, current_user) do
+      false ->
+        case Repo.insert changeset do
+          {:ok, user_team} ->
+            conn
+            |> put_status(:created)
+            |> render(Mirror.UserTeamView, "show.json", user_team: user_team)
+          {:error, changeset} ->
+            conn
+            |> put_status(:unprocessable_entity)
+            |> render(Mirror.ChangesetView, "error.json", changeset: changeset)
+        end
+      _ ->
         conn
         |> put_status(:unprocessable_entity)
         |> render(Mirror.ChangesetView, "error.json", changeset: changeset)
     end
 
+  end
+
+  defp user_is_member(team, user) do
+    team = Repo.get!(Team, team.id)
+    |> Repo.preload([:admins, :members])
+
+    Enum.member?(team.members, user)
   end
 end
