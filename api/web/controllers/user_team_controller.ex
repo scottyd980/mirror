@@ -22,7 +22,7 @@ defmodule Mirror.UserTeamController do
       team_id: member_delegate.team.id
     }
 
-    case user_is_member(member_delegate.team, current_user) do
+    case user_is_member?(member_delegate.team, current_user) do
       false ->
         case Repo.insert changeset do
           {:ok, user_team} ->
@@ -36,13 +36,13 @@ defmodule Mirror.UserTeamController do
         end
       _ ->
         conn
-        |> put_status(:unprocessable_entity)
-        |> render(Mirror.ChangesetView, "error.json", changeset: changeset)
+        |> put_status(:ok)
+        |> render(Mirror.UserTeamView, "show.json", user_team: %{user_id: current_user.id, team_id: member_delegate.team.id})
     end
 
   end
 
-  defp user_is_member(team, user) do
+  defp user_is_member?(team, user) do
     team = Repo.get!(Team, team.id)
     |> Repo.preload([:admins, :members])
 

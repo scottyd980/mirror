@@ -18,8 +18,12 @@ export default Ember.Route.extend({
       body: JSON.stringify({
         "access-code": model.access_code
       })
-    }).then((raw) => {
-      console.log(raw);
+    }).then((response) => {
+      if(response.status === 201 || response.status === 200) {
+        response.json().then((resp) => {
+          this.transitionTo('app.teams.team.dashboard.retrospectives', resp.data.attributes.team_id);
+        });
+      }
     });
   }
 });
