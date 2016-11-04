@@ -19,11 +19,17 @@ export default Ember.Route.extend({
         "access-code": model.access_code
       })
     }).then((response) => {
-      if(response.status === 201 || response.status === 200) {
+      if(response.status === config.STATUS_CODES.created || response.status === config.STATUS_CODES.ok) {
         response.json().then((resp) => {
           this.transitionTo('app.teams.team.dashboard.retrospectives', resp.data.attributes.team_id);
         });
+      } else {
+        if(response.status === config.STATUS_CODES.unprocessable_entity) {
+          throw config.ERROR_CODES.server_error;
+        } else {
+          throw config.ERROR_CODES.not_found;
+        }
       }
-    });
+    })
   }
 });

@@ -27,6 +27,7 @@ defmodule Mirror.UserTeamController do
         case Repo.insert changeset do
           {:ok, user_team} ->
             conn
+            |> mark_delegate_used(member_delegate)
             |> put_status(:created)
             |> render(Mirror.UserTeamView, "show.json", user_team: user_team)
           {:error, changeset} ->
@@ -47,5 +48,12 @@ defmodule Mirror.UserTeamController do
     |> Repo.preload([:admins, :members])
 
     Enum.member?(team.members, user)
+  end
+
+  defp mark_delegate_used(conn, member_delegate) do
+    changeset = MemberDelegate.changeset member_delegate, %{is_accessed: true}
+    Repo.update! changeset
+
+    conn
   end
 end

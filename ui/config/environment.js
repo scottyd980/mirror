@@ -26,6 +26,24 @@ module.exports = function(environment) {
       authenticationRoute: 'auth.login',
       routeIfAlreadyAuthenticated: 'app.index',
       routeAfterAuthentication: 'app.index'
+    },
+    STATUS_CODES: {
+      ok: 200,
+      created: 201,
+      not_found: 404,
+      unprocessable_entity: 422
+    },
+    ERROR_CODES: {
+      not_found: {
+        type: "404",
+        description: "Page Not Found",
+        message: "We're sorry... we searched all over but couldn't find the page you were looking for!"
+      },
+      server_error: {
+        type: "500",
+        description: "Something Went Wrong",
+        message: "We're sorry... it seems like something strange is going on."
+      }
     }
   };
 
