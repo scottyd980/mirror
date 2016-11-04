@@ -17,28 +17,11 @@ defmodule Mirror.UserTeamController do
     member_delegate = Repo.get_by!(MemberDelegate, access_code: access_code)
     |> Repo.preload([:team])
 
-    changeset = UserTeam.changeset %UserTeam{}, %{
-      user_id: current_user.id,
-      team_id: member_delegate.team.id
-    }
-
     case user_is_member?(member_delegate.team, current_user) do
       false ->
-        case Repo.insert changeset do
-          {:ok, user_team} ->
-            conn
-            |> mark_delegate_used(member_delegate)
-            |> put_status(:created)
-            |> render(Mirror.UserTeamView, "show.json", user_team: user_team)
-          {:error, changeset} ->
-            conn
-            |> put_status(:unprocessable_entity)
-            |> render(Mirror.ChangesetView, "error.json", changeset: changeset)
-        end
+        handle_new_member(conn, current_user, member_delegate)
       _ ->
-        conn
-        |> put_status(:ok)
-        |> render(Mirror.UserTeamView, "show.json", user_team: %{user_id: current_user.id, team_id: member_delegate.team.id})
+        handle_existing_member(conn, %{user_id: current_user.id, team_id: member_delegate.team.id})
     end
 
   end
@@ -55,5 +38,32 @@ defmodule Mirror.UserTeamController do
     Repo.update! changeset
 
     conn
+  end
+
+  defp handle_existing_member(conn, user_team) do
+    conn
+    |> put_status(:ok)
+    |> render(Mirror.UserTeamView, "show.json", user_team: user_team)
+  end
+
+  defp handle_new_member(conn, current_user, member_delegate) do
+
+    changeset = UserTeam.changeset %UserTeam{}, %{
+      user_id: current_user.id,
+      team_id: member_delegate.team.id
+    }
+
+    case Repo.insert changeset do
+      {:ok, user_team} ->
+        conn
+        |> mark_delegate_used(member_delegate)
+        |> put_status(:created)
+        |> render(Mirror.UserTeamView, "show.json", user_team: user_team)
+      {:error, changeset} ->
+        conn
+        |> put_status(:unprocessable_entity)
+        |> render(Mirror.ChangesetView, "error.json", changeset: changeset)
+    end
+
   end
 end
