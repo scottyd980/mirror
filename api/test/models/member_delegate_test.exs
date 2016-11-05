@@ -3,7 +3,7 @@ defmodule Mirror.MemberDelegateTest do
 
   alias Mirror.MemberDelegate
 
-  @valid_attrs %{}
+  @valid_attrs %{email: "test@test.com", is_accessed: false, team_id: 3}
   @invalid_attrs %{}
 
   test "changeset with valid attributes" do
