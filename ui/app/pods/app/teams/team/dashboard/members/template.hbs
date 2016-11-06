@@ -8,8 +8,12 @@
               <div class="list-item">{{gravatar-image class="gravatar-nav" email=member.email}} {{member.username}}</div>
               <div class="list-actions">
                 {{#if isAdmin}}
-                  <a class="btn btn-success btn-outline btn-xs">{{fa-icon "arrow-up" fixedWidth=true}}</a>
-                  <a class="btn btn-danger btn-outline btn-xs">{{fa-icon "user-times" fixedWidth=true}}</a>
+                  {{#unless (array-contains member.teamAdmin model.team)}}
+                    <a class="btn btn-success btn-outline btn-xs">{{fa-icon "arrow-up" fixedWidth=true}}</a>
+                  {{/unless}}
+                  {{#unless (eq member.id model.currentUser.id)}}
+                    <a class="btn btn-danger btn-outline btn-xs">{{fa-icon "user-times" fixedWidth=true}}</a>
+                  {{/unless}}
                   <a class="btn btn-info btn-outline btn-xs">{{fa-icon "user-circle" fixedWidth=true}}</a>
                 {{else}}
                   <a class="btn btn-danger btn-outline btn-xs">{{fa-icon "user-times" fixedWidth=true}}</a>
@@ -38,7 +42,7 @@
               button.
             </li>
           {{else}}
-            
+
           {{/if}}
 
           <li>
