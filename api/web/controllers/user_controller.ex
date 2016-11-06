@@ -3,7 +3,7 @@ defmodule Mirror.UserController do
 
   plug Guardian.Plug.EnsureAuthenticated, handler: Mirror.AuthErrorHandler
 
-  require Logger
+  import Logger
 
   alias Mirror.User
 
