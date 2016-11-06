@@ -30,6 +30,6 @@ export default Ember.Route.extend({
           throw config.ERROR_CODES.not_found;
         }
       }
-    })
+    });
   }
 });
