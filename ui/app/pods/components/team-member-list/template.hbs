@@ -1,0 +1,20 @@
+{{#each members as |member|}}
+  <li class="three-actions">
+    <div class="list-item">{{gravatar-image class="gravatar-nav" email=member.email}} {{member.username}}</div>
+    <div class="list-actions">
+      {{#if isAdmin}}
+        {{#unless (array-contains member.teamAdmin team)}}
+          <a class="btn btn-success btn-outline btn-xs">{{fa-icon "arrow-up" fixedWidth=true}}</a>
+        {{/unless}}
+        {{#unless (eq member.id currentUser.id)}}
+          <a {{action onDelete member team}} class="btn btn-danger btn-outline btn-xs">{{fa-icon "user-times" fixedWidth=true}}</a>
+        {{/unless}}
+        <a class="btn btn-info btn-outline btn-xs">{{fa-icon "user-circle" fixedWidth=true}}</a>
+      {{else}}
+        <a class="btn btn-danger btn-outline btn-xs">{{fa-icon "user-times" fixedWidth=true}}</a>
+        <a class="btn btn-info btn-outline btn-xs">{{fa-icon "user-circle" fixedWidth=true}}</a>
+      {{/if}}
+    </div>
+  </li>
+{{else}}
+{{/each}}
