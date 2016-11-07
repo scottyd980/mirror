@@ -35,6 +35,10 @@ export default Ember.Route.extend({
       }).then((response) => {
         if(response.status === config.STATUS_CODES.ok) {
           response.json().then((resp) => {
+            if(this.get('currentModel').currentUser.get('id') == member.get('id')) {
+              _this.transitionTo('app');
+              _this.send('invalidateApplicationModel');
+            }
             _this.controller.get('model').members.reload();
           });
         } else {
