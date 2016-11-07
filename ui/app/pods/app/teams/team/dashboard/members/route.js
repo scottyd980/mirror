@@ -1,13 +1,14 @@
 import Ember from 'ember';
 import RSVP from 'rsvp';
+import config from '../../../../../../config/environment';
 
 export default Ember.Route.extend({
   session: Ember.inject.service('session'),
   model() {
     var _this = this;
     return RSVP.hash({
-      team: this.modelFor('app.teams.team'),
-      members: this.modelFor('app.teams.team').get('members'),
+      team: _this.modelFor('app.teams.team'),
+      members: _this.modelFor('app.teams.team').get('members'),
       currentUser: _this.get('session').get('currentUser')
     });
   },
@@ -16,5 +17,30 @@ export default Ember.Route.extend({
     _this._super(controller, models);
 
     controller.set('isAdmin', models.team.get('admins').includes(models.currentUser));
+  },
+  actions: {
+    deleteMember(member, team) {
+      var _this = this;
+
+      return fetch(`${config.DS.host}/${config.DS.namespace}/team_users/1`, {
+        method: 'DELETE',
+        headers: {
+          'Authorization': `Bearer ${this.get('session').get('session.content.authenticated.access_token')}`,
+          'Content-Type': 'application/vnd.api+json'
+        },
+        body: JSON.stringify({
+          "user_id": member.get('id'),
+          "team_id": team.get('id')
+        })
+      }).then((response) => {
+        if(response.status === config.STATUS_CODES.ok) {
+          response.json().then((resp) => {
+            _this.controller.get('model').members.reload();
+          });
+        } else {
+          throw config.ERROR_CODES.server_error;
+        }
+      });
+    }
   }
 });

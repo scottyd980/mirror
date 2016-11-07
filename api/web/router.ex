@@ -27,7 +27,7 @@ defmodule Mirror.Router do
 
     resources "/teams", TeamController
 
-    resources "/team_users", UserTeamController, only: [:create]
+    resources "/team_users", UserTeamController, only: [:create, :delete]
     resources "/users", UserController, only: [:show]
   end
 end
