@@ -17,8 +17,16 @@ export default Ember.Route.extend({
     _this._super(controller, models);
 
     controller.set('isAdmin', models.team.get('admins').includes(models.currentUser));
+    controller.set('confirmRemoveModal', false);
+    controller.set('adminWarning', false);
   },
   actions: {
+    toggleModal(member, team) {
+      this.controller.toggleProperty('confirmRemoveModal');
+    },
+    toggleAdminWarning() {
+      this.controller.toggleProperty('adminWarning');
+    },
     deleteMember(member, team) {
       var _this = this;
 
@@ -41,6 +49,9 @@ export default Ember.Route.extend({
             }
             _this.controller.get('model').members.reload();
           });
+        } else if(response.status === config.STATUS_CODES.forbidden) {
+          // Can't delete last remaining admin
+          _this.send('toggleAdminWarning');
         } else {
           throw config.ERROR_CODES.server_error;
         }
