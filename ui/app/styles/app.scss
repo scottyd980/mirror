@@ -12,6 +12,10 @@
 @import 'card';
 @import 'icons';
 
+@import "ember-modal-dialog/ember-modal-structure";
+@import "ember-modal-dialog/ember-modal-appearance";
+@import 'modal-appearance-fix';
+
 html {
   position: relative;
   min-height: 100%;
@@ -27,6 +31,7 @@ footer {
   font-family: 'Montserrat';
   text-align: center;
   line-height: 60px;
+  z-index: 1029;
 }
 
 body {

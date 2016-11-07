@@ -30,6 +30,8 @@ module.exports = function(environment) {
     STATUS_CODES: {
       ok: 200,
       created: 201,
+      unauthorized: 401,
+      forbidden: 403,
       not_found: 404,
       unprocessable_entity: 422
     },
@@ -43,6 +45,16 @@ module.exports = function(environment) {
         type: "500",
         description: "Something Went Wrong",
         message: "We're sorry... it seems like something strange is going on."
+      },
+      forbidden: {
+        type: "403",
+        description: "Forbidden",
+        message: "That action is forbidden."
+      },
+      unauthorized: {
+        type: "401",
+        description: "Unauthorized",
+        message: "That action is unauthorized."
       }
     }
   };
