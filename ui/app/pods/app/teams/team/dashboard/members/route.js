@@ -51,7 +51,11 @@ export default Ember.Route.extend({
           });
         } else if(response.status === config.STATUS_CODES.forbidden) {
           // Can't delete last remaining admin
-          _this.send('toggleAdminWarning');
+          //_this.send('toggleAdminWarning');
+          _this.get('notificationCenter').error({
+            title: "Something Went Wrong",
+            message: "It looks like you're currently the only admin on the team. In order to leave the team, you must assign another admin."
+          });
         } else {
           throw config.ERROR_CODES.server_error;
         }

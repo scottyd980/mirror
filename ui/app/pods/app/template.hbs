@@ -1,1 +1,9 @@
 {{outlet}}
+
+{{#each notificationCenter.notifications as |notification|}}
+  {{#x-notification-modal
+    title=notification.title
+    type=notification.type}}
+    {{notification.message}}
+  {{/x-notification-modal}}
+{{/each}}
