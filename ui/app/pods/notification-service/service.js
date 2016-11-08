@@ -1,11 +1,15 @@
 import Ember from 'ember';
 
-export default Ember.Service.extend({
-  router: Ember.inject.service("-routing"),
+export default Ember.Service.extend(Ember.Evented, {
+  routing: Ember.inject.service("-routing"),
   notifications: null,
   init() {
     this._super(...arguments);
     this.set('notifications', []);
+    const router = this.get('routing.router');
+    router.on('didTransition', (transition) => {
+      this.currentPathDidChange(router.get('url'));
+    })
   },
   error(notification) {
     notification.type = "error";
@@ -14,9 +18,10 @@ export default Ember.Service.extend({
   clear() {
     this.get('notifications').clear();
   },
-  // currentRouteNameChanged: function(router, propertyName) {
-  //   console.log(this.get('router').get("currentRouteName"));
-  // }
+  currentPathDidChange: function(newUrl) {
+    console.log(newUrl);
+    this.clear();
+  }
   // onRouteChange: Ember.observer('router.currentRouteName', function(){
   //   console.log('route changed')
   // })
