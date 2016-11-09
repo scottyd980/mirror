@@ -56,6 +56,9 @@ module.exports = function(environment) {
         description: "Unauthorized",
         message: "That action is unauthorized."
       }
+    },
+    ERROR_MESSAGES: {
+      generic: "Something Went Wrong"
     }
   };
 

@@ -12,17 +12,14 @@ export default Ember.Service.extend(Ember.Evented, {
     })
   },
   error(notification) {
+    this.clear();
     notification.type = "error";
-    this.get('notifications').pushObject(notification)
+    this.get('notifications').pushObject(notification);
   },
   clear() {
     this.get('notifications').clear();
   },
   currentPathDidChange: function(newUrl) {
-    console.log(newUrl);
     this.clear();
   }
-  // onRouteChange: Ember.observer('router.currentRouteName', function(){
-  //   console.log('route changed')
-  // })
 });

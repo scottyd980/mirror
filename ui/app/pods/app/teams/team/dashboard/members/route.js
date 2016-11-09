@@ -30,7 +30,7 @@ export default Ember.Route.extend({
     deleteMember(member, team) {
       var _this = this;
 
-      return fetch(`${config.DS.host}/${config.DS.namespace}/team_users/1`, {
+      return fetch(`${config.DS.host}/${config.DS.namespace}/team_users`, {
         method: 'DELETE',
         headers: {
           'Authorization': `Bearer ${this.get('session').get('session.content.authenticated.access_token')}`,
@@ -53,11 +53,14 @@ export default Ember.Route.extend({
           // Can't delete last remaining admin
           //_this.send('toggleAdminWarning');
           _this.get('notificationCenter').error({
-            title: "Something Went Wrong",
+            title: config.ERROR_MESSAGES.generic,
             message: "It looks like you're currently the only admin on the team. In order to leave the team, you must assign another admin."
           });
         } else {
-          throw config.ERROR_CODES.server_error;
+          _this.get('notificationCenter').error({
+            title: config.ERROR_MESSAGES.generic,
+            message: "We experienced an unexpected error. Please try again."
+          });
         }
       });
     }
