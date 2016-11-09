@@ -1,4 +1,4 @@
-defmodule Mirror.UserTeamController do
+defmodule Mirror.TeamAdminController do
   use Mirror.Web, :controller
 
   alias Mirror.User
@@ -35,9 +35,10 @@ defmodule Mirror.UserTeamController do
 
     cond do
       user_is_admin?(current_user, team) ->
+        Logger.warn "#{user_is_admin?(current_user, team)}"
         remove_member(conn, user, team)
-      current_user.id == user.id ->
-        remove_member(conn, user, team)
+      # current_user.id == user.id ->
+      #   remove_member(conn, user, team)
       true ->
         use_error_view(conn, 401, %{})
     end
