@@ -27,6 +27,39 @@ export default Ember.Route.extend({
     toggleAdminWarning() {
       this.controller.toggleProperty('adminWarning');
     },
+    addAdmin(member, team) {
+      var _this = this;
+
+      return fetch(`${config.DS.host}/${config.DS.namespace}/team_admins`, {
+        method: 'POST',
+        headers: {
+          'Authorization': `Bearer ${this.get('session').get('session.content.authenticated.access_token')}`,
+          'Content-Type': 'application/vnd.api+json'
+        },
+        body: JSON.stringify({
+          "admin_id": member.get('id'),
+          "team_id": team.get('id')
+        })
+      }).then((response) => {
+        if(response.status === config.STATUS_CODES.created || response.status === config.STATUS_CODES.ok) {
+          _this.get('notificationCenter').success({
+            title: config.SUCCESS_MESSAGES.generic,
+            message: "Admin was created."
+          });
+          _this.controller.get('model').team.reload();
+        } else {
+          if(response.status === config.STATUS_CODES.unprocessable_entity) {
+            _this.get('notificationCenter').error({
+              title: config.ERROR_MESSAGES.generic,
+              message: "We experienced an unexpected error. Please try again."
+            });
+          }
+        }
+      });
+    },
+    removeAdmin(member, team) {
+
+    },
     deleteMember(member, team) {
       var _this = this;
 
@@ -51,7 +84,6 @@ export default Ember.Route.extend({
           });
         } else if(response.status === config.STATUS_CODES.forbidden) {
           // Can't delete last remaining admin
-          //_this.send('toggleAdminWarning');
           _this.get('notificationCenter').error({
             title: config.ERROR_MESSAGES.generic,
             message: "It looks like you're currently the only admin on the team. In order to leave the team, you must assign another admin."

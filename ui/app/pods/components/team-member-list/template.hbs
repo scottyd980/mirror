@@ -4,7 +4,7 @@
     <div class="list-actions">
       {{#if isAdmin}}
         {{#unless (array-contains member.teamAdmin team)}}
-          <a class="btn btn-success btn-outline btn-xs">{{fa-icon "arrow-up" fixedWidth=true}}</a>
+          <a {{action onMakeAdmin member team}} class="btn btn-success btn-outline btn-xs">{{fa-icon "arrow-up" fixedWidth=true}}</a>
         {{/unless}}
         {{#unless (eq member.id currentUser.id)}}
           <a {{action onDelete member team}} class="btn btn-danger btn-outline btn-xs">{{fa-icon "user-times" fixedWidth=true}}</a>

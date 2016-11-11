@@ -59,6 +59,9 @@ module.exports = function(environment) {
     },
     ERROR_MESSAGES: {
       generic: "Something Went Wrong"
+    },
+    SUCCESS_MESSAGES: {
+      generic: "Success!"
     }
   };
 
