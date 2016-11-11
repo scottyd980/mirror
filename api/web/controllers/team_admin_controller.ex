@@ -4,41 +4,36 @@ defmodule Mirror.TeamAdminController do
   alias Mirror.User
   alias Mirror.Team
   alias Mirror.UserTeam
-  alias Mirror.MemberDelegate
   alias Mirror.TeamAdmin
 
   import Logger
 
   plug Guardian.Plug.EnsureAuthenticated, handler: Mirror.AuthErrorHandler
 
-  def create(conn, %{"access-code" => access_code}) do
-
+  def create(conn, %{"admin_id" => admin_id, "team_id" => team_id}) do
     current_user = Guardian.Plug.current_resource(conn)
 
-    member_delegate = Repo.get_by!(MemberDelegate, access_code: access_code)
-    |> Repo.preload([:team])
+    team = Repo.get!(Team, team_id)
+    user = Repo.get!(User, admin_id)
 
-    case user_is_member?(current_user, member_delegate.team) do
-      false ->
-        handle_add_new_member(conn, current_user, member_delegate)
-      _ ->
-        handle_add_existing_member(conn, %{user_id: current_user.id, team_id: member_delegate.team.id})
+    cond do
+      user_is_admin?(current_user, team) ->
+        handle_add_admin(conn, user, team)
+      true ->
+        use_error_view(conn, 401, %{})
     end
 
   end
 
-  def delete(conn, %{"user_id" => user_id, "team_id" => team_id}) do
+  def delete(conn, %{"admin_id" => admin_id, "team_id" => team_id}) do
     current_user = Guardian.Plug.current_resource(conn)
 
     team = Repo.get!(Team, team_id)
-    user = Repo.get!(User, user_id)
+    user = Repo.get!(User, admin_id)
 
     cond do
       user_is_admin?(current_user, team) ->
-        Logger.warn "#{user_is_admin?(current_user, team)}"
-        remove_member(conn, user, team)
-      # current_user.id == user.id ->
-      #   remove_member(conn, user, team)
+        handle_remove_admin(%{user: user, team: team})
       true ->
         use_error_view(conn, 401, %{})
     end
@@ -47,7 +42,7 @@ defmodule Mirror.TeamAdminController do
 
   defp remove_member(conn, user, team) do
     cond do
-      user_is_admin?(user, team) ->
+      user_is_admin?(current_user, team) ->
         case handle_remove_admin_member(%{user: user, team: team}) do
           {:ok, {1, 1}} ->
             conn
@@ -74,13 +69,6 @@ defmodule Mirror.TeamAdminController do
     end
   end
 
-  defp user_is_member?(user, team) do
-    team = Repo.get!(Team, team.id)
-    |> Repo.preload([:admins, :members])
-
-    Enum.member?(team.members, user)
-  end
-
   defp user_is_admin?(user, team) do
     team = Repo.get!(Team, team.id)
     |> Repo.preload([:admins, :members])
@@ -88,71 +76,24 @@ defmodule Mirror.TeamAdminController do
     Enum.member?(team.admins, user)
   end
 
-  defp mark_delegate_used(conn, member_delegate) do
-    changeset = MemberDelegate.changeset member_delegate, %{is_accessed: true}
-    Repo.update! changeset
-
-    conn
-  end
-
-  defp handle_add_existing_member(conn, user_team) do
-    conn
-    |> put_status(:ok)
-    |> render(Mirror.UserTeamView, "show.json", user_team: user_team)
-  end
-
-  defp handle_add_new_member(conn, current_user, member_delegate) do
-
-    changeset = UserTeam.changeset %UserTeam{}, %{
-      user_id: current_user.id,
-      team_id: member_delegate.team.id
+  defp handle_add_admin(conn, user, team) do
+    changeset = TeamAdmin.changeset %TeamAdmin{}, %{
+      user_id: user.id,
+      team_id: team.id
     }
 
     case Repo.insert changeset do
-      {:ok, user_team} ->
+      {:ok, team_admin} ->
         conn
-        |> mark_delegate_used(member_delegate)
         |> put_status(:created)
-        |> render(Mirror.UserTeamView, "show.json", user_team: user_team)
+        |> render(Mirror.TeamAdminView, "show.json", team_admin: team_admin)
       {:error, changeset} ->
         use_error_view(conn, 422, changeset)
-    end
-
-  end
-
-  defp handle_remove_admin_member(user_team) do
-    team = user_team.team
-    |> Repo.preload([:admins])
-
-    cond do
-      (length(team.admins) > 1) ->
-        Repo.transaction fn ->
-          with {:ok, member_affected_rows} <- handle_remove_member(user_team),
-               {:ok, admin_affected_rows} <- handle_remove_admin(user_team) do
-                 {member_affected_rows, admin_affected_rows}
-          else
-            {:error, changeset} ->
-              Repo.rollback changeset
-          end
-        end
-      (length(team.admins) > 0) ->
-        {:error, "No other admins"}
-      true ->
-        {:error, "Unexpected error"}
     end
   end
 
   defp handle_remove_admin(user_team) do
     case Repo.delete_all(from u in TeamAdmin, where: u.user_id == ^user_team.user.id and u.team_id == ^user_team.team.id) do
-      {:error, _} ->
-        {:error, "Problem deleting rows"}
-      {affected_rows, _} ->
-        {:ok, affected_rows}
-    end
-  end
-
-  defp handle_remove_member(user_team) do
-    case Repo.delete_all(from u in UserTeam, where: u.user_id == ^user_team.user.id and u.team_id == ^user_team.team.id) do
       {:error, _} ->
         {:error, "Problem deleting rows"}
       {affected_rows, _} ->

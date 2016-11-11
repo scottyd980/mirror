@@ -11,6 +11,11 @@ export default Ember.Service.extend(Ember.Evented, {
       this.currentPathDidChange(router.get('url'));
     })
   },
+  success(notification) {
+    this.clear();
+    notification.type = "success";
+    this.get('notifications').pushObject(notification);
+  },
   error(notification) {
     this.clear();
     notification.type = "error";
