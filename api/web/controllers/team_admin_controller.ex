@@ -33,7 +33,7 @@ defmodule Mirror.TeamAdminController do
 
     cond do
       user_is_admin?(current_user, team) ->
-        handle_remove_admin(%{user: user, team: team})
+        handle_remove_admin(conn, %{user: user, team: team})
       true ->
         use_error_view(conn, 401, %{})
     end
@@ -92,12 +92,14 @@ defmodule Mirror.TeamAdminController do
     end
   end
 
-  defp handle_remove_admin(user_team) do
+  defp handle_remove_admin(conn, user_team) do
     case Repo.delete_all(from u in TeamAdmin, where: u.user_id == ^user_team.user.id and u.team_id == ^user_team.team.id) do
       {:error, _} ->
-        {:error, "Problem deleting rows"}
+        use_error_view(conn, 422, %{})
       {affected_rows, _} ->
-        {:ok, affected_rows}
+        conn
+        |> put_status(:ok)
+        |> render(Mirror.TeamAdminView, "delete.json", team_admin: %{user_id: user_team.user.id, team_id: user_team.team.id})
     end
   end
 

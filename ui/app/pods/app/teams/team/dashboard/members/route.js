@@ -58,7 +58,34 @@ export default Ember.Route.extend({
       });
     },
     removeAdmin(member, team) {
+      var _this = this;
 
+      return fetch(`${config.DS.host}/${config.DS.namespace}/team_admins`, {
+        method: 'DELETE',
+        headers: {
+          'Authorization': `Bearer ${this.get('session').get('session.content.authenticated.access_token')}`,
+          'Content-Type': 'application/vnd.api+json'
+        },
+        body: JSON.stringify({
+          "admin_id": member.get('id'),
+          "team_id": team.get('id')
+        })
+      }).then((response) => {
+        if(response.status === config.STATUS_CODES.ok) {
+          _this.get('notificationCenter').success({
+            title: config.SUCCESS_MESSAGES.generic,
+            message: "Admin was removed."
+          });
+          _this.controller.get('model').team.reload();
+        } else {
+          if(response.status === config.STATUS_CODES.unprocessable_entity) {
+            _this.get('notificationCenter').error({
+              title: config.ERROR_MESSAGES.generic,
+              message: "We experienced an unexpected error. Please try again."
+            });
+          }
+        }
+      });
     },
     deleteMember(member, team) {
       var _this = this;
