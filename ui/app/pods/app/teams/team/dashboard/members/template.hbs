@@ -8,6 +8,7 @@
           currentUser=model.currentUser
           isAdmin=isAdmin
           onMakeAdmin=(route-action "addAdmin")
+          onRemoveAdmin=(route-action "removeAdmin")
           onDelete=(route-action "deleteMember")}}
       {{/x-card}}
     </div>
@@ -18,6 +19,12 @@
             <li>
               Make another team member a team admin using
               the <span class="success-text">{{fa-icon "arrow-up"}}</span>
+              button.
+            </li>
+
+            <li>
+              Remove a team member's admin priveleges using
+              the <span class="warning-text">{{fa-icon "arrow-down"}}</span>
               button.
             </li>
 
