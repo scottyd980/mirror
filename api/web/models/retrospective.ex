@@ -8,7 +8,7 @@ defmodule Mirror.Retrospective do
     belongs_to :team, Mirror.Team
     belongs_to :moderator, Mirror.User
     # type
-    # many_to_many :participants, Mirror.User, join_through: Mirror.UserTeam
+    many_to_many :participants, Mirror.User, join_through: Mirror.RetrospectiveUser
 
     timestamps()
   end
