@@ -2,7 +2,19 @@
   <div class="row">
     <div class="col-md-8">
       {{#x-card title="Retrospectives"}}
-        Retrospective
+        <div class="text-center">
+          <div class="spinner spinner-success">
+            <div class="spinner__item1"></div>
+            <div class="spinner__item2"></div>
+            <div class="spinner__item3"></div>
+            <div class="spinner__item4"></div>
+          </div>
+          <p>Waiting For Retrospective To Begin...</p>
+          <small>Once the moderator has started a retrospective, you'll be able to join the retrospective in progress.</small>
+        </div>
+      {{/x-card}}
+      {{#x-card title="Start A Retrospective"}}
+        Start A Retrospective
       {{/x-card}}
     </div>
     <div class="col-md-4">
@@ -10,7 +22,7 @@
         <ul class="tips">
           <li>
             Any member of the team can start a retrospective. This person
-            becomes the moderator.
+            becomes the moderator of that retrospective.
           </li>
           <li>
             Once a retrospective begins, team members will no longer be given
