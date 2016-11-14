@@ -8,5 +8,10 @@ export default Ember.Component.extend({
   willDestroyElement() {
     this._super(...arguments);
     Ember.$('body').removeClass('modal-open');
+  },
+  actions: {
+    close() {
+      this.get('notifications').clear();
+    }
   }
 });

@@ -1,9 +1,17 @@
 {{outlet}}
 
 {{#each notificationCenter.notifications as |notification|}}
-  {{#x-notification-modal
-    title=notification.title
-    type=notification.type}}
-    {{notification.message}}
-  {{/x-notification-modal}}
+  {{#if (eq notification.type "confirm")}}
+    {{#x-notification-modal
+      title=notification.title
+      type=notification.type}}
+      {{notification.message}}
+    {{/x-notification-modal}}
+  {{else}}
+    {{#x-notification-modal
+      title=notification.title
+      type=notification.type}}
+      {{notification.message}}
+    {{/x-notification-modal}}
+  {{/if}}
 {{/each}}
