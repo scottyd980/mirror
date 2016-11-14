@@ -76,19 +76,31 @@ defmodule Mirror.TeamAdminController do
     Enum.member?(team.admins, user)
   end
 
-  defp handle_add_admin(conn, user, team) do
-    changeset = TeamAdmin.changeset %TeamAdmin{}, %{
-      user_id: user.id,
-      team_id: team.id
-    }
+  defp user_is_member?(user, team) do
+    team = Repo.get!(Team, team.id)
+    |> Repo.preload([:admins, :members])
 
-    case Repo.insert changeset do
-      {:ok, team_admin} ->
-        conn
-        |> put_status(:created)
-        |> render(Mirror.TeamAdminView, "show.json", team_admin: team_admin)
-      {:error, changeset} ->
-        use_error_view(conn, 422, changeset)
+    Enum.member?(team.members, user)
+  end
+
+  defp handle_add_admin(conn, user, team) do
+    cond do
+      user_is_member?(user, team) ->
+        changeset = TeamAdmin.changeset %TeamAdmin{}, %{
+          user_id: user.id,
+          team_id: team.id
+        }
+
+        case Repo.insert changeset do
+          {:ok, team_admin} ->
+            conn
+            |> put_status(:created)
+            |> render(Mirror.TeamAdminView, "show.json", team_admin: team_admin)
+          {:error, changeset} ->
+            use_error_view(conn, 422, changeset)
+        end
+      true ->
+        use_error_view(conn, 403, %{})
     end
   end
 
