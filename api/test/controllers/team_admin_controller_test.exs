@@ -41,6 +41,17 @@ defmodule Mirror.TeamAdminControllerTest do
     assert json_response(conn, 401) == %{"errors" => []}
   end
 
+  test "does not create admin and returns 403 when data is valid but new admin user is not a member of the team", %{conn: conn, user: user} do
+    team = Repo.insert! %Team{}
+    add_as_team_member(user, team)
+    add_as_team_admin(user, team)
+
+    new_user = Repo.insert! %User{}
+
+    conn = post conn, team_admin_path(conn, :create), %{"admin_id": new_user.id, "team_id": team.id}
+    assert json_response(conn, 403) == %{"errors" => []}
+  end
+
   test "creates a new admin and returns 201 when data is valid and current user is an admin of the team", %{conn: conn, user: user} do
     team = Repo.insert! %Team{}
     add_as_team_member(user, team)
