@@ -2,11 +2,12 @@
 
 {{#each notificationCenter.notifications as |notification|}}
   {{#if (eq notification.type "confirm")}}
-    {{#x-notification-modal
+    {{#x-confirm-modal
       title=notification.title
-      type=notification.type}}
+      type=notification.type
+      onConfirm=notification.action}}
       {{notification.message}}
-    {{/x-notification-modal}}
+    {{/x-confirm-modal}}
   {{else}}
     {{#x-notification-modal
       title=notification.title

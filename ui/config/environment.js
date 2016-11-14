@@ -62,6 +62,9 @@ module.exports = function(environment) {
     },
     SUCCESS_MESSAGES: {
       generic: "Success!"
+    },
+    CONFIRM_MESSAGES: {
+      generic: "Are You Sure?"
     }
   };
 

@@ -1,6 +1,7 @@
 import Ember from 'ember';
 
 export default Ember.Component.extend({
+  notifications: Ember.inject.service('notification-service'),
   didInsertElement() {
     this._super(...arguments);
     Ember.$('body').addClass('modal-open');
