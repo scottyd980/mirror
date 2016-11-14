@@ -4,21 +4,21 @@
     <div class="list-actions">
       {{#if isAdmin}}
         {{#unless (array-contains member.teamAdmin team)}}
-          <a {{action onMakeAdmin member team}} class="btn btn-success btn-outline btn-xs">{{fa-icon "arrow-up" fixedWidth=true}}</a>
+          <a {{action onConfirm (action onMakeAdmin member team)}} class="btn btn-success btn-outline btn-xs">{{fa-icon "arrow-up" fixedWidth=true}}</a>
         {{else}}
           {{#unless (eq member.id currentUser.id)}}
-            <a {{action onRemoveAdmin member team}} class="btn btn-warning btn-outline btn-xs">{{fa-icon "arrow-down" fixedWidth=true}}</a>
+            <a {{action onConfirm (action onRemoveAdmin member team)}} class="btn btn-warning btn-outline btn-xs">{{fa-icon "arrow-down" fixedWidth=true}}</a>
           {{/unless}}
         {{/unless}}
         {{#unless (eq member.id currentUser.id)}}
-          <a {{action onDelete member team}} class="btn btn-danger btn-outline btn-xs">{{fa-icon "user-times" fixedWidth=true}}</a>
+          <a {{action onConfirm (action onDelete member team)}} class="btn btn-danger btn-outline btn-xs">{{fa-icon "user-times" fixedWidth=true}}</a>
         {{else}}
-          <a {{action onDelete member team}} class="btn btn-danger btn-outline btn-xs">{{fa-icon "sign-out" fixedWidth=true}}</a>
+          <a {{action onConfirm (action onDelete member team)}} class="btn btn-danger btn-outline btn-xs">{{fa-icon "sign-out" fixedWidth=true}}</a>
         {{/unless}}
         <a class="btn btn-info btn-outline btn-xs">{{fa-icon "user-circle" fixedWidth=true}}</a>
       {{else}}
         {{#if (eq member.id currentUser.id)}}
-          <a {{action onDelete member team}} class="btn btn-danger btn-outline btn-xs">{{fa-icon "sign-out" fixedWidth=true}}</a>
+          <a {{action onConfirm (action onDelete member team)}} class="btn btn-danger btn-outline btn-xs">{{fa-icon "sign-out" fixedWidth=true}}</a>
         {{/if}}
         <a class="btn btn-info btn-outline btn-xs">{{fa-icon "user-circle" fixedWidth=true}}</a>
       {{/if}}
