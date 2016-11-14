@@ -27,10 +27,10 @@ export default Ember.Route.extend({
     toggleAdminWarning() {
       this.controller.toggleProperty('adminWarning');
     },
-    confirmAction(action) {
+    confirmAction(message, action) {
       this.get('notificationCenter').confirm({
         title: config.CONFIRM_MESSAGES.generic,
-        message: "Message",
+        message: message,
         action: action
       });
     },
@@ -51,7 +51,7 @@ export default Ember.Route.extend({
         if(response.status === config.STATUS_CODES.created || response.status === config.STATUS_CODES.ok) {
           _this.get('notificationCenter').success({
             title: config.SUCCESS_MESSAGES.generic,
-            message: "Admin was created."
+            message: "The team member was successfully promoted to team admin."
           });
           _this.controller.get('model').team.reload();
         } else {
@@ -81,7 +81,7 @@ export default Ember.Route.extend({
         if(response.status === config.STATUS_CODES.ok) {
           _this.get('notificationCenter').success({
             title: config.SUCCESS_MESSAGES.generic,
-            message: "Admin was removed."
+            message: "The team member is no longer an admin."
           });
           _this.controller.get('model').team.reload();
         } else {
