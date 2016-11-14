@@ -64,7 +64,7 @@ module.exports = function(environment) {
       generic: "Success!"
     },
     CONFIRM_MESSAGES: {
-      generic: "Are You Sure?"
+      generic: "Please Confirm This Action"
     }
   };
 
