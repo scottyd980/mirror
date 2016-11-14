@@ -21,6 +21,11 @@ export default Ember.Service.extend(Ember.Evented, {
     notification.type = "error";
     this.get('notifications').pushObject(notification);
   },
+  confirm(notification) {
+    this.clear();
+    notification.type = "confirm";
+    this.get('notifications').pushObject(notification);
+  },
   clear() {
     this.get('notifications').clear();
   },
