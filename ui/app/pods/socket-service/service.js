@@ -12,15 +12,15 @@ export default PhoenixSocket.extend({
 
   connect(/*url, options*/) {
     // connect the socket
-    this._super(`${config.DS.wshost}/socket`, {
-      params: {}
-    });
+    this._super(`${config.DS.wshost}/socket`, {});
 
     // join a channel
     const channel = this.joinChannel("retrospectives:123", {
       nickname: "Mike",
       token: this.get('session').get('session.content.authenticated.access_token')
     });
+
+    channel.push('ping', {});
 
     // add message handlers
     channel.on("notification", () => _onNotification(...arguments));
