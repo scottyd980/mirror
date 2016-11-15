@@ -3,6 +3,7 @@ defmodule Mirror.UserSocket do
 
   ## Channels
   # channel "room:*", Mirror.RoomChannel
+  channel "retrospectives:*", Mirror.RetrospectiveChannel
 
   ## Transports
   transport :websocket, Phoenix.Transports.WebSocket
