@@ -2,6 +2,7 @@ import PhoenixSocket from 'phoenix/services/phoenix-socket';
 import config from '../../config/environment';
 
 export default PhoenixSocket.extend({
+  session: Ember.inject.service(),
 
   init() {
     this.on('open', () => {
@@ -10,15 +11,15 @@ export default PhoenixSocket.extend({
   },
 
   connect(/*url, options*/) {
-    const myjwt = "abacnwih12eh12...";
     // connect the socket
     this._super(`${config.DS.wshost}/socket`, {
-      params: {token: myjwt}
+      params: {}
     });
 
     // join a channel
     const channel = this.joinChannel("retrospectives:123", {
-      nickname: "Mike"
+      nickname: "Mike",
+      token: this.get('session').get('session.content.authenticated.access_token')
     });
 
     // add message handlers
