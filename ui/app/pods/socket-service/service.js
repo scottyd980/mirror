@@ -55,6 +55,12 @@ export default Ember.Service.extend({
     chan.join().receive("ok", () => {
       console.log("joined retro channel");
     });
+
+    chan.push('ping');
+
+    chan.on('ping', () => {
+      console.log('pong');
+    });
   }
 
 });

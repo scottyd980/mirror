@@ -17,6 +17,18 @@ defmodule Mirror.RetrospectiveChannel do
     {:error, :authentication_required}
   end
 
+  def handle_in("ping", %{}, socket) do
+    Logger.warn "test"
+   broadcast! socket, "ping", %{body: "body"}
+   {:noreply, socket}
+ end
+
+ def handle_out("ping", payload, socket) do
+   push socket, "ping", payload
+   {:noreply, socket}
+ end
+
+
   def handle_info(:ping, socket) do
     Logger.warn "test"
     user = current_resource(socket)
