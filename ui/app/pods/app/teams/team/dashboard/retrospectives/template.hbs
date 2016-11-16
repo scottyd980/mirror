@@ -3,12 +3,16 @@
     <div class="col-md-8">
       {{#x-card title="Retrospectives"}}
         <div class="text-center">
+          {{#unless hasRetroInProgress}}
           <div class="spinner spinner-success">
             <div class="spinner__item1"></div>
             <div class="spinner__item2"></div>
             <div class="spinner__item3"></div>
             <div class="spinner__item4"></div>
           </div>
+          {{else}}
+            WE GOT ONE
+          {{/unless}}
           <p>Waiting For Retrospective To Begin...</p>
           <small>Once a team member has started a retrospective, you'll be able to join the retrospective in progress.</small>
         </div>

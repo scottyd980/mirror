@@ -33,34 +33,34 @@ import config from '../../config/environment';
 
 import { Socket } from 'phoenix';
 
-// let socket = new Socket('/socket', {
-//   logger: ((kind, msg, data) => {
-//     console.log(`${kind}: ${msg}`, data);
-//   })
-// });
-
 export default Ember.Service.extend({
   session: Ember.inject.service(),
   socket: null,
+  channels: {},
 
   init() {
     this.socket = new Socket(`${config.DS.wshost}/socket`);
     this.socket.connect();
   },
 
-  connect() {
-    let chan = this.socket.channel("retrospectives:123", {
-      token: this.get('session').get('session.content.authenticated.access_token')
-    });
-    chan.join().receive("ok", () => {
-      console.log("joined retro channel");
-    });
+  joinChannel(channel) {
+    let channel_to_join = channel.replace(":", "_");
 
-    chan.push('ping');
+    if(!this.channels[channel_to_join]) {
+      this.channels[channel_to_join] = this.socket.channel(channel, {
+        token: this.get('session').get('session.content.authenticated.access_token')
+      });
 
-    chan.on('ping', () => {
-      console.log('pong');
-    });
+      let chan = this.channels[channel_to_join];
+
+      chan.join().receive("ok", () => {
+        console.log("joined channel: " + channel);
+      });
+    } else {
+      console.log("already joined channel: " + channel)
+    }
+
+    return this.channels[channel_to_join];
   }
 
 });
