@@ -1,10 +1,10 @@
-defmodule Mirror.RetrospectiveChannel do
+defmodule Mirror.TeamChannel do
   use Mirror.Web, :channel
   import Guardian.Phoenix.Socket
 
   import Logger
 
-  def join("retrospective:" <> retrospective_id, %{"token" => token}, socket) do
+  def join("team:" <> retrospective_id, %{"token" => token}, socket) do
     case sign_in(socket, token) do
       {:ok, authed_socket, _guardian_params} ->
         {:ok, %{message: "Joined"}, authed_socket}
@@ -27,6 +27,17 @@ defmodule Mirror.RetrospectiveChannel do
    push socket, "ping", payload
    {:noreply, socket}
  end
+
+ def handle_in("inProgress", %{}, socket) do
+  user = current_resource(socket)
+  broadcast! socket, "inProgress", %{body: user.email}
+  {:noreply, socket}
+end
+
+def handle_out("inProgress", payload, socket) do
+  push socket, "inProgress", payload
+  {:noreply, socket}
+end
 
 
   def handle_info(:ping, socket) do
