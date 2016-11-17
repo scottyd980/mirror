@@ -89,7 +89,8 @@ module.exports = function(environment) {
   }
 
   if (environment === 'production') {
-
+    ENV.DS.host = 'http://getmirror.io:4001';
+    ENV.DS.wshost = 'ws://getmirror.io:4001';
   }
 
   return ENV;
