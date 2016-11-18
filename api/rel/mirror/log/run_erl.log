@@ -1,0 +1,8 @@
+run_erl [25947] Fri Nov 18 16:34:29 2016
+Args before exec of shell:
+run_erl [25947] Fri Nov 18 16:34:29 2016
+argv[0] = sh
+run_erl [25947] Fri Nov 18 16:34:29 2016
+argv[1] = -c
+run_erl [25947] Fri Nov 18 16:34:29 2016
+argv[2] = exec "/Users/Scott/Sites/mirror/api/rel/mirror/bin/mirror" "console"
