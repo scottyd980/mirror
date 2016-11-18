@@ -4,31 +4,33 @@
       {{#x-card title="Retrospectives"}}
         <div class="text-center">
           {{#unless hasRetroInProgress}}
-          <div class="spinner spinner-success">
-            <div class="spinner__item1"></div>
-            <div class="spinner__item2"></div>
-            <div class="spinner__item3"></div>
-            <div class="spinner__item4"></div>
-          </div>
+            <div class="spinner spinner-success">
+              <div class="spinner__item1"></div>
+              <div class="spinner__item2"></div>
+              <div class="spinner__item3"></div>
+              <div class="spinner__item4"></div>
+            </div>
+            <p>Waiting For Retrospective To Begin...</p>
+            <small>Once a team member has started a retrospective, you'll be able to join the retrospective in progress.</small>
           {{else}}
-            WE GOT ONE
+            <p>A Retrospective Is Ready To Join</p>
           {{/unless}}
-          <p>Waiting For Retrospective To Begin...</p>
-          <small>Once a team member has started a retrospective, you'll be able to join the retrospective in progress.</small>
         </div>
       {{/x-card}}
-      {{#x-card title="Start A Retrospective"}}
-        <div class="row">
-          <div class="col-md-2 col-sm-3 text-center">
-            <img class="icons icons--thumbnail" src="/img/icons/sticky-notes.svg" />
+      {{#unless hasRetroInProgress}}
+        {{#x-card title="Start A Retrospective"}}
+          <div class="row">
+            <div class="col-md-2 col-sm-3 text-center">
+              <img class="icons icons--thumbnail" src="/img/icons/sticky-notes.svg" />
+            </div>
+            <div class="col-md-10 col-sm-9 text-center-xs">
+              <h4>Sticky Notes</h4>
+              <p>Sticky notes is a simple game for retrospectives to extract important feedback from the team. It asks members for what their favorite part and least favorite part of the sprint were.</p>
+              <a class="btn btn-success btn-outline">Let's Start This Thing {{fa-icon "arrow-right" fixedWidth=true}}</a>
+            </div>
           </div>
-          <div class="col-md-10 col-sm-9 text-center-xs">
-            <h4>Sticky Notes</h4>
-            <p>Sticky notes is a simple game for retrospectives to extract important feedback from the team. It asks members for what their favorite part and least favorite part of the sprint were.</p>
-            <a class="btn btn-success btn-outline">Let's Start This Thing {{fa-icon "arrow-right" fixedWidth=true}}</a>
-          </div>
-        </div>
-      {{/x-card}}
+        {{/x-card}}
+      {{/unless}}
     </div>
     <div class="col-md-4">
       {{#x-card title="Helpful Tips"}}
