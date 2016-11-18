@@ -5,6 +5,7 @@ defmodule Mirror.TeamAdminController do
   alias Mirror.Team
   alias Mirror.UserTeam
   alias Mirror.TeamAdmin
+  alias Mirror.UserHelper
 
   import Logger
 
@@ -17,7 +18,7 @@ defmodule Mirror.TeamAdminController do
     user = Repo.get!(User, admin_id)
 
     cond do
-      user_is_admin?(current_user, team) ->
+      UserHelper.user_is_admin?(current_user, team) ->
         handle_add_admin(conn, user, team)
       true ->
         use_error_view(conn, 401, %{})
@@ -32,7 +33,7 @@ defmodule Mirror.TeamAdminController do
     user = Repo.get!(User, admin_id)
 
     cond do
-      user_is_admin?(current_user, team) ->
+      UserHelper.user_is_admin?(current_user, team) ->
         handle_remove_admin(conn, %{user: user, team: team})
       true ->
         use_error_view(conn, 401, %{})
@@ -42,7 +43,7 @@ defmodule Mirror.TeamAdminController do
 
   defp remove_member(conn, user, team) do
     cond do
-      user_is_admin?(current_user, team) ->
+      UserHelper.user_is_admin?(current_user, team) ->
         case handle_remove_admin_member(%{user: user, team: team}) do
           {:ok, {1, 1}} ->
             conn
@@ -55,7 +56,7 @@ defmodule Mirror.TeamAdminController do
           {:error, changeset} ->
             use_error_view(conn, :unprocessable_entity, changeset)
         end
-      user_is_member?(user, team) ->
+      UserHelper.user_is_member?(user, team) ->
         case handle_remove_member(%{user: user, team: team}) do
           {:ok, affected_rows} ->
             conn
@@ -69,23 +70,9 @@ defmodule Mirror.TeamAdminController do
     end
   end
 
-  defp user_is_admin?(user, team) do
-    team = Repo.get!(Team, team.id)
-    |> Repo.preload([:admins, :members])
-
-    Enum.member?(team.admins, user)
-  end
-
-  defp user_is_member?(user, team) do
-    team = Repo.get!(Team, team.id)
-    |> Repo.preload([:admins, :members])
-
-    Enum.member?(team.members, user)
-  end
-
   defp handle_add_admin(conn, user, team) do
     cond do
-      user_is_member?(user, team) ->
+      UserHelper.user_is_member?(user, team) ->
         changeset = TeamAdmin.changeset %TeamAdmin{}, %{
           user_id: user.id,
           team_id: team.id

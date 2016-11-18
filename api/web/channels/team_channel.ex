@@ -2,12 +2,18 @@ defmodule Mirror.TeamChannel do
   use Mirror.Web, :channel
   import Guardian.Phoenix.Socket
 
-  import Logger
+  alias Mirror.UserHelper
+  alias Mirror.Team
 
-  def join("team:" <> retrospective_id, %{"token" => token}, socket) do
+  def join("team:" <> team_id, %{"token" => token}, socket) do
     case sign_in(socket, token) do
       {:ok, authed_socket, _guardian_params} ->
-        {:ok, %{message: "Joined"}, authed_socket}
+        case UserHelper.user_is_member?(current_resource(authed_socket), Repo.get!(Team, team_id)) do
+          true ->
+            {:ok, %{message: "Joined"}, authed_socket}
+          _ ->
+            {:error, 401}
+        end
       {:error, reason} ->
         {:error, :authentication_required}
     end
@@ -30,7 +36,7 @@ defmodule Mirror.TeamChannel do
 
  def handle_in("inProgress", %{}, socket) do
   user = current_resource(socket)
-  broadcast! socket, "inProgress", %{body: user.email}
+  broadcast! socket, "inProgress", %{}
   {:noreply, socket}
 end
 

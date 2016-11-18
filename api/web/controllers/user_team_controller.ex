@@ -6,6 +6,7 @@ defmodule Mirror.UserTeamController do
   alias Mirror.UserTeam
   alias Mirror.MemberDelegate
   alias Mirror.TeamAdmin
+  alias Mirror.UserHelper
 
   import Logger
 
@@ -18,7 +19,7 @@ defmodule Mirror.UserTeamController do
     member_delegate = Repo.get_by!(MemberDelegate, access_code: access_code)
     |> Repo.preload([:team])
 
-    case user_is_member?(current_user, member_delegate.team) do
+    case UserHelper.user_is_member?(current_user, member_delegate.team) do
       false ->
         handle_add_new_member(conn, current_user, member_delegate)
       _ ->
@@ -34,7 +35,7 @@ defmodule Mirror.UserTeamController do
     user = Repo.get!(User, user_id)
 
     cond do
-      user_is_admin?(current_user, team) ->
+      UserHelper.user_is_admin?(current_user, team) ->
         remove_member(conn, user, team)
       current_user.id == user.id ->
         remove_member(conn, user, team)
@@ -46,7 +47,7 @@ defmodule Mirror.UserTeamController do
 
   defp remove_member(conn, user, team) do
     cond do
-      user_is_admin?(user, team) ->
+      UserHelper.user_is_admin?(user, team) ->
         case handle_remove_admin_member(%{user: user, team: team}) do
           {:ok, {1, 1}} ->
             conn
@@ -59,7 +60,7 @@ defmodule Mirror.UserTeamController do
           {:error, changeset} ->
             use_error_view(conn, :unprocessable_entity, changeset)
         end
-      user_is_member?(user, team) ->
+      UserHelper.user_is_member?(user, team) ->
         case handle_remove_member(%{user: user, team: team}) do
           {:ok, affected_rows} ->
             conn
@@ -71,20 +72,6 @@ defmodule Mirror.UserTeamController do
       true ->
         use_error_view(conn, 422, %{})
     end
-  end
-
-  defp user_is_member?(user, team) do
-    team = Repo.get!(Team, team.id)
-    |> Repo.preload([:admins, :members])
-
-    Enum.member?(team.members, user)
-  end
-
-  defp user_is_admin?(user, team) do
-    team = Repo.get!(Team, team.id)
-    |> Repo.preload([:admins, :members])
-
-    Enum.member?(team.admins, user)
   end
 
   defp mark_delegate_used(conn, member_delegate) do
