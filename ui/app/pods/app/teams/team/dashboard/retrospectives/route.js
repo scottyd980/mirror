@@ -14,13 +14,22 @@ export default Ember.Route.extend({
     this._super(controller, model);
 
     controller.set('hasRetroInProgress', false);
+    controller.set('isRetroStartModalShowing', false);
 
     let chan = this.get('socket').joinChannel(`team:${model.team.get('id')}`);
 
-    chan.push('inProgress');
+    //chan.push('inProgress');
 
     chan.on('inProgress', (data) => {
       controller.set('hasRetroInProgress', true);
     });
+  },
+  actions: {
+    enterRetrospectiveType() {
+      this.controller.set('isRetroStartModalShowing', true);
+    },
+    cancelEnterRetrospectiveType() {
+      this.controller.set('isRetroStartModalShowing', false);
+    }
   }
 });
