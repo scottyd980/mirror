@@ -26,7 +26,7 @@
             <div class="col-md-10 col-sm-9 text-center-xs">
               <h4>Sticky Notes</h4>
               <p>Sticky notes is a simple game for retrospectives to extract important feedback from the team. It asks members for what their favorite part and least favorite part of the sprint were.</p>
-              <a class="btn btn-success btn-outline">Let's Start This Thing {{fa-icon "arrow-right" fixedWidth=true}}</a>
+              <a {{action 'enterRetrospectiveType'}} class="btn btn-success btn-outline">Let's Start This Thing {{fa-icon "arrow-right" fixedWidth=true}}</a>
             </div>
           </div>
         {{/x-card}}
@@ -49,3 +49,9 @@
     </div>
   </div>
 </div>
+
+{{#if isRetroStartModalShowing}}
+  {{#x-modal onClose=(route-action "cancelEnterRetrospectiveType")}}
+    Start a retro, enter a sprint number.
+  {{/x-modal}}
+{{/if}}
