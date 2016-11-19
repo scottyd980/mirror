@@ -21,7 +21,7 @@ defmodule Mirror.Mixfile do
   def application do
     [mod: {Mirror, []},
      applications: [:phoenix, :phoenix_pubsub, :cowboy, :logger, :gettext,
-                    :phoenix_ecto, :mariaex, :comeonin, :phoenix_live_reload, 
+                    :phoenix_ecto, :mariaex, :comeonin, :phoenix_live_reload,
                     :guardian, :cors_plug, :ja_serializer, :hashids]]
   end
 
@@ -46,7 +46,7 @@ defmodule Mirror.Mixfile do
      {:ja_serializer, "~> 0.11.0"},
      {:hashids, "~> 2.0"},
      {:excoveralls, "~> 0.5", only: :test},
-     {:exrm, "~> 1.0.8"}
+     {:distillery, "~> 0.10"}
     ]
   end
 
