@@ -1,4 +1,3 @@
-#!/usr/bin/env escript
 %% -*- mode: erlang;erlang-indent-level: 4;indent-tabs-mode: nil -*-
 %% ex: ft=erlang ts=4 sw=4 et
 %% -------------------------------------------------------------------
@@ -32,45 +31,36 @@ main(Args) ->
             io:format("~p\n", [rpc:call(TargetNode, init, restart, [], 60000)]);
         ["reboot"] ->
             io:format("~p\n", [rpc:call(TargetNode, init, reboot, [], 60000)]);
-        ["rpc", Module, Function] ->
-            do_rpc(TargetNode, Module, Function, []);
         ["rpc", Module, Function | RpcArgs] ->
-            do_rpc(TargetNode, Module, Function, RpcArgs);
-        ["rpcterms", Module, Function | ArgsAsString] ->
-            do_rpc(TargetNode, Module, Function,
-              consult(lists:flatten(ArgsAsString)));
-        ["eval" | ListOfArgs] ->
-            % shells may process args into more than one, and end up stripping
-            % spaces, so this converts all of that to a single string to parse
-            String = binary_to_list(
-                      list_to_binary(
-                        string:join(ListOfArgs," ")
-                      )
-                    ),
-
-            % then just as a convenience to users, if they forgot a trailing
-            % '.' add it for them.
-            Normalized =
-              case lists:reverse(String) of
-                [$. | _] -> String;
-                R -> lists:reverse([$. | R])
-              end,
-
-            % then scan and parse the string
-            {ok, Scanned, _} = erl_scan:string(Normalized),
-            {ok, Parsed } = erl_parse:parse_exprs(Scanned),
-
-            % and evaluate it on the remote node
-            case rpc:call(TargetNode, erl_eval, exprs, [Parsed, [] ]) of
-                {value, Value, _} ->
-                    io:format ("~p\n",[Value]);
+            case rpc:call(TargetNode, list_to_atom(Module), list_to_atom(Function),
+                          [RpcArgs], 60000) of
+                ok ->
+                    ok;
                 {badrpc, Reason} ->
                     io:format("RPC to ~p failed: ~p\n", [TargetNode, Reason]),
+                    halt(1);
+                _ ->
                     halt(1)
+            end;
+        ["rpcterms", Module, Function] ->
+            case rpc:call(TargetNode, list_to_atom(Module), list_to_atom(Function), [], 60000) of
+                {badrpc, Reason} ->
+                    io:format("RPC to ~p failed: ~p\n", [TargetNode, Reason]),
+                    halt(1);
+                Other ->
+                    io:format("~p\n", [Other])
+            end;
+        ["rpcterms", Module, Function, ArgsAsString] ->
+            case rpc:call(TargetNode, list_to_atom(Module), list_to_atom(Function), consult(ArgsAsString), 60000) of
+                {badrpc, Reason} ->
+                    io:format("RPC to ~p failed: ~p\n", [TargetNode, Reason]),
+                    halt(1);
+                Other ->
+                    io:format("~p\n", [Other])
             end;
         Other ->
             io:format("Other: ~p\n", [Other]),
-            io:format("Usage: nodetool {ping|stop|restart|reboot|rpc|rpcterms|eval [Terms]} [RPC]\n")
+            io:format("Usage: nodetool {ping|stop|restart|reboot}\n")
     end,
     net_kernel:stop().
 
@@ -133,9 +123,17 @@ append_node_suffix(Name, Suffix) ->
 %% Given a string or binary, parse it into a list of terms, ala file:consult/0
 %%
 consult(Str) when is_list(Str) ->
-    consult([], Str, []);
+    [Result] = consult([], Str, []),
+    case is_list(Result) of
+        true  -> Result;
+        false -> [Result]
+    end;
 consult(Bin) when is_binary(Bin)->
-    consult([], binary_to_list(Bin), []).
+    [Result] = consult([], binary_to_list(Bin), []),
+    case is_list(Result) of
+        true  -> Result;
+        false -> [Result]
+    end.
 
 consult(Cont, Str, Acc) ->
     case erl_scan:tokens(Cont, Str, 0) of
@@ -151,14 +149,4 @@ consult(Cont, Str, Acc) ->
             end;
         {more, Cont1} ->
             consult(Cont1, eof, Acc)
-    end.
-
-do_rpc(TargetNode, Module, Function, RpcArgs) ->
-    case rpc:call(TargetNode, list_to_atom(Module), list_to_atom(Function),
-                  RpcArgs, 60000) of
-      {badrpc, Reason} ->
-            io:format("RPC to ~p failed: ~p\n", [TargetNode, Reason]),
-            halt(1);
-       Result ->
-            io:format("~p\n", [Result])
     end.
