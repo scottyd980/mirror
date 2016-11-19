@@ -1,327 +1,232 @@
 #!/bin/sh
 
-set -e
-
-# Set VERBOSE to enable verbose logging of the boot script
-#VERBOSE=true
-if [ ! -z $DEBUG_BOOT ]; then
+if [ -n "${EXRM_INIT_TRACE}" ]; then
     set -x
-fi;
-
-my_readlink_f() {
-    TARGET_FILE="$1"
-    cd $(dirname "$TARGET_FILE")
-    TARGET_FILE=$(basename "$TARGET_FILE")
-
-    # Iterate down a (possible) chain of symlinks
-    while [ -L "$TARGET_FILE" ]
-    do
-        TARGET_FILE=$(readlink "$TARGET_FILE")
-        cd $(dirname "$TARGET_FILE")
-        TARGET_FILE=$(basename "$TARGET_FILE")
-    done
-    # Compute the canonicalized name by finding the physical path 
-    # for the directory we're in and appending the target file.
-    PHYS_DIR=$(pwd -P)
-    RESULT="$PHYS_DIR/$TARGET_FILE"
-    echo "$RESULT"
-}
-
-# Path to this script
-if uname | grep -q 'Darwin'; then
-  # on OSX, best to install coreutils from homebrew or similar
-  # to get greadlink
-  if command -v greadlink >/dev/null 2>&1; then
-    SCRIPT=$(greadlink -f "$0")
-  else
-    SCRIPT=$(my_readlink_f "$0" )
-  fi
-else
-  SCRIPT=$(readlink -f "$0" )
 fi
 
-# Parent directory of this script
-SCRIPT_DIR=$(dirname "${SCRIPT}")
-# Root directory of all releases
-RELEASE_ROOT_DIR=$(dirname $(dirname ${SCRIPT_DIR}))
-
-# Disable flow control for run_erl
-# Flow control can cause several problems. On Linux, if you
-# accidentally hit Ctrl-S (instead of Ctrl-D to detach) and
-# then some other key, the entire beam process will hang when
-# attempting to write to stdout. On Solaris, the beam process
-# will hang on writing if ScrollLock is on.
-RUN_ERL_DISABLE_FLOWCNTRL="${RUN_ERL_DISABLE_FLOWCNTRL:-true}"
-# Name of the release
+SCRIPT_DIR="$(dirname "$0")"
+RELEASE_ROOT_DIR="$(cd "$SCRIPT_DIR/../.." && pwd)"
 REL_NAME="mirror"
-# Current version of the release
-REL_VSN="0.0.1"
-# Current version of ERTS being used
-# If this is not present/unset, it will be detected
-ERTS_VSN="7.3"
-# VM code loading mode, embedded by default, can also be interactive
-# See http://erlang.org/doc/man/code.html
-CODE_LOADING_MODE="${CODE_LOADING_MODE:-embedded}"
-# Path to start_erl.data
-START_ERL_DATA="$RELEASE_ROOT_DIR/releases/start_erl.data"
-# Directory containing the current version of this release
-REL_DIR="$RELEASE_ROOT_DIR/releases/$REL_VSN"
-# The lib directory for this release
+RELEASES_DIR="$RELEASE_ROOT_DIR/releases"
+REL_VSN=$(cat "$RELEASES_DIR"/start_erl.data | cut -d' ' -f2)
+ERTS_VSN=$(cat "$RELEASES_DIR"/start_erl.data | cut -d' ' -f1)
+REL_DIR="$RELEASES_DIR/$REL_VSN"
 REL_LIB_DIR="$RELEASE_ROOT_DIR/lib"
-# Options passed to erl
-ERL_OPTS=""
-# When stdout is piped to a file, this is the directory those files will
-# be stored in. defaults to /log in the release root directory
+ERL_OPTS=" ${ERL_OPTS}"
+CONFORM_OPTS=""
+PIPE_DIR="$RELEASE_ROOT_DIR/tmp/erl_pipes/mirror/"
+ERTS_DIR=""
+ROOTDIR=""
 
-# RELEASE_MUTABLE_DIR
-RELEASE_MUTABLE_DIR="${RELEASE_MUTABLE_DIR:-$RELEASE_ROOT_DIR/var}"
+GENERATED_CONFIG_DIR="${RELEASE_ROOT_DIR}/running-config"
+# Check for $RELEASE_MUTABLE_DIR
+if [ -n "${RELEASE_MUTABLE_DIR}" ]; then
+    PIPE_DIR="${RELEASE_MUTABLE_DIR}/erl_pipes/"
+    RUNNER_LOG_DIR="${RUNNER_LOG_DIR:-${RELEASE_MUTABLE_DIR}/log}"
+    GENERATED_CONFIG_DIR="${RELEASE_MUTABLE_DIR}/running-config"
+fi
 
-RUNNER_LOG_DIR="${RUNNER_LOG_DIR:-$RELEASE_MUTABLE_DIR/log}"
-# A string of extra options to pass to erl, here for plugins
-EXTRA_OPTS=""
+RUNNER_LOG_DIR="${RUNNER_LOG_DIR:-$RELEASE_ROOT_DIR/log}"
 
-# Pre-start/stop event hook paths
-PRE_START_HOOK="$REL_DIR/hooks/pre_start"
-POST_START_HOOK="$REL_DIR/hooks/post_start"
-PRE_STOP_HOOK="$REL_DIR/hooks/pre_stop"
-POST_STOP_HOOK="$REL_DIR/hooks/post_stop"
-
-# Get node pid
-get_pid() {
-    if output="$(nodetool rpcterms os getpid)"
-    then
-        echo "$output" | sed -e 's/"//g'
-        return 0
-    else
-        echo "$output"
-        return 1
-    fi
-}
-
-# Generate a unique nodename
-gen_nodename() {
-    id="longname$(gen_id)-${NAME}"
-    "$BINDIR/erl" -boot start_clean -eval '[Host] = tl(string:tokens(atom_to_list(node()),"@")), io:format("~s~n", [Host]), halt()' -noshell ${NAME_TYPE} $id
-}
-
-# Generate a random id
-gen_id() {
-    od -t x -N 4 /dev/urandom | head -n1 | awk '{print $2}'
-}
-
-# Control a node
-# Use like `nodetool "ping"`
-nodetool() {
-    command="$1"; shift
-
-    "$ERTS_DIR/bin/escript" "$ROOTDIR/bin/nodetool" "$NAME_TYPE" "$NAME" \
-                            -setcookie "$COOKIE" "$command" $@
-}
-
-# Run an escript in the node's environment
-# Use like `escript "path/to/escript"`
-escript() {
-    shift; scriptpath="$1"; shift
-    export RELEASE_ROOT_DIR
-
-    "$ERTS_DIR/bin/escript" "$ROOTDIR/$scriptpath" $@
-}
-
-# Private. Load target cookie, either from vm.args or $HOME/.cookie
-_load_cookie() {
-    COOKIE_ARG="$(grep '^-setcookie' "$VMARGS_PATH" || true)"
-    DEFAULT_COOKIE_FILE="$HOME/.erlang.cookie"
-    if [ -z "$COOKIE_ARG" ]; then
-        if [ -f "$DEFAULT_COOKIE_FILE" ]; then
-            COOKIE="$(cat "$DEFAULT_COOKIE_FILE")"
-        fi
-    else
-        # Extract cookie name from COOKIE_ARG
-        COOKIE="$(echo "$COOKIE_ARG" | awk '{print $2}')"
-    fi
-}
-
-# Private. Ensure that cookie is set.
-_check_cookie() {
-    # Attempt reloading cookie in case it has been set in a hook
-    if [ -z "$COOKIE" ]; then
-        _load_cookie
-    fi
-    # Die if cookie is still not set, as connecting via distribution will fail
-    if [ -z "$COOKIE" ]; then
-        printf "a secret cookie must be provided in one of the following ways:\n  - with vm.args using the -setcookie parameter,\n  or\n  by writing the cookie to '$DEFAULT_COOKIE_FILE', with permissions set to 0400"
-        exit 1
-    fi
-}
-
-# Private. For determining the version of ERTS available to the release
-_detect_erts_vsn() {
-    "$BINDIR/erl" -boot start_clean -eval 'Ver = erlang:system_info(version), io:format("~s~n", [Ver]), halt()' -noshell
-}
-
-# Private. Gets a list of code paths for this release
-_get_code_paths() {
-    "$ERTS_DIR/bin/escript" "$ROOTDIR/bin/release_utils.escript" "get_code_paths" "$ROOTDIR" "$ERTS_DIR" "$REL_NAME" "$REL_VSN"
-}
-
-# Private. For setting ERTS_DIR and ROOTDIR
-_find_erts_dir() {
+find_erts_dir() {
     __erts_dir="$RELEASE_ROOT_DIR/erts-$ERTS_VSN"
     if [ -d "$__erts_dir" ]; then
         ERTS_DIR="$__erts_dir";
         ROOTDIR="$RELEASE_ROOT_DIR"
     else
-        set +e # temporarily disable so we can display a nice error message to the user
         __erl="$(which erl)"
-        set -e
-        if [ -z "${__erl}"  ]; then
-          echo 'erlang runtime not found. If erlang is installed check your $PATH. aborting.'
-          exit 1
-        fi
-        code="io:format(\"~s\", [code:root_dir()]), halt()."
-        __erl_root="$("$__erl" -noshell -eval "$code")"
-        ERTS_DIR="$__erl_root/erts-$ERTS_VSN"
+        __code="io:format(\"~s\", [code:root_dir()])."
+        __erl_root="$("$__erl" -noshell -eval "$__code" -s init stop)"
+        ERTS_DIR=$(ls -d $__erl_root/erts-* | sort -t '.' -k 1,1 -k 2,2 -k 3,3 -k 4,4 -k 5,5 -g | tail -n 1)
         ROOTDIR="$__erl_root"
     fi
 }
 
-# Private. Open a shell on a remote node
-_rem_sh() {
+# Connect to a remote node
+relx_rem_sh() {
     # Generate a unique id used to allow multiple remsh to the same node
     # transparently
-    id="remsh$(gen_id)-${NAME}"
+    id="remsh$(relx_gen_id)-${NAME}"
 
-    # Get the node's ticktime so that we use the same thing.
-    TICKTIME="$(nodetool rpcterms net_kernel get_net_ticktime)"
+    # Get the node's ticktime so that we use the same thing
+    TICKTIME="$(relx_nodetool rpcterms net_kernel get_net_ticktime)"
 
-    # Setup remote shell command to control node
-    if [ ! -z "$USE_ERL_SHELL" ]; then
-        exec "$BINDIR/erl" \
-            -hidden \
-            -boot start_clean -boot_var ERTS_LIB_DIR "$ERTS_LIB_DIR" \
-            -kernel net_ticktime $TICKTIME \
-            "$NAME_TYPE" "$id" -remsh "$NAME" -setcookie "$COOKIE"
-    else
-        __code_paths=$(_get_code_paths)
-        exec "$BINDIR/erl" \
-            -pa "$CONSOLIDATED_DIR" \
-            ${__code_paths} \
-            -hidden -noshell \
-            -boot start_clean -boot_var ERTS_LIB_DIR "$ERTS_LIB_DIR" \
-            -kernel net_ticktime $TICKTIME \
-            -user Elixir.IEx.CLI "$NAME_TYPE" "$id" -setcookie "$COOKIE" \
-            -extra --no-halt +iex -"$NAME_TYPE" "$id" --cookie "$COOKIE" --remsh "$NAME"
-    fi
+    # Setup Erlang remote shell command to control node
+    #exec "$ERTS_DIR/bin/erl" "$NAME_TYPE" "$id" -remsh "$NAME" -boot start_clean \
+         #-setcookie "$COOKIE" -kernel net_ticktime "$TICKTIME"
+
+    # Setup Elixir remote shell command to control node
+    exec "$BINDIR/erl" \
+        -pa "$ROOTDIR"/lib/*/ebin -pa "$CONSOLIDATED_DIR" \
+        -hidden -noshell \
+        -boot start_clean -boot_var ERTS_LIB_DIR "$ERTS_LIB_DIR" \
+        -kernel net_ticktime "$TICKTIME" \
+        -user Elixir.IEx.CLI "$NAME_TYPE" "$id" -setcookie "$COOKIE" \
+        -extra --no-halt +iex -"$NAME_TYPE" "$id" --cookie "$COOKIE" --remsh "$NAME"
+}
+
+# Generate a random id
+relx_gen_id() {
+    od -t x4 /dev/urandom | head -n1 | cut -d ' ' -f2
+}
+
+# Control a node - set PEERNAME to control a peer node
+relx_nodetool() {
+    command="$1"; shift
+    name=${PEERNAME:-$NAME}
+    "$BINDIR/escript" "$ROOTDIR/bin/nodetool" "$NAME_TYPE" "$name" \
+                                 -setcookie "$COOKIE" "$command" "$@"
+}
+
+# Run an escript in the node's environment
+relx_escript() {
+    shift; __scriptpath="$1"; shift
+    export RELEASE_ROOT_DIR
+    "$BINDIR/escript" "$ROOTDIR/$__scriptpath" $@
 }
 
 # Output a start command for the last argument of run_erl
-_start_command() {
-    printf "exec \"%s\" \"%s\" -- %s %s" "$RELEASE_ROOT_DIR/bin/$REL_NAME" \
-           "$START_OPTION" "${ARGS}" "${EXTRA_OPTS}"
+relx_start_command() {
+    printf "exec \"%s\" \"%s\"" "$RELEASE_ROOT_DIR/bin/$REL_NAME" \
+           "$START_OPTION"
 }
 
-# Do a textual replacement of ${VAR} occurances in $1 and pipe to $2
-_replace_os_vars() {
-    awk '
-        function escape(s) {
-            gsub(/'\&'/, "\\\\&", s);
-            return s;
-        }
-        {
-            while(match($0,"[$]{[^}]*}")) {
-                var=substr($0,RSTART+2,RLENGTH-3);
-                gsub("[$]{"var"}", escape(ENVIRON[var]))
-            }
-        }1' < "$1" > "$1.bak"
-    mv -- "$1.bak" "$1"
+# Convert .conf to sys.config using conform escript
+generate_config() {
+    __schema_file="$REL_DIR/$REL_NAME.schema.exs"
+    if [ -z "$RELEASE_CONFIG_FILE" ]; then
+        __conform_file="$RELEASE_CONFIG_DIR/$REL_NAME.conf"
+    else
+        if [ -r "$RELEASE_CONFIG_FILE" ]; then
+            __conform_file="$RELEASE_CONFIG_FILE"
+        else
+            echo "$RELEASE_CONFIG_FILE not found"
+            exit 1
+        fi
+    fi
+    if [ -f "$__schema_file" ]; then
+        if [ -f "$__conform_file" ]; then
+            __running_conf="$GENERATED_CONFIG_DIR/$REL_NAME.conf"
+            CONFORM_OPTS="-conform_schema ${__schema_file} -conform_config ${__conform_file} -running_conf ${__running_conf}"
+
+            # always copy release-config to running-config
+            echo "copying $__conform_file to $__running_conf ..."
+            cp "$__conform_file" "$__running_conf"
+            __conform_file="$__running_conf"
+
+            echo "using $__conform_file to populate \"$GENERATED_CONFIG_DIR\"."
+            __conform="$REL_DIR/conform"
+            # Handle the case where the current version did not bundle conform in the release
+            if [ ! -f "$__conform" ]; then
+                __conform="$ROOTDIR/bin/conform"
+            fi
+            result="$("$BINDIR/escript" "$__conform" --conf "$__conform_file" --schema "$__schema_file" --config "$RELEASE_SYS_CONFIG" --output-dir "$GENERATED_CONFIG_DIR")"
+            exit_status="$?"
+            if [ "$exit_status" -ne 0 ]; then
+                exit "$exit_status"
+            fi
+            if [ ! -r "${GENERATED_CONFIG_DIR}/sys.config" ]; then
+                echo "conform succeeded, but not sys.config generated at \"${GENERATED_CONFIG_DIR}/sys.config\"."
+                exit 1
+            fi
+        else
+            echo "$__conform_file not found in $RELEASE_CONFIG_DIR"
+            exit 1
+        fi
+    else
+        cp $RELEASE_SYS_CONFIG "$GENERATED_CONFIG_DIR/sys.config"
+    fi
+    if [ ! -f "$VMARGS_PATH" ]; then
+        cp "$RELEASE_CONFIG_DIR/vm.args" "$GENERATED_CONFIG_DIR/vm.args"
+        VMARGS_PATH="$GENERATED_CONFIG_DIR/vm.args"
+    fi
 }
 
-# If TERM is not set, set it to xterm
-if [ -z "$TERM" ]; then
-    export TERM=xterm
-fi
+# Make directory for mutable configs exists
+mkdir -pv "$GENERATED_CONFIG_DIR"
 
-# If ERTS_VSN is not set, detect it
-if [ -z "$ERTS_VSN" ]; then
-    ERTS_VSN="$(_detect_erts_vsn)"
-    echo "$ERTS_VSN $REL_VSN" > "$START_ERL_DATA"
-fi
-
-# Allow override of where to read configuration from
-# By default it's RELEASE_ROOT_DIR
+# Use configs from environment if defined, otherwise releases/VSN
 if [ -z "$RELEASE_CONFIG_DIR" ]; then
-    RELEASE_CONFIG_DIR="$RELEASE_ROOT_DIR"
+    RELEASE_CONFIG_DIR=$REL_DIR
 fi
 
-# Make sure directories exist
-mkdir -p "$RELEASE_MUTABLE_DIR"
-echo "Files in this directory are regenerated frequently, edits will be lost" \
-    > "$RELEASE_MUTABLE_DIR/WARNING_README"
+SYS_CONFIG="$GENERATED_CONFIG_DIR/sys.config"
+RELEASE_SYS_CONFIG="$RELEASE_CONFIG_DIR/sys.config"
+if [ -z "$VMARGS_PATH" ]; then
+  VMARGS_PATH="$GENERATED_CONFIG_DIR/vm.args"
+fi
+
+# If first run, take dafault sys.config and vm.args
+if [ ! -f "$SYS_CONFIG" ]; then
+    cp $RELEASE_SYS_CONFIG "$GENERATED_CONFIG_DIR/sys.config"
+fi
+if [ ! -f "$VMARGS_PATH" ]; then
+    cp "$RELEASE_CONFIG_DIR/vm.args" "$GENERATED_CONFIG_DIR/vm.args"
+fi
+
+if [ $RELX_REPLACE_OS_VARS ]; then
+    awk '{while(match($0,"[$]{[^}]*}")) {var=substr($0,RSTART+2,RLENGTH -3);gsub("[$]{"var"}",ENVIRON[var])}}1' < $VMARGS_PATH > $VMARGS_PATH.2.config
+    VMARGS_PATH=$VMARGS_PATH.2.config
+fi
+
+# Make sure log directory exists
 mkdir -p "$RUNNER_LOG_DIR"
 
-# Set VMARGS_PATH, the path to the vm.args file to use
-# Use $RELEASE_CONFIG_DIR/vm.args if exists, otherwise releases/VSN/vm.args
-if [ -z "$VMARGS_PATH" ]; then
-    if [ -f "$RELEASE_CONFIG_DIR/vm.args" ]; then
-        VMARGS_PATH="$RELEASE_CONFIG_DIR/vm.args"
-    else
-        VMARGS_PATH="$REL_DIR/vm.args"
-    fi
-fi
-if [ "$VMARGS_PATH" != "$RELEASE_MUTABLE_DIR/vm.args" ]; then
-    echo "#### Generated - edit/create $RELEASE_CONFIG_DIR/vm.args instead." \
-        >  "$RELEASE_MUTABLE_DIR/vm.args"
-    cat  "$VMARGS_PATH"                              \
-        >> "$RELEASE_MUTABLE_DIR/vm.args"
-    VMARGS_PATH=$RELEASE_MUTABLE_DIR/vm.args
-fi
-if [ $REPLACE_OS_VARS ]; then
-    _replace_os_vars "$VMARGS_PATH"
+# Make sure the current user has write permission
+if ! [ -w $RUNNER_LOG_DIR ] ; then
+    echo "Unable to write to $RUNNER_LOG_DIR. Quitting."
+    exit 1
 fi
 
-# Set SYS_CONFIG_PATH, the path to the sys.config file to use
-# Use $RELEASE_CONFIG_DIR/sys.config if exists, otherwise releases/VSN/sys.config
-if [ -z "$SYS_CONFIG_PATH" ]; then
-    if [ -f "$RELEASE_CONFIG_DIR/sys.config" ]; then
-        SYS_CONFIG_PATH="$RELEASE_CONFIG_DIR/sys.config"
-    else
-        SYS_CONFIG_PATH="$REL_DIR/sys.config"
-    fi
-fi
-if [ "$SYS_CONFIG_PATH" != "$RELEASE_MUTABLE_DIR/sys.config" ]; then
-    echo "%% Generated - edit/create $RELEASE_CONFIG_DIR/sys.config instead." \
-        >  "$RELEASE_MUTABLE_DIR/sys.config"
-    cat  "$SYS_CONFIG_PATH"                              \
-        >> "$RELEASE_MUTABLE_DIR/sys.config"
-    SYS_CONFIG_PATH=$RELEASE_MUTABLE_DIR/sys.config
-fi
-if [ $REPLACE_OS_VARS ]; then
-    _replace_os_vars "$SYS_CONFIG_PATH"
+if [ $RELX_REPLACE_OS_VARS ]; then
+    awk '{while(match($0,"[$]{[^}]*}")) {var=substr($0,RSTART+2,RLENGTH -3);gsub("[$]{"var"}",ENVIRON[var])}}1' < $SYS_CONFIG > $SYS_CONFIG.2.config
+    SYS_CONFIG=$SYS_CONFIG.2.config
 fi
 
 # Extract the target node name from node.args
-# Should be `-sname somename` or `-name somename@somehost`
-NAME_ARG=$(egrep '^-s?name' "$VMARGS_PATH" || true)
+NAME_ARG=$(egrep '^-s?name' "$VMARGS_PATH")
 if [ -z "$NAME_ARG" ]; then
     echo "vm.args needs to have either -name or -sname parameter."
     exit 1
 fi
 
 # Extract the name type and name from the NAME_ARG for REMSH
-# NAME_TYPE should be -name or -sname
 NAME_TYPE="$(echo "$NAME_ARG" | awk '{print $1}')"
-# NAME will be either `somename` or `somename@somehost`
 NAME="$(echo "$NAME_ARG" | awk '{print $2}')"
 
-# Where the pipe will be stored when using `start`
-# This is used so you can attach the running application to the current
-# shell using `attach`
-PIPE_DIR="${PIPE_DIR:-$RELEASE_MUTABLE_DIR/erl_pipes/$NAME/}"
+# User can specify an sname without @hostname
+# This will fail when creating remote shell
+# So here we check for @ and add @hostname if missing
+case $NAME in
+    *@*)
+        # Nothing to do
+        ;;
+    *)
+        # Add @hostname
+        case $NAME_TYPE in
+            -sname)
+                NAME=$NAME@`hostname -s`
+                ;;
+            -name)
+                NAME=$NAME@`hostname -f`
+                ;;
+        esac
+        ;;
+esac
+
+PIPE_DIR="${PIPE_DIR:-/tmp/erl_pipes/$NAME/}"
 
 # Extract the target cookie
-_load_cookie
+COOKIE_ARG="$(grep '^-setcookie' "$VMARGS_PATH")"
+if [ -z "$COOKIE_ARG" ]; then
+    echo "vm.args needs to have a -setcookie parameter."
+    exit 1
+fi
 
-_find_erts_dir
+# Extract cookie name from COOKIE_ARG
+COOKIE="$(echo "$COOKIE_ARG" | awk '{print $2}')"
+
+find_erts_dir
 export ROOTDIR="$RELEASE_ROOT_DIR"
 export BINDIR="$ERTS_DIR/bin"
 export EMU="beam"
@@ -332,30 +237,19 @@ CONSOLIDATED_DIR="$ROOTDIR/lib/${REL_NAME}-${REL_VSN}/consolidated"
 
 cd "$ROOTDIR"
 
-# User can specify an sname without @hostname
-# This will fail when creating remote shell
-# So here we check for @ and add @hostname if missing
-case $NAME in
-    *@*)
-        # Nothing to do
-        ;;
-    *)
-        NAME=$NAME@$(gen_nodename)
-        ;;
-esac
-
 # Check the first argument for instructions
 case "$1" in
     start|start_boot)
-
+        # Make sure the config is generated first
+        generate_config
         # Make sure there is not already a node running
         #RES=`$NODETOOL ping`
         #if [ "$RES" = "pong" ]; then
         #    echo "Node is already running!"
         #    exit 1
         #fi
-        # Save this for later.
-        CMD=$1
+        # Save this for later
+        CMD="$1"
         case "$1" in
             start)
                 shift
@@ -368,10 +262,7 @@ case "$1" in
                 HEART_OPTION="start_boot"
                 ;;
         esac
-        ARGS="$@"
         RUN_PARAM="$@"
-
-        [ -f "$PRE_START_HOOK" ] && . "$PRE_START_HOOK"
 
         # Set arguments for the heart command
         set -- "$SCRIPT_DIR/$REL_NAME" "$HEART_OPTION"
@@ -383,78 +274,130 @@ case "$1" in
 
         mkdir -p "$PIPE_DIR"
 
-        _check_cookie
+        # Make sure the current user has write permission
+        if ! [ -w $PIPE_DIR ] ; then
+            echo "Unable to write to $PIPE_DIR. Quitting."
+            exit 1
+        fi
 
         "$BINDIR/run_erl" -daemon "$PIPE_DIR" "$RUNNER_LOG_DIR" \
-                          "$(_start_command)"
-
-        [ -f "$POST_START_HOOK" ] && . "$POST_START_HOOK"
+                          "$(relx_start_command)"
         ;;
 
     stop)
-        _check_cookie
-        [ -f "$PRE_STOP_HOOK" ] && . "$PRE_STOP_HOOK"
         # Wait for the node to completely stop...
-        PID="$(get_pid)"
-        if ! nodetool "stop"; then
-            exit 1
+        case $(uname -s) in
+            Linux|Darwin|FreeBSD|DragonFly|NetBSD|OpenBSD)
+                # PID COMMAND
+                PID=$(ps ax -o pid= -o command=|
+                      grep "$RELEASE_ROOT_DIR/.*/[b]eam"|awk '{print $1}')
+                ;;
+            SunOS)
+                # PID COMMAND
+                PID=$(ps -ef -o pid= -o args=|
+                      grep "$RELEASE_ROOT_DIR/.*/[b]eam"|awk '{print $1}')
+                ;;
+            CYGWIN*)
+                # UID PID PPID TTY STIME COMMAND
+                PID=$(ps -efw|grep "$RELEASE_ROOT_DIR/.*/[b]eam"|awk '{print $2}')
+                ;;
+        esac
+        relx_nodetool "stop"
+        exit_status=$?
+        if [ "$exit_status" -ne 0 ]; then
+            exit $exit_status
         fi
-        while $(kill -s 0 "$PID" 2>/dev/null);
+        # ensuring PID is not empty
+        if [ -z "$PID" ]; then
+            exit 0
+        fi
+        while $(kill -0 "$PID" 2>/dev/null);
         do
             sleep 1
         done
-        [ -f "$POST_STOP_HOOK" ] && . "$POST_STOP_HOOK"
         ;;
 
     restart)
-        [ -f "$PRE_START_HOOK" ] && . "$PRE_START_HOOK"
-        _check_cookie
+        # Make sure the config is generated first
+        generate_config
         ## Restart the VM without exiting the process
-        if ! nodetool "restart"; then
-            exit 1
+        relx_nodetool "restart"
+        exit_status=$?
+        if [ "$exit_status" -ne 0 ]; then
+            exit $exit_status
         fi
         ;;
 
     reboot)
-        [ -f "$PRE_START_HOOK" ] && . "$PRE_START_HOOK"
-        _check_cookie
+        # Make sure the config is generated first
+        generate_config
         ## Restart the VM completely (uses heart to restart it)
-        if ! nodetool "reboot"; then
-            exit 1
-        fi
-        ;;
-
-    pid)
-        ## Get the VM's pid
-        _check_cookie
-        if ! get_pid; then
-            exit 1
+        relx_nodetool "reboot"
+        exit_status=$?
+        if [ "$exit_status" -ne 0 ]; then
+            exit $exit_status
         fi
         ;;
 
     ping)
-        _check_cookie
         ## See if the VM is alive
-        if ! nodetool "ping"; then
-            exit 1
+        relx_nodetool "ping"
+        exit_status=$?
+        if [ "$exit_status" -ne 0 ]; then
+            exit $exit_status
+        fi
+        ;;
+
+    pingpeer)
+        PEERNAME=$2 relx_nodetool "ping"
+        exit_status=$?
+        if [ "$exit_status" -ne 0 ]; then
+            exit $exit_status
         fi
         ;;
 
     escript)
-        _check_cookie
+        # Make sure the config is generated first
+        generate_config
         ## Run an escript under the node's environment
-        if ! escript $@; then
+        relx_escript $@
+        exit_status=$?
+        if [ "$exit_status" -ne 0 ]; then
+            exit $exit_status
+        fi
+        ;;
+
+    rpc)
+        ## Execute a command in MFA format on the remote node
+        if [ -z "$3" ]; then
+            echo "RPC requires module, function, and a string of the arguments to be evaluated."
+            echo "The argument string must evaluate to a valid Erlang term."
+            echo "Examples: rpc calendar valid_date \"{2013,3,12}.\""
+            echo "          rpc erlang now"
             exit 1
+        fi
+        if [ -z "$4" ]; then
+            relx_nodetool "rpcterms" "$2" "$3"
+        else
+            module="$2"
+            function="$3"
+            shift 3
+            args=$@
+            relx_nodetool "rpcterms" "$module" "$function" "$args"
+        fi
+        exit_status="$?"
+        if [ "$exit_status" -ne 0 ]; then
+            exit $exit_status
         fi
         ;;
 
     attach)
-        _check_cookie
-
         # Make sure a node IS running
-        if ! nodetool "ping" > /dev/null; then
+        relx_nodetool "ping" > /dev/null
+        exit_status=$?
+        if [ "$exit_status" -ne 0 ]; then
             echo "Node is not running!"
-            exit 1
+            exit $exit_status
         fi
 
         shift
@@ -462,16 +405,16 @@ case "$1" in
         ;;
 
     remote_console)
-        _check_cookie
-
         # Make sure a node IS running
-        if ! nodetool "ping" > /dev/null; then
+        relx_nodetool "ping" > /dev/null
+        exit_status=$?
+        if [ "$exit_status" -ne 0 ]; then
             echo "Node is not running!"
-            exit 1
+            exit $exit_status
         fi
 
         shift
-        _rem_sh
+        relx_rem_sh
         ;;
 
     upgrade|downgrade|install)
@@ -482,16 +425,74 @@ case "$1" in
             exit 1
         fi
 
-        _check_cookie
-
         # Make sure a node IS running
-        if ! nodetool "ping" > /dev/null; then
+        relx_nodetool "ping" > /dev/null
+        exit_status=$?
+        if [ "$exit_status" -ne 0 ]; then
             echo "Node is not running!"
-            exit 1
+            exit $exit_status
         fi
 
-        exec "$BINDIR/escript" "$ROOTDIR/bin/release_utils.escript" \
-             "install_release" "$REL_NAME" "$NAME_TYPE"  "$NAME" "$COOKIE" "$2"
+        # We have to unpack the release first in order to make sure the configuration
+        # is properly updated. This also destroys the .tar.gz package (release_handler does)
+        "$BINDIR/escript" "$ROOTDIR/bin/install_upgrade.escript" \
+             "unpack" "$REL_NAME" "$NAME_TYPE" "$NAME" "$COOKIE" "$2"
+
+        echo "Generating vm.args/sys.config for upgrade..."
+        __release_conf="$RELEASES_DIR/$2/$REL_NAME.conf"
+        __release_schema="$RELEASES_DIR/$2/$REL_NAME.schema.exs"
+        __release_config="$RELEASES_DIR/$2/sys.config"
+        __release_args="$RELEASES_DIR/$2/vm.args"
+        __running_conf="$GENERATED_CONFIG_DIR/$REL_NAME.conf"
+        __running_config="$GENERATED_CONFIG_DIR/sys.config"
+        __running_args="$GENERATED_CONFIG_DIR/vm.args"
+        # Make sure the .conf is copied to the running-config directory
+        if [ -f "$__release_conf" ]; then
+            # Preserve previous conf for reference
+            if [ -f "$__running_conf" ]; then
+                cp "$__running_conf" "$__running_conf.last"
+            fi
+            cp "$__release_conf" "$__running_conf"
+        fi
+        __conform="$RELEASES_DIR/$2/conform"
+        # Handle the case where the target version did not bundle conform in the release
+        if [ ! -f "$__conform" ]; then
+            __conform="$ROOTDIR/bin/conform"
+        fi
+        # Generate the sys.config for the release
+        # If a .conf is not provided, then preserve the last sys.config for reference, and copy the new sys.config
+        # to running-config.
+        if [ -f "$__running_conf" ]; then
+            if [ -f "$__release_schema" ]; then
+                result="$("$BINDIR/escript" "$__conform" --conf "$__running_conf" --schema "$__release_schema" --config "$__release_config" --output-dir "$RELEASES_DIR/$2")"
+                exit_status="$?"
+                if [ "$exit_status" -ne 0 ]; then
+                    echo "Could not generate the sys.config for the new release. Please review the following files:"
+                    echo "$REL_NAME.conf: $__running_conf"
+                    echo "$REL_NAME.schema.exs: $__release_schema"
+                    echo "sys.config: $__release_config"
+                    exit "$exit_status"
+                else
+                  cp "$__release_config" "$__running_config"
+                fi
+            fi
+        else
+            if [ -f "$__running_config" ]; then
+                cp "$__running_config" "$__running_config.last"
+                cp "$__release_config" "$__running_config"
+            fi
+        fi
+        echo "sys.config ready!"
+        if [ -f "$__running_args" ]; then
+          cp "$__release_args" "$__release_args.orig"
+          cp "$__running_args" "$__release_args"
+        else
+          cp "$__release_args" "$__running_args"
+        fi
+        echo "vm.args ready!"
+
+        exec "$BINDIR/escript" "$ROOTDIR/bin/install_upgrade.escript" \
+             "install" "$REL_NAME" "$NAME_TYPE" "$NAME" "$COOKIE" "$2"
         ;;
 
     unpack)
@@ -502,34 +503,34 @@ case "$1" in
             exit 1
         fi
 
-        _check_cookie
-
         # Make sure a node IS running
-        if ! nodetool "ping" > /dev/null; then
+        if ! relx_nodetool "ping" > /dev/null; then
             echo "Node is not running!"
             exit 1
         fi
 
-        exec "$BINDIR/escript" "$ROOTDIR/bin/release_utils.escript" \
-             "unpack_release" "$REL_NAME" "$NAME_TYPE" "$NAME" "$COOKIE" "$2"
+        exec "$BINDIR/escript" "$ROOTDIR/bin/install_upgrade.escript" \
+             "unpack" "$REL_NAME" "$NAME_TYPE" "$NAME" "$COOKIE" "$2"
         ;;
 
     console|console_clean|console_boot)
+        # Make sure the config is generated first
+        generate_config
         # .boot file typically just $REL_NAME (ie, the app name)
         # however, for debugging, sometimes start_clean.boot is useful.
         # For e.g. 'setup', one may even want to name another boot script.
+        __console_flags=""
         case "$1" in
             console)
+                __console_flags="-mode embedded"
                 if [ -f "$REL_DIR/$REL_NAME.boot" ]; then
-                  BOOTFILE="$REL_DIR/$REL_NAME"
+                    BOOTFILE="$REL_DIR/$REL_NAME"
                 else
-                  BOOTFILE="$REL_DIR/start"
+                    BOOTFILE="$REL_DIR/start"
                 fi
                 ;;
             console_clean)
                 BOOTFILE="$ROOTDIR/bin/start_clean"
-                __code_paths=$(_get_code_paths)
-                EXTRA_CODE_PATHS=${_code_paths}
                 ;;
             console_boot)
                 shift
@@ -547,51 +548,42 @@ case "$1" in
         # Store passed arguments since they will be erased by `set`
         ARGS="$@"
 
-        # Start the VM, executing pre_start hook along
-        # the way. We can't run the post_start hook because
-        # the console will crash with no TTY attached
-        [ -f "$PRE_START_HOOK" ] && . "$PRE_START_HOOK"
-
-        _check_cookie
-
         # Build an array of arguments to pass to exec later on
         # Build it here because this command will be used for logging.
         set -- "$BINDIR/erlexec" \
-            -boot "$BOOTFILE" \
+            -boot "$BOOTFILE" -config "$SYS_CONFIG" \
             -boot_var ERTS_LIB_DIR "$ERTS_LIB_DIR" \
             -env ERL_LIBS "$REL_LIB_DIR" \
             -pa "$CONSOLIDATED_DIR" \
-            ${EXTRA_CODE_PATHS} \
             -args_file "$VMARGS_PATH" \
-            -config "$SYS_CONFIG_PATH" \
-            -mode "$CODE_LOADING_MODE" \
+            ${__console_flags} \
             ${ERL_OPTS} \
-            -user Elixir.IEx.CLI \
-            -extra --no-halt +iex
+            ${CONFORM_OPTS} \
+            -user Elixir.IEx.CLI -extra --no-halt +iex
 
         # Dump environment info for logging purposes
-        if [ ! -z $VERBOSE ]; then
-            echo "Exec: $@" -- ${1+$ARGS} ${EXTRA_OPTS}
-            echo "Root: $ROOTDIR"
+        echo "Exec: $@" -- ${1+$ARGS}
+        echo "Root: $ROOTDIR"
 
-            # Log the startup
-            echo "$RELEASE_ROOT_DIR"
-        fi;
-
+        # Log the startup
+        echo "$RELEASE_ROOT_DIR"
         logger -t "$REL_NAME[$$]" "Starting up"
 
-        exec "$@" -- ${1+$ARGS} ${EXTRA_OPTS}
+        # Start the VM
+        exec "$@" -- ${1+$ARGS}
         ;;
 
     foreground)
+        # Make sure the config is generated first
+        generate_config
         # start up the release in the foreground for use by runit
         # or other supervision services
 
-        [ -f "$REL_DIR/$REL_NAME.boot" ] && BOOTFILE="$REL_NAME" || BOOTFILE=start
+        [ -f "$REL_DIR/$REL_NAME.boot" ] && BOOTFILE="$REL_NAME" || BOOTFILE="start"
         FOREGROUNDOPTIONS="-noshell -noinput +Bd"
 
         # Setup beam-required vars
-        EMU=beam
+        EMU="beam"
         PROGNAME="${0#*/}"
 
         export EMU
@@ -600,74 +592,29 @@ case "$1" in
         # Store passed arguments since they will be erased by `set`
         ARGS="$@"
 
-        # Start the VM, executing pre and post start hooks
-        [ -f "$PRE_START_HOOK" ] && . "$PRE_START_HOOK"
-
-        _check_cookie
-
         # Build an array of arguments to pass to exec later on
         # Build it here because this command will be used for logging.
         set -- "$BINDIR/erlexec" $FOREGROUNDOPTIONS \
-            -boot "$REL_DIR/$BOOTFILE" \
+            -boot "$REL_DIR/$BOOTFILE" -mode embedded -config "$SYS_CONFIG" \
             -boot_var ERTS_LIB_DIR "$ERTS_LIB_DIR" \
             -env ERL_LIBS "$REL_LIB_DIR" \
             -pa "$CONSOLIDATED_DIR" \
-            -args_file "$VMARGS_PATH" \
-            -config "$SYS_CONFIG_PATH" \
-            -mode "$CODE_LOADING_MODE" \
             ${ERL_OPTS} \
-            -extra ${EXTRA_OPTS}
+            ${CONFORM_OPTS} \
+            -args_file "$VMARGS_PATH"
 
         # Dump environment info for logging purposes
-        if [ ! -z $VERBOSE ]; then
-            echo "Exec: $@" -- ${1+$ARGS}
-            echo "Root: $ROOTDIR"
-        fi;
+        echo "Exec: $@" -- ${1+$ARGS}
+        echo "Root: $ROOTDIR"
 
-        "$@" -- ${1+$ARGS} &
-        __bg_pid=$!
-        [ -f "$POST_START_HOOK" ] && . "$POST_START_HOOK"
-        wait $__bg_pid
+        # Start the VM
+        exec "$@" -- ${1+$ARGS}
         ;;
-    rpc)
-        _check_cookie
 
-        # Make sure a node IS running
-        if ! nodetool "ping" > /dev/null; then
-            echo "Node is not running!"
-            exit 1
-        fi
-
-        shift
-
-        nodetool rpc $@
-        ;;
-    rpcterms)
-        _check_cookie
-
-        # Make sure a node IS running
-        if ! nodetool "ping" > /dev/null; then
-            echo "Node is not running!"
-            exit 1
-        fi
-
-        shift
-
-        nodetool rpcterms $@
-        ;;
-    eval)
-        _check_cookie
-
-        # Make sure a node IS running
-        if ! nodetool "ping" > /dev/null; then
-            echo "Node is not running!"
-            exit 1
-        fi
-
-        shift
-        nodetool "eval" $@
-        ;;
     command)
+        # Make sure the config is generated first
+        generate_config
+
         # Execute as command-line utility
         #
         # Like the escript command, this does not start the OTP application.
@@ -675,8 +622,6 @@ case "$1" in
         # use
         #
         #     {:ok, _} = Application.ensure_all_started(:your_app)
-
-        _check_cookie
 
         shift
         MODULE="$1"; shift
@@ -686,29 +631,21 @@ case "$1" in
         ARGS="$@"
 
         # Build arguments for erlexec
-        __code_paths=$(_get_code_paths)
         set -- "$ERL_OPTS"
-        [ "$SYS_CONFIG_PATH" ] && set -- "$@" -config "$SYS_CONFIG_PATH"
+        [ "$SYS_CONFIG" ] && set -- "$@" -config "$SYS_CONFIG"
         set -- "$@" -boot_var ERTS_LIB_DIR "$ERTS_LIB_DIR"
         set -- "$@" -noshell
-        set -- "$@" -boot start_clean
-        set -- "$@" -pa "$CONSOLIDATED_DIR"
-        set -- "$@" ${__code_paths}
+        set -- "$@" -boot $REL_DIR/start_clean
         set -- "$@" -s "$MODULE" "$FUNCTION"
 
-
+        # Boot the release
         $BINDIR/erlexec $@ -extra $ARGS
         exit "$?"
         ;;
+
     *)
-        __command_path="$REL_DIR/commands/$1"
-        if [ -f "$__command_path" ]; then
-            _check_cookie
-            . "$__command_path"
-        else
-            echo "Usage: $REL_NAME {start|start_boot <file>|foreground|stop|restart|reboot|pid|ping|console|console_clean|console_boot <file>|attach|remote_console|upgrade|downgrade|install|escript|rpc|rpcterms|eval|command <module> <function> <args>}"
-            exit 1
-        fi
+        echo "Usage: $REL_NAME {start|start_boot <file>|foreground|stop|restart|reboot|ping|rpc <m> <f> [<a>]|console|console_clean|console_boot <file>|attach|remote_console|upgrade|escript|command <m> <f> <args>}"
+        exit 1
         ;;
 esac
 
