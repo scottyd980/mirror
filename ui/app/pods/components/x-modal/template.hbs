@@ -9,6 +9,9 @@
         {{yield}}
       </div>
       <div class="modal-footer">
+        {{#each buttons as |button|}}
+          <button {{action button}} type="button" class="btn btn-success">Confirm</button>
+        {{/each}}
       </div>
     </div>
   </div>
