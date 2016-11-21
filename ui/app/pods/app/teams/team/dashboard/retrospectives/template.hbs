@@ -51,7 +51,11 @@
 </div>
 
 {{#if isRetroStartModalShowing}}
-  {{#x-modal onClose=(route-action "cancelEnterRetrospectiveType")}}
+  {{#x-modal
+    onClose=(route-action "cancelEnterRetrospectiveType")
+    buttons=(w "cancelButton")
+    cancelButton=(route-action "cancelEnterRetrospectiveType")
+  }}
     Start a retro, enter a sprint number.
   {{/x-modal}}
 {{/if}}
