@@ -53,9 +53,13 @@
 {{#if isRetroStartModalShowing}}
   {{#x-modal
     onClose=(route-action "cancelEnterRetrospectiveType")
-    buttons=(w "cancelButton")
-    cancelButton=(route-action "cancelEnterRetrospectiveType")
   }}
-    Start a retro, enter a sprint number.
+    {{#x-modal-body}}
+      Start a retro, enter a sprint number.
+    {{/x-modal-body}}
+    {{#x-modal-footer}}
+      <a {{action 'cancelEnterRetrospectiveType'}} class="btn btn-default btn-outline">Cancel</a>
+      <a {{action 'cancelEnterRetrospectiveType'}} class="btn btn-success">Start Retrospective {{fa-icon "arrow-right" fixedWidth=true}}</a>
+    {{/x-modal-footer}}
   {{/x-modal}}
 {{/if}}
