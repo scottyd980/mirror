@@ -7,11 +7,14 @@ export default Ember.Route.extend({
   model() {
     var _this = this;
     return RSVP.hash({
-      team: _this.modelFor('app.teams.team')
+      team: _this.modelFor('app.teams.team'),
+      nextSprint: 3
     });
   },
   setupController(controller, model) {
     this._super(controller, model);
+
+    console.log(model.nextSprint);
 
     controller.set('hasRetroInProgress', false);
     controller.set('isRetroStartModalShowing', false);
