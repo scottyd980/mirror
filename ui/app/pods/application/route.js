@@ -2,7 +2,7 @@ import Ember from 'ember';
 import ApplicationRouteMixin from 'ember-simple-auth/mixins/application-route-mixin';
 import RSVP from 'rsvp';
 
-const { Route, inject } = Ember;
+const { inject } = Ember;
 
 export default Ember.Route.extend(ApplicationRouteMixin, {
   session: inject.service(),
@@ -32,7 +32,7 @@ export default Ember.Route.extend(ApplicationRouteMixin, {
           $('html, body').animate({
               scrollTop: $("#learn-more").offset().top - 80
           }, 500);
-        }, 100);  
+        }, 100);
       });
     }
   }

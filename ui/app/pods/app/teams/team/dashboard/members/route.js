@@ -21,7 +21,7 @@ export default Ember.Route.extend({
     controller.set('adminWarning', false);
   },
   actions: {
-    toggleModal(member, team) {
+    toggleModal() {
       this.controller.toggleProperty('confirmRemoveModal');
     },
     toggleAdminWarning() {
@@ -109,8 +109,8 @@ export default Ember.Route.extend({
         })
       }).then((response) => {
         if(response.status === config.STATUS_CODES.ok) {
-          response.json().then((resp) => {
-            if(this.get('currentModel').currentUser.get('id') == member.get('id')) {
+          response.json().then(() => {
+            if(this.get('currentModel').currentUser.get('id') === member.get('id')) {
               _this.transitionTo('app');
               _this.send('invalidateApplicationModel');
             }

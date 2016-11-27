@@ -1,9 +1,10 @@
 import Ember from 'ember';
 import RSVP from 'rsvp';
-import config from '../../../../../../config/environment';
+//import config from '../../../../../../config/environment';
 
 export default Ember.Route.extend({
   socket: Ember.inject.service('socket-service'),
+  retrospectiveService: Ember.inject.service('retrospective-service'),
   model() {
     var _this = this;
     return RSVP.hash({
@@ -14,8 +15,6 @@ export default Ember.Route.extend({
   setupController(controller, model) {
     this._super(controller, model);
 
-    console.log(model.nextSprint);
-
     controller.set('hasRetroInProgress', false);
     controller.set('isRetroStartModalShowing', false);
 
@@ -23,7 +22,7 @@ export default Ember.Route.extend({
 
     //chan.push('inProgress');
 
-    chan.on('inProgress', (data) => {
+    chan.on('inProgress', () => {
       controller.set('hasRetroInProgress', true);
     });
   },
@@ -33,6 +32,9 @@ export default Ember.Route.extend({
     },
     cancelEnterRetrospectiveType() {
       this.controller.set('isRetroStartModalShowing', false);
+    },
+    startRetrospective() {
+      this.get('retrospectiveService').start(this.currentModel.team);
     }
   }
 });

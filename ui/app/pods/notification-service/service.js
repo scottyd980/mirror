@@ -7,9 +7,9 @@ export default Ember.Service.extend(Ember.Evented, {
     this._super(...arguments);
     this.set('notifications', []);
     const router = this.get('routing.router');
-    router.on('didTransition', (transition) => {
+    router.on('didTransition', () => {
       this.currentPathDidChange(router.get('url'));
-    })
+    });
   },
   success(notification) {
     this.clear();
@@ -29,7 +29,7 @@ export default Ember.Service.extend(Ember.Evented, {
   clear() {
     this.get('notifications').clear();
   },
-  currentPathDidChange: function(newUrl) {
+  currentPathDidChange: function() {
     this.clear();
   }
 });
