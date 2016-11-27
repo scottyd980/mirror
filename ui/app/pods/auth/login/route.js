@@ -23,7 +23,7 @@ export default Ember.Route.extend({
           'authenticator:mirror', user.username, user.password
         ).then(() => {
           this.send('invalidateApplicationModel');
-        }).catch((resp) => {
+        }).catch(() => {
           _this.controller.set('errors', true);
         });
     }

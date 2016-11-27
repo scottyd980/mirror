@@ -57,7 +57,7 @@ export default Ember.Service.extend({
         console.log("joined channel: " + channel);
       });
     } else {
-      console.log("already joined channel: " + channel)
+      console.log("already joined channel: " + channel);
     }
 
     return this.channels[channel_to_join];

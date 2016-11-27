@@ -1,6 +1,6 @@
 import { moduleFor, test } from 'ember-qunit';
 
-moduleFor('service:retrospecrive-service', 'Unit | Service | retrospecrive service', {
+moduleFor('service:retrospective-service', 'Unit | Service | retrospective service', {
   // Specify the other units that are required for this test.
   // needs: ['service:foo']
 });

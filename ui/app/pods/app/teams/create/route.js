@@ -36,7 +36,7 @@ export default Ember.Route.extend({
 
       var membersToAdd = _this.controller.get('teamMemberEmails');
 
-      membersToAdd.map((item, index, enumerable) => {
+      membersToAdd.map((item) => {
         delegates.push(item.email);
       });
 
