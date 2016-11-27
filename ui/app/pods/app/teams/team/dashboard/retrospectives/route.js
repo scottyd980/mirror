@@ -5,6 +5,7 @@ import RSVP from 'rsvp';
 export default Ember.Route.extend({
   socket: Ember.inject.service('socket-service'),
   retrospectiveService: Ember.inject.service('retrospective-service'),
+  session: Ember.inject.service('session'),
   model() {
     var _this = this;
     return RSVP.hash({
@@ -34,7 +35,13 @@ export default Ember.Route.extend({
       this.controller.set('isRetroStartModalShowing', false);
     },
     startRetrospective() {
-      this.get('retrospectiveService').start(this.currentModel.team);
+      let retrospective = this.store.createRecord('retrospective')
+
+      retrospective.set('name', 'Sprint ' + this.currentModel.nextSprint);
+      retrospective.set('team', this.currentModel.team);
+      retrospective.set('moderator', this.get('session').get('currentUser'));
+
+      this.get('retrospectiveService').start(retrospective);
     }
   }
 });
