@@ -4,7 +4,7 @@ import { belongsTo } from 'ember-data/relationships';
 
 export default Model.extend({
   name: attr('string'),
-  state: attr('number'),
+  state: attr('number', {defaultValue: 0}),
   isAnonymous: attr('string'),
   team: belongsTo('team'),
   moderator: belongsTo('user')
