@@ -42,7 +42,9 @@ export default Ember.Route.extend({
       retrospective.set('moderator', this.get('session').get('currentUser'));
       retrospective.set('isAnonymous', true);
 
-      this.get('retrospectiveService').start(retrospective);
+      this.get('retrospectiveService').start(retrospective).then((result) => {
+        this.controller.set('isRetroStartModalShowing', false);
+      });
     }
   }
 });

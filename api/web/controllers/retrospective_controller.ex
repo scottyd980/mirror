@@ -5,6 +5,7 @@ defmodule Mirror.RetrospectiveController do
   alias Mirror.Retrospective
   alias Mirror.UserHelper
   alias Mirror.RetrospectiveUser
+  alias Mirror.TeamChannel
 
   require Logger
 
@@ -27,6 +28,8 @@ defmodule Mirror.RetrospectiveController do
       UserHelper.user_is_team_member?(current_user, team) ->
         case create_retrospective(params) do
           {:ok, retrospective} ->
+            Mirror.Endpoint.broadcast("team:#{retrospective.team.id}", "inProgress", %{})
+
             conn
             |> put_status(:created)
             |> render("show.json", retrospective: retrospective)

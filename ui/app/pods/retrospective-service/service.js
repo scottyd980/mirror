@@ -8,9 +8,7 @@ export default Ember.Service.extend({
   },
   start(retrospective) {
     console.log(retrospective);
-    retrospective.save().then((result) => {
-      console.log(result);
-    });
+    return retrospective.save();
   },
   lookup(team) {
     console.log(team);
