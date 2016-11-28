@@ -1,5 +1,6 @@
 defmodule Mirror.TeamController do
   use Mirror.Web, :controller
+  
 
   alias Mirror.Team
   alias Mirror.UserTeam
