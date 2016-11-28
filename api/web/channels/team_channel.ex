@@ -8,7 +8,7 @@ defmodule Mirror.TeamChannel do
   def join("team:" <> team_id, %{"token" => token}, socket) do
     case sign_in(socket, token) do
       {:ok, authed_socket, _guardian_params} ->
-        case UserHelper.user_is_member?(current_resource(authed_socket), Repo.get!(Team, team_id)) do
+        case UserHelper.user_is_team_member?(current_resource(authed_socket), Repo.get!(Team, team_id)) do
           true ->
             {:ok, %{message: "Joined"}, authed_socket}
           _ ->

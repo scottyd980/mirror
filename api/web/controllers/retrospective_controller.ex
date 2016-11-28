@@ -3,6 +3,8 @@ defmodule Mirror.RetrospectiveController do
 
   alias Mirror.Team
   alias Mirror.Retrospective
+  alias Mirror.UserHelper
+  alias Mirror.RetrospectiveUser
 
   require Logger
 
@@ -16,23 +18,35 @@ defmodule Mirror.RetrospectiveController do
 
   def create(conn, %{"data" => %{"attributes" => attributes, "relationships" => relationships, "type" => "retrospectives"}}) do
 
-    Logger.warn "test"
+    current_user = Guardian.Plug.current_resource(conn)
+    team = Repo.get!(Team, relationships["team"]["data"]["id"])
+
+    params = %{"attributes" => attributes, "participants" => relationships["participants"], "moderator" => relationships["moderator"], "team" => relationships["team"]}
+
+    cond do
+      UserHelper.user_is_team_member?(current_user, team) ->
+        case create_retrospective(params) do
+          {:ok, retrospective} ->
+            conn
+            |> put_status(:created)
+            |> render("show.json", retrospective: retrospective)
+          {:error, changeset} ->
+            conn
+            |> put_status(:unprocessable_entity)
+            |> render(Mirror.ChangesetView, "error.json", changeset: changeset)
+        end
+      true ->
+        use_error_view(conn, 401, %{})
+    end
+
+    # Logger.warn "test"
     # team_members = [Guardian.Plug.current_resource(conn)]
     # team_admins = [Guardian.Plug.current_resource(conn)]
     # team_member_delegates = attributes["member-delegates"]
     #
     # params = %{"attributes" => attributes, "admins" => team_admins, "members" => team_members, "delegates" => team_member_delegates}
     #
-    # case create_team(params) do
-    #   {:ok, team} ->
-    #     conn
-    #     |> put_status(:created)
-    #     |> render("show.json", team: team)
-    #   {:error, changeset} ->
-    #     conn
-    #     |> put_status(:unprocessable_entity)
-    #     |> render(Mirror.ChangesetView, "error.json", changeset: changeset)
-    # end
+
 
   end
 
@@ -49,6 +63,44 @@ defmodule Mirror.RetrospectiveController do
         conn
         |> put_status(404)
         |> render(Mirror.ErrorView, "404.json")
+    end
+  end
+
+  defp create_retrospective(params) do
+    Repo.transaction fn ->
+      with {:ok, retrospective} <- insert_retrospective(params),
+           [{:ok, retrospective_participants}] <- add_retrospective_participants(retrospective, params["participants"]) do
+             retrospective
+             |> Repo.preload([:team, :moderator, :participants])
+      else
+        {:error, changeset} ->
+          Repo.rollback changeset
+      end
+    end
+  end
+
+  defp insert_retrospective(params) do
+    %Retrospective{}
+    |> Retrospective.changeset(%{
+        name: params["attributes"]["name"],
+        isAnonymous: params["attributes"]["is-anonymous"],
+        state: params["attributes"]["state"],
+        moderator_id: params["moderator"]["data"]["id"],
+        team_id: params["team"]["data"]["id"]
+      })
+    |> Repo.insert
+  end
+
+  defp add_retrospective_participants(retrospective, participants) do
+    cond do
+      length(participants["data"]) > 0 ->
+        Enum.map participants["data"], fn participant ->
+          %RetrospectiveUser{}
+          |> RetrospectiveUser.changeset(%{user_id: participant.id, retrospective_id: retrospective.id})
+          |> Repo.insert
+        end
+      true ->
+        [{:ok, nil}]
     end
   end
 
@@ -77,16 +129,9 @@ defmodule Mirror.RetrospectiveController do
   #   send_resp(conn, :no_content, "")
   # end
 
-  defp add_team_members(team, users) do
-    cond do
-      length(users) > 0 ->
-        Enum.map users, fn user ->
-          # %UserTeam{}
-          # |> UserTeam.changeset(%{user_id: user.id, team_id: team.id})
-          # |> Repo.insert
-        end
-      true ->
-        [{:ok, nil}]
-    end
+  defp use_error_view(conn, status, changeset) do
+    conn
+    |> put_status(status)
+    |> render(Mirror.ChangesetView, "error.json", changeset: changeset)
   end
 end

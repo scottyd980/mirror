@@ -18,7 +18,7 @@ defmodule Mirror.TeamAdminController do
     user = Repo.get!(User, admin_id)
 
     cond do
-      UserHelper.user_is_admin?(current_user, team) ->
+      UserHelper.user_is_team_admin?(current_user, team) ->
         handle_add_admin(conn, user, team)
       true ->
         use_error_view(conn, 401, %{})
@@ -33,7 +33,7 @@ defmodule Mirror.TeamAdminController do
     user = Repo.get!(User, admin_id)
 
     cond do
-      UserHelper.user_is_admin?(current_user, team) ->
+      UserHelper.user_is_team_admin?(current_user, team) ->
         handle_remove_admin(conn, %{user: user, team: team})
       true ->
         use_error_view(conn, 401, %{})
@@ -43,7 +43,7 @@ defmodule Mirror.TeamAdminController do
 
   defp remove_member(conn, user, team) do
     cond do
-      UserHelper.user_is_admin?(current_user, team) ->
+      UserHelper.user_is_team_admin?(current_user, team) ->
         case handle_remove_admin_member(%{user: user, team: team}) do
           {:ok, {1, 1}} ->
             conn
@@ -56,7 +56,7 @@ defmodule Mirror.TeamAdminController do
           {:error, changeset} ->
             use_error_view(conn, :unprocessable_entity, changeset)
         end
-      UserHelper.user_is_member?(user, team) ->
+      UserHelper.user_is_team_member?(user, team) ->
         case handle_remove_member(%{user: user, team: team}) do
           {:ok, affected_rows} ->
             conn
@@ -72,7 +72,7 @@ defmodule Mirror.TeamAdminController do
 
   defp handle_add_admin(conn, user, team) do
     cond do
-      UserHelper.user_is_member?(user, team) ->
+      UserHelper.user_is_team_member?(user, team) ->
         changeset = TeamAdmin.changeset %TeamAdmin{}, %{
           user_id: user.id,
           team_id: team.id
