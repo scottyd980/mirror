@@ -24,27 +24,26 @@ defmodule Mirror.TeamChannel do
   end
 
   def handle_in("ping", %{}, socket) do
-   user = current_resource(socket)
-   broadcast! socket, "ping", %{body: user.email}
-   {:noreply, socket}
- end
+    user = current_resource(socket)
+    broadcast! socket, "ping", %{body: user.email}
+    {:noreply, socket}
+  end
 
- def handle_out("ping", payload, socket) do
-   push socket, "ping", payload
-   {:noreply, socket}
- end
+  def handle_out("ping", payload, socket) do
+    push socket, "ping", payload
+    {:noreply, socket}
+  end
 
- def handle_in("inProgress", %{}, socket) do
-  user = current_resource(socket)
-  broadcast! socket, "inProgress", %{}
-  {:noreply, socket}
-end
+  def handle_in("inProgress", %{}, socket) do
+    user = current_resource(socket)
+    broadcast! socket, "inProgress", %{}
+    {:noreply, socket}
+  end
 
-def handle_out("inProgress", payload, socket) do
-  push socket, "inProgress", payload
-  {:noreply, socket}
-end
-
+  def handle_out("inProgress", payload, socket) do
+    push socket, "inProgress", payload
+    {:noreply, socket}
+  end
 
   def handle_info(:ping, socket) do
     user = current_resource(socket)
