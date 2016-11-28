@@ -40,6 +40,7 @@ export default Ember.Route.extend({
       retrospective.set('name', 'Sprint ' + this.currentModel.nextSprint);
       retrospective.set('team', this.currentModel.team);
       retrospective.set('moderator', this.get('session').get('currentUser'));
+      retrospective.set('isAnonymous', true);
 
       this.get('retrospectiveService').start(retrospective);
     }

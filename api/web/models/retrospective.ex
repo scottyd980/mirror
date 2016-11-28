@@ -19,7 +19,7 @@ defmodule Mirror.Retrospective do
   """
   def changeset(struct, params \\ %{}) do
     struct
-    |> cast(params, [:name, :state, :isAnonymous])
-    |> validate_required([:name, :state, :isAnonymous])
+    |> cast(params, [:name, :state, :isAnonymous, :team_id, :moderator_id])
+    |> validate_required([:name, :state, :isAnonymous, :team_id, :moderator_id])
   end
 end
