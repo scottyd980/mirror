@@ -7,6 +7,6 @@ export default Model.extend({
   state: attr('number', {defaultValue: 0}),
   isAnonymous: attr('string'),
   team: belongsTo('team'),
-  moderator: belongsTo('user')
+  moderator: belongsTo('user'),
   participants: hasMany('user')
 });
