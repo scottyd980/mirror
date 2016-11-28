@@ -26,6 +26,7 @@ defmodule Mirror.Router do
     get "/user/current", UserController, :current
 
     resources "/teams", TeamController
+    resources "/retrospectives", RetrospectiveController, only: [:index, :create, :show]
 
     post "/team_users", UserTeamController, :create
     delete "/team_users", UserTeamController, :delete
