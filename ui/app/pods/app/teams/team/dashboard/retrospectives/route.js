@@ -21,6 +21,8 @@ export default Ember.Route.extend({
 
     let chan = this.get('socket').joinChannel(`team:${model.team.get('id')}`);
 
+    console.log(chan);
+
     //chan.push('inProgress');
 
     chan.on('inProgress', () => {
