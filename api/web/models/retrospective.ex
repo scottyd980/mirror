@@ -1,6 +1,8 @@
 defmodule Mirror.Retrospective do
   use Mirror.Web, :model
 
+  alias Mirror.Repo
+
   schema "retrospectives" do
     field :name, :string
     field :state, :integer, default: 0
@@ -21,5 +23,12 @@ defmodule Mirror.Retrospective do
     struct
     |> cast(params, [:name, :state, :isAnonymous, :team_id, :moderator_id])
     |> validate_required([:name, :state, :isAnonymous, :team_id, :moderator_id])
+  end
+
+  def check_retrospective_in_progress(team) do
+    retro_count = Repo.all(from retro in Mirror.Retrospective, where: retro.team_id == ^team.id)
+    |> Enum.count
+
+    retro_count > 0
   end
 end

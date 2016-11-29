@@ -4,13 +4,16 @@ defmodule Mirror.TeamChannel do
 
   alias Mirror.UserHelper
   alias Mirror.Team
+  alias Mirror.Retrospective
 
   def join("team:" <> team_id, %{"token" => token}, socket) do
     case sign_in(socket, token) do
       {:ok, authed_socket, _guardian_params} ->
-        case UserHelper.user_is_team_member?(current_resource(authed_socket), Repo.get!(Team, team_id)) do
+        team = Repo.get!(Team, team_id)
+        case UserHelper.user_is_team_member?(current_resource(authed_socket), team) do
           true ->
-            {:ok, %{message: "Joined"}, authed_socket}
+            retro_in_progress = Retrospective.check_retrospective_in_progress(team)
+            {:ok, %{message: "Joined", retro_in_progress: retro_in_progress}, authed_socket}
           _ ->
             {:error, 401}
         end
@@ -50,4 +53,6 @@ defmodule Mirror.TeamChannel do
     broadcast(socket, "pong", %{message: "pong", from: user.email})
     {:noreply, socket}
   end
+
+
 end
