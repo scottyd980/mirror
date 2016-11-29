@@ -53,6 +53,9 @@ export default Ember.Service.extend({
 
       let chan = this.channels[channel_to_join];
 
+      // Need to return a promise here with a valid reponse that includes the
+      // channel and joined response
+
       chan.join().receive("ok", (resp) => {
         console.log("joined channel: " + channel);
         console.log(resp);
