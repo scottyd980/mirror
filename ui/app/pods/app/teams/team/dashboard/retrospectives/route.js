@@ -22,9 +22,17 @@ export default Ember.Route.extend({
     let chan = this.get('socket').joinChannel(`team:${model.team.get('id')}`);
     //chan.push('inProgress');
 
-    chan.on('inProgress', () => {
-      controller.set('hasRetroInProgress', true);
+    // chan.on('inProgress', () => {
+    //   controller.set('hasRetroInProgress', true);
+    // });
+
+    chan.push('check_retrospective_in_progress', {});
+    chan.on('retrospective_in_progress', (resp) => {
+      this.setRetrospectiveInProgress(resp.retrospective_in_progress)
     });
+  },
+  setRetrospectiveInProgress(in_progress) {
+    this.controller.set('hasRetroInProgress', in_progress);
   },
   actions: {
     enterRetrospectiveType() {

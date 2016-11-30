@@ -44,6 +44,7 @@ export default Ember.Service.extend({
   },
 
   joinChannel(channel) {
+    console.log("TEST")
     let channel_to_join = channel.replace(":", "_");
 
     if(!this.channels[channel_to_join]) {
