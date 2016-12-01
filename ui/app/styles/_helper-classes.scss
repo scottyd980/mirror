@@ -2,6 +2,10 @@
   padding-#{$location}: $size;
 }
 
+@mixin add-margin($location, $size) {
+  margin-#{$location}: $size;
+}
+
 .pad-sm {
   @include add-padding(top, 10px);
   @include add-padding(right, 10px);
@@ -80,6 +84,86 @@
 }
 .pad-left-xl {
   @include add-padding(left, 50px);
+}
+
+.mg-sm {
+  @include add-margin(top, 10px);
+  @include add-margin(right, 10px);
+  @include add-margin(bottom, 10px);
+  @include add-margin(left, 10px);
+}
+
+.mg-top-sm {
+  @include add-margin(top, 10px);
+}
+.mg-right-sm {
+  @include add-margin(right, 10px);
+}
+.mg-bottom-sm {
+  @include add-margin(bottom, 10px);
+}
+.mg-left-sm {
+  @include add-margin(left, 10px);
+}
+
+.mg-md {
+  @include add-margin(top, 20px);
+  @include add-margin(right, 20px);
+  @include add-margin(bottom, 20px);
+  @include add-margin(left, 20px);
+}
+
+.mg-top-md {
+  @include add-margin(top, 20px);
+}
+.mg-right-md {
+  @include add-margin(right, 20px);
+}
+.mg-bottom-md {
+  @include add-margin(bottom, 20px);
+}
+.mg-left-md {
+  @include add-margin(left, 20px);
+}
+
+.mg-lg {
+  @include add-margin(top, 30px);
+  @include add-margin(right, 30px);
+  @include add-margin(bottom, 30px);
+  @include add-margin(left, 30px);
+}
+
+.mg-top-lg {
+  @include add-margin(top, 30px);
+}
+.mg-right-lg {
+  @include add-margin(right, 30px);
+}
+.mg-bottom-lg {
+  @include add-margin(bottom, 30px);
+}
+.mg-left-lg {
+  @include add-margin(left, 30px);
+}
+
+.mg-xl {
+  @include add-margin(top, 50px);
+  @include add-margin(right, 50px);
+  @include add-margin(bottom, 50px);
+  @include add-margin(left, 50px);
+}
+
+.mg-top-xl {
+  @include add-margin(top, 50px);
+}
+.mg-right-xl {
+  @include add-margin(right, 50px);
+}
+.mg-bottom-xl {
+  @include add-margin(bottom, 50px);
+}
+.mg-left-xl {
+  @include add-margin(left, 50px);
 }
 
 .white-bg {
