@@ -52,6 +52,9 @@ export default Ember.Route.extend({
       this.get('retrospectiveService').start(retrospective).then((result) => {
         this.controller.set('isRetroStartModalShowing', false);
       });
+    },
+    joinRetrospectiveInProgress() {
+      
     }
   }
 });
