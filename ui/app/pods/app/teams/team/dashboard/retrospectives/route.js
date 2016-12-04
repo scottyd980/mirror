@@ -20,6 +20,8 @@ export default Ember.Route.extend({
     controller.set('isRetroStartModalShowing', false);
 
     let chan = this.get('socket').joinChannel(`team:${model.team.get('id')}`);
+
+    controller.set('channel', chan);
     //chan.push('inProgress');
 
     // chan.on('inProgress', () => {
@@ -54,7 +56,9 @@ export default Ember.Route.extend({
       });
     },
     joinRetrospectiveInProgress() {
-      
+      let chan = this.controller.get('channel');
+
+      chan.push('join_retrospective_in_progress', {});
     }
   }
 });
