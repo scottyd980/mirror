@@ -4,7 +4,7 @@ defmodule Mirror.RetrospectiveUser do
   @primary_key false
   schema "retrospective_participants" do
     belongs_to :user, Mirror.User
-    belongs_to :team, Mirror.Retrospective
+    belongs_to :retrospective, Mirror.Retrospective
 
     timestamps()
   end
