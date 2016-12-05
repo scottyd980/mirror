@@ -32,13 +32,18 @@ export default Ember.Route.extend({
     chan.on('retrospective_in_progress', (resp) => {
       this.setRetrospectiveInProgress(resp.retrospective_in_progress)
     });
-    chan.on('join_retrospective_in_progress', (resp) => {
+    chan.on('joined_retrospective', (resp) => {
+
+      console.log(resp);
       // Need to handle current user / not current user
-      this.moveToRetrospectiveInProgress(resp.retrospective_id);
+      this.moveToRetrospectiveInProgress(resp.retrospective);
     });
   },
   setRetrospectiveInProgress(in_progress) {
     this.controller.set('hasRetroInProgress', in_progress);
+  },
+  moveToRetrospectiveInProgress(retrospective_id) {
+    console.log(retrospective_id);
   },
   actions: {
     enterRetrospectiveType() {
