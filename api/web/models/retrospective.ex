@@ -29,6 +29,15 @@ defmodule Mirror.Retrospective do
     retro_count = Repo.all(from retro in Mirror.Retrospective, where: retro.team_id == ^team.id)
     |> Enum.count
 
-    retro_count > 0
+    in_progress = retro_count > 0
+
+    case in_progress do
+      true ->
+        retro = Repo.all(from retro in Mirror.Retrospective, where: retro.team_id == ^team.id)
+        {in_progress, retro}
+      _ ->
+        {in_progress}
+    end
+
   end
 end
