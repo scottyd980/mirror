@@ -31,13 +31,8 @@ defmodule Mirror.Retrospective do
 
     in_progress = retro_count > 0
 
-    case in_progress do
-      true ->
-        retro = Repo.all(from retro in Mirror.Retrospective, where: retro.team_id == ^team.id)
-        {in_progress, retro}
-      _ ->
-        {in_progress}
-    end
+    retro = Repo.all(from retro in Mirror.Retrospective, where: retro.team_id == ^team.id)
 
+    {in_progress, retro}
   end
 end
