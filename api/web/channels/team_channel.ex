@@ -44,7 +44,7 @@ defmodule Mirror.TeamChannel do
     |> RetrospectiveUser.changeset(%{user_id: user.id, retrospective_id: List.first(retro).id})
     |> Repo.insert
 
-    broadcast! socket, "joined_retrospective", %{user: user.id}
+    broadcast! socket, "joined_retrospective", %{user: user.id, retrospective: List.first(retro).id}
 
     {:noreply, socket}
 
