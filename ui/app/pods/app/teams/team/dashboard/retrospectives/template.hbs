@@ -3,7 +3,7 @@
     <div class="col-md-8">
       {{#x-card title="Retrospectives"}}
         <div class="text-center">
-          {{#unless hasRetroInProgress}}
+          {{#unless retrospective.in_progress}}
             <div class="spinner spinner-success">
               <div class="spinner__item1"></div>
               <div class="spinner__item2"></div>
@@ -20,7 +20,7 @@
           {{/unless}}
         </div>
       {{/x-card}}
-      {{#unless hasRetroInProgress}}
+      {{#unless retrospective.in_progress}}
         {{#x-card title="Start A Retrospective"}}
           <div class="row">
             <div class="col-md-2 col-sm-3 text-center">
