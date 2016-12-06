@@ -19,25 +19,31 @@ export default Ember.Route.extend({
     controller.set('hasRetroInProgress', false);
     controller.set('isRetroStartModalShowing', false);
 
-    let chan = this.get('socket').joinChannel(`team:${model.team.get('id')}`);
+    var retro = this.get('retrospectiveService').join_channel(model.team.get('id'));
 
-    controller.set('channel', chan);
+    console.log(retro);
+
+    controller.set('retrospective', retro);
+
+    //let chan = this.get('socket').joinChannel(`team:${model.team.get('id')}`);
+
+    //controller.set('channel', chan);
     //chan.push('inProgress');
 
     // chan.on('inProgress', () => {
     //   controller.set('hasRetroInProgress', true);
     // });
 
-    chan.push('check_retrospective_in_progress', {});
-    chan.on('retrospective_in_progress', (resp) => {
-      this.setRetrospectiveInProgress(resp.retrospective_in_progress)
-    });
-    chan.on('joined_retrospective', (resp) => {
-
-      console.log(resp);
-      // Need to handle current user / not current user
-      this.moveToRetrospectiveInProgress(resp.retrospective);
-    });
+    // chan.push('check_retrospective_in_progress', {});
+    // chan.on('retrospective_in_progress', (resp) => {
+    //   this.setRetrospectiveInProgress(resp.retrospective_in_progress)
+    // });
+    // chan.on('joined_retrospective', (resp) => {
+    //
+    //   console.log(resp);
+    //   // Need to handle current user / not current user
+    //   this.moveToRetrospectiveInProgress(resp.retrospective);
+    // });
   },
   setRetrospectiveInProgress(in_progress) {
     this.controller.set('hasRetroInProgress', in_progress);

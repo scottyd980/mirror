@@ -44,25 +44,37 @@ export default Ember.Service.extend({
   },
 
   joinChannel(channel) {
-    console.log("TEST")
     let channel_to_join = channel.replace(":", "_");
+    var _this = this;
 
-    if(!this.channels[channel_to_join]) {
-      this.channels[channel_to_join] = this.socket.channel(channel, {
-        token: this.get('session').get('session.content.authenticated.access_token')
-      });
+    return new Promise(function(resolve, reject) {
 
-      let chan = this.channels[channel_to_join];
+      if(!_this.channels[channel_to_join]) {
+        _this.channels[channel_to_join] = _this.socket.channel(channel, {
+          token: _this.get('session').get('session.content.authenticated.access_token')
+        });
 
-      chan.join().receive("ok", (resp) => {
-        console.log("joined channel: " + channel);
-        console.log(resp);
-      });
-    } else {
-      console.log("already joined channel: " + channel);
-    }
+        let chan = _this.channels[channel_to_join];
 
-    return this.channels[channel_to_join];
+        chan.join().receive("ok", (resp) => {
+          console.log("joined channel: " + channel);
+          console.log(resp);
+          resolve(chan);
+        }).receive("ignore", () => {
+          reject("authorization error");
+          console.log("auth error");
+        }).receive("timeout", () => {
+          reject("Connection interruption");
+          console.log("Connection interruption")
+        });
+      } else {
+        resolve(_this.channels[channel_to_join]);
+        console.log("already joined channel: " + channel);
+      }
+
+      //return this.channels[channel_to_join];
+
+    });
   }
 
 });
