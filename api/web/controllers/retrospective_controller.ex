@@ -28,7 +28,7 @@ defmodule Mirror.RetrospectiveController do
       UserHelper.user_is_team_member?(current_user, team) ->
         case create_retrospective(params) do
           {:ok, retrospective} ->
-            Mirror.Endpoint.broadcast("team:#{retrospective.team.id}", "inProgress", %{})
+            Mirror.Endpoint.broadcast("team:#{retrospective.team.id}", "retrospective_in_progress", %{retrospective_in_progress: true, retrospective: retrospective.id})
 
             conn
             |> put_status(:created)
