@@ -45,13 +45,19 @@ export default Ember.Service.extend({
     this.set('pre_retrospective', {
       in_progress: false,
       retrospective_id: null
-    })
+    });
+  },
+  sendMessage(topic, data) {
+    this.get('channel').push(topic, data);
   },
   _listen_for_retrospective_in_progress(channel) {
     channel.on('retrospective_in_progress', (resp) => {
-      console.log(resp);
       this.set('pre_retrospective.in_progress', resp.retrospective_in_progress);
       this.set('pre_retrospective.retrospective_id', resp.retrospective);
+    });
+
+    channel.on('joined_retrospective', (resp) => {
+      console.log(resp);
     });
   }
 });

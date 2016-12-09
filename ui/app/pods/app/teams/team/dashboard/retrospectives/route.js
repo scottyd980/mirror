@@ -71,9 +71,7 @@ export default Ember.Route.extend({
       });
     },
     joinRetrospectiveInProgress() {
-      let chan = this.controller.get('channel');
-
-      chan.push('join_retrospective_in_progress', {});
+      this.get('retrospectiveService').sendMessage('join_retrospective_in_progress', {});
     }
   }
 });
