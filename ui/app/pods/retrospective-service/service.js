@@ -3,8 +3,9 @@ import Ember from 'ember';
 export default Ember.Service.extend({
   socket: Ember.inject.service('socket-service'),
   channel: null,
-  retrospective: {
-    in_progress: false
+  pre_retrospective: {
+    in_progress: false,
+    retrospective_id: null
   },
   init() {
     this._super(...arguments);
@@ -17,28 +18,40 @@ export default Ember.Service.extend({
   lookup_in_progress(team_id) {
     this.get('channel').push('check_retrospective_in_progress', {});
   },
-  join_channel(team_id) {
+  join_team_channel(team_id) {
     this.reset_retrospective();
 
-    var retrospective_channel = this.get('socket').joinChannel(`team:${team_id}`);
-    retrospective_channel.then((chan) => {
-      this.listen_for_events(chan);
+    var team_retrospective_channel = this.get('socket').joinChannel(`team:${team_id}`);
+    team_retrospective_channel.then((chan) => {
+      this.listen_for_team_events(chan);
 
       this.set('channel', chan);
 
       this.lookup_in_progress(team_id);
     });
 
-    return this.get('retrospective');
+    return this.get('pre_retrospective');
   },
-  listen_for_events(channel) {
-    channel.on('retrospective_in_progress', (resp) => {
-      this.set('retrospective.in_progress', resp.retrospective_in_progress);
-    });
+  join_retrospective_channel(retrospective_id) {
+
+  },
+  listen_for_team_events(channel) {
+    this._listen_for_retrospective_in_progress(channel);
+  },
+  listen_for_retrospective_events(channel) {
+
   },
   reset_retrospective() {
-    this.set('retrospective', {
-      in_progress: false
+    this.set('pre_retrospective', {
+      in_progress: false,
+      retrospective_id: null
     })
+  },
+  _listen_for_retrospective_in_progress(channel) {
+    channel.on('retrospective_in_progress', (resp) => {
+      console.log(resp);
+      this.set('pre_retrospective.in_progress', resp.retrospective_in_progress);
+      this.set('pre_retrospective.retrospective_id', resp.retrospective);
+    });
   }
 });
