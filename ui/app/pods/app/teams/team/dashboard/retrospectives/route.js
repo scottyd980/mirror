@@ -19,7 +19,7 @@ export default Ember.Route.extend({
     controller.set('hasRetroInProgress', false);
     controller.set('isRetroStartModalShowing', false);
 
-    var retro = this.get('retrospectiveService').join_channel(model.team.get('id'));
+    var retro = this.get('retrospectiveService').join_team_channel(model.team.get('id'));
 
     console.log(retro);
 
