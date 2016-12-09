@@ -2,6 +2,7 @@ import Ember from 'ember';
 
 export default Ember.Service.extend({
   socket: Ember.inject.service('socket-service'),
+  routing: Ember.inject.service("-routing"),
   channel: null,
   pre_retrospective: {
     in_progress: false,
@@ -46,6 +47,7 @@ export default Ember.Service.extend({
       in_progress: false,
       retrospective_id: null
     });
+    this.set('channel', null);
   },
   sendMessage(topic, data) {
     this.get('channel').push(topic, data);
@@ -53,11 +55,11 @@ export default Ember.Service.extend({
   _listen_for_retrospective_in_progress(channel) {
     channel.on('retrospective_in_progress', (resp) => {
       this.set('pre_retrospective.in_progress', resp.retrospective_in_progress);
-      this.set('pre_retrospective.retrospective_id', resp.retrospective);
+      this.set('pre_retrospective.retrospective_id', resp.retrospective_id);
     });
 
     channel.on('joined_retrospective', (resp) => {
-      console.log(resp);
+      this.get('routing').transitionTo('app.retrospectives.retrospective', [resp.retrospective_id]);
     });
   }
 });

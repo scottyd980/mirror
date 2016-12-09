@@ -28,7 +28,7 @@ defmodule Mirror.TeamChannel do
     case UserHelper.user_is_team_member?(user, team) do
       true ->
         {retro_in_progress, retro} = Retrospective.check_retrospective_in_progress(team)
-        broadcast! socket, "retrospective_in_progress", %{retrospective_in_progress: retro_in_progress, retrospective: List.first(retro).id}
+        broadcast! socket, "retrospective_in_progress", %{retrospective_in_progress: retro_in_progress, retrospective_id: List.first(retro).id}
     end
 
     {:noreply, socket}
@@ -44,7 +44,7 @@ defmodule Mirror.TeamChannel do
     |> RetrospectiveUser.changeset(%{user_id: user.id, retrospective_id: List.first(retro).id})
     |> Repo.insert
 
-    broadcast! socket, "joined_retrospective", %{user: user.id, retrospective: List.first(retro).id}
+    broadcast! socket, "joined_retrospective", %{user_id: user.id, retrospective_id: List.first(retro).id}
 
     {:noreply, socket}
 
