@@ -10,7 +10,6 @@ defmodule Mirror.Retrospective do
     belongs_to :team, Mirror.Team
     belongs_to :moderator, Mirror.User
     belongs_to :type, Mirror.RetrospectiveType
-    # type
     many_to_many :participants, Mirror.User, join_through: Mirror.RetrospectiveUser
 
     timestamps()
