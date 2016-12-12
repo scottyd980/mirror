@@ -12,7 +12,6 @@ defmodule Mirror.RetrospectiveView do
   end
 
   def render("retrospective.json", %{retrospective: retrospective}) do
-    # Logger.info retrospective
     %{
     	"type": "retrospective",
     	"id": retrospective.id,
