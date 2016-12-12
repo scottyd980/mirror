@@ -162,6 +162,25 @@ ul.action-list {
       }
     }
 
+    &.progress-list {
+      .list-actions {
+        width: 90px;
+        position: absolute;
+        right: 35px;
+      }
+
+      .list-item {
+        margin-right: 120px;
+        overflow: hidden;
+        position: relative;
+        padding-left: 120px;
+        left: -120px;
+        top: 2px;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+      }
+    }
+
     &:after {
       clear: both;
       content: ".";
