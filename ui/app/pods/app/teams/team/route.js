@@ -12,7 +12,5 @@ export default Ember.Route.extend({
   },
   setupController(controller, model) {
     this._super(controller, model);
-
-    //this.get('socket').joinChannel(`team:${model.get('id')}`);
   }
 });

@@ -57,22 +57,19 @@ export default Ember.Service.extend({
         let chan = _this.channels[channel_to_join];
 
         chan.join().receive("ok", (resp) => {
-          console.log("joined channel: " + channel);
-          console.log(resp);
+          // User has joined channel successfully
           resolve(chan);
         }).receive("ignore", () => {
+          // User is not authorized to join channel
           reject("authorization error");
-          console.log("auth error");
         }).receive("timeout", () => {
+          // Joining the channel timed out
           reject("Connection interruption");
-          console.log("Connection interruption")
         });
       } else {
+        // Already joined this channel
         resolve(_this.channels[channel_to_join]);
-        console.log("already joined channel: " + channel);
       }
-
-      //return this.channels[channel_to_join];
 
     });
   }
