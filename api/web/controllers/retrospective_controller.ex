@@ -17,6 +17,25 @@ defmodule Mirror.RetrospectiveController do
     render(conn, "index.json", retrospectives: retrospectives)
   end
 
+  def show(conn, %{"id" => id}) do
+    current_user = Guardian.Plug.current_resource(conn)
+
+    retrospective = Repo.get!(Retrospective, id)
+    |> Repo.preload([:team, :moderator, :type, :participants])
+
+    team = retrospective.team
+    |> Repo.preload([:members])
+
+    case Enum.member?(team.members, current_user) do
+      true ->
+        render(conn, "show.json", retrospective: retrospective)
+      _ ->
+        conn
+        |> put_status(404)
+        |> render(Mirror.ErrorView, "404.json")
+    end
+  end
+
   def create(conn, %{"data" => %{"attributes" => attributes, "relationships" => relationships, "type" => "retrospectives"}}) do
 
     current_user = Guardian.Plug.current_resource(conn)
