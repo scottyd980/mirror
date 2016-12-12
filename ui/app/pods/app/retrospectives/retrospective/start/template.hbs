@@ -1,1 +1,18 @@
-{{outlet}}
+<div class="nav-push">
+  <div class="container">
+    <div class="row">
+      <div class="col-md-8">
+        {{#x-card title="Waiting for team members to join..."}}
+            {{retrospective-member-list
+                members=model.team_members
+                joined_members=model.retrospective.participants 
+                currentUser=model.currentUser
+            }}
+        {{/x-card}}
+      </div>
+      <div class="col-md-4">
+        
+      </div>
+    </div>
+  </div>
+</div>
