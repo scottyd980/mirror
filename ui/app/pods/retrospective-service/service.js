@@ -59,7 +59,7 @@ export default Ember.Service.extend({
     });
 
     channel.on('joined_retrospective', (resp) => {
-      this.get('routing').transitionTo('app.retrospectives.retrospective', [resp.retrospective_id]);
+      this.get('routing').transitionTo('app.retrospectives.retrospective.start', [resp.retrospective_id]);
     });
   }
 });
