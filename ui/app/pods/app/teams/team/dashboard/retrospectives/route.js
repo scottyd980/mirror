@@ -21,7 +21,7 @@ export default Ember.Route.extend({
 
     var retro = this.get('retrospectiveService').join_team_channel(model.team.get('id'));
 
-    console.log(retro);
+    //console.log(retro);
 
     controller.set('retrospective', retro);
 
