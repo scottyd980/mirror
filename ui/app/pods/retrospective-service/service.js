@@ -73,10 +73,9 @@ export default Ember.Service.extend({
 
   _listen_for_joined_retrospective(channel) {
     channel.on('joined_retrospective', (resp) => {
-      this.get('store').push(resp);
-      console.log(resp);
+      this.get('store').pushPayload(resp);
       // console.log('someone joined');
-      // console.log(resp);
+      //console.log(resp);
     });
   }
 });
