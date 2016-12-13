@@ -31,5 +31,15 @@ export default Ember.Route.extend({
             team_members: team_members,
             currentUser: _this.get('session').get('currentUser')
         });
-    }
+    },
+    setupController(controller, model) {
+        this._super(...arguments);
+
+        controller.set('hasRetroInProgress', false);
+        controller.set('isRetroStartModalShowing', false);
+
+        var retro = this.get('retrospectiveService').join_retrospective_channel(model.retrospective.get('id'));
+
+        //controller.set('retrospective', retro);
+    },
 });

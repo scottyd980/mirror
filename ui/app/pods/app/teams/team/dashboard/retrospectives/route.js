@@ -1,11 +1,12 @@
 import Ember from 'ember';
 import RSVP from 'rsvp';
-//import config from '../../../../../../config/environment';
+import config from '../../../../../../config/environment';
 
 export default Ember.Route.extend({
   socket: Ember.inject.service('socket-service'),
   retrospectiveService: Ember.inject.service('retrospective-service'),
   session: Ember.inject.service('session'),
+  
   model() {
     var _this = this;
     return RSVP.hash({
@@ -71,7 +72,35 @@ export default Ember.Route.extend({
       });
     },
     joinRetrospectiveInProgress() {
-      this.get('retrospectiveService').sendMessage('join_retrospective_in_progress', {});
+      this.get('retrospectiveService').sendMessage('team', 'join_retrospective_in_progress', {});
+    },
+    joinRetrospective(retrospective_id) {
+      var _this = this;
+
+      return fetch(`${config.DS.host}/${config.DS.namespace}/retrospective_users`, {
+        method: 'POST',
+        headers: {
+          'Authorization': `Bearer ${this.get('session').get('session.content.authenticated.access_token')}`,
+          'Content-Type': 'application/vnd.api+json'
+        },
+        body: JSON.stringify({
+          "retrospective_id": retrospective_id
+        })
+      }).then((response) => {
+        if(response.status === config.STATUS_CODES.created || response.status === config.STATUS_CODES.ok) {
+          response.json().then((resp) => {
+            console.log(resp);
+            _this.transitionTo('app.retrospectives.retrospective.start', resp.data.attributes.retrospective_id);
+          });
+        } else {
+          if(response.status === config.STATUS_CODES.unprocessable_entity) {
+            _this.get('notificationCenter').error({
+              title: config.ERROR_MESSAGES.generic,
+              message: "We experienced an unexpected error trying to join the retrospective. Please try again."
+            });
+          }
+        }
+      });
     }
   }
 });
