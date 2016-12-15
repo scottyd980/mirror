@@ -31,21 +31,28 @@ defmodule Mirror.RetrospectiveUserController do
 
   defp handle_add_retrospective_participant(conn, user, retrospective) do
 
-    changeset = %RetrospectiveUser{}
-    |> RetrospectiveUser.changeset(%{user_id: user.id, retrospective_id: retrospective.id})
-    
-    case Repo.insert changeset do
-        {:ok, retrospective_user} ->
-            updated_retrospective = Repo.get!(Retrospective, retrospective.id)
-            |> Repo.preload([:team, :moderator, :type, :participants])
-
-            Mirror.Endpoint.broadcast("retrospective:#{retrospective.id}", "joined_retrospective", Mirror.RetrospectiveView.render("show.json", retrospective: updated_retrospective))
-
+    cond do
+        UserHelper.user_is_participant?(user, retrospective) ->
             conn
-            |> put_status(:created)
-            |> render(Mirror.RetrospectiveUserView, "show.json", retrospective_user: retrospective_user)
-        {:error, changeset} ->
-            use_error_view(conn, 422, changeset)
+            |> put_status(:ok)
+            |> render(Mirror.RetrospectiveUserView, "show.json", retrospective_user: %{retrospective_id: retrospective.id, user_id: user.id})
+        true ->
+            changeset = %RetrospectiveUser{}
+            |> RetrospectiveUser.changeset(%{user_id: user.id, retrospective_id: retrospective.id})
+            
+            case Repo.insert changeset do
+                {:ok, retrospective_user} ->
+                    updated_retrospective = Repo.get!(Retrospective, retrospective.id)
+                    |> Repo.preload([:team, :moderator, :type, :participants])
+
+                    Mirror.Endpoint.broadcast("retrospective:#{retrospective.id}", "joined_retrospective", Mirror.RetrospectiveView.render("show.json", retrospective: updated_retrospective))
+
+                    conn
+                    |> put_status(:created)
+                    |> render(Mirror.RetrospectiveUserView, "show.json", retrospective_user: retrospective_user)
+                {:error, changeset} ->
+                    use_error_view(conn, 422, changeset)
+            end
     end
   end
 

@@ -6,7 +6,7 @@ export default Ember.Route.extend({
   socket: Ember.inject.service('socket-service'),
   retrospectiveService: Ember.inject.service('retrospective-service'),
   session: Ember.inject.service('session'),
-  
+
   model() {
     var _this = this;
     return RSVP.hash({
@@ -71,9 +71,6 @@ export default Ember.Route.extend({
         this.controller.set('isRetroStartModalShowing', false);
       });
     },
-    joinRetrospectiveInProgress() {
-      this.get('retrospectiveService').sendMessage('team', 'join_retrospective_in_progress', {});
-    },
     joinRetrospective(retrospective_id) {
       var _this = this;
 
@@ -89,7 +86,6 @@ export default Ember.Route.extend({
       }).then((response) => {
         if(response.status === config.STATUS_CODES.created || response.status === config.STATUS_CODES.ok) {
           response.json().then((resp) => {
-            console.log(resp);
             _this.transitionTo('app.retrospectives.retrospective.start', resp.data.attributes.retrospective_id);
           });
         } else {
