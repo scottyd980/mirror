@@ -37,7 +37,7 @@ defmodule Mirror.RetrospectiveUserController do
     case Repo.insert changeset do
         {:ok, retrospective_user} ->
             updated_retrospective = Repo.get!(Retrospective, retrospective.id)
-            |> Repo.preload([:team, :moderator, :type, :participants]
+            |> Repo.preload([:team, :moderator, :type, :participants])
 
             Mirror.Endpoint.broadcast("retrospective:#{retrospective.id}", "joined_retrospective", Mirror.RetrospectiveView.render("show.json", retrospective: updated_retrospective))
 
