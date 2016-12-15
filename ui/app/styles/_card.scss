@@ -21,6 +21,10 @@
 
   .card-body {
     padding: 20px;
+
+    *:last-child {
+      margin-bottom: 0;
+    }
   }
 
   .card-footer {
