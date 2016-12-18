@@ -39,7 +39,5 @@ export default Ember.Route.extend({
         controller.set('isRetroStartModalShowing', false);
 
         var retro = this.get('retrospectiveService').join_retrospective_channel(model.retrospective.get('id'));
-
-        //controller.set('retrospective', retro);
     },
 });
