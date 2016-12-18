@@ -1,1 +1,1 @@
-{"compilerOptions":{"target":"es6","experimentalDecorators":true},"exclude":["node_modules","bower_components","public","tmp","vendor",".git","dist"]}
+{"compilerOptions":{"target":"es6","experimentalDecorators":true},"files":["ui/app/"]}
