@@ -129,6 +129,10 @@ defmodule Mirror.TeamController do
     |> Repo.update
   end
 
+  defp get_next_sprint(team) do
+    3
+  end
+
   defp add_team_members(team, users) do
     cond do
       length(users) > 0 ->
