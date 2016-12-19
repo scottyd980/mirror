@@ -7,6 +7,7 @@ defmodule Mirror.TeamController do
   alias Mirror.TeamAdmin
   alias Mirror.MemberDelegate
   alias Ecto.Multi
+  alias Mirror.UserHelper
 
   require Logger
 
@@ -60,13 +61,19 @@ defmodule Mirror.TeamController do
     end
   end
 
-  def join(conn, params) do
-    # params still not working
-
+  def get_next_sprint(conn, %{"id" => id}) do
     current_user = Guardian.Plug.current_resource(conn)
 
-    member_delegate = Repo.get_by!(MemberDelegate, access_code: params["access_code"])
-    |> Repo.preload([:team])
+    team = Repo.get!(Team, id)
+
+    case UserHelper.user_is_team_member?(current_user, team) do
+      true ->
+        render(conn, "next_sprint.json", %{next_sprint: 4, team: team})
+      _ ->
+        conn
+        |> put_status(404)
+        |> render(Mirror.ErrorView, "404.json")
+    end
   end
 
   # Need to finish update
@@ -127,10 +134,6 @@ defmodule Mirror.TeamController do
     team
     |> Team.changeset(%{uuid: team_unique_id})
     |> Repo.update
-  end
-
-  defp get_next_sprint(team) do
-    3
   end
 
   defp add_team_members(team, users) do
