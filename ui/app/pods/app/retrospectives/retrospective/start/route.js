@@ -6,7 +6,6 @@ export default Ember.Route.extend({
     },
     actions: {
         startRetrospective() {
-            console.log('test');
         }
     }
 });
