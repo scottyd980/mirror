@@ -1,8 +1,6 @@
 defmodule Mirror.TeamView do
   use Mirror.Web, :view
 
-  import Logger
-
   def render("index.json", %{teams: teams}) do
     %{data: render_many(teams, Mirror.TeamView, "team.json")}
   end
