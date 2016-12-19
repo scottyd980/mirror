@@ -20,6 +20,8 @@ export default Ember.Route.extend({
         }
       }).then((response) => {
         return response.json();
+      }).then((data) => {
+        return data.next_sprint;
       })
     });
   },
