@@ -25,11 +25,18 @@ export default Ember.Route.extend({
             throw config.ERROR_CODES.not_found;
         });
 
+        var currentUser = _this.get('session').get('currentUser');
+
+        let isModerator = retrospective.then((retrospective) => {
+            return currentUser.get('id') === retrospective.get('moderator.id');
+        });
+
         return RSVP.hash({
             retrospective: retrospective,
             team: team,
             team_members: team_members,
-            currentUser: _this.get('session').get('currentUser')
+            currentUser: currentUser,
+            isModerator: isModerator
         });
     },
     setupController(controller, model) {

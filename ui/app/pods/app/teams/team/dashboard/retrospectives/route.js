@@ -63,7 +63,6 @@ export default Ember.Route.extend({
       }).then((response) => {
         if(response.status === config.STATUS_CODES.created || response.status === config.STATUS_CODES.ok) {
           response.json().then((resp) => {
-            con
             _this.transitionTo('app.retrospectives.retrospective.start', resp.data.attributes.retrospective_id);
           });
         } else {
