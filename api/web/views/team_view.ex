@@ -41,7 +41,7 @@ defmodule Mirror.TeamView do
   def render("next_sprint.json", %{next_sprint: next_sprint, team: team}) do
     %{
       "id": team.id,
-      "next-sprint": next_sprint
+      "next_sprint": next_sprint
     }
   end
 
