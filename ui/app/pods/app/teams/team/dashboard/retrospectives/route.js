@@ -11,7 +11,16 @@ export default Ember.Route.extend({
     var _this = this;
     return RSVP.hash({
       team: _this.modelFor('app.teams.team'),
-      nextSprint: 3
+      //nextSprint: 3,
+      nextSprint: fetch(`${config.DS.host}/${config.DS.namespace}/teams/${this.modelFor('app.teams.team').get('id')}/next_sprint`, {
+        method: 'GET',
+        headers: {
+          'Authorization': `Bearer ${this.get('session').get('session.content.authenticated.access_token')}`,
+          'Content-Type': 'application/vnd.api+json'
+        }
+      }).then((response) => {
+        return response.json();
+      })
     });
   },
   setupController(controller, model) {

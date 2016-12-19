@@ -28,7 +28,7 @@ defmodule Mirror.TeamChannel do
     case UserHelper.user_is_team_member?(user, team) do
       true ->
         {retro_in_progress, retro} = Retrospective.check_retrospective_in_progress(team)
-        broadcast! socket, "retrospective_in_progress", %{retrospective_in_progress: retro_in_progress, retrospective_id: List.first(retro).id}
+        handle_retro_in_progress_response(socket, retro_in_progress, retro)
     end
 
     {:noreply, socket}
@@ -58,5 +58,13 @@ defmodule Mirror.TeamChannel do
     {user, team}
   end
 
+  defp handle_retro_in_progress_response(socket, retro_in_progress, retro) do
+    case retro_in_progress do
+      true ->
+        broadcast! socket, "retrospective_in_progress", %{retrospective_in_progress: retro_in_progress, retrospective_id: List.first(retro).id}
+      _ ->
+        broadcast! socket, "retrospective_in_progress", %{retrospective_in_progress: false}
+    end
+  end
 
 end
