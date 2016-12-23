@@ -3,7 +3,7 @@ defmodule Mirror.RetrospectiveTest do
 
   alias Mirror.Retrospective
 
-  @valid_attrs %{name: "some content", isAnonymous: true, state: 0}
+  @valid_attrs %{name: "some content", isAnonymous: true, state: 0, team_id: 1, moderator_id: 1}
   @invalid_attrs %{}
 
   test "changeset with valid attributes" do
