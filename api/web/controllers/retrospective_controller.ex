@@ -60,16 +60,6 @@ defmodule Mirror.RetrospectiveController do
       true ->
         use_error_view(conn, 401, %{})
     end
-
-    # Logger.warn "test"
-    # team_members = [Guardian.Plug.current_resource(conn)]
-    # team_admins = [Guardian.Plug.current_resource(conn)]
-    # team_member_delegates = attributes["member-delegates"]
-    #
-    # params = %{"attributes" => attributes, "admins" => team_admins, "members" => team_members, "delegates" => team_member_delegates}
-    #
-
-
   end
 
   def show(conn, %{"id" => id}) do
@@ -126,20 +116,31 @@ defmodule Mirror.RetrospectiveController do
     end
   end
 
-  # def update(conn, %{"id" => id, "team" => team_params}) do
-  #   team = Repo.get!(Team, id)
-  #   |> Repo.preload([:admins, :members])
-  #   changeset = Team.changeset(team, team_params)
-  #
-  #   case Repo.update(changeset) do
-  #     {:ok, team} ->
-  #       render(conn, "show.json", team: team)
-  #     {:error, changeset} ->
-  #       conn
-  #       |> put_status(:unprocessable_entity)
-  #       |> render(Mirror.ChangesetView, "error.json", changeset: changeset)
-  #   end
-  # end
+  def update(conn, %{"id" => id}) do
+    #Logger.warn "#{inspect conn}"
+    body_params = conn.body_params
+
+
+    Logger.warn "#{inspect body_params}"
+    
+    retrospective = Repo.get!(Retrospective, id)
+    |> Repo.preload([:team, :moderator, :participants])
+
+    state = body_params["data"]["attributes"]["state"];
+
+    #Logger.warn "#{inspect state}"
+
+    changeset = Retrospective.changeset(retrospective, %{state: state})
+  
+    case Repo.update(changeset) do
+      {:ok, retrospective} ->
+        render(conn, "show.json", retrospective: retrospective)
+      {:error, changeset} ->
+        conn
+        |> put_status(:unprocessable_entity)
+        |> render(Mirror.ChangesetView, "error.json", changeset: changeset)
+    end
+  end
 
   # def delete(conn, %{"id" => id}) do
   #   team = Repo.get!(Team, id)
