@@ -117,9 +117,7 @@ defmodule Mirror.RetrospectiveController do
   end
 
   def update(conn, %{"id" => id}) do
-    #Logger.warn "#{inspect conn}"
     body_params = conn.body_params
-
 
     Logger.warn "#{inspect body_params}"
     
@@ -128,12 +126,11 @@ defmodule Mirror.RetrospectiveController do
 
     state = body_params["data"]["attributes"]["state"];
 
-    #Logger.warn "#{inspect state}"
-
     changeset = Retrospective.changeset(retrospective, %{state: state})
   
     case Repo.update(changeset) do
       {:ok, retrospective} ->
+        Mirror.Endpoint.broadcast("retrospective:#{retrospective.id}", "retrospective_state_change", Mirror.RetrospectiveView.render("show.json", retrospective: retrospective))
         render(conn, "show.json", retrospective: retrospective)
       {:error, changeset} ->
         conn

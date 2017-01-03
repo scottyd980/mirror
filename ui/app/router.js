@@ -30,6 +30,7 @@ Router.map(function() {
     this.route('retrospectives', function() {
       this.route('retrospective', { path: '/:id' }, function() {
         this.route('start');
+        this.route('score');
       });
     });
 

@@ -69,33 +69,18 @@ export default Ember.Service.extend({
 
   listen_for_retrospective_events(channel) {
     this._listen_for_joined_retrospective(channel);
+    this._listen_for_retrospective_state_change(channel);
   },
 
   _listen_for_joined_retrospective(channel) {
     channel.on('joined_retrospective', (resp) => {
-      console.log(resp);
       this.get('store').pushPayload(JSON.parse(JSON.stringify(resp)));
+    });
+  },
 
-      // const participantIds = resp.data.relationships.participants.data.map((participant) => {
-      //   return participant.id;
-      // });
-
-
-      // var data = {};
-      // data.retrospective = [{id: resp.data.id, participants: participantIds}];
-
-      // data = JSON.parse(JSON.stringify(data));
-
-      // this.get('store').pushPayload(data);
-      
-      // const staffMessagesIds = resp.data..staffMessages.map((message) => {
-      //   return message.id;
-      // });
-      // data.users = [{id: userId, staffMessages: staffMessagesIds}];
-      // this.store.pushPayload(data);
-
-      // console.log('someone joined');
-      //console.log(resp);
+  _listen_for_retrospective_state_change(channel) {
+    channel.on('retrospective_state_change', (resp) => {
+      this.get('store').pushPayload(JSON.parse(JSON.stringify(resp)));
     });
   }
 });
