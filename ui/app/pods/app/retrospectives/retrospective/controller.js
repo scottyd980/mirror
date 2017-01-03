@@ -1,4 +1,5 @@
 import Ember from 'ember';
+import config from '../../../../config/environment';
 
 export default Ember.Controller.extend({
     initialState: null,
@@ -8,7 +9,9 @@ export default Ember.Controller.extend({
         if(this.get('initialState') === null) {
             this.set('initialState', state);
         } else {
-            this.transitionToRoute('app.retrospectives.retrospective.score');
+            // Will eventually want to make game type dynamic as well
+            var dynamicRouteSegment = config.retrospective.sticky_notes.states[state];
+            this.transitionToRoute('app.retrospectives.retrospective.' + dynamicRouteSegment);
         }
     })
 });

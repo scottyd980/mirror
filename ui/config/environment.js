@@ -1,6 +1,7 @@
 /* jshint node: true */
 
 module.exports = function(environment) {
+
   var ENV = {
     modulePrefix: 'mirror',
     podModulePrefix: 'mirror/pods',
@@ -66,8 +67,14 @@ module.exports = function(environment) {
     },
     CONFIRM_MESSAGES: {
       generic: "Please Confirm This Action"
+    },
+    retrospective: {
+      sticky_notes: {
+        states: ["start", "score", "aggregate", "feedback", "review_negative", "review_positive", "summary"]
+      }
     }
   };
+  
 
   if (environment === 'development') {
     // ENV.APP.LOG_RESOLVER = true;
