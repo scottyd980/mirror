@@ -3,8 +3,8 @@
     <div class="row">
       <div class="col-md-8">
         {{#x-card title="Score the sprint"}}
-            <div class="row">
-                <div class="col-xs-4 col-lg-12 mg-bottom-md">
+            <div class="row scores">
+                <div class="col-xs-4 col-lg-12 mg-bottom-md score-legend">
                     <div class="row text-center">
                         <div class="col-lg-3 col-lg-offset-1 danger-text">
                             {{fa-icon "frown-o" size="4"}}
@@ -17,7 +17,7 @@
                         </div>
                     </div>
                 </div>
-                <div class="col-xs-8 col-lg-12">
+                <div class="col-xs-8 col-lg-12 score-input">
                     <div class="row">
                         <div class="col-lg-1 col-lg-offset-1 text-center radio-button">
                             <input type="radio" id="score-1" value="1" name="sprintScore" />
