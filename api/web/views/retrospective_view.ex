@@ -38,6 +38,12 @@ defmodule Mirror.RetrospectiveView do
             "self": "/api/teams/"
           },
           "data": render_one(retrospective.team, Mirror.RetrospectiveView, "team.json", as: :team)
+        },
+        "scores": %{
+          "links": %{
+            "self": "/api/scores/"
+          },
+          "data": render_many(retrospective.scores, Mirror.RetrospectiveView, "score.json", as: :score)
         }
       }
     }
@@ -54,6 +60,13 @@ defmodule Mirror.RetrospectiveView do
     %{
       "type": "team",
       "id": team.id
+    }
+  end
+
+  def render("score.json", %{score: score}) do
+    %{
+      "type": "score",
+      "id": score.id
     }
   end
 end

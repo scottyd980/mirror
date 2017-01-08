@@ -13,7 +13,7 @@ defmodule Mirror.RetrospectiveController do
 
   def index(conn, _params) do
     retrospectives = Repo.all(Retrospective)
-    |> Repo.preload([:moderator, :team, :type, :participants])
+    |> Repo.preload([:moderator, :team, :type, :participants, :scores])
     render(conn, "index.json", retrospectives: retrospectives)
   end
 
@@ -21,7 +21,7 @@ defmodule Mirror.RetrospectiveController do
     current_user = Guardian.Plug.current_resource(conn)
 
     retrospective = Repo.get!(Retrospective, id)
-    |> Repo.preload([:team, :moderator, :type, :participants])
+    |> Repo.preload([:team, :moderator, :type, :participants, :scores])
 
     team = retrospective.team
     |> Repo.preload([:members])
@@ -83,7 +83,7 @@ defmodule Mirror.RetrospectiveController do
       with {:ok, retrospective} <- insert_retrospective(params),
            [{:ok, retrospective_participants}] <- add_retrospective_participants(retrospective, params["participants"]) do
              retrospective
-             |> Repo.preload([:team, :moderator, :participants])
+             |> Repo.preload([:team, :moderator, :participants, :scores])
       else
         {:error, changeset} ->
           Repo.rollback changeset
@@ -122,7 +122,7 @@ defmodule Mirror.RetrospectiveController do
     Logger.warn "#{inspect body_params}"
     
     retrospective = Repo.get!(Retrospective, id)
-    |> Repo.preload([:team, :moderator, :participants])
+    |> Repo.preload([:team, :moderator, :participants, :scores])
 
     state = body_params["data"]["attributes"]["state"];
 
