@@ -11,6 +11,7 @@ defmodule Mirror.User do
     field :password_confirmation, :string, virtual: true
 
     # Relationships
+    has_many :scores, Mirror.SprintScore
     many_to_many :teams, Mirror.Team, join_through: Mirror.UserTeam
 
     timestamps()

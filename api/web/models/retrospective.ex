@@ -7,6 +7,7 @@ defmodule Mirror.Retrospective do
     field :name, :string
     field :state, :integer, default: 0
     field :isAnonymous, :boolean, default: true
+    has_many :scores, Mirror.SprintScore
     belongs_to :team, Mirror.Team
     belongs_to :moderator, Mirror.User
     belongs_to :type, Mirror.RetrospectiveType
