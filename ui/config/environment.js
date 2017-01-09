@@ -60,7 +60,8 @@ module.exports = function(environment) {
       }
     },
     ERROR_MESSAGES: {
-      generic: "Something Went Wrong"
+      generic: "Something Went Wrong",
+      process: "We Could Not Process Your Request"
     },
     SUCCESS_MESSAGES: {
       generic: "Success!"

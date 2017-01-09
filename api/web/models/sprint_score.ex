@@ -16,5 +16,6 @@ defmodule Mirror.SprintScore do
     struct
     |> cast(params, [:score, :user_id, :retrospective_id])
     |> validate_required([:score, :user_id, :retrospective_id])
+    |> validate_inclusion(:score, 1..10)
   end
 end
