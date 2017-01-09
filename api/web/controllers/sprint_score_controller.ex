@@ -6,6 +6,8 @@ defmodule Mirror.SprintScoreController do
   alias Mirror.UserHelper
   alias Mirror.SprintScore
 
+  import Logger
+
   plug Guardian.Plug.EnsureAuthenticated, handler: Mirror.AuthErrorHandler
 
   def create(conn, %{"data" => %{"attributes" => attributes, "relationships" => relationships, "type" => "scores"}}) do
@@ -15,9 +17,9 @@ defmodule Mirror.SprintScoreController do
     # TODO: need to handle making sure user is retro/team member
 
     changeset = SprintScore.changeset %SprintScore{}, %{
-        score: attributes.score,
-        user_id: relationships.data.user.id,
-        retrospective_id: relationships.retrospective.data.id
+        score: attributes["score"],
+        user_id: relationships["user"]["data"]["id"],
+        retrospective_id: relationships["retrospective"]["data"]["id"]
     }
 
     case Repo.insert changeset do
