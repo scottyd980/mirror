@@ -1,4 +1,5 @@
 import Ember from 'ember';
+import config from '../../../../../config/environment';
 
 export default Ember.Route.extend({
     session: Ember.inject.service('session'),
@@ -9,11 +10,22 @@ export default Ember.Route.extend({
         submitScore() {
             let score = this.store.createRecord('score');
 
-            score.set('score', 1);
-            score.set('retrospective', this.currentModel.retrospective);
-            score.set('user', this.get('session').get('currentUser'));
+            let sprintScore = $('input[name="sprintScore"]:checked').val();
 
-            score.save();
+            if(typeof sprintScore !== "undefined") {
+
+                score.set('score', sprintScore);
+                score.set('retrospective', this.currentModel.retrospective);
+                score.set('user', this.get('session').get('currentUser'));
+
+                score.save();
+            
+            } else {
+                this.get('notificationCenter').error({
+                    title: config.ERROR_MESSAGES.process,
+                    message: "You must select a score before submitting. Please try again."
+                });
+            }
         }
     }
 });
