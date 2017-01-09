@@ -9,7 +9,6 @@ export default Ember.Route.extend({
             var retrospective = this.get('currentModel').retrospective;
             retrospective.set('state', 1);
             retrospective.save();
-
         }
     }
 });
