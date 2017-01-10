@@ -14,16 +14,21 @@ defmodule Mirror.SprintScoreController do
 
     current_user = Guardian.Plug.current_resource(conn)
 
+    retrospective_id = relationships["retrospective"]["data"]["id"]
+    user_id = relationships["user"]["data"]["id"]
+
     # TODO: need to handle making sure user is retro/team member
 
     changeset = SprintScore.changeset %SprintScore{}, %{
         score: attributes["score"],
-        user_id: relationships["user"]["data"]["id"],
-        retrospective_id: relationships["retrospective"]["data"]["id"]
+        user_id: user_id,
+        retrospective_id: retrospective_id
     }
 
     case Repo.insert changeset do
         {:ok, score} ->
+            Mirror.Endpoint.broadcast("retrospective:#{retrospective_id}", "sprint_score_added", Mirror.SprintScoreView.render("show.json", score: score))
+
             conn
             |> put_status(:created)
             |> render(Mirror.SprintScoreView, "show.json", score: score)

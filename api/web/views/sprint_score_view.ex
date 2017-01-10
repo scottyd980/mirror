@@ -16,6 +16,7 @@ defmodule Mirror.SprintScoreView do
   def render("score.json", %{sprint_score: score}) do
     %{
         "type": "score",
+        "id": score.id,
         "attributes": %{
             "score": score.score
         },
