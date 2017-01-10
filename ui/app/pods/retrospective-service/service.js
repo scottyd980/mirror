@@ -70,6 +70,7 @@ export default Ember.Service.extend({
   listen_for_retrospective_events(channel) {
     this._listen_for_joined_retrospective(channel);
     this._listen_for_retrospective_state_change(channel);
+    this._listen_for_retrospective_scores(channel);
   },
 
   _listen_for_joined_retrospective(channel) {
@@ -80,6 +81,12 @@ export default Ember.Service.extend({
 
   _listen_for_retrospective_state_change(channel) {
     channel.on('retrospective_state_change', (resp) => {
+      this.get('store').pushPayload(JSON.parse(JSON.stringify(resp)));
+    });
+  },
+
+  _listen_for_retrospective_scores(channel) {
+    channel.on('sprint_score_added', (resp) => {
       this.get('store').pushPayload(JSON.parse(JSON.stringify(resp)));
     });
   }
