@@ -4,6 +4,7 @@ export default Ember.Service.extend({
   socket: Ember.inject.service('socket-service'),
   routing: Ember.inject.service("-routing"),
   store: Ember.inject.service('store'),
+  session: Ember.inject.service(),
 
   team_channel: null,
   retrospective_channel: null,
@@ -87,7 +88,12 @@ export default Ember.Service.extend({
 
   _listen_for_retrospective_scores(channel) {
     channel.on('sprint_score_added', (resp) => {
-      this.get('store').pushPayload(JSON.parse(JSON.stringify(resp)));
+
+      // Only push to store if it's not the current logged in user.
+      if(parseInt(resp.data.relationships.user.data.id) !== parseInt(this.get('session').get('currentUser.id'))) {
+        this.get('store').pushPayload(JSON.parse(JSON.stringify(resp)));
+      }
+      
     });
   }
 });
