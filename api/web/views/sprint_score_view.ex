@@ -15,7 +15,7 @@ defmodule Mirror.SprintScoreView do
 
   def render("score.json", %{sprint_score: score}) do
     %{
-        "type": "score",
+        "type": "scores",
         "id": score.id,
         "attributes": %{
             "score": score.score
@@ -39,14 +39,14 @@ defmodule Mirror.SprintScoreView do
 
   def render("user.json", %{user: user}) do
     %{
-      "type": "user",
+      "type": "users",
       "id": user
     }
   end
 
   def render("retrospective.json", %{retrospective: retrospective}) do
     %{
-      "type": "retrospective",
+      "type": "retrospectives",
       "id": retrospective
     }
   end
