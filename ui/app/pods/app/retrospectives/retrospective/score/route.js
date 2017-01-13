@@ -18,7 +18,12 @@ export default Ember.Route.extend({
                 score.set('retrospective', this.currentModel.retrospective);
                 score.set('user', this.get('session').get('currentUser'));
 
-                score.save();
+                $('#score-submit').html("<i class='fa fa-fw fa-refresh fa-spin'></i> Submitting Score...");
+                $('#score-submit').prop('disabled', true);
+
+                score.save().then(function() {
+                    $('#score-submit').html("<i class='fa fa-fw fa-check'></i> Score Submitted");
+                });
             
             } else {
                 this.get('notificationCenter').error({
