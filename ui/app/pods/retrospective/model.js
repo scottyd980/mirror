@@ -8,5 +8,6 @@ export default Model.extend({
   isAnonymous: attr('string'),
   team: belongsTo('team'),
   moderator: belongsTo('user'),
-  participants: hasMany('user')
+  participants: hasMany('user'),
+  scores: hasMany('score')
 });
