@@ -18,6 +18,7 @@ defmodule Mirror.SprintScoreController do
     user_id = relationships["user"]["data"]["id"]
 
     # TODO: need to handle making sure user is retro/team member
+    # Also need to make sure that the user hasn't alreadt submitted a score
 
     changeset = SprintScore.changeset %SprintScore{}, %{
         score: attributes["score"],

@@ -20,61 +20,61 @@
                 <div class="col-xs-8 col-lg-12 score-input">
                     <div class="row">
                         <div class="col-lg-1 col-lg-offset-1 text-center radio-button">
-                            <input type="radio" id="score-1" value="1" name="sprintScore" />
+                            <input checked="{{if (eq score 1) 'checked'}}" type="radio" id="score-1" value="1" name="sprintScore" />
                             <label for="score-1" class="sprint-score score-1">
                                 1
                             </label>
                         </div>
                         <div class="col-lg-1 radio-button">
-                            <input type="radio" id="score-2" value="2" name="sprintScore" />
+                            <input checked="{{if (eq score 2) 'checked'}}" type="radio" id="score-2" value="2" name="sprintScore" />
                             <label for="score-2" class="sprint-score score-2">
                                 2
                             </label>    
                         </div>
                         <div class="col-lg-1 radio-button">
-                            <input type="radio" id="score-3" value="3" name="sprintScore" />
+                            <input checked="{{if (eq score 3) 'checked'}}" type="radio" id="score-3" value="3" name="sprintScore" />
                             <label for="score-3" class="sprint-score score-3">
                                 3
                             </label>
                         </div>
                         <div class="col-lg-1 radio-button">
-                            <input type="radio" id="score-4" value="4" name="sprintScore" />
+                            <input checked="{{if (eq score 4) 'checked'}}" type="radio" id="score-4" value="4" name="sprintScore" />
                             <label for="score-4" class="sprint-score score-4">
                                 4
                             </label>
                         </div>
                         <div class="col-lg-1 radio-button">
-                            <input type="radio" id="score-5" value="5" name="sprintScore" />
+                            <input checked="{{if (eq score 5) 'checked'}}" type="radio" id="score-5" value="5" name="sprintScore" />
                             <label for="score-5" class="sprint-score score-5">
                                 5
                             </label>
                         </div>
                         <div class="col-lg-1 radio-button">
-                            <input type="radio" id="score-6" value="6" name="sprintScore" />
+                            <input checked="{{if (eq score 6) 'checked'}}" type="radio" id="score-6" value="6" name="sprintScore" />
                             <label for="score-6" class="sprint-score score-6">
                                 6
                             </label>
                         </div>
                         <div class="col-lg-1 radio-button">
-                            <input type="radio" id="score-7" value="7" name="sprintScore" />
+                            <input checked="{{if (eq score 7) 'checked'}}" type="radio" id="score-7" value="7" name="sprintScore" />
                             <label for="score-7" class="sprint-score score-7">
                                 7
                             </label>
                         </div>
                         <div class="col-lg-1 radio-button">
-                            <input type="radio" id="score-8" value="8" name="sprintScore" />
+                            <input checked="{{if (eq score 8) 'checked'}}" type="radio" id="score-8" value="8" name="sprintScore" />
                             <label for="score-8" class="sprint-score score-8">
                                 8
                             </label>
                         </div>
                         <div class="col-lg-1 radio-button">
-                            <input type="radio" id="score-9" value="9" name="sprintScore" />
+                            <input checked="{{if (eq score 9) 'checked'}}" type="radio" id="score-9" value="9" name="sprintScore" />
                             <label for="score-9" class="sprint-score score-9">
                                 9
                             </label>
                         </div>
                         <div class="col-lg-1 radio-button">
-                            <input type="radio" id="score-10" value="10" name="sprintScore" />
+                            <input checked="{{if (eq score 10) 'checked'}}" type="radio" id="score-10" value="10" name="sprintScore" />
                             <label for="score-10" class="sprint-score score-10">
                                 10
                             </label>
@@ -83,19 +83,24 @@
                 </div>
             </div>
         {{/x-card}}
-        <button id="score-submit" {{action "submitScore"}} class="btn btn-block btn-success">Submit Score</button>
+        {{#if submitted}}
+            <button disabled id="score-submit" {{action "submitScore"}} class="btn btn-block btn-success">{{fa-icon "check" fixedWidth=true}} Score Submitted</button>
+        {{else}}
+            <button id="score-submit" {{action "submitScore"}} class="btn btn-block btn-success">Submit Score</button>
+        {{/if}}
       </div>
       <div class="col-md-4">
-        {{#if model.isModerator}}
+        {{#if model.parent.isModerator}}
           {{#x-card title="Moderator"}}
+          {{score}}
             <a {{action "startRetrospective"}} class="btn btn-block btn-success">Continue</a>
           {{/x-card}}
         {{/if}}
         {{#x-card title="Retrospective Participants"}}
             {{retrospective-member-list
-                members=model.team_members
-                joined_members=model.retrospective.participants 
-                currentUser=model.currentUser
+                members=model.parent.team_members
+                joined_members=model.parent.retrospective.participants 
+                currentUser=model.parent.currentUser
             }}
         {{/x-card}}
       </div>
