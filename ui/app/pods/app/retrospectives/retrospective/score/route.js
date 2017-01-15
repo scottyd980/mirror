@@ -20,14 +20,20 @@ export default Ember.Route.extend({
         });
 
         if(typeof userScore !== "undefined" && userScore.length > 0) {
-            controller.set('submitted', true);
-            controller.set('score', userScore[0].get('score'));
-            $('#score-submit').html("<i class='fa fa-fw fa-check'></i> Score Submitted");
-            $('#score-submit').prop('disabled', true);
+            this._markScoreSubmitted(userScore[0].get('score'));
         }
+    },
+    _markScoreSubmitted(score) {
+        if(score) {
+            this.controller.set('score', score);
+        }
+        this.controller.set('submitted', true);
+        $('#score-submit').html("<i class='fa fa-fw fa-check'></i> Score Submitted");
+        $('#score-submit').prop('disabled', true);
     },
     actions: {
         submitScore() {
+            let _this = this;
             let score = this.store.createRecord('score');
 
             let sprintScore = $('input[name="sprintScore"]:checked').val();
@@ -42,7 +48,7 @@ export default Ember.Route.extend({
                 $('#score-submit').prop('disabled', true);
 
                 score.save().then(function() {
-                    $('#score-submit').html("<i class='fa fa-fw fa-check'></i> Score Submitted");
+                    _this._markScoreSubmitted();
                 });
             
             } else {
