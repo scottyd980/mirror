@@ -15,7 +15,7 @@ defmodule Mirror.RetrospectiveUserController do
     current_user = Guardian.Plug.current_resource(conn)
 
     retrospective = Repo.get!(Retrospective, retrospective_id)
-    |> Repo.preload([:team, :moderator, :type, :participants])
+    |> Repo.preload([:team, :moderator, :type, :participants, :scores])
 
     team = retrospective.team
     |> Repo.preload([:members])
@@ -43,7 +43,7 @@ defmodule Mirror.RetrospectiveUserController do
             case Repo.insert changeset do
                 {:ok, retrospective_user} ->
                     updated_retrospective = Repo.get!(Retrospective, retrospective.id)
-                    |> Repo.preload([:team, :moderator, :type, :participants])
+                    |> Repo.preload([:team, :moderator, :type, :participants, :scores])
 
                     Mirror.Endpoint.broadcast("retrospective:#{retrospective.id}", "joined_retrospective", Mirror.RetrospectiveView.render("show.json", retrospective: updated_retrospective))
 
