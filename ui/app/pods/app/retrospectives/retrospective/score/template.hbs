@@ -92,7 +92,7 @@
       <div class="col-md-4">
         {{#if model.parent.isModerator}}
           {{#x-card title="Moderator"}}
-            <a {{action "startRetrospective"}} class="btn btn-block btn-success">Continue</a>
+            <a onclick={{route-action "changeRetrospectiveState" 2}} class="btn btn-block btn-success">Continue</a>
           {{/x-card}}
         {{/if}}
         {{#x-card title="Retrospective Participants"}}

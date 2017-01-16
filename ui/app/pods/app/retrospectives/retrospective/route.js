@@ -47,4 +47,11 @@ export default Ember.Route.extend({
 
         var retro = this.get('retrospectiveService').join_retrospective_channel(model.retrospective.get('id'));
     },
+    actions: {
+        changeRetrospectiveState(state) {
+            var retrospective = this.get('currentModel').retrospective;
+            retrospective.set('state', state);
+            retrospective.save();
+        }
+    }
 });
