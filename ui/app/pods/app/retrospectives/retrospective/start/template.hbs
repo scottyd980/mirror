@@ -13,7 +13,7 @@
       <div class="col-md-4">
         {{#if model.isModerator}}
           {{#x-card title="Moderator"}}
-            <a {{action "startRetrospective"}} class="btn btn-block btn-success">Start The Retrospective</a>
+            <a onclick={{route-action "changeRetrospectiveState" 1}} class="btn btn-block btn-success">Start The Retrospective</a>
           {{/x-card}}
         {{/if}}
         {{#x-card title="While you wait..."}}
