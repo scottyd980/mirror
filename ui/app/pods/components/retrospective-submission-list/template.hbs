@@ -2,10 +2,14 @@
     <li class="progress-list">
         <div class="list-item">{{gravatar-image class="gravatar-nav" email=member.email}} {{member.username}}</div>
         <div class="list-actions">
-            {{#if (contains member submittedMembers)}}
-                {{fa-icon "check" class="success-text"}}
+            {{#if userList}}
+                {{fa-icon "user" class="success-text"}}
             {{else}}
-                {{fa-icon "refresh" class="info-text" spin=true}}
+                {{#if (contains member submittedMembers)}}
+                    {{fa-icon "check" class="success-text"}}
+                {{else}}
+                    {{fa-icon "refresh" class="info-text" spin=true}}
+                {{/if}}
             {{/if}}
         </div>
     </li>
