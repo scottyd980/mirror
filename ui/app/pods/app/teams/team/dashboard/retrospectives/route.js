@@ -34,9 +34,6 @@ export default Ember.Route.extend({
 
     controller.set('retrospective', retro);
   },
-  setRetrospectiveInProgress(in_progress) {
-    this.controller.set('hasRetroInProgress', in_progress);
-  },
   moveToRetrospectiveInProgress(retrospective_id) {
     console.log(retrospective_id);
   },
@@ -56,7 +53,8 @@ export default Ember.Route.extend({
       retrospective.set('isAnonymous', true);
 
       this.get('retrospectiveService').start(retrospective).then((result) => {
-        this.controller.set('isRetroStartModalShowing', false);
+        //this.controller.set('isRetroStartModalShowing', false);
+        this.send('joinRetrospective', result.id);
       });
     },
     joinRetrospective(retrospective_id) {
