@@ -3,8 +3,6 @@ defmodule Mirror.Retrospective do
 
   alias Mirror.Repo
 
-  import Logger
-
   schema "retrospectives" do
     field :name, :string
     field :state, :integer, default: 0
@@ -40,7 +38,6 @@ defmodule Mirror.Retrospective do
   end
 
   def preload_relationships(retrospective) do
-    Logger.warn "#{inspect retrospective}"
     retrospective
     |> Repo.preload([:team, :moderator, :participants, :scores, :feedbacks])
   end
