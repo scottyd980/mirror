@@ -4,16 +4,13 @@
       <div class="col-md-8">
         {{#x-card title="Provide feedback for the sprint" overlay=submitted}}
             <div class="row">
-                <div class="col-md-6">
-                    <label for="went-poorly-textarea"><p><strong>What went poorly?</strong></p></label>
-                    {{#textarea rows="10" id="went-poorly-textarea" class="form-control"}}
-                    {{/textarea}}
-                </div>
-                <div class="col-md-6">
-                    <label for="went-well-textarea"><p><strong>What went well?</strong></p></label>
-                    {{#textarea rows="10" id="went-well-textarea" class="form-control"}}
-                    {{/textarea}}
-                </div>
+                {{#each model.gameInput as |input|}}
+                    <div class="col-md-6">
+                        <label for="{{concat input.idPrefix '-textarea'}}"><p><strong>{{input.label}}</strong></p></label>
+                        {{#textarea rows="10" id=(concat input.idPrefix "-textarea") class="form-control"}}
+                        {{/textarea}}
+                    </div>
+                {{/each}}
             </div>
         {{/x-card}}
         {{#if submitted}}

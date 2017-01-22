@@ -33,7 +33,11 @@ Router.map(function() {
         this.route('score');
         this.route('aggregate');
         this.route('feedback');
-        this.route('board_negative');
+        
+        this.route('sticky-notes', function() {
+          this.route('board-negative');
+          this.route('board-positive');
+        });
       });
     });
 
