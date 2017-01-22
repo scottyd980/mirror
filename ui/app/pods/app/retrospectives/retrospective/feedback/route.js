@@ -7,7 +7,7 @@ export default Ember.Route.extend({
     model() {
         return RSVP.hash({
             parent: this.modelFor('app.retrospectives.retrospective'),
-            feedback: this.modelFor('app.retrospectives.retrospective').retrospective.get('feedback'),
+            feedback: this.modelFor('app.retrospectives.retrospective').retrospective.get('feedbacks'),
             gameInput: config.retrospective["sticky_notes"].feedback
         });
     },
