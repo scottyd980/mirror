@@ -3,12 +3,9 @@ import attr from 'ember-data/attr';
 import { belongsTo, hasMany } from 'ember-data/relationships';
 
 export default Model.extend({
-  name: attr('string'),
+  type: attr('string'),
+  message: attr('string'),
   state: attr('number', {defaultValue: 0}),
-  isAnonymous: attr('string'),
-  team: belongsTo('team'),
-  moderator: belongsTo('user'),
-  participants: hasMany('user'),
-  scores: hasMany('score'),
-  feedback: hasMany('feedback')
+  user: belongsTo('user'),
+  retrospective: belongsTo('retrospective')
 });
