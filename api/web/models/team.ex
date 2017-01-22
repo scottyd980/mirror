@@ -1,6 +1,8 @@
 defmodule Mirror.Team do
   use Mirror.Web, :model
 
+  alias Mirror.Repo
+
   schema "teams" do
     field :name, :string
     field :isAnonymous, :boolean, default: false
@@ -21,5 +23,10 @@ defmodule Mirror.Team do
     # |> cast_assoc(:admin)
     |> validate_required([:name, :isAnonymous, :avatar])
     # |> assoc_constraint(:admin)
+  end
+
+  def preload_relationships(team) do
+    team
+    |> Repo.preload([:members, :admins])
   end
 end

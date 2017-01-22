@@ -3,11 +3,14 @@ defmodule Mirror.Retrospective do
 
   alias Mirror.Repo
 
+  import Logger
+
   schema "retrospectives" do
     field :name, :string
     field :state, :integer, default: 0
     field :isAnonymous, :boolean, default: true
     has_many :scores, Mirror.SprintScore
+    has_many :feedbacks, Mirror.Feedback
     belongs_to :team, Mirror.Team
     belongs_to :moderator, Mirror.User
     belongs_to :type, Mirror.RetrospectiveType
@@ -34,5 +37,11 @@ defmodule Mirror.Retrospective do
     retro = Repo.all(from retro in Mirror.Retrospective, where: retro.team_id == ^team.id)
 
     {in_progress, retro}
+  end
+
+  def preload_relationships(retrospective) do
+    Logger.warn "#{inspect retrospective}"
+    retrospective
+    |> Repo.preload([:team, :moderator, :participants, :scores, :feedbacks])
   end
 end

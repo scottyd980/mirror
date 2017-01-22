@@ -13,7 +13,7 @@ defmodule Mirror.RetrospectiveController do
 
   def index(conn, _params) do
     retrospectives = Repo.all(Retrospective)
-    |> Repo.preload([:moderator, :team, :type, :participants, :scores])
+    |> Retrospective.preload_relationships()
     render(conn, "index.json", retrospectives: retrospectives)
   end
 
@@ -21,10 +21,10 @@ defmodule Mirror.RetrospectiveController do
     current_user = Guardian.Plug.current_resource(conn)
 
     retrospective = Repo.get!(Retrospective, id)
-    |> Repo.preload([:team, :moderator, :type, :participants, :scores])
+    |> Retrospective.preload_relationships()
 
     team = retrospective.team
-    |> Repo.preload([:members])
+    |> Team.preload_relationships()
 
     case Enum.member?(team.members, current_user) do
       true ->
@@ -66,7 +66,7 @@ defmodule Mirror.RetrospectiveController do
     current_user = Guardian.Plug.current_resource(conn)
 
     team = Repo.get!(Team, id)
-    |> Repo.preload([:admins, :members])
+    |> Team.preload_relationships()
 
     case Enum.member?(team.members, current_user) do
       true ->
@@ -83,7 +83,7 @@ defmodule Mirror.RetrospectiveController do
       with {:ok, retrospective} <- insert_retrospective(params),
            [{:ok, retrospective_participants}] <- add_retrospective_participants(retrospective, params["participants"]) do
              retrospective
-             |> Repo.preload([:team, :moderator, :participants, :scores])
+             |> Retrospective.preload_relationships()
       else
         {:error, changeset} ->
           Repo.rollback changeset
@@ -118,11 +118,9 @@ defmodule Mirror.RetrospectiveController do
 
   def update(conn, %{"id" => id}) do
     body_params = conn.body_params
-
-    Logger.warn "#{inspect body_params}"
     
     retrospective = Repo.get!(Retrospective, id)
-    |> Repo.preload([:team, :moderator, :participants, :scores])
+    |> Retrospective.preload_relationships()
 
     state = body_params["data"]["attributes"]["state"];
 
