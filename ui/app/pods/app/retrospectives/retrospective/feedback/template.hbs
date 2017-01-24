@@ -3,7 +3,7 @@
     <div class="row">
       <div class="col-md-8">
         {{#x-card title="Provide feedback for the sprint" overlay=submitted}}
-            <div class="row">
+            <div class="row feedbacks">
                 {{#each model.gameInput as |input|}}
                     <div class="col-md-6">
                         <label for="{{concat input.idPrefix '-textarea'}}"><p><strong>{{input.label}}</strong></p></label>
@@ -14,9 +14,9 @@
             </div>
         {{/x-card}}
         {{#if submitted}}
-            <button disabled id="feedback-submit" {{action "submitScore"}} class="btn btn-block btn-success mg-bottom-lg">{{fa-icon "check" fixedWidth=true}} Feedback Submitted</button>
+            <button disabled id="feedback-submit" {{action "submitFeedback"}} class="btn btn-block btn-success mg-bottom-lg">{{fa-icon "check" fixedWidth=true}} Feedback Submitted</button>
         {{else}}
-            <button id="feedback-submit" {{action "submitScore"}} class="btn btn-block btn-success mg-bottom-lg">Submit Feedback</button>
+            <button id="feedback-submit" {{action "submitFeedback"}} class="btn btn-block btn-success mg-bottom-lg">Submit Feedback</button>
         {{/if}}
       </div>
       <div class="col-md-4">
