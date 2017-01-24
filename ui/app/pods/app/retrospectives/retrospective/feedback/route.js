@@ -36,6 +36,12 @@ export default Ember.Route.extend({
         submitFeedback() {
             let _this = this;
 
+            var feedbacks = $('.feedbacks [id$=-textarea]');
+
+            feedbacks.each(function(index, feedback) {
+                // Need to figure out a way to submit multiple feedbacks 
+            });
+
             if(typeof sprintScore !== "undefined") {
 
                 
