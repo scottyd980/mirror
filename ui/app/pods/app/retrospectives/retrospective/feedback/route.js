@@ -38,20 +38,35 @@ export default Ember.Route.extend({
 
             var feedbacks = $('.feedbacks [id$=-textarea]');
 
+            var feedbackToSubmit = [];
+
             feedbacks.each(function(index, feedback) {
-                // Need to figure out a way to submit multiple feedbacks 
+                var $feedback = $(feedback);
+
+                if($feedback.val().trim() !== "") {
+
+                    let fb = _this.store.createRecord('feedback', {
+                        type: $feedback.data('type'),
+                        message: $feedback.val(),
+                        user: _this.get('session').get('currentUser'),
+                        retrospective: _this.currentModel.parent.retrospective
+                    });
+
+                    feedbackToSubmit.push(fb.save());
+
+                }
             });
 
-            if(typeof sprintScore !== "undefined") {
-
-                
-            
-            } else {
-                this.get('notificationCenter').error({
+            RSVP.Promise.all(
+                feedbackToSubmit
+            ).then(function(submitted) {
+                console.log(submitted);
+            }).catch(function(error) {
+                _this.get('notificationCenter').error({
                     title: config.ERROR_MESSAGES.process,
-                    message: "You must select a score before submitting. Please try again."
+                    message: "There was a problem submitting your feedback. Please try again."
                 });
-            }
+            });
         }
     }
 });
