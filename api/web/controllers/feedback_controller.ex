@@ -46,7 +46,7 @@ defmodule Mirror.FeedbackController do
     current_user = Guardian.Plug.current_resource(conn)
 
     feedback = Repo.get!(Feedback, id)
-    |> Repo.preload([:user, :retrospective])
+    |> Feedback.preload_relationships()
 
     retrospective = feedback.retrospective
     |> Retrospective.preload_relationships()

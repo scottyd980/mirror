@@ -1,6 +1,8 @@
 defmodule Mirror.Feedback do
   use Mirror.Web, :model
 
+  alias Mirror.Repo
+
   schema "feedbacks" do
     field :type, :string
     field :message, :string
@@ -18,5 +20,10 @@ defmodule Mirror.Feedback do
     struct
     |> cast(params, [:type, :message, :state, :user_id, :retrospective_id])
     |> validate_required([:type, :message, :state, :user_id, :retrospective_id])
+  end
+
+  def preload_relationships(feedback) do
+    feedback
+    |> Repo.preload([:user, :retrospective])
   end
 end
