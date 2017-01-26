@@ -20,7 +20,7 @@ defmodule Mirror.TeamController do
 
   def index(conn, _params) do
     teams = Repo.all(Team)
-    |> Repo.preload([:admins])
+    |> Team.preload_relationships()
     render(conn, "index.json", teams: teams)
   end
 
@@ -49,7 +49,7 @@ defmodule Mirror.TeamController do
     current_user = Guardian.Plug.current_resource(conn)
 
     team = Repo.get!(Team, id)
-    |> Repo.preload([:admins, :members])
+    |> Team.preload_relationships()
 
     case Enum.member?(team.members, current_user) do
       true ->
@@ -79,7 +79,7 @@ defmodule Mirror.TeamController do
   # Need to finish update
   def update(conn, %{"id" => id, "team" => team_params}) do
     team = Repo.get!(Team, id)
-    |> Repo.preload([:admins, :members])
+    |> Team.preload_relationships()
     changeset = Team.changeset(team, team_params)
 
     case Repo.update(changeset) do
@@ -114,7 +114,7 @@ defmodule Mirror.TeamController do
            [{:ok, team_member_delegates}] <- add_team_member_delegates(team, params["delegates"]),
            [{:ok, team_members}] <- add_team_members(team, params["members"]) do
              updated_team
-             |> Repo.preload([:admins, :members])
+             |> Team.preload_relationships()
       else
         {:error, changeset} ->
           Repo.rollback changeset

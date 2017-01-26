@@ -10,7 +10,7 @@ defmodule Mirror.UserController do
   def current(conn, _) do
     user = conn
     |> Guardian.Plug.current_resource
-    |> Repo.preload([:teams])
+    |> User.preload_relationships()
 
     conn
     |> render(Mirror.UserView, "show.json", user: user)
@@ -23,7 +23,7 @@ defmodule Mirror.UserController do
     # the same organization / team as the user they're looking for
 
     user = Repo.get!(User, id)
-    |> Repo.preload([:teams])
+    |> User.preload_relationships()
 
     conn
     |> render(Mirror.UserView, "show.json", user: user)

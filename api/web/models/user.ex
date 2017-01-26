@@ -1,6 +1,8 @@
 defmodule Mirror.User do
   use Mirror.Web, :model
 
+  alias Mirror.Repo
+
   schema "users" do
     field :username, :string
     field :email, :string
@@ -30,6 +32,11 @@ defmodule Mirror.User do
     |> hash_password()
     |> unique_constraint(:email)
     |> unique_constraint(:username)
+  end
+
+  def preload_relationships(user) do
+    user
+    |> Repo.preload([:scores, :teams])
   end
 
   defp hash_password(%{valid?: false} = changeset), do: changeset
