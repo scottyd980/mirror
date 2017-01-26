@@ -12,26 +12,41 @@ export default Ember.Route.extend({
         });
     },
     setupController(controller, model) {
+        var _this = this;
+
         this._super(...arguments);
 
         let feedback = model.feedback;
+        
+        model.gameInput.forEach((feedback) => {
+            feedback.value = "";
+        });
+
+        model.gameInput.forEach((feedbackType) => {
+            controller.set('feedback_' + feedbackType.type, null);
+        });
 
         let userFeedback = feedback.filter((fb) => {
             return parseInt(fb.get('user.id')) === parseInt(this.get('session').get('currentUser.id'));
         });
 
         if(typeof userFeedback !== "undefined" && userFeedback.length > 0) {
-            this._markFeedbackSubmitted(userScore[0].get('score'));
+            this._markFeedbackSubmitted(userFeedback);
         }
     },
-    _markFeedbackSubmitted(score) {
-        if(score) {
-            this.controller.set('score', score);
+    _markFeedbackSubmitted(feedbacks) {
+        if(feedbacks) {
+            this.currentModel.gameInput.forEach((input) => {
+                input.value = feedbacks.find((feedback) => {
+                    return feedback.get('type') === input.type;
+                }).get('message');
+            });
         }
         this.controller.set('submitted', true);
-        $('#score-submit').html("<i class='fa fa-fw fa-check'></i> Score Submitted");
-        $('#score-submit').prop('disabled', true);
+        $('#feedback-submit').html("<i class='fa fa-fw fa-check'></i> Feedback Submitted");
+        $('#feedback-submit').prop('disabled', true);
     },
+    
     actions: {
         submitFeedback() {
             let _this = this;
@@ -40,27 +55,23 @@ export default Ember.Route.extend({
 
             var feedbackToSubmit = [];
 
-            feedbacks.each(function(index, feedback) {
-                var $feedback = $(feedback);
-
-                if($feedback.val().trim() !== "") {
-
+            this.currentModel.gameInput.forEach((feedback) => {
+                if(feedback.value.trim() !== "") {
                     let fb = _this.store.createRecord('feedback', {
-                        type: $feedback.data('type'),
-                        message: $feedback.val(),
+                        type: feedback.type,
+                        message: feedback.value,
                         user: _this.get('session').get('currentUser'),
                         retrospective: _this.currentModel.parent.retrospective
                     });
 
                     feedbackToSubmit.push(fb.save());
-
                 }
             });
 
             RSVP.Promise.all(
                 feedbackToSubmit
             ).then(function(submitted) {
-                console.log(submitted);
+                _this._markFeedbackSubmitted();
             }).catch(function(error) {
                 _this.get('notificationCenter').error({
                     title: config.ERROR_MESSAGES.process,

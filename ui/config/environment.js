@@ -77,13 +77,15 @@ module.exports = function(environment) {
             name: "negative",
             idPrefix: "went-poorly",
             label: "What went poorly?",
-            type: "negative"
+            type: "negative",
+            value: ""
           },
           {
             name: "positive",
             idPrefix: "went-well",
             label: "What went well?",
-            type: "positive"
+            type: "positive",
+            value: ""
           }
         ]
       }

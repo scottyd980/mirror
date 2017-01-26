@@ -7,7 +7,7 @@
                 {{#each model.gameInput as |input|}}
                     <div class="col-md-6">
                         <label for="{{concat input.idPrefix '-textarea'}}"><p><strong>{{input.label}}</strong></p></label>
-                        {{#textarea rows="10" data-type=input.type id=(concat input.idPrefix "-textarea") class="form-control"}}
+                        {{#textarea rows="10" data-type=input.type id=(concat input.idPrefix "-textarea") class="form-control" value=input.value}}
                         {{/textarea}}
                     </div>
                 {{/each}}
