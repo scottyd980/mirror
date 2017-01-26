@@ -11,7 +11,7 @@ defmodule Mirror.FeedbackController do
 
   plug Guardian.Plug.EnsureAuthenticated, handler: Mirror.AuthErrorHandler
 
-  def create(conn, %{"data" => %{"attributes" => attributes, "relationships" => relationships, "type" => "scores"}}) do
+  def create(conn, %{"data" => %{"attributes" => attributes, "relationships" => relationships, "type" => "feedbacks"}}) do
 
     current_user = Guardian.Plug.current_resource(conn)
 
@@ -30,12 +30,12 @@ defmodule Mirror.FeedbackController do
     }
 
     case Repo.insert changeset do
-        {:ok, score} ->
-            Mirror.Endpoint.broadcast("retrospective:#{retrospective_id}", "sprint_score_added", Mirror.SprintScoreView.render("show.json", feedback: feedback))
+        {:ok, feedback} ->
+            Mirror.Endpoint.broadcast("retrospective:#{retrospective_id}", "feedback_added", Mirror.FeedbackView.render("show.json", feedback: feedback))
 
             conn
             |> put_status(:created)
-            |> render(Mirror.SprintScoreView, "show.json", feedback: feedback)
+            |> render(Mirror.FeedbackView, "show.json", feedback: feedback)
         {:error, changeset} ->
             use_error_view(conn, 422, changeset)
     end
