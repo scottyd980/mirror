@@ -2,21 +2,21 @@ defmodule Mirror.FeedbackView do
   use Mirror.Web, :view
 
   def render("index.json", %{feedback: feedback}) do
-    %{data: render_many(score, Mirror.FeedbackView, "score.json")}
+    %{data: render_many(feedback, Mirror.FeedbackView, "feedback.json")}
   end
 
   def render("show.json", %{feedback: feedback}) do
-      %{data: render_one(score, Mirror.FeedbackView, "score.json")}
+      %{data: render_one(feedback, Mirror.FeedbackView, "feedback.json")}
   end
 
   def render("delete.json", %{feedback: feedback}) do
     %{meta: %{}}
   end
 
-  def render("score.json", %{feedback: feedback}) do
+  def render("feedback.json", %{feedback: feedback}) do
     %{
-        "type": "scores",
-        "id": score.id,
+        "type": "feedbacks",
+        "id": feedback.id,
         "attributes": %{
             "message": feedback.message,
             "state": feedback.state,
@@ -33,7 +33,7 @@ defmodule Mirror.FeedbackView do
                 "links": %{
                     "self": "/api/retrospectives/"
                 },
-                "data": render_one(score.retrospective_id, Mirror.FeedbackView, "retrospective.json", as: :retrospective)
+                "data": render_one(feedback.retrospective_id, Mirror.FeedbackView, "retrospective.json", as: :retrospective)
             }
         }
     }
