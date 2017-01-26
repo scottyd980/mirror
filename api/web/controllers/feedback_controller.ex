@@ -12,7 +12,7 @@ defmodule Mirror.FeedbackController do
   plug Guardian.Plug.EnsureAuthenticated, handler: Mirror.AuthErrorHandler
 
   def create(conn, %{"data" => %{"attributes" => attributes, "relationships" => relationships, "type" => "feedbacks"}}) do
-
+      
     current_user = Guardian.Plug.current_resource(conn)
 
     retrospective_id = relationships["retrospective"]["data"]["id"]
