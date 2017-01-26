@@ -19,7 +19,7 @@ defmodule Mirror.RegistrationController do
     case Repo.insert changeset do
       {:ok, user} ->
         user = user
-        |> Repo.preload([:teams])
+        |> User.preload_relationships()
         conn
         |> put_status(:created)
         |> render(Mirror.UserView, "show.json", user: user)

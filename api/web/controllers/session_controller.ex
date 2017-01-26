@@ -3,6 +3,7 @@ defmodule Mirror.SessionController do
 
   import Ecto.Query, only: [where: 2]
   import Comeonin.Bcrypt
+
   require Logger
 
   alias Mirror.User

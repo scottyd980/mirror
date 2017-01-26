@@ -5,6 +5,7 @@ defmodule Mirror.SprintScoreController do
   alias Mirror.Retrospective
   alias Mirror.UserHelper
   alias Mirror.SprintScore
+  alias Mirror.Team
 
   import Logger
 
@@ -43,13 +44,13 @@ defmodule Mirror.SprintScoreController do
     current_user = Guardian.Plug.current_resource(conn)
 
     score = Repo.get!(SprintScore, id)
-    |> Repo.preload([:user, :retrospective])
+    |> SprintScore.preload_relationships()
 
     retrospective = score.retrospective
-    |> Repo.preload([:team])
+    |> Retrospective.preload_relationships()
 
     team = retrospective.team
-    |> Repo.preload([:members])
+    |> Team.preload_relationships()
 
     case UserHelper.user_is_team_member?(current_user, team) do
       true ->

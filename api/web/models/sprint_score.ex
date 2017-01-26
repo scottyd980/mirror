@@ -18,4 +18,9 @@ defmodule Mirror.SprintScore do
     |> validate_required([:score, :user_id, :retrospective_id])
     |> validate_inclusion(:score, 1..10)
   end
+
+  def preload_relationships(score) do
+    score
+    |> Repo.preload([:user, :retrospective])
+  end
 end
