@@ -1,1 +1,46 @@
-{{outlet}}
+<div class="nav-push">
+  <div class="container">
+    <div class="row">
+      <div class="col-md-8">
+        {{#x-card title="Here's What Can Be Improved On" overlay=submitted}}
+            <div class="row">
+                <div class="col-sm-4">
+                    <p><strong>To Do</strong></p>
+                    {{#each negative_feedback as |fb|}}
+                        <p>{{fb.message}}</p>
+                    {{/each}}
+                </div>
+
+                <div class="mg-bottom-md visible-xs"></div>
+
+                <div class="col-sm-4">
+                    <p><strong>In Progress</strong></p>
+                    
+                </div>
+
+                <div class="mg-bottom-md visible-xs"></div>
+
+                <div class="col-sm-4">
+                    <p><strong>Done</strong></p>
+                    
+                </div>
+            </div>
+        {{/x-card}}
+      </div>
+      <div class="col-md-4">
+        {{#if model.parent.isModerator}}
+          {{#x-card title="Moderator"}}
+            <a onclick={{route-action "changeRetrospectiveState" 3}} class="btn btn-block btn-success">Continue</a>
+          {{/x-card}}
+        {{/if}}
+        {{#x-card title="Retrospective Participants"}}
+            {{retrospective-submission-list
+                members=model.parent.team_members
+                currentUser=model.parent.currentUser
+                userList=true
+            }}
+        {{/x-card}}
+      </div>
+    </div>
+  </div>
+</div>

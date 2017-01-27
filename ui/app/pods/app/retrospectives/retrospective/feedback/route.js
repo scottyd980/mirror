@@ -13,19 +13,19 @@ export default Ember.Route.extend({
     },
     setupController(controller, model) {
         let _this = this,
-            feedback = model.feedback;;
+            feedback = model.feedback;
 
         this._super(...arguments);
 
-        this.controller.set('submitted', false);
+        controller.set('submitted', false);
         
         model.gameInput.forEach((feedback) => {
             feedback.value = "";
         });
 
-        model.gameInput.forEach((feedbackType) => {
-            controller.set('feedback_' + feedbackType.type, null);
-        });
+        // model.gameInput.forEach((feedbackType) => {
+        //     controller.set('feedback_' + feedbackType.type, null);
+        // });
 
         let userFeedback = feedback.filter((fb) => {
             return parseInt(fb.get('user.id')) === parseInt(this.get('session').get('currentUser.id'));
