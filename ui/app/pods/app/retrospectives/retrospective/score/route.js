@@ -15,6 +15,8 @@ export default Ember.Route.extend({
 
         let scores = model.scores;
 
+        controller.set('submitted', false);
+
         let userScore = scores.filter((score) => {
             return parseInt(score.get('user.id')) === parseInt(this.get('session').get('currentUser.id'));
         });
@@ -28,8 +30,6 @@ export default Ember.Route.extend({
             this.controller.set('score', score);
         }
         this.controller.set('submitted', true);
-        $('#score-submit').html("<i class='fa fa-fw fa-check'></i> Score Submitted");
-        $('#score-submit').prop('disabled', true);
     },
     actions: {
         submitScore() {

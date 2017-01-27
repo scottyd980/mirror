@@ -12,11 +12,12 @@ export default Ember.Route.extend({
         });
     },
     setupController(controller, model) {
-        var _this = this;
+        let _this = this,
+            feedback = model.feedback;;
 
         this._super(...arguments);
 
-        let feedback = model.feedback;
+        this.controller.set('submitted', false);
         
         model.gameInput.forEach((feedback) => {
             feedback.value = "";
@@ -43,8 +44,6 @@ export default Ember.Route.extend({
             });
         }
         this.controller.set('submitted', true);
-        $('#feedback-submit').html("<i class='fa fa-fw fa-check'></i> Feedback Submitted");
-        $('#feedback-submit').prop('disabled', true);
     },
     
     actions: {
