@@ -39,6 +39,11 @@ export default Ember.Route.extend({
             isModerator: isModerator
         });
     },
+    redirect(model, transition) {
+        var state = model.retrospective.get('state');
+        var dynamicRouteSegment = config.retrospective.sticky_notes.states[state];
+        this.transitionTo('app.retrospectives.retrospective.' + dynamicRouteSegment);
+    },
     setupController(controller, model) {
         this._super(...arguments);
 
