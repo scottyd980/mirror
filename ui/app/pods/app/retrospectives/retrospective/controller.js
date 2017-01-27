@@ -9,9 +9,9 @@ export default Ember.Controller.extend({
         // if(this.get('initialState') === null) {
         //     this.set('initialState', state);
         // } else {
-            // Will eventually want to make game type dynamic as well
-            var dynamicRouteSegment = config.retrospective.sticky_notes.states[state];
-            this.transitionToRoute('app.retrospectives.retrospective.' + dynamicRouteSegment);
+            //Will eventually want to make game type dynamic as well
+            // var dynamicRouteSegment = config.retrospective.sticky_notes.states[state];
+            // this.transitionToRoute('app.retrospectives.retrospective.' + dynamicRouteSegment, this.get('model'));
         // }
     })
 });
