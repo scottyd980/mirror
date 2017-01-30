@@ -17,7 +17,7 @@ export default Ember.Route.extend({
             feedback = model.feedback;
 
         let positiveFeedback = feedback.filter((fb) => {
-            return fb.get('type') === "positiveFeedback";
+            return fb.get('type') === "positive";
         });
 
         controller.set('negative_feedback', positiveFeedback);
