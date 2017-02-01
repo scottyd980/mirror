@@ -1,1 +1,19 @@
-{{outlet}}
+<div class="nav-push">
+  <div class="container">
+    <div class="row">
+      <div class="col-md-12">
+        {{#x-card title="Join a team"}}
+          {{#if errors.length}}
+            <div class="alert alert-danger" role="alert">
+              {{fa-icon "exclamation-triangle"}} Please correct the highlighted fields below.
+            </div>
+          {{/if}}
+          <div class="form-group">
+            {{input type="text" class="form-control" placeholder="Team Access Code" value=model.name}}
+          </div>
+          <button {{action "createTeam"}} type="submit" class="btn btn-success btn-lg btn-block">Join Team</button>
+        {{/x-card}}
+      </div>
+    </div>
+  </div>
+</div>
