@@ -99,7 +99,7 @@
         {{/if}}
         {{#x-card title="Retrospective Participants"}}
             {{retrospective-submission-list
-                members=model.parent.team_members
+                members=model.parent.retrospective.participants
                 submitted=model.scores 
                 currentUser=model.parent.currentUser
             }}
