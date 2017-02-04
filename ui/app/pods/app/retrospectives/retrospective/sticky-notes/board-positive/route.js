@@ -20,7 +20,7 @@ export default Ember.Route.extend({
             return fb.get('type') === "positive";
         });
 
-        controller.set('negative_feedback', positiveFeedback);
+        controller.set('positive_feedback', positiveFeedback);
     },
     
     actions: {
