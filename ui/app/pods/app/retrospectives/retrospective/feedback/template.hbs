@@ -12,12 +12,14 @@
                     </div>
                 {{/each}}
             </div>
+            <div class="card-footer">
+                {{#if submitted}}
+                    <button disabled id="feedback-submit" {{action "submitFeedback"}} class="btn btn-success mg-bottom-lg">{{fa-icon "check" fixedWidth=true}} Feedback Submitted</button>
+                {{else}}
+                    <button id="feedback-submit" {{action "submitFeedback"}} class="btn btn-success mg-bottom-lg">Submit Feedback</button>
+                {{/if}}
+            </div>
         {{/x-card}}
-        {{#if submitted}}
-            <button disabled id="feedback-submit" {{action "submitFeedback"}} class="btn btn-block btn-success mg-bottom-lg">{{fa-icon "check" fixedWidth=true}} Feedback Submitted</button>
-        {{else}}
-            <button id="feedback-submit" {{action "submitFeedback"}} class="btn btn-block btn-success mg-bottom-lg">Submit Feedback</button>
-        {{/if}}
       </div>
       <div class="col-md-4">
         {{#if model.parent.isModerator}}
