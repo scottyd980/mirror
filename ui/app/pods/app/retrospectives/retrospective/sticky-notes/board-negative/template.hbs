@@ -32,12 +32,13 @@
       <div class="col-md-4">
         {{#if model.parent.isModerator}}
           {{#x-card title="Moderator"}}
+            {{x-timer}}
             <a onclick={{route-action "changeRetrospectiveState" 5}} class="btn btn-block btn-success">Continue</a>
           {{/x-card}}
         {{/if}}
         {{#x-card title="Retrospective Participants"}}
             {{retrospective-submission-list
-                members=model.parent.team_members
+                members=model.parent.retrospective.participants
                 currentUser=model.parent.currentUser
                 userList=true
             }}

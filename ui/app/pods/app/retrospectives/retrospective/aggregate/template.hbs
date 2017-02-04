@@ -39,7 +39,7 @@
         {{/if}}
         {{#x-card title="Retrospective Participants"}}
             {{retrospective-submission-list
-                members=model.parent.team_members
+                members=model.parent.retrospective.participants
                 currentUser=model.parent.currentUser
                 userList=true
             }}
