@@ -2,12 +2,14 @@
   <div class="container">
     <div class="row">
       <div class="col-md-8">
-        {{#x-card title="Here's What Can Be Improved On" overlay=submitted}}
+        {{#x-card title="What Went Well" overlay=submitted}}
             <div class="row">
                 <div class="col-sm-4">
                     <p><strong>To Do</strong></p>
                     {{#each positive_feedback as |fb|}}
-                        <p>{{fb.message}}</p>
+                        {{#x-note isModerator=model.parent.isModerator type='good'}}
+                            {{fb.message}}
+                        {{/x-note}}
                     {{/each}}
                 </div>
 

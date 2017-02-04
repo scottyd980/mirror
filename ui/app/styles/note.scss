@@ -1,0 +1,15 @@
+.note {
+    width: 100%;
+    min-height: 200px;
+    padding: 15px;
+    color: $white;
+    border-radius: 2px;
+
+    &.good {
+        @extend .success-bg;
+    }
+
+    &.bad {
+        @extend .danger-bg;
+    }
+}
