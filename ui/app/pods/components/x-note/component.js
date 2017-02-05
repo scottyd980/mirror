@@ -5,5 +5,8 @@ export default Ember.Component.extend({
     classNames: ['note'],
     classNameBindings: ['type'],
     isModerator: null,
-    type: ''
+    type: '',
+    dragStart: function(event) {
+        event.dataTransfer.setData("text/data", this.get('data.id'));
+    }
 });

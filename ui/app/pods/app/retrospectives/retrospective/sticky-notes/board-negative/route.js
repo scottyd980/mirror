@@ -24,6 +24,11 @@ export default Ember.Route.extend({
     },
     
     actions: {
-        
+        moveFeedback(id, state) {
+            this.store.findRecord('feedback', id).then((fb) => {
+                fb.set('state', state);
+                fb.save();
+            });
+        }
     }
 });
