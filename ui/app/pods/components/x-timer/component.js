@@ -15,7 +15,7 @@ export default Ember.Component.extend({
             let milliseconds = parseInt((ms%1000)/100),
                 seconds = ("0" + parseInt((ms/1000)%60)).slice(-2),
                 minutes = ("0" + parseInt((ms/(1000*60))%60)).slice(-2),
-                hours = ("0" + parseInt((ms/(1000*60*60))%24) + "0").slice(-2);
+                hours = ("0" + parseInt((ms/(1000*60*60))%24)).slice(-2);
 
             // return {
             //     hours: hours,
