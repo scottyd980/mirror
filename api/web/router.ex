@@ -32,7 +32,7 @@ defmodule Mirror.Router do
     
     resources "/scores", SprintScoreController, only: [:create, :show]
 
-    resources "/feedbacks", FeedbackController, only: [:create, :show]
+    resources "/feedbacks", FeedbackController, only: [:create, :show, :update]
 
     post "/retrospective_users", RetrospectiveUserController, :create
     post "/team_users", UserTeamController, :create

@@ -62,6 +62,29 @@ defmodule Mirror.FeedbackController do
     end
   end
 
+  def update(conn, %{"id" => id}) do
+    body_params = conn.body_params
+
+    Logger.info "#{inspect body_params}"
+    
+    feedback = Repo.get!(Feedback, id)
+    |> Feedback.preload_relationships()
+
+    state = body_params["data"]["attributes"]["state"];
+
+    changeset = Feedback.changeset(feedback, %{state: state})
+  
+    case Repo.update(changeset) do
+      {:ok, feedback} ->
+        Mirror.Endpoint.broadcast("retrospective:#{feedback.retrospective.id}", "feedback_state_change", Mirror.FeedbackView.render("show.json", feedback: feedback))
+        render(conn, "show.json", feedback: feedback)
+      {:error, changeset} ->
+        conn
+        |> put_status(:unprocessable_entity)
+        |> render(Mirror.ChangesetView, "error.json", changeset: changeset)
+    end
+  end
+
   defp use_error_view(conn, status, changeset) do
     conn
     |> put_status(status)

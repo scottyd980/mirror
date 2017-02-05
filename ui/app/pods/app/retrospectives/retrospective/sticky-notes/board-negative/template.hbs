@@ -24,7 +24,7 @@
                     {{#x-note-drop onDrop="moveFeedback" data=1}}
                         {{#each negative_feedback as |fb|}}
                             {{#if (eq fb.state 1)}}
-                                {{#x-note isModerator=model.parent.isModerator type='bad'}}
+                                {{#x-note data=fb isModerator=model.parent.isModerator type='bad'}}
                                     {{fb.message}}
                                 {{/x-note}}
                             {{/if}}
@@ -39,7 +39,7 @@
                     {{#x-note-drop onDrop="moveFeedback" data=2}}
                         {{#each negative_feedback as |fb|}}
                             {{#if (eq fb.state 2)}}
-                                {{#x-note isModerator=model.parent.isModerator type='bad'}}
+                                {{#x-note data=fb isModerator=model.parent.isModerator type='bad'}}
                                     {{fb.message}}
                                 {{/x-note}}
                             {{/if}}
