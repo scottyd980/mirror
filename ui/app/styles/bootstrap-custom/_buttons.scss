@@ -4,16 +4,17 @@
   &:hover {
     background: $bg;
     color: $color;
-    border-color: $border;
+    border-color: $bg;
   }
 
-  &:focus, &.focus, &.active, &:active, &:active:focus, &:active.focus, &.active:focus, &.active.focus {
+  &:focus, &.focus, &.active, &:active, &:active:focus, &:active.focus, 
+  &.active:focus, &.active.focus, &.active.hover, &:active:hover, &.active:hover, &:active.hover {
     outline: 0;
     -webkit-box-shadow: none;
     box-shadow: none;
     background: $bg;
     color: $color;
-    border-color: $border;
+    border-color: $bg;
   }
 }
 
@@ -38,7 +39,9 @@
     box-shadow: none;
   }
 
-  &:active:hover, &:active:focus, &:active.focus, &.active:hover, &.active:focus {
+  &:active:hover, &:active:focus, &:active.focus, 
+  &.active:hover, &.active:focus, &.active.hover, 
+  &:active:hover, &.active:hover, &:active.hover {
     border: 1px solid $border;
   }
 }

@@ -17,9 +17,20 @@ export default Ember.Component.extend({
                 minutes = ("0" + parseInt((ms/(1000*60))%60)).slice(-2),
                 hours = ("0" + parseInt((ms/(1000*60*60))%24) + "0").slice(-2);
 
-            return `${hours}:${minutes}:${seconds}`;
+            // return {
+            //     hours: hours,
+            //     minutes: minutes,
+            //     seconds: seconds
+            // };
+            return `${minutes}:${seconds}`;
         }
 
-        return "00:00:00";
+        // return {
+        //     hours: "00",
+        //     minutes: "00",
+        //     seconds: "00"
+        // };
+
+        return "00:00";
     })
 });
