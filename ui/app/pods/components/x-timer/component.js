@@ -22,7 +22,11 @@ export default Ember.Component.extend({
             //     minutes: minutes,
             //     seconds: seconds
             // };
-            return `${minutes}:${seconds}`;
+            if(hours == "00") {
+                return `${minutes}:${seconds}`;
+            } else {
+                return `${hours}:${minutes}:${seconds}`;
+            }
         }
 
         // return {
