@@ -13,3 +13,8 @@
         @extend .danger-bg;
     }
 }
+
+.drop-zone {
+    min-height: 500px;
+    width: 100%;
+}
