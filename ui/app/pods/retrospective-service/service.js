@@ -72,6 +72,7 @@ export default Ember.Service.extend({
     this._listen_for_joined_retrospective(channel);
     this._listen_for_retrospective_state_change(channel);
     this._listen_for_retrospective_scores(channel);
+    this._listen_for_retrospective_feedback_change(channel);
   },
 
   _listen_for_joined_retrospective(channel) {
@@ -94,6 +95,14 @@ export default Ember.Service.extend({
         this.get('store').pushPayload(JSON.parse(JSON.stringify(resp)));
       }
       
+    });
+  },
+
+  _listen_for_retrospective_feedback_change(channel) {
+    channel.on('feedback_state_change', (resp) => {
+      if(parseInt(resp.data.relationships.user.data.id) !== parseInt(this.get('session').get('currentUser.id'))) {
+        this.get('store').pushPayload(JSON.parse(JSON.stringify(resp)));
+      }
     });
   }
 });
