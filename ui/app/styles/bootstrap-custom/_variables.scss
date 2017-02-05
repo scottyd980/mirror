@@ -27,21 +27,21 @@ $btn-success-hover-bg: darken($brand-success, 5%);
 $btn-success-hover-color: $white;
 $btn-success-bg: $brand-success;
 
-$btn-info-color: $brand-info;
+$btn-info-color: $white;
 $btn-info-border: $brand-info;
-$btn-info-hover-bg: $brand-info;
+$btn-info-hover-bg: darken($brand-info, 5%);
 $btn-info-hover-color: $white;
-$btn-info-bg: $white;
+$btn-info-bg: $brand-info;
 
-$btn-warning-color: $brand-warning;
+$btn-warning-color: $white;
 $btn-warning-border: $brand-warning;
-$btn-warning-hover-bg: $brand-warning;
+$btn-warning-hover-bg: darken($brand-warning, 5%);
 $btn-warning-hover-color: $white;
-$btn-warning-bg: $white;
+$btn-warning-bg: $brand-warning;
 
 $btn-danger-color: $white;
 $btn-danger-border: $brand-danger;
-$btn-danger-hover-bg: darken($brand-danger, 5%);
+$btn-danger-hover-bg: darken($brand-danger, 10%);
 $btn-danger-hover-color: $white;
 $btn-danger-bg: $brand-danger;
 

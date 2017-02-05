@@ -12,9 +12,17 @@
       </div>
       <div class="col-md-4">
         {{#if model.isModerator}}
-          {{#x-card title="Moderator"}}
-            <a onclick={{route-action "changeRetrospectiveState" 1}} class="btn btn-block btn-success">Start The Retrospective</a>
-          {{/x-card}}
+          {{#x-callout-card title="Moderator"}}
+            <div class="card-header">
+                {{x-timer}}
+            </div>
+            <a onclick={{route-action "changeRetrospectiveState" 1}} class="btn btn-block btn-success btn-lg btn-callout">Continue {{fa-icon "angle-right" fixedWidth=true}}</a>
+            <div class="row">
+                <div class="col-xs-12">
+                    <a class="btn btn-block btn-danger btn-outline">{{fa-icon "times" fixedWidth=true}} Cancel</a>
+                </div>
+            </div>
+          {{/x-callout-card}}
         {{/if}}
         {{#x-card title="While you wait..."}}
           <p>Take a minute to remember what happened over the last sprint and be prepared to discuss ways the sprint was great, as well as ways to improve.</p>
