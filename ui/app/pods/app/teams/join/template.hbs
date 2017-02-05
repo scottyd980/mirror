@@ -11,7 +11,9 @@
           <div class="form-group">
             {{input type="text" class="form-control" placeholder="Team Access Code" value=model.name}}
           </div>
-          <button {{action "createTeam"}} type="submit" class="btn btn-success btn-lg btn-block">Join Team</button>
+          <div class="card-footer">
+              <button {{action "createTeam"}} type="submit" class="btn btn-success">Join Team</button>
+          </div>
         {{/x-card}}
       </div>
     </div>
