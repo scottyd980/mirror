@@ -4,21 +4,21 @@ defmodule Mirror.UserHelper do
   alias Mirror.Retrospective
 
   def user_is_team_member?(user, team) do
-    team = Repo.get!(Team, team.id)
+    team = team
     |> Repo.preload([:admins, :members])
 
     Enum.member?(team.members, user)
   end
 
   def user_is_team_admin?(user, team) do
-    team = Repo.get!(Team, team.id)
+    team = team
     |> Repo.preload([:admins, :members])
 
     Enum.member?(team.admins, user)
   end
 
   def user_is_participant?(user, retrospective) do
-    retro = Repo.get!(Retrospective, retrospective.id)
+    retro = retrospective
     |> Repo.preload([:participants])
 
     Enum.member?(retro.participants, user)
