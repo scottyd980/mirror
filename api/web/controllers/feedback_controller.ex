@@ -12,20 +12,17 @@ defmodule Mirror.FeedbackController do
   plug Guardian.Plug.EnsureAuthenticated, handler: Mirror.AuthErrorHandler
 
   def create(conn, %{"data" => %{"attributes" => attributes, "relationships" => relationships, "type" => "feedbacks"}}) do
-      
+
     current_user = Guardian.Plug.current_resource(conn)
 
     retrospective_id = relationships["retrospective"]["data"]["id"]
     user_id = relationships["user"]["data"]["id"]
 
-    # TODO: need to handle making sure user is retro/team member
-    # Also need to make sure that the user hasn't alreadt submitted feedback
-
     changeset = Feedback.changeset %Feedback{}, %{
         message: attributes["message"],
         state: 0,
         type: attributes["type"],
-        user_id: user_id,
+        user_id: current_user.id,
         retrospective_id: retrospective_id
     }
 
@@ -64,8 +61,6 @@ defmodule Mirror.FeedbackController do
 
   def update(conn, %{"id" => id}) do
     body_params = conn.body_params
-
-    Logger.info "#{inspect body_params}"
     
     feedback = Repo.get!(Feedback, id)
     |> Feedback.preload_relationships()
