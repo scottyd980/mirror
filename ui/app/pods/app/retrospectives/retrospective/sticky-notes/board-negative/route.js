@@ -21,14 +21,5 @@ export default Ember.Route.extend({
         });
 
         controller.set('negative_feedback', negativeFeedback);
-    },
-    
-    actions: {
-        moveFeedback(id, state) {
-            this.store.findRecord('feedback', id).then((fb) => {
-                fb.set('state', state);
-                fb.save();
-            });
-        }
     }
 });
