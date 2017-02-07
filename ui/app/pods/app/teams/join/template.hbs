@@ -9,10 +9,10 @@
             </div>
           {{/if}}
           <div class="form-group">
-            {{input type="text" class="form-control" placeholder="Team Access Code" value=model.name}}
+            {{input type="text" class="form-control" placeholder="Team Access Code" value=accessCode}}
           </div>
           <div class="card-footer">
-              <button {{action "createTeam"}} type="submit" class="btn btn-success">Join Team</button>
+              <button {{action "joinTeam"}} type="submit" class="btn btn-success">Join Team</button>
           </div>
         {{/x-card}}
       </div>
