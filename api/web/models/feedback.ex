@@ -27,6 +27,12 @@ defmodule Mirror.Feedback do
     |> validate_feedback_not_submitted
   end
 
+  def moderator_changeset(struct, params \\ %{}) do
+    struct
+    |> changeset(params)
+    |> validate_moderator
+  end
+
   def preload_relationships(feedback) do
     feedback
     |> Repo.preload([:user, :retrospective])
@@ -49,7 +55,11 @@ defmodule Mirror.Feedback do
   end
 
   # TODO: complete
-  defp validate_feedback_not_submitted(struct) do
-    struct
+  defp validate_feedback_not_submitted(changeset) do
+    changeset
+  end
+
+  defp validate_moderator(changeset) do
+    changeset
   end
 end

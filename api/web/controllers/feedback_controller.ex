@@ -67,7 +67,7 @@ defmodule Mirror.FeedbackController do
 
     state = body_params["data"]["attributes"]["state"];
 
-    changeset = Feedback.changeset(feedback, %{state: state})
+    changeset = Feedback.moderator_changeset(feedback, %{state: state})
   
     case Repo.update(changeset) do
       {:ok, feedback} ->
