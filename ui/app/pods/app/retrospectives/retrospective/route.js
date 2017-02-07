@@ -57,6 +57,12 @@ export default Ember.Route.extend({
             var retrospective = this.get('currentModel').retrospective;
             retrospective.set('state', state);
             retrospective.save();
+        },
+        moveFeedback(id, state) {
+            this.store.findRecord('feedback', id).then((fb) => {
+                fb.set('state', state);
+                fb.save();
+            });
         }
     }
 });
