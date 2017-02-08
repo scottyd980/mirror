@@ -23,10 +23,6 @@ export default Ember.Route.extend({
             feedback.value = "";
         });
 
-        // model.gameInput.forEach((feedbackType) => {
-        //     controller.set('feedback_' + feedbackType.type, null);
-        // });
-
         let userFeedback = feedback.filter((fb) => {
             return parseInt(fb.get('user.id')) === parseInt(this.get('session').get('currentUser.id'));
         });
