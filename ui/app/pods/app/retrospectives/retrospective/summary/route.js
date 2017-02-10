@@ -6,7 +6,8 @@ export default Ember.Route.extend({
     model() {
         return RSVP.hash({
             parent: this.modelFor('app.retrospectives.retrospective'),
-            scores: this.modelFor('app.retrospectives.retrospective').retrospective.get('scores')
+            scores: this.modelFor('app.retrospectives.retrospective').retrospective.get('scores'),
+            feedback: this.modelFor('app.retrospectives.retrospective').retrospective.get('feedbacks')
         });
     },
     setupController(controller, model) {

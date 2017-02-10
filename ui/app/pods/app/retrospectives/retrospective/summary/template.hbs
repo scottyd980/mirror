@@ -33,7 +33,11 @@
             <hr/>
 
             <div class="row">
-
+                <div class="col-md-12">
+                    {{#each model.feedback as |feedback|}}
+                        <p>{{feedback.message}}</p>
+                    {{/each}}
+                </div>
             </div>
         {{/x-card}}
       </div>
