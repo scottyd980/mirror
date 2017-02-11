@@ -5,14 +5,14 @@ defmodule Mirror.UserHelper do
 
   def user_is_team_member?(user, team) do
     team = team
-    |> Repo.preload([:admins, :members])
+    |> Repo.preload([:members])
 
     Enum.member?(team.members, user)
   end
 
   def user_is_team_admin?(user, team) do
     team = team
-    |> Repo.preload([:admins, :members])
+    |> Repo.preload([:admins])
 
     Enum.member?(team.admins, user)
   end
@@ -22,5 +22,12 @@ defmodule Mirror.UserHelper do
     |> Repo.preload([:participants])
 
     Enum.member?(retro.participants, user)
+  end
+
+  def user_is_moderator?(user, retrospective) do
+    retro = retrospective
+    |> Repo.preload([:moderator])
+
+    retro.moderator == user
   end
 end
