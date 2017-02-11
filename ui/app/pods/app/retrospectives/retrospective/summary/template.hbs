@@ -34,7 +34,7 @@
             <div class="row">
                 <div class="col-md-12">
                     <ul class="icons-list">
-                        {{#each model.feedback as |feedback|}}
+                        {{#each (sort-by "type" model.feedback) as |feedback|}}
                             <li class="{{concat "icons-list--" feedback.type}}">{{feedback.message}}</li>
                         {{/each}}
                     </ul>
