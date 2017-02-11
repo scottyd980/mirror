@@ -26,8 +26,6 @@ export default Ember.Route.extend({
       } else {
         if(response.status === config.STATUS_CODES.unprocessable_entity) {
           throw config.ERROR_CODES.server_error;
-        } else {
-          throw config.ERROR_CODES.not_found;
         }
       }
     });
