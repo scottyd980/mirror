@@ -1,0 +1,29 @@
+ul.icons-list {
+    .icons-list--negative {
+        @include icon-list--icon("\f00d", $brand-danger);
+    }
+
+    .icons-list--positive {
+        @include icon-list--icon("\f00c", $brand-success);
+    }
+
+    .icons-list--leave {
+        @include icon-list--icon("\f08b", $brand-danger);
+    }
+
+    .icons-list--profile {
+        @include icon-list--icon("\f2bd", $brand-info);
+    }
+
+    .icons-list--promote {
+        @include icon-list--icon("\f062", $brand-success);
+    }
+
+    .icons-list--demote {
+        @include icon-list--icon("\f063", $brand-warning);
+    }
+
+    .icons-list--remove {
+        @include icon-list--icon("\f235", $brand-danger);
+    }
+}

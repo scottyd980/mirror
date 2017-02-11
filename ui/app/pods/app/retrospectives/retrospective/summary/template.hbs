@@ -2,7 +2,7 @@
   <div class="container">
     <div class="row">
       <div class="col-md-8">
-        {{#x-card title="Summary" overlay=submitted}}
+        {{#x-card title="Score Summary"}}
             <div class="row">
                 <div class="col-sm-4">
                     <p><strong>Lowest Score</strong></p>
@@ -29,14 +29,15 @@
                     </div>
                 </div>
             </div>
-
-            <hr/>
-
+        {{/x-card}}
+        {{#x-card title="Feedback Summary"}}
             <div class="row">
                 <div class="col-md-12">
-                    {{#each model.feedback as |feedback|}}
-                        <p class="{{concat "feedback-list-" feedback.type}}">{{feedback.message}}</p>
-                    {{/each}}
+                    <ul class="icons-list">
+                        {{#each model.feedback as |feedback|}}
+                            <li class="{{concat "icons-list--" feedback.type}}">{{feedback.message}}</li>
+                        {{/each}}
+                    </ul>
                 </div>
             </div>
         {{/x-card}}
