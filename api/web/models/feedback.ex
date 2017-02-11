@@ -60,6 +60,18 @@ defmodule Mirror.Feedback do
   end
 
   defp validate_moderator(changeset) do
-    changeset
+    user_id = get_field(changeset, :user_id)
+    retrospective_id = get_field(changeset, :retrospective_id)
+
+    current_user = Repo.get!(User, user_id)
+    retrospective = Repo.get!(Retrospective, retrospective_id)
+
+    cond do
+      UserHelper.user_is_moderator?(current_user, retrospective) ->
+        changeset
+      true ->
+        changeset
+        |> add_error(:retrospective_id, "Unknown retrospective.")
+    end
   end
 end
