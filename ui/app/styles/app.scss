@@ -20,6 +20,7 @@
 @import "scores";
 @import "color-box";
 @import "note";
+@import "icons-list";
 
 html {
   position: relative;
@@ -116,7 +117,7 @@ ul.tips {
   list-style: none;
 
   li {
-    padding-left: 20px;
+    padding-left: 24px;
     position: relative;
     padding-bottom: 10px;
 
@@ -128,8 +129,8 @@ ul.tips {
       position: absolute;
       content: "\f00c"; /* FontAwesome Unicode */
       font-family: FontAwesome;
-      margin-left: -20px; /* same as padding-left set on li */
-      width: 20px; /* same as padding-left set on li */
+      margin-left: -24px; /* same as padding-left set on li */
+      width: 24px; /* same as padding-left set on li */
       color: $brand-success;
     }
   }

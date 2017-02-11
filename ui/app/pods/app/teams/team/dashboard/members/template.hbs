@@ -14,41 +14,32 @@
       {{/x-card}}
     </div>
     <div class="col-md-4">
-      {{#x-card title="Helpful Tips"}}
-        <ul class="tips">
+      {{#x-card title="Key"}}
+        <ul class="icons-list">
           {{#if isAdmin}}
-            <li>
-              Make another team member a team admin using
-              the <span class="success-text">{{fa-icon "arrow-up"}}</span>
-              button.
+            <li class="icons-list--promote">
+              Promote a team member to a team admin
             </li>
 
-            <li>
-              Remove a team member's admin priveleges using
-              the <span class="warning-text">{{fa-icon "arrow-down"}}</span>
-              button.
+            <li class="icons-list--demote">
+              Remove a team member's admin priveleges
             </li>
 
-            <li>
-              To remove a member from the team, select the respective
-              <span class="danger-text">{{fa-icon "user-times"}}</span>
-              button.
+            <li class="icons-list--remove">
+              Remove a member from the team
             </li>
 
-            <li>
-              To leave the team, use the <span class="danger-text">{{fa-icon "sign-out"}}</span>
-              button. There must be at least one other admin on the team for you to leave.
+            <li class="icons-list--leave">
+              Leave the team
             </li>
           {{else}}
-            <li>
-              To leave the team, use the <span class="danger-text">{{fa-icon "sign-out"}}</span>
-              button.
+            <li class="icons-list--leave">
+              Leave the team
             </li>
           {{/if}}
 
-          <li>
-            Use the <span class="info-text">{{fa-icon "user-circle"}}</span> button
-            to view the team member's profile.
+          <li class="icons-list--profile">
+            View the team member's profile
           </li>
         </ul>
       {{/x-card}}
