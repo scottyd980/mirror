@@ -1,7 +1,7 @@
 defmodule Mirror.SprintScore do
   use Mirror.Web, :model
 
-  alias Mirror.Repo
+  alias Mirror.{Repo}
 
   schema "sprint_scores" do
     field :score, :integer

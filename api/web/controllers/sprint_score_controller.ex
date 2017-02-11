@@ -1,13 +1,7 @@
 defmodule Mirror.SprintScoreController do
   use Mirror.Web, :controller
 
-  alias Mirror.User
-  alias Mirror.Retrospective
-  alias Mirror.UserHelper
-  alias Mirror.SprintScore
-  alias Mirror.Team
-
-  import Logger
+  alias Mirror.{User, Retrospective, UserHelper, SprintScore, Team}
 
   plug Guardian.Plug.EnsureAuthenticated, handler: Mirror.AuthErrorHandler
 

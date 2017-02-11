@@ -1,7 +1,7 @@
 defmodule Mirror.RegistrationController do
   use Mirror.Web, :controller
 
-  alias Mirror.User
+  alias Mirror.{User}
 
   def create(conn, %{"data" => %{"type" => "users",
     "attributes" => %{

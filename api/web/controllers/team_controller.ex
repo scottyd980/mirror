@@ -2,14 +2,8 @@ defmodule Mirror.TeamController do
   use Mirror.Web, :controller
   
 
-  alias Mirror.Team
-  alias Mirror.UserTeam
-  alias Mirror.TeamAdmin
-  alias Mirror.MemberDelegate
-  alias Ecto.Multi
-  alias Mirror.UserHelper
-
-  require Logger
+  alias Mirror.{Team, UserTeam, TeamAdmin, MemberDelegate, UserHelper}
+  alias Ecto.{Multi}
 
   @hashconfig Hashids.new([
     salt: "?d[]?a5$~<).hU%L}0k-krUz>^[xJ@Y(yAna%`-k4Hs{^=5T6@/k]PFqkJ;FlbV+",  # using a custom salt helps producing unique cipher text

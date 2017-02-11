@@ -1,7 +1,7 @@
 defmodule Mirror.Retrospective do
   use Mirror.Web, :model
 
-  alias Mirror.Repo
+  alias Mirror.{Repo}
 
   schema "retrospectives" do
     field :name, :string

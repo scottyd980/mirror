@@ -1,10 +1,7 @@
 defmodule Mirror.Feedback do
   use Mirror.Web, :model
 
-  alias Mirror.Repo
-  alias Mirror.Retrospective
-  alias Mirror.User
-  alias Mirror.UserHelper
+  alias Mirror.{Repo, Retrospective, User, UserHelper}
 
   schema "feedbacks" do
     field :type, :string

@@ -1,13 +1,7 @@
 defmodule Mirror.TeamAdminController do
   use Mirror.Web, :controller
 
-  alias Mirror.User
-  alias Mirror.Team
-  alias Mirror.UserTeam
-  alias Mirror.TeamAdmin
-  alias Mirror.UserHelper
-
-  import Logger
+  alias Mirror.{User, Team, UserTeam, TeamAdmin, UserHelper}
 
   plug Guardian.Plug.EnsureAuthenticated, handler: Mirror.AuthErrorHandler
 
