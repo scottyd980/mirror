@@ -43,23 +43,18 @@
         {{/x-card}}
       </div>
       <div class="col-md-4">
-        {{#if model.parent.isModerator}}
-          {{#x-callout-card title="Moderator"}}
-            <div class="card-header">
-                {{x-timer}}
+        {{#x-callout-card title="Complete"}}
+        <div class="card-header">
+            {{fa-icon "thumbs-up"}}
+        </div>
+        {{#link-to "app.teams.team.dashboard.retrospectives" model.parent.retrospective.team class="btn btn-block btn-success btn-lg btn-callout"}}Team Dashboard {{fa-icon "angle-right" fixedWidth=true}}{{/link-to}}
+        <div class="row">
+            <div class="col-xs-12">
+                <p class="text-center">Great job! The {{model.parent.retrospective.name}} retrospective is complete!</p>
             </div>
-            <a onclick={{route-action "changeRetrospectiveState" 6}} class="btn btn-block btn-success btn-lg btn-callout">Continue {{fa-icon "angle-right" fixedWidth=true}}</a>
-            <div class="row">
-                <div class="col-xs-6">
-                    <a onclick={{route-action "changeRetrospectiveState" 4}} class="btn btn-block btn-info btn-outline">{{fa-icon "angle-left" fixedWidth=true}} Back</a>
-                </div>
-                <div class="col-xs-6">
-                    <a class="btn btn-block btn-danger btn-outline">{{fa-icon "times" fixedWidth=true}} Cancel</a>
-                </div>
-            </div>
-          {{/x-callout-card}}
-        {{/if}}
-        {{#x-card title="Retrospective Participants"}}
+        </div>
+        {{/x-callout-card}}
+        {{#x-card title="Participants"}}
             {{retrospective-submission-list
                 members=model.parent.retrospective.participants
                 currentUser=model.parent.currentUser
