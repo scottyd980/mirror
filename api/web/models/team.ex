@@ -1,7 +1,7 @@
 defmodule Mirror.Team do
   use Mirror.Web, :model
 
-  alias Mirror.Repo
+  alias Mirror.{Repo}
 
   schema "teams" do
     field :name, :string

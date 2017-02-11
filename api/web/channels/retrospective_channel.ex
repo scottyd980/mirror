@@ -2,8 +2,6 @@ defmodule Mirror.RetrospectiveChannel do
   use Mirror.Web, :channel
   import Guardian.Phoenix.Socket
 
-  import Logger
-
   def join("retrospective:" <> retrospective_id, %{"token" => token}, socket) do
     case sign_in(socket, token) do
       {:ok, authed_socket, _guardian_params} ->

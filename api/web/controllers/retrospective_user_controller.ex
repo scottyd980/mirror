@@ -1,13 +1,7 @@
 defmodule Mirror.RetrospectiveUserController do
   use Mirror.Web, :controller
 
-  alias Mirror.User
-  alias Mirror.Team
-  alias Mirror.Retrospective
-  alias Mirror.RetrospectiveUser
-  alias Mirror.UserHelper
-
-  import Logger
+  alias Mirror.{User, Team, Retrospective, RetrospectiveUser, UserHelper}
 
   plug Guardian.Plug.EnsureAuthenticated, handler: Mirror.AuthErrorHandler
 

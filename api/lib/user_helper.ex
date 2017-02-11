@@ -1,7 +1,5 @@
 defmodule Mirror.UserHelper do
-  alias Mirror.Repo
-  alias Mirror.Team
-  alias Mirror.Retrospective
+  alias Mirror.{Repo, Team, Retrospective}
 
   def user_is_team_member?(user, team) do
     team = team

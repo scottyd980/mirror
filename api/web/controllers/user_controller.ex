@@ -3,9 +3,7 @@ defmodule Mirror.UserController do
 
   plug Guardian.Plug.EnsureAuthenticated, handler: Mirror.AuthErrorHandler
 
-  import Logger
-
-  alias Mirror.User
+  alias Mirror.{User}
 
   def current(conn, _) do
     user = conn

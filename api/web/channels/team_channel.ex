@@ -2,12 +2,7 @@ defmodule Mirror.TeamChannel do
   use Mirror.Web, :channel
   import Guardian.Phoenix.Socket
 
-  alias Mirror.UserHelper
-  alias Mirror.Team
-  alias Mirror.Retrospective
-  alias Mirror.RetrospectiveUser
-
-  import Logger
+  alias Mirror.{UserHelper, Team, Retrospective, RetrospectiveUser}
 
   def join("team:" <> team_id, %{"token" => token}, socket) do
     case sign_in(socket, token) do
