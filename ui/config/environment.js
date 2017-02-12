@@ -72,7 +72,7 @@ module.exports = function(environment) {
     retrospective: {
       sticky_notes: {
         states: ["start", "score", "aggregate", "feedback", "sticky-notes.board-negative", "sticky-notes.board-positive", "summary"],
-        min_complete_state: 5,
+        min_complete_state: 6,
         feedback: [
           {
             name: "negative",
