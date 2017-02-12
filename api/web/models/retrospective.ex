@@ -27,12 +27,15 @@ defmodule Mirror.Retrospective do
   end
 
   def check_retrospective_in_progress(team) do
-    retro_count = Repo.all(from retro in Mirror.Retrospective, where: retro.team_id == ^team.id)
+    retro = Repo.all(from retro in Mirror.Retrospective, where: retro.team_id == ^team.id)
+
+    # TODO - change 6 to be dynamic based on game
+
+    retro_count = retro
+    |> Enum.filter(fn(r) -> r.state < 6 end)
     |> Enum.count
 
     in_progress = retro_count > 0
-
-    retro = Repo.all(from retro in Mirror.Retrospective, where: retro.team_id == ^team.id)
 
     {in_progress, retro}
   end
