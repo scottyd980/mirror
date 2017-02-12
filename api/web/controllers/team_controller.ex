@@ -62,6 +62,7 @@ defmodule Mirror.TeamController do
 
     case UserHelper.user_is_team_member?(current_user, team) do
       true ->
+        next_sprint = determine_next_sprint(team)
         render(conn, "next_sprint.json", %{next_sprint: 4, team: team})
       _ ->
         conn
@@ -70,7 +71,11 @@ defmodule Mirror.TeamController do
     end
   end
 
-  # Need to finish update
+  defp determine_next_sprint(team) do
+    4
+  end
+
+  # TODO: Need to finish update
   def update(conn, %{"id" => id, "team" => team_params}) do
     team = Repo.get!(Team, id)
     |> Team.preload_relationships()
