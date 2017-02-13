@@ -22,8 +22,8 @@ defmodule Mirror.Retrospective do
   """
   def changeset(struct, params \\ %{}) do
     struct
-    |> cast(params, [:name, :state, :isAnonymous, :team_id, :moderator_id])
-    |> validate_required([:name, :state, :isAnonymous, :team_id, :moderator_id])
+    |> cast(params, [:name, :state, :isAnonymous, :team_id, :moderator_id, :type_id])
+    |> validate_required([:name, :state, :isAnonymous, :team_id, :moderator_id, :type_id])
   end
 
   def check_retrospective_in_progress(team) do
@@ -43,6 +43,6 @@ defmodule Mirror.Retrospective do
 
   def preload_relationships(retrospective) do
     retrospective
-    |> Repo.preload([:team, :moderator, :participants, :scores, :feedbacks])
+    |> Repo.preload([:team, :moderator, :participants, :scores, :feedbacks, :type])
   end
 end
