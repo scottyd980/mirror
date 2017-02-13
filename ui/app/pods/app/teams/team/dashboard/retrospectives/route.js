@@ -28,25 +28,28 @@ export default Ember.Route.extend({
     this._super(controller, model);
     controller.set('hasRetroInProgress', false);
     controller.set('isRetroStartModalShowing', false);
+    controller.set('gameToStart', null);
 
     var retro = this.get('retrospectiveService').join_team_channel(model.team.get('id'));
 
     controller.set('retrospective', retro);
   },
   actions: {
-    enterRetrospectiveType() {
+    enterRetrospectiveType(game_to_start) {
       this.controller.set('isRetroStartModalShowing', true);
+      this.controller.set('gameToStart', game_to_start);
     },
     cancelEnterRetrospectiveType() {
       this.controller.set('isRetroStartModalShowing', false);
     },
-    startRetrospective() {
+    startRetrospective(game) {
       let retrospective = this.store.createRecord('retrospective')
 
       retrospective.set('name', 'Sprint ' + this.currentModel.nextSprint);
       retrospective.set('team', this.currentModel.team);
       retrospective.set('moderator', this.get('session').get('currentUser'));
       retrospective.set('isAnonymous', true);
+      retrospective.set('type', config.retrospective[this.controller.get('gameToStart')].type_id);
 
       this.get('retrospectiveService').start(retrospective).then((result) => {
         this.send('joinRetrospective', result.id);

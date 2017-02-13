@@ -92,7 +92,8 @@ defmodule Mirror.RetrospectiveController do
         isAnonymous: params["attributes"]["is-anonymous"],
         state: params["attributes"]["state"],
         moderator_id: params["moderator"]["data"]["id"],
-        team_id: params["team"]["data"]["id"]
+        team_id: params["team"]["data"]["id"],
+        type_id: params["attributes"]["type"]
       })
     |> Repo.insert
   end
