@@ -46,7 +46,7 @@ defmodule Mirror.Mixfile do
      {:ja_serializer, "~> 0.11.0"},
      {:hashids, "~> 2.0"},
      {:excoveralls, "~> 0.5", only: :test},
-     {:exrm, "~> 1.0.8"}
+     {:distillery, "~> 1.0"}
     ]
   end
 
