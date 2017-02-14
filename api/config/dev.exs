@@ -12,15 +12,7 @@ config :mirror, Mirror.Endpoint,
   code_reloader: true,
   check_origin: false,
   watchers: []
-
-config :phoenix_distillery, PhoenixDistillery.Endpoint,
-  http: [port: {:system, "PORT"}],
-  url: [host: "localhost", port: {:system, "PORT"}], # This is critical for ensuring web-sockets properly authorize.
-  server: true,
-  root: ".",
-  version: Mix.Project.config[:version]
-
-
+  
 # Do not include metadata nor timestamps in development logs
 config :logger, :console, format: "[$level] $message\n"
 
