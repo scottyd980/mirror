@@ -3,6 +3,8 @@ defmodule Mirror.Retrospective do
 
   alias Mirror.{Repo, Retrospective, RetrospectiveType, RetrospectiveUser, User, Feedback, SprintScore, Team}
 
+  import Logger
+
   schema "retrospectives" do
     field :name, :string
     field :state, :integer, default: 0
@@ -27,13 +29,9 @@ defmodule Mirror.Retrospective do
   end
 
   def check_retrospective_in_progress(team) do
-    retro = Repo.all(from retro in Retrospective, where: retro.team_id == ^team.id)
+    retro = get_retro_in_progress(team)
 
     retro_count = retro
-    |> Enum.filter(fn(r) ->
-      retro_type = Repo.get!(RetrospectiveType, r.type_id)
-      r.state < retro_type.finished_state
-    end)
     |> Enum.count
 
     in_progress = retro_count > 0
@@ -44,5 +42,17 @@ defmodule Mirror.Retrospective do
   def preload_relationships(retrospective) do
     retrospective
     |> Repo.preload([:team, :moderator, :participants, :scores, :feedbacks, :type])
+  end
+
+  def get_retro_in_progress(team) do
+    retro = Repo.all(from retro in Retrospective, where: retro.team_id == ^team.id)
+
+    retro_in_progress = retro
+    |> Enum.filter(fn(r) ->
+      retro_type = Repo.get!(RetrospectiveType, r.type_id)
+      r.state < retro_type.finished_state
+    end)
+    
+    retro_in_progress
   end
 end
