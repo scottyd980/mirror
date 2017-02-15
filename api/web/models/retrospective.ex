@@ -45,14 +45,36 @@ defmodule Mirror.Retrospective do
   end
 
   def get_retro_in_progress(team) do
-    retro = Repo.all(from retro in Retrospective, where: retro.team_id == ^team.id)
+    retros = get_all_retrospectives(team)
 
-    retro_in_progress = retro
+    # get_most_recent_retrospective(team)
+
+    retro_in_progress = retros
     |> Enum.filter(fn(r) ->
       retro_type = Repo.get!(RetrospectiveType, r.type_id)
       r.state < retro_type.finished_state
     end)
     
     retro_in_progress
+  end
+
+  def get_most_recent_retrospective(team) do
+    retros = get_all_retrospectives(team)
+    most_recent = Enum.sort(retros, fn(d1, d2) ->
+      case Ecto.DateTime.compare(d1, d2) do
+        :lt ->
+          false
+        _ ->
+          true
+      end
+    end)
+  end
+
+  def get_next_retrospective(team) do
+    
+  end
+
+  def get_all_retrospectives(team) do
+    Repo.all(from retro in Retrospective, where: retro.team_id == ^team.id)
   end
 end
