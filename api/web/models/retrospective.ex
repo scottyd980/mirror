@@ -65,7 +65,13 @@ defmodule Mirror.Retrospective do
   end
 
   def get_next_retrospective(team) do
-    
+    current_retro = get_most_recent_retrospective(team)
+    current_retro_number = current_retro.name
+    |> String.split(" ")
+    |> List.last
+    |> String.to_integer
+
+    current_retro_number + 1
   end
 
   def get_all_retrospectives(team) do
