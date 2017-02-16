@@ -2,7 +2,7 @@ defmodule Mirror.TeamController do
   use Mirror.Web, :controller
   
 
-  alias Mirror.{Team, UserTeam, TeamAdmin, MemberDelegate, UserHelper}
+  alias Mirror.{Team, UserTeam, TeamAdmin, MemberDelegate, UserHelper, Retrospective}
   alias Ecto.{Multi}
 
   @hashconfig Hashids.new([
@@ -62,17 +62,13 @@ defmodule Mirror.TeamController do
 
     case UserHelper.user_is_team_member?(current_user, team) do
       true ->
-        next_sprint = determine_next_sprint(team)
-        render(conn, "next_sprint.json", %{next_sprint: 4, team: team})
+        next_sprint = Retrospective.get_next_retrospective(team)
+        render(conn, "next_sprint.json", %{next_sprint: next_sprint, team: team})
       _ ->
         conn
         |> put_status(404)
         |> render(Mirror.ErrorView, "404.json")
     end
-  end
-
-  defp determine_next_sprint(team) do
-    4
   end
 
   # TODO: Need to finish update
