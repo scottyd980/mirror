@@ -132,15 +132,22 @@ defmodule Mirror.RetrospectiveController do
     end
   end
 
-  # def delete(conn, %{"id" => id}) do
-  #   team = Repo.get!(Team, id)
-  #
-  #   # Here we use delete! (with a bang) because we expect
-  #   # it to always work (and if it does not, it will raise).
-  #   Repo.delete!(team)
-  #
-  #   send_resp(conn, :no_content, "")
-  # end
+  def delete(conn, %{"id" => id}) do
+    current_user = Guardian.Plug.current_resource(conn)
+
+    retro = Repo.get!(Retrospective, id)
+    |> Retrospective.preload_relationships
+  
+    # Here we use delete! (with a bang) because we expect
+    # it to always work (and if it does not, it will raise).
+    case UserHelper.user_is_team_member?(current_user, retro.team) do
+      true ->
+        Repo.delete!(retro)
+        send_resp(conn, :no_content, "")
+      _ ->
+        use_error_view(conn, :unprocessable_entity, %{})
+    end
+  end
 
   defp use_error_view(conn, status, changeset) do
     conn
