@@ -9,12 +9,12 @@ defmodule Mirror.Retrospective do
     field :name, :string
     field :state, :integer, default: 0
     field :isAnonymous, :boolean, default: true
-    has_many :scores, SprintScore
-    has_many :feedbacks, Feedback
+    has_many :scores, SprintScore, on_delete: :delete_all
+    has_many :feedbacks, Feedback, on_delete: :delete_all
     belongs_to :team, Team
     belongs_to :moderator, User
     belongs_to :type, RetrospectiveType
-    many_to_many :participants, User, join_through: RetrospectiveUser
+    many_to_many :participants, User, join_through: RetrospectiveUser, on_delete: :delete_all
 
     timestamps()
   end

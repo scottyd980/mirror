@@ -63,6 +63,10 @@ export default Ember.Route.extend({
                 fb.set('state', state);
                 fb.save();
             });
+        },
+        cancelRetrospective() {
+            var retrospective = this.get('currentModel').retrospective;
+            retrospective.destroyRecord();
         }
     }
 });

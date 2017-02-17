@@ -19,7 +19,7 @@
             <a onclick={{route-action "changeRetrospectiveState" 1}} class="btn btn-block btn-success btn-lg btn-callout">Continue {{fa-icon "angle-right" fixedWidth=true}}</a>
             <div class="row">
                 <div class="col-xs-12">
-                    <a class="btn btn-block btn-danger btn-outline">{{fa-icon "times" fixedWidth=true}} Cancel</a>
+                    <a onclick={{route-action "cancelRetrospective"}} class="btn btn-block btn-danger btn-outline">{{fa-icon "times" fixedWidth=true}} Cancel</a>
                 </div>
             </div>
           {{/x-callout-card}}
