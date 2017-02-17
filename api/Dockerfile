@@ -1,35 +1,30 @@
-# Set the Docker image you want to base your image off.
-# I chose this one because it has Elixir preinstalled.
-FROM library/elixir:1.4.0
+# ./Dockerfile
 
-# Setup Node - Phoenix uses the Node library `brunch` to compile assets.
-# The official node instructions want you to pipe a script from the 
-# internet through sudo. There are alternatives: 
-# https://www.joyent.com/blog/installing-node-and-npm
-# RUN curl -sL https://deb.nodesource.com/setup_5.x | sudo -E bash - && apt-get install -y nodejs
+# Starting from the official Elixir 1.3.2 image:
+# https://hub.docker.com/_/elixir/
+FROM elixir:latest
 
-# Install other stable dependencies that don't change often
+# RUN apt-get update && \
+#     apt-get install -y mysql-server
 
-# Compile app
-RUN mkdir /app
+ENV MYSQL_USER=mysql \
+    MYSQL_DATA_DIR=/var/lib/mysql \
+    MYSQL_RUN_DIR=/run/mysqld \
+    MYSQL_LOG_DIR=/var/log/mysql
+
+RUN apt-get update \
+ && DEBIAN_FRONTEND=noninteractive apt-get install -y mysql-server \
+ && rm -rf ${MYSQL_DATA_DIR} \
+ && rm -rf /var/lib/apt/lists/*
+
+# Install hex
+RUN mix local.hex --force
+
+# Install rebar
+RUN mix local.rebar --force
+
+# Install the Phoenix framework itself
+RUN mix archive.install --force https://github.com/phoenixframework/archives/raw/master/phoenix_new.ez
+
+# Set /app as workdir
 WORKDIR /app
-
-# Install Elixir Deps
-ADD mix.* ./
-RUN MIX_ENV=prod mix local.rebar
-RUN MIX_ENV=prod mix local.hex --force
-RUN MIX_ENV=prod mix deps.get
-
-# Install app
-ADD . .
-RUN MIX_ENV=prod mix compile
-
-# Compile assets
-RUN MIX_ENV=prod mix phoenix.digest
-
-# Exposes this port from the docker container to the host machine
-EXPOSE 4000
-
-# The command to run when this image starts up
-CMD MIX_ENV=prod mix ecto.migrate && \
-  MIX_ENV=prod mix phoenix.server
