@@ -143,7 +143,7 @@ defmodule Mirror.RetrospectiveController do
     case UserHelper.user_is_team_member?(current_user, retro.team) do
       true ->
         Repo.delete!(retro)
-        send_resp(conn, :no_content, "")
+        render(conn, "delete.json")
       _ ->
         use_error_view(conn, :unprocessable_entity, %{})
     end

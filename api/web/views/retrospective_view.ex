@@ -11,6 +11,12 @@ defmodule Mirror.RetrospectiveView do
     %{data: render_one(retrospective, Mirror.RetrospectiveView, "retrospective.json")}
   end
 
+  def render("delete.json", _) do
+    %{
+      meta: %{}
+    }
+  end
+
   def render("retrospective.json", %{retrospective: retrospective}) do
     %{
     	"type": "retrospective",
