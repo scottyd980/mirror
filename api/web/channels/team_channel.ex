@@ -22,7 +22,7 @@ defmodule Mirror.TeamChannel do
 
     case UserHelper.user_is_team_member?(user, team) do
       true ->
-        {retro_in_progress, retro} = Retrospective.check_retrospective_in_progress(team)
+        {retro_in_progress, retro} = Team.check_retrospective_in_progress(team)
         handle_retro_in_progress_response(socket, retro_in_progress, retro)
     end
 
@@ -33,7 +33,7 @@ defmodule Mirror.TeamChannel do
 
     {user, team} = get_basic_data(socket)
 
-    {retro_in_progress, retro} = Retrospective.check_retrospective_in_progress(team)
+    {retro_in_progress, retro} = Team.check_retrospective_in_progress(team)
 
     %RetrospectiveUser{}
     |> RetrospectiveUser.changeset(%{user_id: user.id, retrospective_id: List.first(retro).id})

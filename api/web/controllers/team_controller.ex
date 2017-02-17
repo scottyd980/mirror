@@ -62,7 +62,7 @@ defmodule Mirror.TeamController do
 
     case UserHelper.user_is_team_member?(current_user, team) do
       true ->
-        next_sprint = Retrospective.get_next_retrospective(team)
+        next_sprint = Team.get_next_retrospective(team)
         render(conn, "next_sprint.json", %{next_sprint: next_sprint, team: team})
       _ ->
         conn
