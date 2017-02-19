@@ -2,7 +2,9 @@
   <div class="row">
     <div class="col-md-12">
       {{#x-card title="History"}}
-        Retrospective
+        {{#each model.retrospectives as |retrospective|}}
+          {{retrospective.name}}
+        {{/each}}
       {{/x-card}}
     </div>
   </div>
