@@ -11,5 +11,6 @@ export default Model.extend({
   moderator: belongsTo('user'),
   participants: hasMany('user'),
   scores: hasMany('score'),
-  feedbacks: hasMany('feedback')
+  feedbacks: hasMany('feedback'),
+  cancelled: attr('boolean')
 });

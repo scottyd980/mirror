@@ -9,6 +9,7 @@ defmodule Mirror.Retrospective do
     field :name, :string
     field :state, :integer, default: 0
     field :isAnonymous, :boolean, default: true
+    field :cancelled, :boolean, default: false
     has_many :scores, SprintScore, on_delete: :delete_all
     has_many :feedbacks, Feedback, on_delete: :delete_all
     belongs_to :team, Team
@@ -24,7 +25,7 @@ defmodule Mirror.Retrospective do
   """
   def changeset(struct, params \\ %{}) do
     struct
-    |> cast(params, [:name, :state, :isAnonymous, :team_id, :moderator_id, :type_id])
+    |> cast(params, [:name, :state, :isAnonymous, :cancelled, :team_id, :moderator_id, :type_id])
     |> validate_required([:name, :state, :isAnonymous, :team_id, :moderator_id, :type_id])
   end
 
