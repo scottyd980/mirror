@@ -117,13 +117,14 @@ defmodule Mirror.RetrospectiveController do
     retrospective = Repo.get!(Retrospective, id)
     |> Retrospective.preload_relationships()
 
-    state = body_params["data"]["attributes"]["state"];
+    state = body_params["data"]["attributes"]["state"]
+    cancelled = body_params["data"]["attributes"]["cancelled"]
 
-    changeset = Retrospective.changeset(retrospective, %{state: state})
+    changeset = Retrospective.changeset(retrospective, %{state: state, cancelled: cancelled})
   
     case Repo.update(changeset) do
       {:ok, retrospective} ->
-        Mirror.Endpoint.broadcast("retrospective:#{retrospective.id}", "retrospective_state_change", Mirror.RetrospectiveView.render("show.json", retrospective: retrospective))
+        Mirror.Endpoint.broadcast("retrospective:#{retrospective.id}", "retrospective_update", Mirror.RetrospectiveView.render("show.json", retrospective: retrospective))
         render(conn, "show.json", retrospective: retrospective)
       {:error, changeset} ->
         conn

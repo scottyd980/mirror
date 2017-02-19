@@ -24,7 +24,8 @@ defmodule Mirror.RetrospectiveView do
     	"attributes": %{
         "name": retrospective.name,
         "is-anonymous": retrospective.isAnonymous,
-        "state": retrospective.state
+        "state": retrospective.state,
+        "cancelled": retrospective.cancelled
     	},
       "relationships": %{
         "moderator": %{

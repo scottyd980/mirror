@@ -65,8 +65,9 @@ export default Ember.Route.extend({
             });
         },
         cancelRetrospective() {
-            var retrospective = this.get('currentModel').retrospective;
-            retrospective.destroyRecord();
+            let retrospective = this.get('currentModel').retrospective;
+            retrospective.set('cancelled', true);
+            retrospective.save();
         }
     }
 });
