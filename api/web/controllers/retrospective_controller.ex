@@ -5,10 +5,21 @@ defmodule Mirror.RetrospectiveController do
 
   plug Guardian.Plug.EnsureAuthenticated, handler: Mirror.AuthErrorHandler
 
-  def index(conn, _params) do
-    retrospectives = Repo.all(Retrospective)
-    |> Retrospective.preload_relationships()
-    render(conn, "index.json", retrospectives: retrospectives)
+  def index(conn, params) do
+    current_user = Guardian.Plug.current_resource(conn)
+
+    team = Repo.get!(Team, params["filter"]["team"])
+
+    cond do
+      UserHelper.user_is_team_member?(current_user, team) ->
+        query = from r in Retrospective,
+                where: r.team_id == ^team.id
+        retrospectives = Repo.all(query)
+        |> Retrospective.preload_relationships()
+        render(conn, "index.json", retrospectives: retrospectives)
+      true ->
+        use_error_view(conn, 401, %{})
+    end
   end
 
   def show(conn, %{"id" => id}) do
