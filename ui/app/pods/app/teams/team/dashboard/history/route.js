@@ -25,9 +25,26 @@ export default Ember.Route.extend({
 
         retrospectives.map((retro) => {
             return retro.get('scores').then((scores) => {
-                retro.set('averageScore', scores.reduce((total, score) => {
+                let averageScore = Math.round((scores.reduce((total, score) => {
                     return total + score.get('score');
-                }, 0) / scores.length);
+                }, 0) / scores.length) * 10) / 10;
+
+                let scoreType = function() {
+                    if(averageScore) {
+                        if(averageScore > 6.67) {
+                            return "success";
+                        } else if(averageScore > 3.34) {
+                            return "warning";
+                        } else {
+                            return "danger";
+                        }
+                    } else {
+                        return "info";
+                    }
+                }();
+
+                retro.set('averageScore', averageScore);
+                retro.set('scoreType', scoreType);
             });
         });
     }
