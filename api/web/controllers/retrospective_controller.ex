@@ -13,7 +13,8 @@ defmodule Mirror.RetrospectiveController do
     cond do
       UserHelper.user_is_team_member?(current_user, team) ->
         query = from r in Retrospective,
-                where: r.team_id == ^team.id
+                where: r.team_id == ^team.id,
+                where: r.cancelled == false
         retrospectives = Repo.all(query)
         |> Retrospective.preload_relationships()
         render(conn, "index.json", retrospectives: retrospectives)
