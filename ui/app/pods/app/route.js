@@ -19,5 +19,14 @@ export default Route.extend(AuthenticatedRouteMixin, {
         this.set('session.currentUser', currentUser);
       });
     });
+  },
+  actions: {
+    confirmAction(message, action) {
+        this.get('notificationCenter').confirm({
+            title: config.CONFIRM_MESSAGES.generic,
+            message: message,
+            action: action
+        });
+    },
   }
 });

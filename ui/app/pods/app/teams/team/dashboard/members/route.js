@@ -27,13 +27,6 @@ export default Ember.Route.extend({
     toggleAdminWarning() {
       this.controller.toggleProperty('adminWarning');
     },
-    confirmAction(message, action) {
-      this.get('notificationCenter').confirm({
-        title: config.CONFIRM_MESSAGES.generic,
-        message: message,
-        action: action
-      });
-    },
     addAdmin(member, team) {
       var _this = this;
 

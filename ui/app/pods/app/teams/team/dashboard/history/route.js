@@ -49,13 +49,6 @@ export default Ember.Route.extend({
         controller.set('isAdmin', model.team.get('admins').includes(model.currentUser));
     },
     actions: {
-        confirmAction(message, action) {
-            this.get('notificationCenter').confirm({
-                title: config.CONFIRM_MESSAGES.generic,
-                message: message,
-                action: action
-            });
-        },
         deleteAction(retrospective) {
             var _this = this;
             
