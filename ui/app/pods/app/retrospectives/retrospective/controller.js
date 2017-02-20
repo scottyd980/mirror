@@ -12,10 +12,18 @@ export default Ember.Controller.extend({
     }),
     retrospectiveCancelled: Ember.observer('model.retrospective.cancelled', function() {
         let cancelled = this.get('model.retrospective.cancelled'),
-            team = this.get('model.retrospective.team');
+            team = this.get('model.retrospective.team'),
+            _this = this;
         
         if(cancelled) {
-            this.transitionToRoute('app.teams.team.dashboard.retrospectives', team);
+            if(parseInt(this.get('model.retrospective.moderator.id')) !== parseInt(this.get('model.current_user.id'))) {
+                this.transitionToRoute('app.teams.team.dashboard.retrospectives', team).then(() => {
+                    _this.get('notificationCenter').success({
+                        title: "Retrospective Cancelled",
+                        message: "The retrospective was cancelled or removed by the moderator or a team admin."
+                    });
+                });
+            }
         }
     })
 });

@@ -56,7 +56,7 @@ export default Ember.Route.extend({
         }, 0) / scores.length;
 
         controller.set('low_score', (typeof scores[0] !== "undefined" ? scores[0] : {score: "N/A"}));
-        controller.set('high_score', (typeof scores[scores.length - 1] !== "undefined" ? scores[0] : {score: "N/A"}));
+        controller.set('high_score', (typeof scores[scores.length - 1] !== "undefined" ? scores[scores.length - 1] : {score: "N/A"}));
         controller.set('average_score', average || "N/A");
     }
 });

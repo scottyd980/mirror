@@ -68,10 +68,18 @@ export default Ember.Service.extend({
     });
   },
 
+  leave_retrospective_channel(retrospective_id) {
+    var retrospective_channel = this.get('socket').leaveChannel(`retrospective:${retrospective_id}`);
+    retrospective_channel.then((chan) => {
+      this.set('retrospective_channel', null);
+    });
+  },
+
   listen_for_retrospective_events(channel) {
     this._listen_for_joined_retrospective(channel);
     this._listen_for_retrospective_updates(channel);
     this._listen_for_retrospective_scores(channel);
+    this._listen_for_retrospective_feedback(channel);
     this._listen_for_retrospective_feedback_change(channel);
   },
 
@@ -82,13 +90,24 @@ export default Ember.Service.extend({
   },
 
   _listen_for_retrospective_updates(channel) {
-    channel.on('retrospective_updates', (resp) => {
+    channel.on('retrospective_update', (resp) => {
       this.get('store').pushPayload(JSON.parse(JSON.stringify(resp)));
     });
   },
 
   _listen_for_retrospective_scores(channel) {
     channel.on('sprint_score_added', (resp) => {
+
+      // Only push to store if it's not the current logged in user.
+      if(parseInt(resp.data.relationships.user.data.id) !== parseInt(this.get('session').get('currentUser.id'))) {
+        this.get('store').pushPayload(JSON.parse(JSON.stringify(resp)));
+      }
+      
+    });
+  },
+
+  _listen_for_retrospective_feedback(channel) {
+    channel.on('feedback_added', (resp) => {
 
       // Only push to store if it's not the current logged in user.
       if(parseInt(resp.data.relationships.user.data.id) !== parseInt(this.get('session').get('currentUser.id'))) {
