@@ -22,6 +22,10 @@
                 </p>
                 </div>
             </li>
+          {{else}}
+            <li>
+              It doesn't look like this team has had any retrospectives yet. {{#link-to "app.teams.team.dashboard.retrospectives" model.team}}Start a retrospective{{/link-to}} to begin creating history.
+            </li>
           {{/each}}
         </ul>
       {{/x-card}}
