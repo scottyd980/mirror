@@ -2,21 +2,28 @@
   <div class="row">
     <div class="col-md-12">
       {{#x-card title="History"}}
-        {{#each model.retrospectives as |retrospective|}}
-          <div class="row">
-            <div class="col-md-3">
-              {{#if retrospective.averageScore}}
-                {{retrospective.averageScore}}
-              {{/if}}
-            </div>
-            <div class="col-md-6">
-              {{retrospective.name}}
-            </div>
-            <div class="col-md-3">
-
-            </div>
-          </div>
-        {{/each}}
+        <ul class="table-list">
+          {{#each model.retrospectives as |retrospective|}}
+            <li>
+              <div class="score">
+                {{#if retrospective.averageScore}}
+                  {{retrospective.averageScore}}
+                {{else}}
+                  N/A
+                {{/if}}
+              </div>
+              <div class="sprint-info">
+                <h4>{{retrospective.name}}</h4>
+                <p>
+                {{fa-icon "group" class="info-text" fixedWidth=true}}
+                {{#each retrospective.participants as |participant|}}
+                  <span class="participant-name">{{participant.username}}</span>
+                {{/each}}
+                </p>
+                </div>
+            </li>
+          {{/each}}
+        </ul>
       {{/x-card}}
     </div>
   </div>

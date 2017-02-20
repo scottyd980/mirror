@@ -11,6 +11,10 @@ export default Ember.Route.extend({
                 filter: {
                     team: _this.modelFor('app.teams.team').get('id')
                 }
+            }).then((retrospectives) => { 
+                return retrospectives.toArray().sort(function(a, b) {
+                    return parseInt(a.get('name').split("Sprint ")[1]) < parseInt(b.get('name').split("Sprint ")[1]);
+                });
             })
         });
     },
