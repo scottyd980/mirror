@@ -123,24 +123,31 @@ defmodule Mirror.RetrospectiveController do
   end
 
   def update(conn, %{"id" => id}) do
+    current_user = Guardian.Plug.current_resource(conn)
+
     body_params = conn.body_params
     
     retrospective = Repo.get!(Retrospective, id)
     |> Retrospective.preload_relationships()
 
-    state = body_params["data"]["attributes"]["state"]
-    cancelled = body_params["data"]["attributes"]["cancelled"]
+    case UserHelper.user_is_team_admin?(current_user, retrospective.team) || UserHelper.user_is_moderator?(current_user, retrospective) do
+      true ->
+        state = body_params["data"]["attributes"]["state"]
+        cancelled = body_params["data"]["attributes"]["cancelled"]
 
-    changeset = Retrospective.changeset(retrospective, %{state: state, cancelled: cancelled})
-  
-    case Repo.update(changeset) do
-      {:ok, retrospective} ->
-        Mirror.Endpoint.broadcast("retrospective:#{retrospective.id}", "retrospective_update", Mirror.RetrospectiveView.render("show.json", retrospective: retrospective))
-        render(conn, "show.json", retrospective: retrospective)
-      {:error, changeset} ->
-        conn
-        |> put_status(:unprocessable_entity)
-        |> render(Mirror.ChangesetView, "error.json", changeset: changeset)
+        changeset = Retrospective.changeset(retrospective, %{state: state, cancelled: cancelled})
+      
+        case Repo.update(changeset) do
+          {:ok, retrospective} ->
+            Mirror.Endpoint.broadcast("retrospective:#{retrospective.id}", "retrospective_update", Mirror.RetrospectiveView.render("show.json", retrospective: retrospective))
+            render(conn, "show.json", retrospective: retrospective)
+          {:error, changeset} ->
+            conn
+            |> put_status(:unprocessable_entity)
+            |> render(Mirror.ChangesetView, "error.json", changeset: changeset)
+        end
+      _ ->
+        use_error_view(conn, :unprocessable_entity, %{})
     end
   end
 

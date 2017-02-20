@@ -2,39 +2,12 @@
   <div class="row">
     <div class="col-md-12">
       {{#x-card title="History"}}
-        <ul class="table-list">
-          {{#each (sort-by "id:desc" model.retrospectives) as |retrospective|}}
-            <li>
-              <div class="score {{concat retrospective.scoreType "-bg"}}">
-                {{#if retrospective.averageScore}}
-                  {{retrospective.averageScore}}
-                {{else}}
-                  N/A
-                {{/if}}
-              </div>
-              <div class="sprint-info">
-                <h4>{{retrospective.name}}</h4>
-                  <div class="retro-participants-container">
-                    <div class="retro-participants-icon">
-                      {{fa-icon "group" class="info-text" fixedWidth=true}}
-                    </div>
-                    <div class="retro-participants">
-                      {{#each retrospective.participants as |participant|}}
-                        <span class="participant-name">{{participant.username}}</span>
-                      {{/each}}
-                    </div>
-                  </div>
-                </div>
-                <div class="actions">
-                  {{#link-to "app.retrospectives.history" retrospective.id}}View Summary{{/link-to}}
-                </div>
-            </li>
-          {{else}}
-            <li>
-              It doesn't look like this team has had any retrospectives yet.
-            </li>
-          {{/each}}
-        </ul>
+        {{team-history-list
+          retrospectives=model.retrospectives
+          isAdmin=isAdmin
+          onConfirm=(route-action "confirmAction")
+          onDelete=(route-action "deleteAction")
+        }}
       {{/x-card}}
     </div>
   </div>
