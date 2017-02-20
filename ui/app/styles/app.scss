@@ -147,9 +147,20 @@ ul.table-list {
     padding-bottom: 10px;
     padding-top: 10px;
     width: 100%;
+    max-width: 100%;
+    padding-right: 10px;
+    padding-left: 10px;
+    
+    &:hover {
+      background: $brand-list-hover;
+    }
 
     div {
       display: table-cell;
+
+      @media (max-width: $screen-xs-max) {
+        display: block;
+      }
 
       &.score {
         width: 100px;
@@ -158,13 +169,55 @@ ul.table-list {
         vertical-align: middle;
         font-size: 2rem;
         color: $white;
+
+        @media (max-width: $screen-xs-max) {
+          width: 100%;
+        }
       }
 
       &.sprint-info {
         padding: 5px 20px;
+
+        @media (max-width: $screen-xs-max) {
+          padding: 10px 0 0 0;
+
+          h4 {
+            text-align: center;
+          }
+        }
+      }
+
+      &.actions {
+        text-align: right;
+        vertical-align: middle;
+
+        @media (max-width: $screen-xs-max) {
+          text-align: center;
+          padding-top: 10px;
+        }
+      }
+
+      &.retro-participants-container {
+        display: table;
+
+        @media (max-width: $screen-xs-max) {
+          margin: 0 auto;
+        }
+
+        .retro-participants-icon {
+          display: table-cell;
+          vertical-align: middle;
+          padding-right: 5px;
+        }
+
+        .retro-participants {
+          display: table-cell;
+        }
       }
 
       .participant-name {
+        max-width: 100%;
+        overflow: hidden;
         &:after {
           content: ", ";
         }
@@ -177,12 +230,7 @@ ul.table-list {
     }
     
     &:last-of-type {
-      padding-bottom: 0;
       border-bottom: none;
-    }
-
-    &:first-of-type {
-      padding-top: 0;
     }
   }
 }

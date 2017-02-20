@@ -40,6 +40,8 @@ Router.map(function() {
         });
         this.route('summary');
       });
+
+      this.route('history', { path: '/history/:id' });
     });
 
     this.route('users', function() {

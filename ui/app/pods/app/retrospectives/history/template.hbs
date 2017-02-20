@@ -47,17 +47,17 @@
         <div class="card-header">
             {{fa-icon "thumbs-up"}}
         </div>
-        {{#link-to "app.teams.team.dashboard.retrospectives" model.parent.retrospective.team class="btn btn-block btn-success btn-lg btn-callout"}}Team Dashboard {{fa-icon "angle-right" fixedWidth=true}}{{/link-to}}
+        {{#link-to "app.teams.team.dashboard.retrospectives" model.retrospective.team class="btn btn-block btn-success btn-lg btn-callout"}}Team Dashboard {{fa-icon "angle-right" fixedWidth=true}}{{/link-to}}
         <div class="row">
             <div class="col-xs-12">
-                <p class="text-center">Great job! The retrospective for {{model.parent.retrospective.name}} is complete!</p>
+                <p class="text-center">Great job! The retrospective for {{model.retrospective.name}} is complete!</p>
             </div>
         </div>
         {{/x-callout-card}}
         {{#x-card title="Participants"}}
             {{retrospective-submission-list
-                members=model.parent.retrospective.participants
-                currentUser=model.parent.currentUser
+                members=model.retrospective.participants
+                currentUser=model.currentUser
                 userList=true
             }}
         {{/x-card}}
