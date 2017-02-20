@@ -16,6 +16,15 @@ export default Ember.Route.extend({
     },
     setupController(controller, model) {
         this._super(controller, model);
-        console.log(model.team);
+        
+        let retrospectives = model.retrospectives;
+
+        retrospectives.map((retro) => {
+            return retro.get('scores').then((scores) => {
+                retro.set('averageScore', scores.reduce((total, score) => {
+                    return total + score.get('score');
+                }, 0) / scores.length);
+            });
+        });
     }
 });
