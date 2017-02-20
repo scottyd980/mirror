@@ -3,7 +3,7 @@
     <div class="col-md-12">
       {{#x-card title="History"}}
         <ul class="table-list">
-          {{#each model.retrospectives as |retrospective|}}
+          {{#each (sort-by "id:desc" model.retrospectives) as |retrospective|}}
             <li>
               <div class="score {{concat retrospective.scoreType "-bg"}}">
                 {{#if retrospective.averageScore}}
