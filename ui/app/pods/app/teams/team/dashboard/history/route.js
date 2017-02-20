@@ -3,6 +3,7 @@ import RSVP from 'rsvp';
 import config from '../../../../../../config/environment';
 
 export default Ember.Route.extend({
+    session: Ember.inject.service('session'),
     model() {
         var _this = this;
         return RSVP.hash({
@@ -11,7 +12,8 @@ export default Ember.Route.extend({
                 filter: {
                     team: _this.modelFor('app.teams.team').get('id')
                 }
-            })
+            }),
+            currentUser: _this.get('session').get('currentUser')
         });
     },
     setupController(controller, model) {
@@ -43,5 +45,33 @@ export default Ember.Route.extend({
                 retro.set('scoreType', scoreType);
             });
         });
+
+        controller.set('isAdmin', model.team.get('admins').includes(model.currentUser));
+    },
+    actions: {
+        confirmAction(message, action) {
+            this.get('notificationCenter').confirm({
+                title: config.CONFIRM_MESSAGES.generic,
+                message: message,
+                action: action
+            });
+        },
+        deleteAction(retrospective) {
+            var _this = this;
+            
+            retrospective.set('cancelled', true);
+            retrospective.save().then((response) => {
+                _this.get('notificationCenter').success({
+                    title: config.SUCCESS_MESSAGES.generic,
+                    message: "The retrospective was successfully removed from your team's history."
+                });
+                _this.controller.get('model').team.reload();
+            }).catch((error) => {
+                _this.get('notificationCenter').error({
+                    title: config.ERROR_MESSAGES.generic,
+                    message: "We experienced an unexpected error. Please try again."
+                });
+            });
+        }
     }
 });

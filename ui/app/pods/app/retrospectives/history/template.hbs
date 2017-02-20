@@ -36,6 +36,8 @@
                     <ul class="icons-list">
                         {{#each (sort-by "type" model.feedback) as |feedback|}}
                             <li class="{{concat "icons-list--" feedback.type}}">{{feedback.message}}</li>
+                        {{else}}
+                            <li class="icons-list--negative">It looks like there was no feedback for this retrospective.</li>
                         {{/each}}
                     </ul>
                 </div>
@@ -43,14 +45,14 @@
         {{/x-card}}
       </div>
       <div class="col-md-4">
-        {{#x-callout-card title="Complete"}}
+        {{#x-callout-card title=(concat model.retrospective.name " Summary")}}
         <div class="card-header">
             {{fa-icon "thumbs-up"}}
         </div>
-        {{#link-to "app.teams.team.dashboard.retrospectives" model.retrospective.team class="btn btn-block btn-success btn-lg btn-callout"}}Team Dashboard {{fa-icon "angle-right" fixedWidth=true}}{{/link-to}}
+        {{#link-to "app.teams.team.dashboard.history" model.retrospective.team class="btn btn-block btn-success btn-lg btn-callout"}}Full Team History {{fa-icon "angle-right" fixedWidth=true}}{{/link-to}}
         <div class="row">
             <div class="col-xs-12">
-                <p class="text-center">Great job! The retrospective for {{model.retrospective.name}} is complete!</p>
+                <p class="text-center">The retrospective for {{model.retrospective.name}} is complete!</p>
             </div>
         </div>
         {{/x-callout-card}}
