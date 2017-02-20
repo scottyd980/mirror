@@ -3,7 +3,19 @@
     <div class="col-md-12">
       {{#x-card title="History"}}
         {{#each model.retrospectives as |retrospective|}}
-          {{retrospective.name}}
+          <div class="row">
+            <div class="col-md-3">
+              {{#if retrospective.averageScore}}
+                {{retrospective.averageScore}}
+              {{/if}}
+            </div>
+            <div class="col-md-6">
+              {{retrospective.name}}
+            </div>
+            <div class="col-md-3">
+
+            </div>
+          </div>
         {{/each}}
       {{/x-card}}
     </div>
