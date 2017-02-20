@@ -56,6 +56,7 @@ defmodule Mirror.Feedback do
     changeset
   end
 
+  # TODO: the field :user_id is currently the submitted used id, not the user taking the action
   defp validate_moderator(changeset) do
     user_id = get_field(changeset, :user_id)
     retrospective_id = get_field(changeset, :retrospective_id)

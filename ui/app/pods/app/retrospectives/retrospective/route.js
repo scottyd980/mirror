@@ -52,6 +52,9 @@ export default Ember.Route.extend({
 
         var retro = this.get('retrospectiveService').join_retrospective_channel(model.retrospective.get('id'));
     },
+    deactivate() {
+        this.get('retrospectiveService').leave_retrospective_channel(this.get('currentModel').retrospective.get('id'));
+    },
     actions: {
         changeRetrospectiveState(state) {
             var retrospective = this.get('currentModel').retrospective;
@@ -65,9 +68,24 @@ export default Ember.Route.extend({
             });
         },
         cancelRetrospective() {
+            let _this = this;
             let retrospective = this.get('currentModel').retrospective;
             retrospective.set('cancelled', true);
-            retrospective.save();
+            retrospective.save().then((response) => {
+                _this.transitionTo('app.teams.team.dashboard.retrospectives', this.get('currentModel').team).then(() => {
+                    _this.get('notificationCenter').success({
+                        title: config.SUCCESS_MESSAGES.generic,
+                        message: "The retrospective was successfully cancelled."
+                    });
+                });
+                
+            }).catch((error) => {
+                console.log(error);
+                _this.get('notificationCenter').error({
+                    title: config.ERROR_MESSAGES.generic,
+                    message: "We experienced an unexpected error. Please try again."
+                });
+            });
         }
     }
 });
