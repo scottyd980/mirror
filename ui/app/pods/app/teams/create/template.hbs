@@ -19,15 +19,15 @@
                 <button class="btn btn-success simple-action" type="submit">+</button>
               </span>
             </div>
+            {{#each teamMemberEmails as |teamMemberEmail|}}
+              <div class="form-group input-group">
+                {{input type="text" class="form-control" placeholder="Team Member Email" value=teamMemberEmail.email}}
+                <span class="input-group-btn">
+                  <button {{action "removeTeamMemberEmail" teamMemberEmail}} class="btn btn-danger simple-action" type="button">-</button>
+                </span>
+              </div>
+            {{/each}}
           </form>
-          {{#each teamMemberEmails as |teamMemberEmail|}}
-            <div class="form-group input-group">
-              {{input type="text" class="form-control" placeholder="Team Member Email" value=teamMemberEmail.email}}
-              <span class="input-group-btn">
-                <button {{action "removeTeamMemberEmail" teamMemberEmail}} class="btn btn-danger simple-action" type="button">-</button>
-              </span>
-            </div>
-          {{/each}}
           <div class="card-footer">
             <button {{action "createTeam"}} type="submit" class="btn btn-success">Create Team</button>
           </div>

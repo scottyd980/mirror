@@ -35,10 +35,15 @@ export default Ember.Route.extend({
       _this.get('currentModel').set('admin', _this.get('session').get('currentUser'));
 
       var membersToAdd = _this.controller.get('teamMemberEmails');
+      membersToAdd.push({email: $('#team-member-add').val()});
 
-      membersToAdd.map((item) => {
-        delegates.push(item.email);
+      delegates = membersToAdd.filter((item) => {
+        return item.email != "" && item.email;
+      }).map((item) => {
+        return item.email;
       });
+
+      console.log(delegates);
 
       _this.get('currentModel').set('memberDelegates', delegates);
 
