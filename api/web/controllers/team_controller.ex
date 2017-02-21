@@ -2,7 +2,7 @@ defmodule Mirror.TeamController do
   use Mirror.Web, :controller
   
 
-  alias Mirror.{Team, UserTeam, TeamAdmin, MemberDelegate, UserHelper, Retrospective}
+  alias Mirror.{Team, UserTeam, TeamAdmin, MemberDelegate, UserHelper, Retrospective, Mailer, Email}
   alias Ecto.{Multi}
 
   @hashconfig Hashids.new([
@@ -147,6 +147,7 @@ defmodule Mirror.TeamController do
   defp add_team_member_delegates(team, delegates) do
     cond do
       length(delegates) > 0 ->
+        send_delegate_emails(delegates)
         Enum.map delegates, fn delegate ->
           %MemberDelegate{}
           |> MemberDelegate.changeset(%{email: delegate, team_id: team.id})
@@ -155,6 +156,13 @@ defmodule Mirror.TeamController do
       true ->
         [{:ok, nil}]
     end
+  end
+
+  defp send_delegate_emails(delegates) do
+    Enum.each(delegates, fn delegate ->
+      Email.welcome_text_email(delegate, "abc") 
+      |> Mailer.deliver_later
+    end)
   end
 
   defp add_team_admins(team, admins) do

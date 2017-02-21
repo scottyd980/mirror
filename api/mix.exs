@@ -22,7 +22,7 @@ defmodule Mirror.Mixfile do
     [mod: {Mirror, []},
      applications: [:phoenix, :phoenix_pubsub, :cowboy, :logger, :gettext,
                     :phoenix_ecto, :mariaex, :comeonin, :phoenix_live_reload,
-                    :guardian, :cors_plug, :ja_serializer, :hashids]]
+                    :guardian, :cors_plug, :ja_serializer, :hashids, :bamboo]]
   end
 
   # Specifies which paths to compile per environment.
@@ -46,7 +46,9 @@ defmodule Mirror.Mixfile do
      {:ja_serializer, "~> 0.11.0"},
      {:hashids, "~> 2.0"},
      {:excoveralls, "~> 0.5", only: :test},
-     {:distillery, "~> 1.0"}
+     {:distillery, "~> 1.0"},
+     {:bamboo, "~> 0.7"},
+     {:bamboo_smtp, "~> 1.2.1"}
     ]
   end
 
