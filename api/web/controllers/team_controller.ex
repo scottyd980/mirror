@@ -1,9 +1,10 @@
 defmodule Mirror.TeamController do
   use Mirror.Web, :controller
-  
 
   alias Mirror.{Team, UserTeam, TeamAdmin, MemberDelegate, UserHelper, Retrospective, Mailer, Email}
   alias Ecto.{Multi}
+
+  import Logger
 
   @hashconfig Hashids.new([
     salt: "?d[]?a5$~<).hU%L}0k-krUz>^[xJ@Y(yAna%`-k4Hs{^=5T6@/k]PFqkJ;FlbV+",  # using a custom salt helps producing unique cipher text
@@ -106,7 +107,8 @@ defmodule Mirror.TeamController do
       with {:ok, team} <- insert_team(params),
            {:ok, updated_team} <- add_unique_id_to_team(team),
            [{:ok, team_admins}] <- add_team_admins(team, params["admins"]),
-           [{:ok, team_member_delegates}] <- add_team_member_delegates(team, params["delegates"]),
+           team_member_delegates <- add_team_member_delegates(team, params["delegates"]),
+           {:ok} <- send_delegate_emails(team_member_delegates),
            [{:ok, team_members}] <- add_team_members(team, params["members"]) do
              updated_team
              |> Team.preload_relationships()
@@ -147,22 +149,23 @@ defmodule Mirror.TeamController do
   defp add_team_member_delegates(team, delegates) do
     cond do
       length(delegates) > 0 ->
-        send_delegate_emails(delegates)
         Enum.map delegates, fn delegate ->
           %MemberDelegate{}
           |> MemberDelegate.changeset(%{email: delegate, team_id: team.id})
-          |> Repo.insert
+          |> Repo.insert!
         end
       true ->
-        [{:ok, nil}]
+        []
     end
   end
 
   defp send_delegate_emails(delegates) do
     Enum.each(delegates, fn delegate ->
-      Email.welcome_text_email(delegate, "abc") 
+      Email.welcome_text_email(delegate.email, delegate.access_code) 
       |> Mailer.deliver_later
     end)
+
+    {:ok}
   end
 
   defp add_team_admins(team, admins) do

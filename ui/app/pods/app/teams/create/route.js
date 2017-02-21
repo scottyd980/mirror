@@ -30,12 +30,15 @@ export default Ember.Route.extend({
     },
     createTeam() {
       var _this = this,
-        delegates = [];
+        delegates = [],
+        membersToAdd = [];
 
       _this.get('currentModel').set('admin', _this.get('session').get('currentUser'));
 
-      var membersToAdd = _this.controller.get('teamMemberEmails');
-      membersToAdd.push({email: $('#team-member-add').val()});
+      membersToAdd = _this.controller.get('teamMemberEmails');
+      membersToAdd.push({
+        email: _this.controller.get('newTeamMemberEmail')
+      });
 
       delegates = membersToAdd.filter((item) => {
         return item.email != "" && item.email;
@@ -43,11 +46,11 @@ export default Ember.Route.extend({
         return item.email;
       });
 
-      console.log(delegates);
-
       _this.get('currentModel').set('memberDelegates', delegates);
 
       _this.get('currentModel').save().then(() => {
+        _this.controller.set('teamMemberEmails', Ember.A());
+        _this.controller.set('newTeamMemberEmail', '');
         _this.send('invalidateApplicationModel');
       });
     }
