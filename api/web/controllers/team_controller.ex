@@ -108,7 +108,7 @@ defmodule Mirror.TeamController do
            {:ok, updated_team} <- add_unique_id_to_team(team),
            [{:ok, team_admins}] <- add_team_admins(team, params["admins"]),
            team_member_delegates <- add_team_member_delegates(team, params["delegates"]),
-           {:ok} <- send_delegate_emails(team_member_delegates),
+           {:ok} <- send_delegate_emails(team_member_delegates, team),
            [{:ok, team_members}] <- add_team_members(team, params["members"]) do
              updated_team
              |> Team.preload_relationships()
@@ -159,9 +159,9 @@ defmodule Mirror.TeamController do
     end
   end
 
-  defp send_delegate_emails(delegates) do
+  defp send_delegate_emails(delegates, team) do
     Enum.each(delegates, fn delegate ->
-      Email.welcome_text_email(delegate.email, delegate.access_code) 
+      Email.join_html_email(delegate.email, delegate.access_code, team.name) 
       |> Mailer.deliver_later
     end)
 
