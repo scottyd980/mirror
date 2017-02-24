@@ -51,6 +51,11 @@ Router.map(function() {
         this.route('profile');
       });
     });
+    this.route('organizations', function() {
+      this.route('organization', { path: '/:id'}, function() {
+        
+      });
+    });
   });
 });
 
