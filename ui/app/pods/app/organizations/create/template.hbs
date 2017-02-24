@@ -1,10 +1,11 @@
+{{outlet}}
 <div class="nav-push">
   <div class="container">
     <div class="row">
       <div class="col-sm-8 col-sm-offset-2">
         <div class="pad-bottom-md text-center">
           {{fa-icon "medium" fixedWidth=true size=2}}
-          <h2 class="pad-top-sm">Create A Team</h2>
+          <h2 class="pad-top-sm">Create An Organization</h2>
         </div>
         {{#x-card}}
           {{#if errors.length}}
@@ -13,31 +14,31 @@
             </div>
           {{/if}}
           <div class="form-group input-group-icon">
-            {{input type="text" class="form-control" placeholder="Team Name" value=model.name}}
+            {{input type="text" class="form-control" placeholder="Organization Name" value=model.name}}
             {{fa-icon "group" fixedWidth=true}}
           </div>
           <hr/>
-          <form {{action "addTeamMemberEmail" newTeamMemberEmail on="submit"}}>
+          <form {{action "addOrgMemberEmail" newOrgMemberEmail on="submit"}}>
             
             <div class="form-group input-group input-group-icon">
-              {{input type="text" class="form-control" id="team-member-add" placeholder="Team Member Email" value=newTeamMemberEmail}}
+              {{input type="text" class="form-control" id="org-member-add" placeholder="Organization Admin Email" value=newOrgMemberEmail}}
               {{fa-icon "user" fixedWidth=true}}
               <span class="input-group-btn">
                 <button class="btn btn-success simple-action" type="submit">+</button>
               </span>
             </div>
-            {{#each teamMemberEmails as |teamMemberEmail|}}
+            {{#each orgMemberEmails as |orgMemberEmail|}}
               <div class="form-group input-group input-group-icon">
-                {{input type="text" class="form-control" placeholder="Team Member Email" value=teamMemberEmail.email}}
+                {{input type="text" class="form-control" placeholder="Organization Admin Email" value=orgMemberEmail.email}}
                 {{fa-icon "user" fixedWidth=true}}
                 <span class="input-group-btn">
-                  <button {{action "removeTeamMemberEmail" teamMemberEmail}} class="btn btn-danger simple-action" type="button">-</button>
+                  <button {{action "removeOrgMemberEmail" orgMemberEmail}} class="btn btn-danger simple-action" type="button">-</button>
                 </span>
               </div>
             {{/each}}
           </form>
           <div class="card-footer">
-            <button {{action "createTeam"}} type="submit" class="btn btn-success">Create Team</button>
+            <button {{action "createOrganization"}} type="submit" class="btn btn-success">Create Organization</button>
           </div>
         {{/x-card}}
       </div>
