@@ -10,14 +10,14 @@
         <div class="sprint-info">
         <h4>{{retrospective.name}}</h4>
             <div class="retro-participants-container">
-            <div class="retro-participants-icon">
-                {{fa-icon "group" class="info-text" fixedWidth=true}}
-            </div>
-            <div class="retro-participants">
-                {{#each retrospective.participants as |participant|}}
-                <span class="participant-name">{{participant.username}}</span>
-                {{/each}}
-            </div>
+                <div class="retro-participants-icon">
+                    {{fa-icon "group" fixedWidth=true}}
+                </div>
+                <div class="retro-participants">
+                    {{#each retrospective.participants as |participant|}}
+                    <span class="participant-name">{{participant.username}}</span>
+                    {{/each}}
+                </div>
             </div>
         </div>
         <div class="actions">
