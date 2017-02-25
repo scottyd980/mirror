@@ -1,8 +1,12 @@
 <div class="nav-push">
   <div class="container">
     <div class="row">
-      <div class="col-md-12">
-        {{#x-card title="Join a team"}}
+      <div class="col-sm-8 col-sm-offset-2">
+        <div class="pad-bottom-md text-center">
+          {{fa-icon "medium" fixedWidth=true size=2}}
+          <h2 class="pad-top-sm">Join A Team</h2>
+        </div>
+        {{#x-card}}
           {{#if errors.length}}
             <div class="alert alert-danger" role="alert">
               {{fa-icon "exclamation-triangle"}} Please correct the highlighted fields below.
