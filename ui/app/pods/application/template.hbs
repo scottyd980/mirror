@@ -37,7 +37,7 @@
           <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">{{gravatar-image class="gravatar-nav" email=session.currentUser.email}} {{session.currentUser.username}} <span class="caret"></span></a>
           <ul class="dropdown-menu">
             <li>{{#link-to "app.users.profile"}}Profile{{/link-to}}</li>
-            <li><a href="#">Organizations</a></li>
+            <li>{{#link-to "app.organizations.dashboard"}}Organizations{{/link-to}}</li>
             <li class="divider"></li>
             <li><a href="#" {{action 'logout'}}>Logout</a></li>
           </ul>

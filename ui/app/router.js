@@ -53,10 +53,11 @@ Router.map(function() {
     });
     this.route('organizations', function() {
       this.route('create');
-      
+
       this.route('organization', { path: '/:id'}, function() {
         
       });
+      this.route('dashboard');
     });
   });
 });
