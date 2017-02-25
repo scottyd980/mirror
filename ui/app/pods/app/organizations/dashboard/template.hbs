@@ -1,1 +1,21 @@
-{{outlet}}
+<div class="nav-push">
+  <div class="container">
+    <div class="row">
+      <div class="col-md-8">
+        {{#x-card title="Organizations"}}
+          {{#if model.organizations}}
+
+          {{else}}
+            It doesn't look like you are a member or admin of any organizations.
+          {{/if}}
+        {{/x-card}}
+      </div>
+      <div class="col-md-4">
+        {{#x-card title="Create"}}
+            <p>Organizations are used for managing a single team or multiple teams, and the billing associated with them.</p>
+            {{#link-to "app.organizations.create" class="btn btn-success btn-block"}}Create An Organization{{/link-to}}
+        {{/x-card}}
+      </div>
+    </div>
+  </div>
+</div>
