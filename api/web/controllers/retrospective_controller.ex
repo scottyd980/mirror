@@ -49,22 +49,19 @@ defmodule Mirror.RetrospectiveController do
 
     params = %{"attributes" => attributes, "participants" => relationships["participants"], "moderator" => relationships["moderator"], "team" => team}
 
-    cond do
-      UserHelper.user_is_team_member?(current_user, team) ->
-        case Retrospective.create(params) do
-          {:ok, retrospective} ->
-            Mirror.Endpoint.broadcast("team:#{retrospective.team.uuid}", "retrospective_in_progress", %{retrospective_in_progress: true, retrospective_id: retrospective.id})
+    case Retrospective.create(params, current_user) do
+      {:ok, retrospective} ->
+        Mirror.Endpoint.broadcast("team:#{retrospective.team.uuid}", "retrospective_in_progress", %{retrospective_in_progress: true, retrospective_id: retrospective.id})
 
-            conn
-            |> put_status(:created)
-            |> render("show.json", retrospective: retrospective)
-          {:error, changeset} ->
-            conn
-            |> put_status(:unprocessable_entity)
-            |> render(Mirror.ChangesetView, "error.json", changeset: changeset)
-        end
-      true ->
+        conn
+        |> put_status(:created)
+        |> render("show.json", retrospective: retrospective)
+      {:error, :unauthorized} ->
         use_error_view(conn, 401, %{})
+      {:error, :forbidden} ->
+        use_error_view(conn, 403, %{})
+      {:error, changeset} ->
+        use_error_view(conn, :unprocessable_entity, changeset)
     end
   end
 
