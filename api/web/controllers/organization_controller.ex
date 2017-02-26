@@ -3,6 +3,10 @@ defmodule Mirror.OrganizationController do
 
   alias Mirror.Organization
 
+  plug Guardian.Plug.EnsureAuthenticated, handler: Mirror.AuthErrorHandler
+
+  import Logger
+
   def index(conn, _params) do
     organizations = Repo.all(Organization)
     render(conn, "index.json", organizations: organizations)
@@ -15,7 +19,7 @@ defmodule Mirror.OrganizationController do
       {:ok, organization} ->
         conn
         |> put_status(:created)
-        |> put_resp_header("location", organization_path(conn, :show, organization))
+        # |> put_resp_header("location", organization_path(conn, :show, organization))
         |> render("show.json", organization: organization)
       {:error, changeset} ->
         conn
@@ -25,9 +29,32 @@ defmodule Mirror.OrganizationController do
   end
 
   def show(conn, %{"id" => id}) do
+
+    Logger.warn "here"
+    current_user = Guardian.Plug.current_resource(conn)
+
     organization = Repo.get!(Organization, id)
+    |> Organization.preload_relationships()
+
     render(conn, "show.json", organization: organization)
+
+    # TODO: Check to make sure the person is a member or admin of the org
+    # case Enum.member?(team.members, current_user) do
+    #   true ->
+    #     render(conn, "show.json", team: team)
+    #   _ ->
+    #     conn
+    #     |> put_status(404)
+    #     |> render(Mirror.ErrorView, "404.json")
+    # end
   end
+
+  # def show(conn, %{"id" => id}) do
+  #   Logger.warn "here"
+
+  #   organization = Repo.get!(Organization, id)
+  #   render(conn, "show.json", organization: organization)
+  # end
 
   def update(conn, %{"id" => id, "organization" => organization_params}) do
     organization = Repo.get!(Organization, id)
