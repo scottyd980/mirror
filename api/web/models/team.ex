@@ -83,4 +83,19 @@ defmodule Mirror.Team do
   def get_all_retrospectives(team) do
     Repo.all(from retro in Retrospective, where: retro.team_id == ^team.id)
   end
+
+  def verify_billing(team) do
+    retrospectives = get_all_retrospectives(team)
+
+    retro_count = retrospectives
+    |> Enum.count
+
+    case retro_count < 3 do
+      true ->
+        true
+      _ ->
+        # TODO: This will need to be updated for billing
+        true
+    end
+  end
 end

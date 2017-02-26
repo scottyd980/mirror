@@ -1,7 +1,7 @@
 defmodule Mirror.Retrospective do
   use Mirror.Web, :model
 
-  alias Mirror.{Repo, Retrospective, RetrospectiveType, RetrospectiveUser, User, Feedback, SprintScore, Team}
+  alias Mirror.{Repo, Retrospective, RetrospectiveType, RetrospectiveUser, User, Feedback, SprintScore, Team, UserHelper}
 
   import Logger
 
@@ -34,16 +34,26 @@ defmodule Mirror.Retrospective do
     |> Repo.preload([:team, :moderator, :participants, :scores, :feedbacks, :type])
   end
 
-  def create(params) do
-    Repo.transaction fn ->
-      with {:ok, retrospective} <- insert_retrospective(params),
-           [{:ok, retrospective_participants}] <- add_retrospective_participants(retrospective, params["participants"]) do
-             retrospective
-             |> Retrospective.preload_relationships()
-      else
-        {:error, changeset} ->
-          Repo.rollback changeset
-      end
+  def create(params, current_user) do
+    case UserHelper.user_is_team_member?(current_user, params["team"]) do
+      true ->
+        case Team.verify_billing(params["team"]) do
+          true ->
+            Repo.transaction fn ->
+              with {:ok, retrospective} <- insert_retrospective(params),
+                  [{:ok, retrospective_participants}] <- add_retrospective_participants(retrospective, params["participants"]) do
+                    retrospective
+                    |> Retrospective.preload_relationships()
+              else
+                {:error, changeset} ->
+                  Repo.rollback changeset
+              end
+            end
+          _ ->
+            {:error, :forbidden}
+        end
+      _ ->
+        {:error, :unauthorized}
     end
   end
 
