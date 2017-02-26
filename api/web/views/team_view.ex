@@ -10,7 +10,6 @@ defmodule Mirror.TeamView do
   end
 
   def render("team.json", %{team: team}) do
-    # Logger.info team
     %{
     	"type": "team",
     	"id": team.uuid,
