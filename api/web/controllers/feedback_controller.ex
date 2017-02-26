@@ -22,6 +22,9 @@ defmodule Mirror.FeedbackController do
 
     case Repo.insert changeset do
         {:ok, feedback} ->
+            feedback = feedback
+            |> Feedback.preload_relationships
+
             Mirror.Endpoint.broadcast("retrospective:#{retrospective_id}", "feedback_added", Mirror.FeedbackView.render("show.json", feedback: feedback))
 
             conn

@@ -4,7 +4,9 @@
       <div class="col-md-8">
         {{#x-card title="Organizations"}}
           {{#if model.organizations}}
-          
+            {{#each model.organizations as |organization|}}
+              {{organization.name}}
+            {{/each}}
           {{else}}
             It doesn't look like you're a member of any organizations.
           {{/if}}

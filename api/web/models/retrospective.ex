@@ -33,4 +33,43 @@ defmodule Mirror.Retrospective do
     retrospective
     |> Repo.preload([:team, :moderator, :participants, :scores, :feedbacks, :type])
   end
+
+  def create(params) do
+    Repo.transaction fn ->
+      with {:ok, retrospective} <- insert_retrospective(params),
+           [{:ok, retrospective_participants}] <- add_retrospective_participants(retrospective, params["participants"]) do
+             retrospective
+             |> Retrospective.preload_relationships()
+      else
+        {:error, changeset} ->
+          Repo.rollback changeset
+      end
+    end
+  end
+
+  defp insert_retrospective(params) do
+    %Retrospective{}
+    |> Retrospective.changeset(%{
+        name: params["attributes"]["name"],
+        isAnonymous: params["attributes"]["is-anonymous"],
+        state: params["attributes"]["state"],
+        moderator_id: params["moderator"]["data"]["id"],
+        team_id: params["team"].id,
+        type_id: params["attributes"]["type"]
+      })
+    |> Repo.insert
+  end
+
+  defp add_retrospective_participants(retrospective, participants) do
+    cond do
+      length(participants["data"]) > 0 ->
+        Enum.map participants["data"], fn participant ->
+          %RetrospectiveUser{}
+          |> RetrospectiveUser.changeset(%{user_id: participant.id, retrospective_id: retrospective.id})
+          |> Repo.insert
+        end
+      true ->
+        [{:ok, nil}]
+    end
+  end
 end
