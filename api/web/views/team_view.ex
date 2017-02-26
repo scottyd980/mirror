@@ -23,19 +23,19 @@ defmodule Mirror.TeamView do
           "links": %{
             "self": "/api/users/"
           },
-          "data": render_many(team.admins, Mirror.TeamView, "user.json", as: :user)
+          "data": render_many(team.admins, Mirror.UserView, "relationship.json", as: :user)
       	},
         "members": %{
           "links": %{
             "self": "/api/users/"
           },
-          "data": render_many(team.members, Mirror.TeamView, "user.json", as: :user)
+          "data": render_many(team.members, Mirror.UserView, "relationship.json", as: :user)
         },
         "organization": %{
           "links": %{
             "self": "/api/organizations/"
           },
-          "data": render_one(team.organization, Mirror.TeamView, "organization.json", as: :organization)
+          "data": render_one(team.organization, Mirror.OrganizationView, "relationship.json", as: :organization)
         }
       }
     }
@@ -48,17 +48,10 @@ defmodule Mirror.TeamView do
     }
   end
 
-  def render("user.json", %{user: user}) do
+  def render("relationship.json", %{team: team}) do
     %{
-      "type": "user",
-      "id": user.id
-    }
-  end
-
-  def render("organization.json", %{organization: organization}) do
-    %{
-      "type": "organization",
-      "id": organization.id
+      "type": "team",
+      "id": team.uuid
     }
   end
 end

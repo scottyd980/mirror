@@ -25,29 +25,22 @@ defmodule Mirror.SprintScoreView do
                 "links": %{
                     "self": "/api/users/"
                 },
-                "data": render_one(score.user_id, Mirror.SprintScoreView, "user.json", as: :user)
+                "data": render_one(score.user, Mirror.UserView, "relationship.json", as: :user)
             },
             "retrospective": %{
                 "links": %{
                     "self": "/api/retrospectives/"
                 },
-                "data": render_one(score.retrospective_id, Mirror.SprintScoreView, "retrospective.json", as: :retrospective)
+                "data": render_one(score.retrospective, Mirror.RetrospectiveView, "relationship.json", as: :retrospective)
             }
         }
     }
   end
 
-  def render("user.json", %{user: user}) do
+  def render("relationship.json", %{score: score}) do
     %{
-      "type": "users",
-      "id": user
-    }
-  end
-
-  def render("retrospective.json", %{retrospective: retrospective}) do
-    %{
-      "type": "retrospectives",
-      "id": retrospective
+      "type": "score",
+      "id": score.id
     }
   end
 end

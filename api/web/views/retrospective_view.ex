@@ -1,8 +1,6 @@
 defmodule Mirror.RetrospectiveView do
   use Mirror.Web, :view
 
-  import Logger
-
   def render("index.json", %{retrospectives: retrospectives}) do
     %{data: render_many(retrospectives, Mirror.RetrospectiveView, "retrospective.json")}
   end
@@ -32,61 +30,40 @@ defmodule Mirror.RetrospectiveView do
           "links": %{
             "self": "/api/users/"
           },
-          "data": render_one(retrospective.moderator, Mirror.RetrospectiveView, "user.json", as: :user)
+          "data": render_one(retrospective.moderator, Mirror.UserView, "relationship.json", as: :user)
       	},
         "participants": %{
           "links": %{
             "self": "/api/users/"
           },
-          "data": render_many(retrospective.participants, Mirror.RetrospectiveView, "user.json", as: :user)
+          "data": render_many(retrospective.participants, Mirror.UserView, "relationship.json", as: :user)
         },
         "team": %{
           "links": %{
             "self": "/api/teams/"
           },
-          "data": render_one(retrospective.team, Mirror.RetrospectiveView, "team.json", as: :team)
+          "data": render_one(retrospective.team, Mirror.TeamView, "relationship.json", as: :team)
         },
         "scores": %{
           "links": %{
             "self": "/api/scores/"
           },
-          "data": render_many(retrospective.scores, Mirror.RetrospectiveView, "score.json", as: :score)
+          "data": render_many(retrospective.scores, Mirror.SprintScoreView, "relationship.json", as: :score)
         },
         "feedbacks": %{
           "links": %{
             "self": "/api/feedbacks/"
           },
-          "data": render_many(retrospective.feedbacks, Mirror.RetrospectiveView, "feedback.json", as: :feedback)
+          "data": render_many(retrospective.feedbacks, Mirror.FeedbackView, "relationship.json", as: :feedback)
         }
       }
     }
   end
 
-  def render("user.json", %{user: user}) do
+  def render("relationship.json", %{retrospective: retrospective}) do
     %{
-      "type": "users",
-      "id": user.id
-    }
-  end
-
-  def render("team.json", %{team: team}) do
-    %{
-      "type": "teams",
-      "id": team.uuid
-    }
-  end
-
-  def render("score.json", %{score: score}) do
-    %{
-      "type": "scores",
-      "id": score.id
-    }
-  end
-
-  def render("feedback.json", %{feedback: feedback}) do
-    %{
-      "type": "feedbacks",
-      "id": feedback.id
+      "type": "retrospectives",
+      "id": retrospective.id
     }
   end
 end

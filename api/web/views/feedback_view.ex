@@ -27,29 +27,22 @@ defmodule Mirror.FeedbackView do
                 "links": %{
                     "self": "/api/users/"
                 },
-                "data": render_one(feedback.user_id, Mirror.FeedbackView, "user.json", as: :user)
+                "data": render_one(feedback.user_id, Mirror.UserView, "relationship.json", as: :user)
             },
             "retrospective": %{
                 "links": %{
                     "self": "/api/retrospectives/"
                 },
-                "data": render_one(feedback.retrospective_id, Mirror.FeedbackView, "retrospective.json", as: :retrospective)
+                "data": render_one(feedback.retrospective_id, Mirror.RetrospectiveView, "relationship.json", as: :retrospective)
             }
         }
     }
   end
 
-  def render("user.json", %{user: user}) do
+  def render("relationship.json", %{feedback: feedback}) do
     %{
-      "type": "users",
-      "id": user
-    }
-  end
-
-  def render("retrospective.json", %{retrospective: retrospective}) do
-    %{
-      "type": "retrospectives",
-      "id": retrospective
+      "type": "feedbacks",
+      "id": feedback.id
     }
   end
 end

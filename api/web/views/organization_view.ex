@@ -22,22 +22,22 @@ defmodule Mirror.OrganizationView do
           "links": %{
             "self": "/api/users/"
           },
-          "data": render_many(organization.admins, Mirror.OrganizationView, "user.json", as: :user)
+          "data": render_many(organization.admins, Mirror.UserView, "relationship.json", as: :user)
       	},
         "members": %{
           "links": %{
             "self": "/api/users/"
           },
-          "data": render_many(organization.members, Mirror.OrganizationView, "user.json", as: :user)
+          "data": render_many(organization.members, Mirror.UserView, "relationship.json", as: :user)
         }
       }
     }
   end
 
-  def render("user.json", %{user: user}) do
+  def render("relationship.json", %{organization: organization}) do
     %{
-      "type": "user",
-      "id": user.id
+      "type": "organization",
+      "id": organization.uuid
     }
   end
 end
