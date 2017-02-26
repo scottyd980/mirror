@@ -22,7 +22,7 @@ defmodule Mirror.UserView do
           "links": %{
             "self": "/api/teams/"
           },
-          "data": render_many(user.teams, Mirror.UserView, "team.json", as: :team)
+          "data": render_many(user.teams, Mirror.TeamView, "relationship.json", as: :team)
       	},
         "retrospectives": %{
           "links": %{
@@ -34,23 +34,17 @@ defmodule Mirror.UserView do
           "links": %{
             "self": "/api/organizations/"
           },
-          "data": render_many(user.organizations, Mirror.UserView, "organization.json", as: :organization)
+          "data": render_many(user.organizations, Mirror.OrganizationView, "relationship.json", as: :organization)
         }
       }
     }
   end
 
-  def render("team.json", %{team: team}) do
+  def render("relationship.json", %{user: user}) do
     %{
-      "type": "team",
-      "id": team.uuid
+      "type": "users",
+      "id": user.id
     }
   end
-
-  def render("organization.json", %{organization: organization}) do
-    %{
-      "type": "organization",
-      "id": organization.uuid
-    }
-  end
+  
 end
