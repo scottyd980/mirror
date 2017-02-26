@@ -12,22 +12,6 @@ defmodule Mirror.OrganizationController do
     render(conn, "index.json", organizations: organizations)
   end
 
-  def create(conn, %{"organization" => organization_params}) do
-    changeset = Organization.changeset(%Organization{}, organization_params)
-
-    case Repo.insert(changeset) do
-      {:ok, organization} ->
-        conn
-        |> put_status(:created)
-        # |> put_resp_header("location", organization_path(conn, :show, organization))
-        |> render("show.json", organization: organization)
-      {:error, changeset} ->
-        conn
-        |> put_status(:unprocessable_entity)
-        |> render(Mirror.ChangesetView, "error.json", changeset: changeset)
-    end
-  end
-
   def create(conn, %{"data" => %{"attributes" => attributes, "relationships" => relationships, "type" => "organizations"}}) do
 
     org_members = [Guardian.Plug.current_resource(conn)]
@@ -54,18 +38,15 @@ defmodule Mirror.OrganizationController do
 
     organization = Repo.get_by!(Organization, uuid: id)
     |> Organization.preload_relationships()
-
-    render(conn, "show.json", organization: organization)
-
-    # TODO: Check to make sure the person is a member or admin of the org
-    # case Enum.member?(team.members, current_user) do
-    #   true ->
-    #     render(conn, "show.json", team: team)
-    #   _ ->
-    #     conn
-    #     |> put_status(404)
-    #     |> render(Mirror.ErrorView, "404.json")
-    # end
+    
+    case Enum.member?(organization.members, current_user) || Enum.member?(organization.admins, current_user) do
+      true ->
+        render(conn, "show.json", organization: organization)
+      _ ->
+        conn
+        |> put_status(404)
+        |> render(Mirror.ErrorView, "404.json")
+    end
   end
 
   def update(conn, %{"id" => id, "organization" => organization_params}) do
