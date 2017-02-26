@@ -8,7 +8,7 @@ defmodule Mirror.TeamAdminController do
   def create(conn, %{"admin_id" => admin_id, "team_id" => team_id}) do
     current_user = Guardian.Plug.current_resource(conn)
 
-    team = Repo.get!(Team, team_id)
+    team = Repo.get_by!(Team, uuid: team_id)
     user = Repo.get!(User, admin_id)
 
     cond do
@@ -23,7 +23,7 @@ defmodule Mirror.TeamAdminController do
   def delete(conn, %{"admin_id" => admin_id, "team_id" => team_id}) do
     current_user = Guardian.Plug.current_resource(conn)
 
-    team = Repo.get!(Team, team_id)
+    team = Repo.get_by!(Team, uuid: team_id)
     user = Repo.get!(User, admin_id)
 
     cond do

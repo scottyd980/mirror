@@ -8,7 +8,7 @@ defmodule Mirror.RetrospectiveController do
   def index(conn, params) do
     current_user = Guardian.Plug.current_resource(conn)
 
-    team = Repo.get!(Team, params["filter"]["team"])
+    team = Repo.get_by!(Team, uuid: params["filter"]["team"])
 
     cond do
       UserHelper.user_is_team_member?(current_user, team) ->
@@ -45,15 +45,15 @@ defmodule Mirror.RetrospectiveController do
   def create(conn, %{"data" => %{"attributes" => attributes, "relationships" => relationships, "type" => "retrospectives"}}) do
 
     current_user = Guardian.Plug.current_resource(conn)
-    team = Repo.get!(Team, relationships["team"]["data"]["id"])
+    team = Repo.get_by!(Team, uuid: relationships["team"]["data"]["id"])
 
-    params = %{"attributes" => attributes, "participants" => relationships["participants"], "moderator" => relationships["moderator"], "team" => relationships["team"]}
+    params = %{"attributes" => attributes, "participants" => relationships["participants"], "moderator" => relationships["moderator"], "team" => team}
 
     cond do
       UserHelper.user_is_team_member?(current_user, team) ->
         case create_retrospective(params) do
           {:ok, retrospective} ->
-            Mirror.Endpoint.broadcast("team:#{retrospective.team.id}", "retrospective_in_progress", %{retrospective_in_progress: true, retrospective_id: retrospective.id})
+            Mirror.Endpoint.broadcast("team:#{retrospective.team.uuid}", "retrospective_in_progress", %{retrospective_in_progress: true, retrospective_id: retrospective.id})
 
             conn
             |> put_status(:created)
@@ -65,22 +65,6 @@ defmodule Mirror.RetrospectiveController do
         end
       true ->
         use_error_view(conn, 401, %{})
-    end
-  end
-
-  def show(conn, %{"id" => id}) do
-    current_user = Guardian.Plug.current_resource(conn)
-
-    team = Repo.get!(Team, id)
-    |> Team.preload_relationships()
-
-    case Enum.member?(team.members, current_user) do
-      true ->
-        render(conn, "show.json", team: team)
-      _ ->
-        conn
-        |> put_status(404)
-        |> render(Mirror.ErrorView, "404.json")
     end
   end
 
@@ -104,7 +88,7 @@ defmodule Mirror.RetrospectiveController do
         isAnonymous: params["attributes"]["is-anonymous"],
         state: params["attributes"]["state"],
         moderator_id: params["moderator"]["data"]["id"],
-        team_id: params["team"]["data"]["id"],
+        team_id: params["team"].id,
         type_id: params["attributes"]["type"]
       })
     |> Repo.insert

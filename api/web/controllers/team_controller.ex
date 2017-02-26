@@ -43,7 +43,7 @@ defmodule Mirror.TeamController do
   def show(conn, %{"id" => id}) do
     current_user = Guardian.Plug.current_resource(conn)
 
-    team = Repo.get!(Team, id)
+    team = Repo.get_by!(Team, uuid: id)
     |> Team.preload_relationships()
 
     case Enum.member?(team.members, current_user) do
@@ -59,7 +59,7 @@ defmodule Mirror.TeamController do
   def get_next_sprint(conn, %{"id" => id}) do
     current_user = Guardian.Plug.current_resource(conn)
 
-    team = Repo.get!(Team, id)
+    team = Repo.get_by!(Team, uuid: id)
 
     case UserHelper.user_is_team_member?(current_user, team) do
       true ->
@@ -74,7 +74,7 @@ defmodule Mirror.TeamController do
 
   # TODO: Need to finish update
   def update(conn, %{"id" => id, "team" => team_params}) do
-    team = Repo.get!(Team, id)
+    team = Repo.get_by!(Team, uuid: id)
     |> Team.preload_relationships()
     changeset = Team.changeset(team, team_params)
 
@@ -89,17 +89,13 @@ defmodule Mirror.TeamController do
   end
 
   def delete(conn, %{"id" => id}) do
-    team = Repo.get!(Team, id)
+    team = Repo.get_by!(Team, uuid: id)
 
     # Here we use delete! (with a bang) because we expect
     # it to always work (and if it does not, it will raise).
     Repo.delete!(team)
 
     send_resp(conn, :no_content, "")
-  end
-
-  defp generate_unique_id(id) do
-    Hashids.encode(@hashconfig, id)
   end
 
   defp create_team(params) do
@@ -133,12 +129,16 @@ defmodule Mirror.TeamController do
     |> Repo.update
   end
 
+  defp generate_unique_id(id) do
+    Hashids.encode(@hashconfig, id)
+  end
+
   defp add_team_members(team, users) do
     cond do
       length(users) > 0 ->
         Enum.map users, fn user ->
           %UserTeam{}
-          |> UserTeam.changeset(%{user_id: user.id, team_id: team.id})
+          |> UserTeam.changeset(%{user_id: user.id, team_id: team.uuid})
           |> Repo.insert
         end
       true ->

@@ -37,7 +37,7 @@ defmodule Mirror.UserView do
   def render("team.json", %{team: team}) do
     %{
       "type": "team",
-      "id": team.id
+      "id": team.uuid
     }
   end
 end
