@@ -42,7 +42,7 @@ defmodule Mirror.UserView do
 
   def render("relationship.json", %{user: user}) do
     %{
-      "type": "users",
+      "type": "user",
       "id": user.id
     }
   end
