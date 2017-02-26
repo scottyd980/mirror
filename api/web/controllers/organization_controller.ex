@@ -1,7 +1,7 @@
 defmodule Mirror.OrganizationController do
   use Mirror.Web, :controller
 
-  alias Mirror.Organization
+  alias Mirror.{Organization}
 
   plug Guardian.Plug.EnsureAuthenticated, handler: Mirror.AuthErrorHandler
 
@@ -28,12 +28,31 @@ defmodule Mirror.OrganizationController do
     end
   end
 
-  def show(conn, %{"id" => id}) do
+  def create(conn, %{"data" => %{"attributes" => attributes, "relationships" => relationships, "type" => "organizations"}}) do
 
-    Logger.warn "here"
+    org_members = [Guardian.Plug.current_resource(conn)]
+    org_admins = [Guardian.Plug.current_resource(conn)]
+    # organization_member_delegates = attributes["member-delegates"]
+
+    params = %{"attributes" => attributes, "admins" => org_admins, "members" => org_members}
+
+    case Organization.create(params) do
+      {:ok, organization} ->
+        conn
+        |> put_status(:created)
+        |> render("show.json", organization: organization)
+      {:error, changeset} ->
+        conn
+        |> put_status(:unprocessable_entity)
+        |> render(Mirror.ChangesetView, "error.json", changeset: changeset)
+    end
+
+  end
+
+  def show(conn, %{"id" => id}) do
     current_user = Guardian.Plug.current_resource(conn)
 
-    organization = Repo.get!(Organization, id)
+    organization = Repo.get_by!(Organization, uuid: id)
     |> Organization.preload_relationships()
 
     render(conn, "show.json", organization: organization)
@@ -48,13 +67,6 @@ defmodule Mirror.OrganizationController do
     #     |> render(Mirror.ErrorView, "404.json")
     # end
   end
-
-  # def show(conn, %{"id" => id}) do
-  #   Logger.warn "here"
-
-  #   organization = Repo.get!(Organization, id)
-  #   render(conn, "show.json", organization: organization)
-  # end
 
   def update(conn, %{"id" => id, "organization" => organization_params}) do
     organization = Repo.get!(Organization, id)

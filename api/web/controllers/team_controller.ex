@@ -138,7 +138,7 @@ defmodule Mirror.TeamController do
       length(users) > 0 ->
         Enum.map users, fn user ->
           %UserTeam{}
-          |> UserTeam.changeset(%{user_id: user.id, team_id: team.uuid})
+          |> UserTeam.changeset(%{user_id: user.id, team_id: team.id})
           |> Repo.insert
         end
       true ->
