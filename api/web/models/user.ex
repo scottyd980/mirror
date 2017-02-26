@@ -15,6 +15,7 @@ defmodule Mirror.User do
     # Relationships
     has_many :scores, Mirror.SprintScore
     many_to_many :teams, Mirror.Team, join_through: Mirror.UserTeam
+    many_to_many :organizations, Mirror.Organization, join_through: Mirror.OrganizationUser
 
     timestamps()
   end
@@ -36,7 +37,7 @@ defmodule Mirror.User do
 
   def preload_relationships(user) do
     user
-    |> Repo.preload([:scores, :teams])
+    |> Repo.preload([:scores, :teams, :organizations])
   end
 
   defp hash_password(%{valid?: false} = changeset), do: changeset

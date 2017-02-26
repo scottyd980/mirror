@@ -10,5 +10,5 @@ export default Model.extend({
   teamAdmin: hasMany('team', {inverse: 'admins'}),
   teams: hasMany('team', {inverse: 'members'}),
   organizationAdmin: hasMany('organization', {inverse: 'admins'}),
-  organization: hasMany('organization', {inverse: 'members'})
+  organizations: hasMany('organization', {inverse: 'members'})
 });
