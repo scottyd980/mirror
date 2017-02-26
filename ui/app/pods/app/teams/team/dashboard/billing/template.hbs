@@ -1,0 +1,36 @@
+<div class="container">
+  <div class="row">
+    <div class="col-md-12">
+      {{#x-card title="Billing"}}
+        {{#if model.team.organization}}
+          asdasdas
+        {{else}}
+          <h3 class="text-center">Billing for a team is managed by a parent organization.</h3>
+          <p class="text-center pad-bottom-lg">Since your team does not have a parent organization yet, you must join or create one to provide billing information.</p>
+          <div class="row">
+            {{#if model.user_organizations}}
+              <div class="col-md-4 text-center marketing-block marketing-block-stacked">
+                <img class="marketing-icon" src="/img/marketing/distributed-teams.svg" />
+                <h4>Join One Of Your Organizations</h4>
+                <p>The easiest way to get started is join an organization that you already administrate.</p>
+                <a class="btn btn-success btn-block">Join One Of Your Organizations</a>
+              </div>
+            {{/if}}
+            <div class="{{if model.user_organizations "col-md-4" "col-md-6"}} text-center marketing-block marketing-block-stacked">
+              <img class="marketing-icon" src="/img/marketing/voices.svg" />
+              <h4>Create A New Organization</h4>
+              <p>If you don't already have an organization, you can create one in a single step.</p>
+              <a class="btn btn-success btn-block">Create A New Organization</a>
+            </div>
+            <div class="{{if model.user_organizations "col-md-4" "col-md-6"}} text-center marketing-block marketing-block-stacked">
+              <img class="marketing-icon" src="/img/marketing/statistics.svg" />
+              <h4>Join Another Organization</h4>
+              <p>If you are not the administrator of an organization, you can request to join one.</p>
+              <a class="btn btn-success btn-block">Request To Join Another Organization</a>
+            </div>
+          </div>
+        {{/if}}
+      {{/x-card}}
+    </div>
+  </div>
+</div>

@@ -59,7 +59,9 @@ defmodule Mirror.RetrospectiveController do
       {:error, :unauthorized} ->
         use_error_view(conn, 401, %{})
       {:error, :forbidden} ->
-        use_error_view(conn, 403, %{})
+        conn
+        |> put_status(403)
+        |> render(Mirror.ErrorView, "403.json")
       {:error, changeset} ->
         use_error_view(conn, :unprocessable_entity, changeset)
     end

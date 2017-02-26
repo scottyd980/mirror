@@ -80,7 +80,7 @@ h1, .h1, h2, .h2, h3, .h3, h4, .h4 {
   line-height: 1.7;
 
   &.marketing-block-stacked {
-    @media (max-width: $screen-xs-max) {
+    @media (max-width: $screen-sm-max) {
       padding-bottom: 50px;
 
       &:last-of-type {
@@ -89,7 +89,7 @@ h1, .h1, h2, .h2, h3, .h3, h4, .h4 {
     }
   }
 
-  @media (max-width: $screen-xs-max) {
+  @media (max-width: $screen-sm-max) {
     text-align: center;
   }
 }

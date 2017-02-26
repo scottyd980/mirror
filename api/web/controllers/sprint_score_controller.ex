@@ -23,6 +23,9 @@ defmodule Mirror.SprintScoreController do
 
     case Repo.insert changeset do
         {:ok, score} ->
+            score = score
+            |> SprintScore.preload_relationships()
+
             Mirror.Endpoint.broadcast("retrospective:#{retrospective_id}", "sprint_score_added", Mirror.SprintScoreView.render("show.json", score: score))
 
             conn
