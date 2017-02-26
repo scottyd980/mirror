@@ -62,7 +62,7 @@ defmodule Mirror.RetrospectiveView do
 
   def render("relationship.json", %{retrospective: retrospective}) do
     %{
-      "type": "retrospectives",
+      "type": "retrospective",
       "id": retrospective.id
     }
   end
