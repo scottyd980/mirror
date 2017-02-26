@@ -95,7 +95,7 @@ defmodule Mirror.Team do
         true
       _ ->
         # TODO: This will need to be updated for billing
-        true
+        false
     end
   end
 end

@@ -21,14 +21,17 @@ export default Ember.Route.extend({
         return response.json();
       }).then((data) => {
         return data.next_sprint;
-      })
+      }),
+      currentUser: _this.get('session').get('currentUser')
     });
   },
   setupController(controller, model) {
     this._super(controller, model);
     controller.set('hasRetroInProgress', false);
     controller.set('isRetroStartModalShowing', false);
+    controller.set('isBillingModalShowing', false);
     controller.set('gameToStart', null);
+    controller.set('isAdmin', model.team.get('admins').includes(model.currentUser));
 
     var retro = this.get('retrospectiveService').join_team_channel(model.team.get('id'));
 
@@ -42,6 +45,9 @@ export default Ember.Route.extend({
     cancelEnterRetrospectiveType() {
       this.controller.set('isRetroStartModalShowing', false);
     },
+    toggleBillingModal() {
+      this.controller.toggleProperty('isBillingModalShowing');
+    },
     startRetrospective(game) {
       let retrospective = this.store.createRecord('retrospective')
 
@@ -53,6 +59,16 @@ export default Ember.Route.extend({
 
       this.get('retrospectiveService').start(retrospective).then((result) => {
         this.send('joinRetrospective', result.id);
+      }).catch((error) => {
+        if(error.errors[0].code === 403) {
+          this.send('cancelEnterRetrospectiveType');
+          this.send('toggleBillingModal');
+        } else {
+          this.get('notificationCenter').error({
+            title: config.ERROR_MESSAGES.generic,
+            message: "We experienced an unexpected error trying to join the retrospective. Please try again."
+          });
+        }
       });
     },
     joinRetrospective(retrospective_id) {

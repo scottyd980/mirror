@@ -38,7 +38,7 @@
       {{/unless}}
     </div>
     <div class="col-md-4">
-      {{#x-card title="Helpful Tips"}}
+      {{#x-card title="Tips"}}
         <ul class="tips">
           <li>
             Any member of the team can start a retrospective. This person
@@ -72,4 +72,33 @@
       <a {{action 'startRetrospective'}} class="btn btn-success">Start Retrospective {{fa-icon "arrow-right" fixedWidth=true}}</a>
     {{/x-modal-footer}}
   {{/x-modal}}
+{{/if}}
+
+{{#if isBillingModalShowing}}
+  {{#if isAdmin}}
+    {{#x-modal
+      onClose=(route-action "toggleBillingModal")
+      title="Your Trial Period Has Ended"
+    }}
+      {{#x-modal-body}}
+        <p>To start a new retrospective, billing information is required.</p>
+      {{/x-modal-body}}
+      {{#x-modal-footer}}
+        <a {{action 'toggleBillingModal'}} class="btn btn-default btn-outline">Cancel</a>
+        {{#link-to "app.teams.team.dashboard.billing" model.team class="btn btn-info"}}Enter Billing Information{{/link-to}}
+      {{/x-modal-footer}}
+    {{/x-modal}}
+  {{else}}
+    {{#x-modal
+      onClose=(route-action "toggleBillingModal")
+      title="Your Trial Period Has Ended"
+    }}
+      {{#x-modal-body}}
+        <p>To start a new retrospective, billing information is required. Please notify a team admin that billing information needs to be provided before you are able to continue.</p>
+      {{/x-modal-body}}
+      {{#x-modal-footer}}
+        <a {{action 'toggleBillingModal'}} class="btn btn-default btn-outline">OK</a>
+      {{/x-modal-footer}}
+    {{/x-modal}}
+  {{/if}}
 {{/if}}
