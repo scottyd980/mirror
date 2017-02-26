@@ -13,7 +13,7 @@ defmodule Mirror.TeamView do
     # Logger.info team
     %{
     	"type": "team",
-    	"id": team.id,
+    	"id": team.uuid,
     	"attributes": %{
         "name": team.name,
         "is-anonymous": team.isAnonymous,
@@ -38,7 +38,7 @@ defmodule Mirror.TeamView do
 
   def render("next_sprint.json", %{next_sprint: next_sprint, team: team}) do
     %{
-      "id": team.id,
+      "id": team.uuid,
       "next_sprint": next_sprint
     }
   end

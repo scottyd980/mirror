@@ -48,7 +48,7 @@ defmodule Mirror.TeamChannel do
   defp get_basic_data(socket) do
     user = current_resource(socket)
     "team:" <> team_id = socket.topic
-    team = Repo.get!(Team, team_id)
+    team = Repo.get_by!(Team, uuid: team_id)
 
     {user, team}
   end

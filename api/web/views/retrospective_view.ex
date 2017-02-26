@@ -72,7 +72,7 @@ defmodule Mirror.RetrospectiveView do
   def render("team.json", %{team: team}) do
     %{
       "type": "teams",
-      "id": team.id
+      "id": team.uuid
     }
   end
 
