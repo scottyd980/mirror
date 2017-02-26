@@ -23,22 +23,21 @@ defmodule Mirror.Router do
 
   scope "/api", Mirror do
     pipe_through :api_auth
+
     get "/user/current", UserController, :current
-
-    resources "/teams", TeamController
     get "/teams/:id/next_sprint", TeamController, :get_next_sprint
-    
-    resources "/retrospectives", RetrospectiveController, only: [:index, :create, :update, :show]
-    
-    resources "/scores", SprintScoreController, only: [:create, :show]
-
-    resources "/feedbacks", FeedbackController, only: [:create, :show, :update]
-
     post "/retrospective_users", RetrospectiveUserController, :create
     post "/team_users", UserTeamController, :create
-    delete "/team_users", UserTeamController, :delete
     post "/team_admins", TeamAdminController, :create
+    delete "/team_users", UserTeamController, :delete
     delete "/team_admins", TeamAdminController, :delete
+
+    resources "/teams", TeamController
+    resources "/retrospectives", RetrospectiveController, only: [:index, :create, :update, :show]
+    resources "/scores", SprintScoreController, only: [:create, :show]
+    resources "/feedbacks", FeedbackController, only: [:create, :show, :update]
     resources "/users", UserController, only: [:show]
+    resources "/organizations", OrganizationController, only: [:index, :create, :show, :update]
+    
   end
 end
