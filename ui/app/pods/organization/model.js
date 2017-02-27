@@ -5,6 +5,7 @@ import { hasMany } from 'ember-data/relationships';
 export default Model.extend({
   name: attr('string'),
   avatar: attr('string'),
+  teams: hasMany('team'),
   admins: hasMany('user'),
   members: hasMany('user')
 });

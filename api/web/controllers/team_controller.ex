@@ -1,7 +1,7 @@
 defmodule Mirror.TeamController do
   use Mirror.Web, :controller
 
-  alias Mirror.{Team, UserTeam, TeamAdmin, MemberDelegate, UserHelper, Retrospective, Mailer, Email}
+  alias Mirror.{Team, Organization, UserTeam, TeamAdmin, MemberDelegate, UserHelper, Retrospective, Mailer, Email}
   alias Ecto.{Multi}
 
   import Logger
@@ -73,13 +73,24 @@ defmodule Mirror.TeamController do
   end
 
   # TODO: Need to finish update
-  def update(conn, %{"id" => id, "team" => team_params}) do
+  def update(conn, %{"id" => id}) do
+    body_params = conn.body_params
+    
     team = Repo.get_by!(Team, uuid: id)
     |> Team.preload_relationships()
-    changeset = Team.changeset(team, team_params)
 
+    organization_id = body_params["data"]["relationships"]["organization"]["data"]["id"];
+
+    organization = Repo.get_by!(Organization, uuid: organization_id)
+
+    changeset = Team.changeset(team, %{organization_id: organization.id})
+
+    # TODO: Need to make sure this is a team admin making changes
     case Repo.update(changeset) do
       {:ok, team} ->
+        team = team
+        |> Team.preload_relationships
+        
         render(conn, "show.json", team: team)
       {:error, changeset} ->
         conn

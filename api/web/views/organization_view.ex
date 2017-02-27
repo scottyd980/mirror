@@ -29,7 +29,13 @@ defmodule Mirror.OrganizationView do
             "self": "/api/users/"
           },
           "data": render_many(organization.members, Mirror.UserView, "relationship.json", as: :user)
-        }
+        },
+        "teams": %{
+          "links": %{
+            "self": "/api/teams/"
+          },
+          "data": render_many(organization.teams, Mirror.TeamView, "relationship.json", as: :team)
+      	}
       }
     }
   end
