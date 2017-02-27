@@ -6,13 +6,13 @@
           asdasdas
         {{else}}
           <h3 class="text-center">Billing for a team is managed by a parent organization.</h3>
-          <p class="text-center pad-bottom-lg">Since your team does not have a parent organization yet, you must join or create one to provide billing information.</p>
+          <p class="text-center pad-bottom-lg">Since your team does not have a parent organization yet, you must add it to or create an organization to provide billing information.</p>
           <div class="row">
             {{#if model.user_organizations}}
               <div class="col-md-4 text-center marketing-block marketing-block-stacked">
                 <img class="marketing-icon" src="/img/marketing/use-user.svg" />
-                <h4>Join One Of Your Organizations</h4>
-                <p>The easiest way to get started is join an organization that you already administrate.</p>
+                <h4>Add To One Of Your Organizations</h4>
+                <p>It's easy to add the team to an organization that you already administrate.</p>
                 <a {{action 'toggleJoinOwnOrganizationModal'}} class="btn btn-success btn-block">Join One Of Your Organizations</a>
               </div>
             {{/if}}
@@ -24,9 +24,9 @@
             </div>
             <div class="{{if model.user_organizations "col-md-4" "col-md-6"}} text-center marketing-block marketing-block-stacked">
               <img class="marketing-icon" src="/img/marketing/use-user-user-user.svg" />
-              <h4>Join Another Organization</h4>
-              <p>If you are not the administrator of an organization, you can request to join one.</p>
-              <a {{action 'toggleJoinAnotherOrganizationModal'}} class="btn btn-success btn-block">Request To Join Another Organization</a>
+              <h4>Add To Another Organization</h4>
+              <p>If you are not the administrator of an organization, you can request to add it to one.</p>
+              <a {{action 'toggleJoinAnotherOrganizationModal'}} class="btn btn-success btn-block">Request To Add To Another Organization</a>
             </div>
           </div>
         {{/if}}
