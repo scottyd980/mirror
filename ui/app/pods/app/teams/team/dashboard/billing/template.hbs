@@ -42,13 +42,22 @@
   }}
     {{#x-modal-body}}
       <p>Select the organization below that you want to associate this team with.</p>
-      {{#each model.user_organizations as |organization|}}
-        {{organization.name}}
-      {{/each}}
+      <ul class="radio-list">
+        {{#each model.user_organizations as |organization|}}
+          <li>
+            <div class="radio-button">
+                <input type="radio" id={{concat "organization-" organization-id}} value="{{organization.id}}" name="billing-add-organization" />
+                <label for={{concat "organization-" organization-id}} class="radio-list--item">
+                    {{organization.name}}
+                </label>
+            </div>
+          </li>
+        {{/each}}
+      </ul>
     {{/x-modal-body}}
     {{#x-modal-footer}}
       <a {{action 'toggleJoinOwnOrganizationModal'}} class="btn btn-default btn-outline">Cancel</a>
-      <a {{action 'startRetrospective'}} class="btn btn-success">Join</a>
+      <a {{action 'joinOwnOrganization'}} class="btn btn-success">Join</a>
     {{/x-modal-footer}}
   {{/x-modal}}
 {{/if}}

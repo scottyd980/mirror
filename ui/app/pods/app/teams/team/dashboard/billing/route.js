@@ -46,6 +46,25 @@ export default Ember.Route.extend({
                 _this.get('currentModel').team.save();
                 _this.send('toggleCreateNewOrganizationModal');
             });
+        },
+        joinOwnOrganization() {
+            let organization = $('input[name="billing-add-organization"]:checked').val();
+            let user_organizations = this.get('currentModel').user_organizations;
+
+            if(typeof organization !== "undefined") {
+
+                let team_organization = user_organizations.find((org) => {
+                    return org.id === organization;
+                });
+
+                this.get('currentModel').team.set('organization', team_organization);
+                this.get('currentModel').team.save().then(() => {
+                this.send('toggleJoinOwnOrganizationModal');  
+                });
+            
+            } else {
+                // TODO: Error
+            }
         }
     }
 });
