@@ -56,6 +56,7 @@ defmodule Mirror.FeedbackController do
     end
   end
 
+  # TODO: Need to make sure this is a user of the team making changes
   def update(conn, %{"id" => id}) do
     body_params = conn.body_params
     
