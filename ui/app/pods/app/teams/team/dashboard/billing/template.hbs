@@ -46,8 +46,8 @@
         {{#each model.user_organizations as |organization|}}
           <li>
             <div class="radio-button">
-                <input type="radio" id={{concat "organization-" organization-id}} value="{{organization.id}}" name="billing-add-organization" />
-                <label for={{concat "organization-" organization-id}} class="radio-list--item">
+                <input type="radio" id={{concat "organization-" organization.id}} value="{{organization.id}}" name="billing-add-organization" />
+                <label for={{concat "organization-" organization.id}} class="radio-list--item">
                     {{organization.name}}
                 </label>
             </div>
