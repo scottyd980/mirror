@@ -4,10 +4,11 @@ ul.radio-list {
 
     li {
         label {
-            padding: 10px;
+            padding: 5px;
             display: block;
             padding-left: 34px;
             position: relative;
+            margin-bottom: 0;
 
             &:before {
                 position: absolute;
