@@ -1,7 +1,7 @@
 defmodule Mirror.TeamController do
   use Mirror.Web, :controller
 
-  alias Mirror.{Team, Organization, UserTeam, TeamAdmin, MemberDelegate, UserHelper, Retrospective, Mailer, Email}
+  alias Mirror.{Team, Organization, UserTeam, TeamAdmin, MemberDelegate, UserHelper, HashHelper, Retrospective, Mailer, Email}
   alias Ecto.{Multi}
 
   import Logger
@@ -133,7 +133,7 @@ defmodule Mirror.TeamController do
   end
 
   defp add_unique_id_to_team(team) do
-    team_unique_id = generate_unique_id(team.id)
+    team_unique_id = HashHelper.generate_unique_id(team.id, "team")
 
     team
     |> Team.changeset(%{uuid: team_unique_id})
