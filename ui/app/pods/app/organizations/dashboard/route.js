@@ -7,5 +7,10 @@ export default Ember.Route.extend({
        return RSVP.hash({
            organizations: this.get('session.currentUser').get('organizations').sortBy('id')
        });
+    },
+    actions: {
+        viewOrganization(organization) {
+            this.transitionTo('app.organizations.organization', organization);
+        }
     }
 });

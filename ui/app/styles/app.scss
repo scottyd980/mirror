@@ -8,6 +8,7 @@
 @import 'bootstrap-custom/forms';
 @import 'bootstrap-custom/alerts';
 @import 'bootstrap-custom/dropdown';
+@import 'bootstrap-custom/labels';
 
 @import 'card';
 @import 'icons';
@@ -151,6 +152,10 @@ ul.table-list {
     max-width: 100%;
     padding-right: 10px;
     padding-left: 10px;
+
+    &.list-item-link {
+      cursor: pointer;
+    }
     
     &:hover {
       background: $brand-list-hover;
@@ -161,6 +166,10 @@ ul.table-list {
 
       @media (max-width: $screen-xs-max) {
         display: block;
+
+        &.cell {
+          display: table-cell;
+        }
       }
 
       &.score {
