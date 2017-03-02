@@ -6,12 +6,17 @@
           {{#if model.organizations}}
             <ul class="table-list">
               {{#each model.organizations as |organization|}}
-                <li>
-                  <div>
-                    {{fa-icon "circle" class="danger-text" fixedWidth=true}} {{organization.name}}
+                <li class="list-item-link" onclick={{route-action "viewOrganization" organization}}>
+                  <div class="cell">
+                    {{organization.name}}
                   </div>
-                  <div class="text-right">
-                    <span class="label label-info">{{pluralize-word organization.teams.length "team"}}</span>
+                  <div class="text-right cell">
+                    <span class="label label-danger">
+                      {{pluralize-word organization.teams.length "team"}}
+                      {{#tooltip-on-element side="left"}}
+                        Billing is not active.
+                      {{/tooltip-on-element}}
+                    </span>
                   </div>
                 </li>
               {{/each}}
