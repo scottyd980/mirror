@@ -10,7 +10,7 @@ export default Ember.Route.extend({
     },
     actions: {
         viewOrganization(organization) {
-            this.transitionTo('app.organizations.organization.dashboard', organization);
+            this.transitionTo('app.organizations.organization.dashboard.teams', organization);
         }
     }
 });

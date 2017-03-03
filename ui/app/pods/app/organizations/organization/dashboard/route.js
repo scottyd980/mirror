@@ -14,6 +14,6 @@ export default Ember.Route.extend({
     var _this = this;
     _this._super(controller, models);
 
-    //controller.set('isAdmin', models.org.get('admins').includes(models.currentUser));
+    controller.set('isAdmin', models.organization.get('admins').includes(models.currentUser));
   }
 });
