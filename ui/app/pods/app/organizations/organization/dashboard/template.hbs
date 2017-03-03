@@ -7,7 +7,11 @@
         </div>
         <div class="tab-pane">
           <ul class="title-tabs">
-            
+            {{#if isAdmin}}
+                <li>{{#link-to "app.organizations.organization.dashboard.teams" model.organization}}Teams{{/link-to}}</li>
+                <li>{{#link-to "app.organizations.organization.dashboard.billing" model.organization}}Billing{{/link-to}}</li>
+                <li>{{#link-to "app.organizations.organization.dashboard.members" model.organization}}Members{{/link-to}}</li>
+            {{/if}}
           </ul>
         </div>
       </div>
