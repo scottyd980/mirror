@@ -1,7 +1,7 @@
 import { moduleForComponent, test } from 'ember-qunit';
 import hbs from 'htmlbars-inline-precompile';
 
-moduleForComponent('stripe-billing', 'Integration | Component | stripe billing', {
+moduleForComponent('x-billing-card', 'Integration | Component | x billing card', {
   integration: true
 });
 
@@ -9,15 +9,15 @@ test('it renders', function(assert) {
   // Set any properties with this.set('myProperty', 'value');
   // Handle any actions with this.on('myAction', function(val) { ... });
 
-  this.render(hbs`{{stripe-billing}}`);
+  this.render(hbs`{{x-billing-card}}`);
 
   assert.equal(this.$().text().trim(), '');
 
   // Template block usage:
   this.render(hbs`
-    {{#stripe-billing}}
+    {{#x-billing-card}}
       template block text
-    {{/stripe-billing}}
+    {{/x-billing-card}}
   `);
 
   assert.equal(this.$().text().trim(), 'template block text');
