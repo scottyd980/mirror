@@ -93,7 +93,10 @@ module.exports = function(environment) {
       }
     }
   };
-  
+
+  ENV.stripe = {
+    publishableKey: "pk_test_vd8mdRI6jcKLykIaVSgQCRwz"
+  };
 
   if (environment === 'development') {
     // ENV.APP.LOG_RESOLVER = true;
