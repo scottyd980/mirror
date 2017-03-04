@@ -93,7 +93,10 @@ module.exports = function(environment) {
       }
     }
   };
-  
+
+  ENV.stripe = {
+    publishableKey: "***STRIPE_PUBLISHABLE_KEY***"
+  };
 
   if (environment === 'development') {
     // ENV.APP.LOG_RESOLVER = true;
