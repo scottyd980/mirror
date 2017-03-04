@@ -7,6 +7,7 @@ defmodule Mirror.Organization do
     field :name, :string
     field :uuid, :string
     field :avatar, :string
+    field :billing_customer, :string
 
     has_many :teams, Mirror.Team, on_delete: :delete_all
     many_to_many :admins, Mirror.User, join_through: Mirror.OrganizationAdmin
@@ -20,7 +21,7 @@ defmodule Mirror.Organization do
   """
   def changeset(struct, params \\ %{}) do
     struct
-    |> cast(params, [:name, :avatar, :uuid])
+    |> cast(params, [:name, :avatar, :uuid, :billing_customer])
     |> validate_required([:name, :avatar])
   end
 
@@ -33,6 +34,8 @@ defmodule Mirror.Organization do
     Repo.transaction fn ->
       with {:ok, org} <- insert_organization(params),
            {:ok, updated_org} <- add_unique_id_to_organization(org),
+           {:ok, billing_customer} <- create_billing_customer(updated_org),
+           {:ok, org_with_billing} <- add_billing_to_organization(org, billing_customer),
            [{:ok, org_admins}] <- add_organization_admins(org, params["admins"]),
            [{:ok, org_members}] <- add_organization_members(org, params["members"]) do
              updated_org
@@ -55,6 +58,20 @@ defmodule Mirror.Organization do
 
     organization
     |> Organization.changeset(%{uuid: organization_unique_id})
+    |> Repo.update
+  end
+
+  defp create_billing_customer(organization) do
+    new_customer = %{
+      email: organization.uuid
+    }
+
+    Stripe.Customers.create new_customer
+  end
+
+  defp add_billing_to_organization(organization, billing_customer) do
+    organization
+    |> Organization.changeset(%{billing_customer: billing_customer.id})
     |> Repo.update
   end
 

@@ -30,6 +30,8 @@ config :mime, :types, %{
   "application/vnd.api+json" => ["json-api"]
 }
 
+config :stripity_stripe, secret_key: "sk_test_olzWYbRvUnGfyAbvOMtYvW79"
+
 config :guardian, Guardian,
   allowed_algos: ["HS512"], # optional
   verify_module: Guardian.JWT,  # optional
