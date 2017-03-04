@@ -1,0 +1,23 @@
+{{#x-card title=title}}
+    <div class="form-group">
+        <label for="org-billing-card">
+            Name
+        </label>
+        {{input type="text" class="form-control" value=customer_name}}
+    </div>
+    <div class="form-group">
+        <label for="org-billing-card">
+            Card
+        </label>
+        <div id="org-billing-card" class="form-control stripe">
+            <!-- a Stripe Element will be inserted here. -->
+        </div>
+    </div>
+
+    <!-- Used to display form errors -->
+    <div id="card-errors"></div>
+
+    <div class="card-footer">
+        <a {{action "processCreditCard"}} class="btn btn-success">Add Billing Information</a>
+    </div>
+{{/x-card}}
