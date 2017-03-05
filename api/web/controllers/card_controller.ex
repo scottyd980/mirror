@@ -7,6 +7,8 @@ defmodule Mirror.CardController do
 
   plug Guardian.Plug.EnsureAuthenticated, handler: Mirror.AuthErrorHandler
 
+  # TODO: Better error handling...
+
   def index(conn, params) do
     current_user = Guardian.Plug.current_resource(conn)
 
@@ -49,10 +51,9 @@ defmodule Mirror.CardController do
 
         case Stripe.Cards.create(:customer, customer_id, card) do
           {:ok, new_card} ->
-            Logger.warn "#{inspect new_card}"
             new_card = Map.put(new_card, :organization, organization)
             render(conn, "show.json", card: new_card)
-          {:error, _} ->
+          {:error, error} ->
             use_error_view(conn, :unprocessable_entity, %{})
         end
       _ ->
