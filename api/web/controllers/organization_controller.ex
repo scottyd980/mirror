@@ -7,10 +7,10 @@ defmodule Mirror.OrganizationController do
 
   import Logger
 
-  def index(conn, _params) do
-    organizations = Repo.all(Organization)
-    render(conn, "index.json", organizations: organizations)
-  end
+  # def index(conn, _params) do
+  #   organizations = Repo.all(Organization)
+  #   render(conn, "index.json", organizations: organizations)
+  # end
 
   def create(conn, %{"data" => %{"attributes" => attributes, "relationships" => relationships, "type" => "organizations"}}) do
 

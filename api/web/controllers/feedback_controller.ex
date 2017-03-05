@@ -5,6 +5,7 @@ defmodule Mirror.FeedbackController do
 
   plug Guardian.Plug.EnsureAuthenticated, handler: Mirror.AuthErrorHandler
 
+  # TODO: Make sure current_user is a member of the team
   def create(conn, %{"data" => %{"attributes" => attributes, "relationships" => relationships, "type" => "feedbacks"}}) do
 
     current_user = Guardian.Plug.current_resource(conn)

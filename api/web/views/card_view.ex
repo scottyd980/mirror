@@ -10,12 +10,23 @@ defmodule Mirror.CardView do
   end
 
   def render("card.json", %{card: card}) do
-    %{id: card.id,
-      brand: card.brand,
-      last4: card.last4,
-      exp_month: card.exp_month,
-      exp_year: card.exp_year,
-      token_id: card.token_id,
-      card_id: card.card_id}
+    %{
+    	"type": "card",
+    	"id": card["id"],
+    	"attributes": %{
+        "brand": card["brand"],
+        "last4": card["last4"],
+        "exp_month": card["exp_month"],
+        "exp_year": card["exp_year"]
+    	},
+      "relationships": %{
+        "organization": %{
+          "links": %{
+            "self": "/api/organizations/"
+          },
+          "data": render_one(card.organization, Mirror.OrganizationView, "relationship.json", as: :organization)
+      	}
+      }
+    }
   end
 end
