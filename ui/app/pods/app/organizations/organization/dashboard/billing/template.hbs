@@ -1,7 +1,7 @@
 <div class="container">
   <div class="row">
     <div class="col-md-8">
-      {{#x-card title="Cards On File"}}
+      {{#x-card title="Payment Methods"}}
         {{#if model.cards}}
           {{billing-list cards=model.cards}}
         {{else}}
@@ -11,7 +11,7 @@
     </div>
     <div class="col-md-4">
         {{x-billing-card 
-          title="Add New Billing Information"
+          title="Add New Payment Method"
           afterSubmission=(route-action "newOrganizationBilling")
         }}
     </div>

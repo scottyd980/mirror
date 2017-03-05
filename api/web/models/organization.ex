@@ -10,6 +10,8 @@ defmodule Mirror.Organization do
     field :billing_customer, :string
 
     has_many :teams, Mirror.Team, on_delete: :delete_all
+    has_many :cards, Mirror.Card, on_delete: :delete_all
+    belongs_to :default_payment, Mirror.Card
     many_to_many :admins, Mirror.User, join_through: Mirror.OrganizationAdmin
     many_to_many :members, Mirror.User, join_through: Mirror.OrganizationUser
 
@@ -27,7 +29,7 @@ defmodule Mirror.Organization do
 
   def preload_relationships(organization) do
     organization
-    |> Repo.preload([:members, :admins, :teams])
+    |> Repo.preload([:members, :admins, :teams, :default_payment, :cards])
   end
 
   def create(params) do

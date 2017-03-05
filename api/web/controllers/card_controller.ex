@@ -17,21 +17,18 @@ defmodule Mirror.CardController do
 
     case UserHelper.user_is_organization_admin?(current_user, organization) do
      true ->
-        case Stripe.Cards.all(:customer, customer_id) do
-          {:ok, cards} ->
-            cards = Enum.map(cards, fn(card) -> 
-              Map.put(card, :organization, organization)
-            end)
-            render(conn, "index.json", cards: cards)
-          {:error, _} ->
-            use_error_view(conn, :unprocessable_entity, %{})
-        end
+        query = from r in Card,
+                where: r.organization_id == ^organization.id
+        cards = Repo.all(query)
+        |> Card.preload_relationships()
+        render(conn, "index.json", cards: cards)
       _ ->
         use_error_view(conn, 401, %{})
     end
   end
 
   # TODO: Need better error handling
+  # TODO: Make this a transaction?
 
   def create(conn, %{"data" => %{"attributes" => attributes, "relationships" => relationships, "type" => "cards"}}) do
     
@@ -42,19 +39,40 @@ defmodule Mirror.CardController do
     case UserHelper.user_is_organization_admin?(current_user, organization) do
       true ->
         customer_id = organization.billing_customer
-        card = %{
-          source: attributes["token-id"],
-          metadata: %{
-            added: DateTime.to_date(DateTime.utc_now())
-          }
+        cust_card = %{
+          source: attributes["token-id"]
+        }
+        
+        changeset = Card.changeset %Card{}, %{
+            brand: attributes["brand"],
+            last4: attributes["last4"],
+            exp_month: attributes["exp-month"],
+            exp_year: attributes["exp-year"],
+            token_id: attributes["token-id"],
+            card_id: attributes["card-id"],
+            organization_id: organization.id
         }
 
-        case Stripe.Cards.create(:customer, customer_id, card) do
-          {:ok, new_card} ->
-            new_card = Map.put(new_card, :organization, organization)
-            render(conn, "show.json", card: new_card)
-          {:error, error} ->
-            use_error_view(conn, :unprocessable_entity, %{})
+        case Repo.insert changeset do
+            {:ok, card} ->
+              case Stripe.Cards.create(:customer, customer_id, cust_card) do
+                {:ok, _} ->
+
+                  # Only do this if we want to default the card, then we'll have to listen to default updates from stripe
+                  # Stripe.Customers.update(customer_id, %{default_source: attributes["card-id"]})
+
+                  card = card
+                  |> Card.preload_relationships
+
+                  conn
+                  |> put_status(:created)
+                  |> render("show.json", card: card)
+                  
+                {:error, error} ->
+                  use_error_view(conn, :unprocessable_entity, %{})
+              end
+            {:error, changeset} ->
+                use_error_view(conn, 422, changeset)
         end
       _ ->
         use_error_view(conn, 401, %{})
