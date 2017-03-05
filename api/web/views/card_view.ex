@@ -16,8 +16,9 @@ defmodule Mirror.CardView do
     	"attributes": %{
         "brand": card["brand"],
         "last4": card["last4"],
-        "exp_month": card["exp_month"],
-        "exp_year": card["exp_year"]
+        "exp-month": card["exp_month"],
+        "exp-year": card["exp_year"],
+        "added-date": card["metadata"]["added"]
     	},
       "relationships": %{
         "organization": %{
