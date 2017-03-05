@@ -1,0 +1,14 @@
+{{#each (sort-by "id:desc" cards) as |card|}}
+    <li>
+        <div class="card-brand">
+            <img class="img-responsive" src={{concat (concat "/img/cards/" card.brand) ".png"}} />
+        </div>
+        <div class="info">
+            <h4>{{card.brand}} xxxxx-{{card.last4}}</h4>
+            <p class="expiration muted-text">Expires {{card.exp_month}}/{{card.exp_year}} • Added {{moment-format card.added_date "MMMM Do, YYYY"}}</p>
+        </div>
+        <div class="actions">
+            
+        </div>
+    </li>
+{{/each}}
