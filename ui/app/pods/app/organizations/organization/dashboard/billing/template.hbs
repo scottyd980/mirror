@@ -1,8 +1,15 @@
 <div class="container">
   <div class="row">
     <div class="col-md-6">
-        {{#x-billing-card title="Enter Billing Information"}}
-        {{/x-billing-card}}
+      {{#x-card title="Cards On File"}}
+        There are currently no cards stored for your organization.
+      {{/x-card}}
+    </div>
+    <div class="col-md-6">
+        {{x-billing-card 
+          title="Add New Billing Information"
+          afterSubmission=(route-action "newOrganizationBilling")
+        }}
     </div>
   </div>
 </div>
