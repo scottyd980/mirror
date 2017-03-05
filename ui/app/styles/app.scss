@@ -145,20 +145,17 @@ ul.table-list {
 
   li {
     display: table;
-    border-bottom: 1px solid $brand-border;
+    border: 1px solid $brand-border;
     padding-bottom: 10px;
     padding-top: 10px;
     width: 100%;
     max-width: 100%;
     padding-right: 10px;
     padding-left: 10px;
+    margin-bottom: 10px;
 
     &.list-item-link {
       cursor: pointer;
-    }
-    
-    &:hover {
-      background: $brand-list-hover;
     }
 
     div {
@@ -169,6 +166,18 @@ ul.table-list {
 
         &.cell {
           display: table-cell;
+        }
+      }
+
+      &.card-brand {
+        width: 100px;
+        vertical-align: middle;
+
+        @media (max-width: $screen-xs-max) {
+          width: 100%;
+          .img-responsive {
+            margin: 0 auto;
+          }
         }
       }
 
@@ -185,13 +194,17 @@ ul.table-list {
         }
       }
 
-      &.sprint-info {
+      &.info {
         padding: 5px 20px;
 
         @media (max-width: $screen-xs-max) {
           padding: 10px 0 0 0;
 
           h4 {
+            text-align: center;
+          }
+
+          p.expiration {
             text-align: center;
           }
         }
@@ -237,10 +250,6 @@ ul.table-list {
           }
         }
       }
-    }
-    
-    &:last-of-type {
-      border-bottom: none;
     }
   }
 }

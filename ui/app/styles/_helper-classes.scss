@@ -214,6 +214,9 @@
   color: $brand-danger;
 }
 
+.muted-text {
+  color: $brand-light-text;
+}
 
 .text-center-xs {
   @media (max-width: $screen-xs-max) {
