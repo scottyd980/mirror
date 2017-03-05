@@ -32,7 +32,9 @@ export default Ember.Route.extend({
             card.set('token_id', token.id);
             card.set('card_id', token.card.id);
             card.set('organization', this.controller.get('model.organization'));
-            card.save();
+            card.save().then(() => {
+                this.send('invalidateApplicationModel');
+            });
         }
     }
 });
