@@ -41,11 +41,15 @@ defmodule Mirror.CardController do
       true ->
         customer_id = organization.billing_customer
         card = %{
-          source: attributes["token-id"]
+          source: attributes["token-id"],
+          metadata: %{
+            added: DateTime.to_date(DateTime.utc_now())
+          }
         }
 
         case Stripe.Cards.create(:customer, customer_id, card) do
           {:ok, new_card} ->
+            Logger.warn "#{inspect new_card}"
             new_card = Map.put(new_card, :organization, organization)
             render(conn, "show.json", card: new_card)
           {:error, _} ->
