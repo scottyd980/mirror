@@ -2,6 +2,7 @@
   <div class="row">
     <div class="col-md-6">
       {{#x-card title="Cards On File"}}
+        {{#each model.cards as |card|}}
         There are currently no cards stored for your organization.
       {{/x-card}}
     </div>

@@ -1,5 +1,5 @@
 defmodule Mirror.UserHelper do
-  alias Mirror.{Repo, Team, Retrospective}
+  alias Mirror.{Repo, Team, Retrospective, Organization}
 
   def user_is_team_member?(user, team) do
     team = team
@@ -27,5 +27,12 @@ defmodule Mirror.UserHelper do
     |> Repo.preload([:moderator])
 
     retro.moderator == user
+  end
+
+  def user_is_organization_admin?(user, organization) do
+    organization = organization
+    |> Repo.preload([:admins])
+
+    Enum.member?(organization.admins, user)
   end
 end

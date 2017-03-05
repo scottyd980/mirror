@@ -7,7 +7,12 @@ export default Ember.Route.extend({
         var _this = this;
         return RSVP.hash({
             organization: this.modelFor('app.organizations.organization'),
-            currentUser: _this.get('session').get('currentUser')
+            currentUser: _this.get('session').get('currentUser'),
+            cards: _this.store.query('card', {
+                filter: {
+                    organization: _this.modelFor('app.organizations.organization').get('id')
+                }
+            })
         });
     },
     setupController(controller, models) {

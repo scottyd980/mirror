@@ -1,50 +1,59 @@
 defmodule Mirror.CardController do
   use Mirror.Web, :controller
 
-  alias Mirror.{Card, Organization}
-
-  # def index(conn, _params) do
-  #   cards = Repo.all(Card)
-  #   render(conn, "index.json", cards: cards)
-  # end
+  alias Mirror.{Card, Organization, UserHelper}
 
   import Logger
 
   plug Guardian.Plug.EnsureAuthenticated, handler: Mirror.AuthErrorHandler
 
-  # TODO: Need to make sure person adding the card is an org admin
+  def index(conn, params) do
+    current_user = Guardian.Plug.current_resource(conn)
+
+    organization = Repo.get_by!(Organization, uuid: params["filter"]["organization"])
+    customer_id = organization.billing_customer
+
+    case UserHelper.user_is_organization_admin?(current_user, organization) do
+     true ->
+        case Stripe.Cards.all(:customer, customer_id) do
+          {:ok, cards} ->
+            cards = Enum.map(cards, fn(card) -> 
+              Map.put(card, :organization, organization)
+            end)
+            render(conn, "index.json", cards: cards)
+          {:error, _} ->
+            use_error_view(conn, :unprocessable_entity, %{})
+        end
+      _ ->
+        use_error_view(conn, 401, %{})
+    end
+  end
+
+  # TODO: Need better error handling
 
   def create(conn, %{"data" => %{"attributes" => attributes, "relationships" => relationships, "type" => "cards"}}) do
     
     organization_id = relationships["organization"]["data"]["id"]
-    
     organization = Repo.get_by!(Organization, uuid: organization_id)
+    current_user = Guardian.Plug.current_resource(conn)
 
-    customer_id = organization.billing_customer
+    case UserHelper.user_is_organization_admin?(current_user, organization) do
+      true ->
+        customer_id = organization.billing_customer
+        card = %{
+          source: attributes["token-id"]
+        }
 
-    new_fields = %{
-      source: attributes["token-id"]
-    }
-
-    {:ok, updates} = Stripe.Customers.update customer_id, new_fields
-
-    Logger.warn "#{inspect updates}"
-
-    conn
-    |> put_status(:ok)
-    # changeset = Card.changeset(%Card{}, card_params)
-
-    # case Repo.insert(changeset) do
-    #   {:ok, card} ->
-    #     conn
-    #     |> put_status(:created)
-    #     |> put_resp_header("location", card_path(conn, :show, card))
-    #     |> render("show.json", card: card)
-    #   {:error, changeset} ->
-    #     conn
-    #     |> put_status(:unprocessable_entity)
-    #     |> render(Mirror.ChangesetView, "error.json", changeset: changeset)
-    # end
+        case Stripe.Cards.create(:customer, customer_id, card) do
+          {:ok, new_card} ->
+            new_card = Map.put(new_card, :organization, organization)
+            render(conn, "show.json", card: new_card)
+          {:error, _} ->
+            use_error_view(conn, :unprocessable_entity, %{})
+        end
+      _ ->
+        use_error_view(conn, 401, %{})
+    end
   end
 
   # def show(conn, %{"id" => id}) do
@@ -75,4 +84,10 @@ defmodule Mirror.CardController do
 
   #   send_resp(conn, :no_content, "")
   # end
+
+  defp use_error_view(conn, status, changeset) do
+    conn
+    |> put_status(status)
+    |> render(Mirror.ChangesetView, "error.json", changeset: changeset)
+  end
 end
