@@ -15,7 +15,8 @@ defmodule Mirror.OrganizationView do
     	"id": organization.uuid,
     	"attributes": %{
         "name": organization.name,
-        "avatar": organization.avatar
+        "avatar": organization.avatar,
+        "default-payment": organization.default_payment
     	},
       "relationships": %{
         "admins": %{
@@ -35,7 +36,13 @@ defmodule Mirror.OrganizationView do
             "self": "/api/teams/"
           },
           "data": render_many(organization.teams, Mirror.TeamView, "relationship.json", as: :team)
-      	}
+      	},
+        "cards": %{
+          "links": %{
+            "self": "/api/cards/"
+          },
+          "data": render_many(organization.cards, Mirror.CardView, "relationship.json", as: :card)
+        }
       }
     }
   end
