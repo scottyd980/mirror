@@ -23,7 +23,7 @@ defmodule Mirror.Organization do
   """
   def changeset(struct, params \\ %{}) do
     struct
-    |> cast(params, [:name, :avatar, :uuid, :billing_customer])
+    |> cast(params, [:name, :avatar, :uuid, :billing_customer, :default_payment_id])
     |> validate_required([:name, :avatar])
   end
 

@@ -16,7 +16,7 @@ defmodule Mirror.OrganizationView do
     	"attributes": %{
         "name": organization.name,
         "avatar": organization.avatar,
-        "default-payment": organization.default_payment
+        "default-payment": organization.default_payment.card_id
     	},
       "relationships": %{
         "admins": %{
