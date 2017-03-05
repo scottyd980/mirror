@@ -16,4 +16,18 @@ export default Ember.Route.extend({
 
         controller.set('isAdmin', models.organization.get('admins').includes(models.currentUser));
     },
+    actions: {
+        newOrganizationBilling(token) {
+            let card = this.store.createRecord('card');
+
+            card.set('brand', token.card.brand);
+            card.set('last4', token.card.last4);
+            card.set('exp_month', token.card.exp_month);
+            card.set('exp_year', token.card.exp_year);
+            card.set('token_id', token.id);
+            card.set('card_id', token.card.id);
+            card.set('organization', this.controller.get('model.organization'));
+            card.save();
+        }
+    }
 });

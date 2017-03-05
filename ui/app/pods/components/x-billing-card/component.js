@@ -20,9 +20,6 @@ export default Ember.Component.extend({
         card.mount('#org-billing-card');
     },
     
-    stripeTokenHandler(token) {
-       console.log(token);
-    },
     actions: {
         processCreditCard() {
             var _this = this;
@@ -39,8 +36,8 @@ export default Ember.Component.extend({
                     var errorElement = document.getElementById('card-errors');
                     errorElement.textContent = result.error.message;
                 } else {
-                    // Send the token to your server
-                    _this.stripeTokenHandler(result.token);
+                    console.log(_this.get('afterSubmission'));
+                    _this.get('afterSubmission')(result.token);
                 }
             });
         }
