@@ -67,9 +67,8 @@ $navbar-custom-brand-hover-bg: transparent;
 
 $navbar-custom-color: #000;
 
-$navbar-custom-toggle-border-color: #000;
 $navbar-custom-toggle-hover-bg: transparent;
-$navbar-custom-toggle-icon-bar-bg: #000;
+$navbar-custom-toggle-icon-bar-bg: $brand-dark;
 
 $navbar-custom-button-color: $brand-danger;
 $navbar-custom-button-hover-color: #fff;
