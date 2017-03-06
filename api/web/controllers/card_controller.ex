@@ -67,45 +67,6 @@ defmodule Mirror.CardController do
             |> put_status(:unprocessable_entity)
             |> render(Mirror.ChangesetView, "error.json", changeset: changeset)
         end
-        
-        
-        
-        
-        
-        
-        
-        
-        # changeset = Card.changeset %Card{}, %{
-        #     brand: attributes["brand"],
-        #     last4: attributes["last4"],
-        #     exp_month: attributes["exp-month"],
-        #     exp_year: attributes["exp-year"],
-        #     token_id: attributes["token-id"],
-        #     card_id: attributes["card-id"],
-        #     organization_id: organization.id
-        # }
-
-        # case Repo.insert changeset do
-        #     {:ok, card} ->
-        #       case Stripe.Cards.create(:customer, customer_id, cust_card) do
-        #         {:ok, _} ->
-
-        #           # Only do this if we want to default the card, then we'll have to listen to default updates from stripe
-        #           # Stripe.Customers.update(customer_id, %{default_source: attributes["card-id"]})
-
-        #           card = card
-        #           |> Card.preload_relationships
-
-        #           conn
-        #           |> put_status(:created)
-        #           |> render("show.json", card: card)
-                  
-        #         {:error, error} ->
-        #           use_error_view(conn, :unprocessable_entity, %{})
-        #       end
-        #     {:error, changeset} ->
-        #         use_error_view(conn, 422, changeset)
-        # end
       _ ->
         use_error_view(conn, 401, %{})
     end

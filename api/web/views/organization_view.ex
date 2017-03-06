@@ -10,13 +10,20 @@ defmodule Mirror.OrganizationView do
   end
 
   def render("organization.json", %{organization: organization}) do
+    case is_nil(organization.default_payment) do
+      true ->
+        default_card = ""
+      _ ->
+        default_card = organization.default_payment.card_id
+    end
+
     %{
     	"type": "organization",
     	"id": organization.uuid,
     	"attributes": %{
         "name": organization.name,
         "avatar": organization.avatar,
-        "default-payment": organization.default_payment.card_id
+        "default-payment": default_card
     	},
       "relationships": %{
         "admins": %{

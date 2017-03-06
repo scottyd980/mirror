@@ -22,9 +22,19 @@
         </div>
         <div class="actions">
             {{#if isAdmin}}
-                <a {{action onConfirm "Are you sure you want to delete this retrospective from your team's history?" (action onDelete retrospective)}} class="btn btn-danger btn-outline btn-xs">{{fa-icon "times" fixedWidth=true}} Remove</a>
+                <a {{action onConfirm "Are you sure you want to delete this retrospective from your team's history?" (action onDelete retrospective)}} class="btn btn-danger btn-outline btn-xs">
+                    {{fa-icon "times" fixedWidth=true}}
+                    {{#tooltip-on-element}}
+                        Delete
+                    {{/tooltip-on-element}}
+                </a>
             {{/if}}
-            {{#link-to "app.retrospectives.history" retrospective.id class="btn btn-info btn-outline btn-xs"}}{{fa-icon "list" fixedWidth=true}} Summary{{/link-to}}
+            {{#link-to "app.retrospectives.history" retrospective.id class="btn btn-info btn-outline btn-xs"}}
+                {{fa-icon "list" fixedWidth=true}}
+                {{#tooltip-on-element}}
+                    Summary
+                {{/tooltip-on-element}}
+            {{/link-to}}
         </div>
     </li>
 {{/each}}

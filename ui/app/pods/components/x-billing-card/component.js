@@ -4,6 +4,7 @@ import config from '../../../config/environment';
 export default Ember.Component.extend({
     stripe: null,
     card: null,
+    loadMethod: null,
     didInsertElement() {
         let _this = this;
         let stripe, elements, card;
@@ -22,6 +23,9 @@ export default Ember.Component.extend({
     
     actions: {
         processCreditCard() {
+            if(this.get('loadMethod')) {
+                this.get('loadMethod')();
+            }
             var _this = this;
             let stripe = _this.get('stripe'),
                 card = _this.get('card');
@@ -36,7 +40,6 @@ export default Ember.Component.extend({
                     var errorElement = document.getElementById('card-errors');
                     errorElement.textContent = result.error.message;
                 } else {
-                    console.log(_this.get('afterSubmission'));
                     _this.get('afterSubmission')(result.token);
                 }
             });
