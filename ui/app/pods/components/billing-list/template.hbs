@@ -1,5 +1,5 @@
 {{#each (sort-by "id:desc" cards) as |card|}}
-    <li>
+    <li class={{if (eq card.id default_payment) "default"}}>
         <div class="card-brand">
             <img class="img-responsive" src={{concat (concat "/img/cards/" (dasherize card.brand)) ".png"}} />
         </div>

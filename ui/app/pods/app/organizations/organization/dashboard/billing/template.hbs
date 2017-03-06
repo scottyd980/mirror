@@ -3,7 +3,7 @@
     <div class="col-md-8">
       {{#x-card title="Payment Methods"}}
         {{#if model.cards}}
-          {{billing-list cards=model.cards}}
+          {{billing-list cards=model.cards default_payment=model.organization.default_payment}}
         {{else}}
           There are currently no cards stored for your organization.
         {{/if}}
@@ -13,7 +13,14 @@
         {{x-billing-card 
           title="Add New Payment Method"
           afterSubmission=(route-action "newOrganizationBilling")
+          loadMethod=(route-action "toggleLoadingScreen")
         }}
     </div>
   </div>
 </div>
+
+{{#if currentlyLoading}}
+  <div class="loading-screen">
+    {{x-loader message="Updating Payment Methods..."}}
+  </div>
+{{/if}}

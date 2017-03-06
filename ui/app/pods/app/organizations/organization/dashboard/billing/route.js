@@ -20,6 +20,10 @@ export default Ember.Route.extend({
         _this._super(controller, models);
 
         controller.set('isAdmin', models.organization.get('admins').includes(models.currentUser));
+        controller.set('currentlyLoading', false);
+    },
+    toggleLoadingScreen() {
+        this.controller.toggleProperty('currentlyLoading');
     },
     actions: {
         newOrganizationBilling(token) {
@@ -34,7 +38,11 @@ export default Ember.Route.extend({
             card.set('organization', this.controller.get('model.organization'));
             card.save().then(() => {
                 this.send('invalidateApplicationModel');
+                this.toggleLoadingScreen();
             });
+        },
+        toggleLoadingScreen() {
+            this.toggleLoadingScreen();
         }
     }
 });
