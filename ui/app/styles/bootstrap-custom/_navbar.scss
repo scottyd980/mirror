@@ -101,7 +101,7 @@
   }
 
   .navbar-toggle {
-    border-color: $navbar-custom-toggle-border-color;
+    border: none;
     &:hover,
     &:focus {
       background-color: $navbar-custom-toggle-hover-bg;
