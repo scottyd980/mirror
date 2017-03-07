@@ -8,7 +8,26 @@
             <p class="expiration muted-text">Expires {{card.exp_month}}/{{card.exp_year}} • Added {{moment-format card.added_date "MMMM Do, YYYY"}}</p>
         </div>
         <div class="actions">
-            
+            {{#unless (eq card.id default_payment)}}
+                <a class="btn btn-success btn-outline btn-xs">
+                    {{fa-icon "check" fixedWidth=true}}
+                    {{#tooltip-on-element}}
+                        Make Default
+                    {{/tooltip-on-element}}
+                </a>
+            {{/unless}}
+            <a class="btn btn-info btn-outline btn-xs">
+                {{fa-icon "pencil" fixedWidth=true}}
+                {{#tooltip-on-element}}
+                    Edit
+                {{/tooltip-on-element}}
+            </a>
+            <a class="btn btn-danger btn-outline btn-xs">
+                {{fa-icon "times" fixedWidth=true}}
+                {{#tooltip-on-element}}
+                    Delete
+                {{/tooltip-on-element}}
+            </a>
         </div>
     </li>
 {{/each}}
