@@ -24,14 +24,14 @@
             {{#if isAdmin}}
                 <a {{action onConfirm "Are you sure you want to delete this retrospective from your team's history?" (action onDelete retrospective)}} class="btn btn-danger btn-outline btn-xs">
                     {{fa-icon "times" fixedWidth=true}}
-                    {{#tooltip-on-element}}
+                    {{#tooltip-on-element side="bottom"}}
                         Delete
                     {{/tooltip-on-element}}
                 </a>
             {{/if}}
             {{#link-to "app.retrospectives.history" retrospective.id class="btn btn-info btn-outline btn-xs"}}
                 {{fa-icon "list" fixedWidth=true}}
-                {{#tooltip-on-element}}
+                {{#tooltip-on-element side="bottom"}}
                     Summary
                 {{/tooltip-on-element}}
             {{/link-to}}

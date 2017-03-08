@@ -1,9 +1,9 @@
 {{#x-card title=title}}
     <div class="form-group">
-        <label for="org-billing-card">
+        <label for="org-billing-name">
             Name
         </label>
-        {{input type="text" class="form-control" value=customer_name}}
+        {{input id="org-billing-name" type="text" class="form-control" value=customer_name}}
     </div>
     <div class="form-group">
         <label for="org-billing-card">
@@ -12,6 +12,12 @@
         <div id="org-billing-card" class="form-control stripe">
             <!-- a Stripe Element will be inserted here. -->
         </div>
+    </div>
+    <div class="form-group">
+        <label for="org-billing-zip">
+            Billing Zipcode
+        </label>
+        {{input id="org-billing-zip" maxlength="5" type="text" class="form-control" value=zipcode}}
     </div>
 
     <!-- Used to display form errors -->

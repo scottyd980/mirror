@@ -155,19 +155,23 @@ ul.table-list {
     margin-bottom: 10px;
     position: relative;
 
-    &.default:before {
-      position: absolute;
-      top: -5px;
-      right: -5px;
-      content: "\f00c";
-      font-family: "FontAwesome";
-      background: $brand-success;
-      font-size: 20px;
-      width: 28px;
-      height: 28px;
-      text-align: center;
-      color: $white;
-      border-radius: 14px;
+    &.default {
+      border-color: $brand-success;
+
+      &:before {
+        position: absolute;
+        top: -7px;
+        left: -7px;
+        content: "\f00c";
+        font-family: "FontAwesome";
+        background: $brand-success;
+        font-size: 20px;
+        width: 28px;
+        height: 28px;
+        text-align: center;
+        color: $white;
+        border-radius: 14px;
+      }
     }
     
     .default-selection {
