@@ -31,7 +31,8 @@ export default Ember.Component.extend({
                 card = _this.get('card');
 
             let extra_details = {
-                name: _this.get('customer_name')
+                name: _this.get('customer_name'),
+                address_zip: _this.get('zipcode')
             };
 
             stripe.createToken(card, extra_details).then(function(result) {
