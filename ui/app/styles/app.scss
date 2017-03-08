@@ -190,6 +190,10 @@ ul.table-list {
         }
       }
 
+      &:first-of-type {
+        padding-left: 0 !important;
+      }
+
       &.card-brand {
         width: 100px;
         vertical-align: middle;

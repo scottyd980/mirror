@@ -1,0 +1,30 @@
+{{#each (sort-by "id:desc" organizations) as |organization|}}
+    <li>
+        <div class="info">
+            <h4>{{organization.name}}</h4>
+            <p class="expiration">
+                {{fa-icon "users" fixedWidth=true}} 
+                {{pluralize-word organization.teams.length "team"}} • 
+                {{#if organization.default_payment}}
+                    <span class="success-text">Billing Active</span>
+                {{else}}
+                    <span class="danger-text">Billing Inactive</span>
+                {{/if}}
+            </p>
+        </div>
+        <div class="actions">
+            <a class="btn btn-danger btn-outline btn-xs">
+                {{fa-icon "times" fixedWidth=true}}
+                {{#tooltip-on-element side="bottom"}}
+                    Delete
+                {{/tooltip-on-element}}
+            </a>
+            <a class="btn btn-success btn-outline btn-xs" {{action viewOrganization organization}}>
+                {{fa-icon "arrow-right" fixedWidth=true}}
+                {{#tooltip-on-element side="bottom"}}
+                    View
+                {{/tooltip-on-element}}
+            </a>
+        </div>
+    </li>
+{{/each}}
