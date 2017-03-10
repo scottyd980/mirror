@@ -9,6 +9,10 @@ defmodule Mirror.CardView do
     %{data: render_one(card, Mirror.CardView, "card.json")}
   end
 
+  def render("delete.json", %{card: card}) do
+    %{meta: %{}}
+  end
+
   def render("card.json", %{card: card}) do
     %{
     	"type": "card",

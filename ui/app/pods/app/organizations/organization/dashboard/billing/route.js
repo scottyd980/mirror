@@ -22,7 +22,8 @@ export default Ember.Route.extend({
         controller.set('isAdmin', models.organization.get('admins').includes(models.currentUser));
         controller.set('currentlyLoading', false);
     },
-    toggleLoadingScreen() {
+    toggleLoadingScreen(message) {
+        this.controller.set('loadingMessage', message);
         this.controller.toggleProperty('currentlyLoading');
     },
     actions: {
@@ -41,8 +42,17 @@ export default Ember.Route.extend({
                 this.toggleLoadingScreen();
             });
         },
-        toggleLoadingScreen() {
-            this.toggleLoadingScreen();
+        toggleLoadingScreen(message) {
+            this.toggleLoadingScreen(message);
+        },
+        deleteBillingInformation(card) {
+            this.toggleLoadingScreen("Removing Payment Method...");
+            card.destroyRecord().then(() => {
+                this.toggleLoadingScreen("Removing Payment Method...");
+            });
+        },
+        editBillingInformation(card) {
+            console.log(card);
         }
     }
 });

@@ -16,18 +16,20 @@
                     {{/tooltip-on-element}}
                 </a>
             {{/unless}}
-            <a class="btn btn-info btn-outline btn-xs">
+            <a {{action onEdit card}} class="btn btn-info btn-outline btn-xs">
                 {{fa-icon "pencil" fixedWidth=true}}
                 {{#tooltip-on-element side="bottom"}}
                     Edit
                 {{/tooltip-on-element}}
             </a>
-            <a class="btn btn-danger btn-outline btn-xs">
+            {{#unless (eq card.id default_payment)}}
+            <a {{action onConfirm "Are you sure you want to remove this card?" (action onDelete card)}} class="btn btn-danger btn-outline btn-xs">
                 {{fa-icon "times" fixedWidth=true}}
                 {{#tooltip-on-element side="bottom"}}
                     Delete
                 {{/tooltip-on-element}}
             </a>
+            {{/unless}}
         </div>
     </li>
 {{/each}}
