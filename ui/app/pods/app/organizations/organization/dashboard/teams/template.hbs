@@ -1,0 +1,13 @@
+<div class="container">
+    <div class="row">
+        <div class="col-md-8">
+            {{#x-card title="Payment Methods"}}
+                {{#each model.teams as |team|}}
+                    {{team.name}}
+                {{else}}
+                    There are no teams associated with your organization.
+                {{/each}}
+            {{/x-card}}
+        </div>
+    </div>
+</div>
