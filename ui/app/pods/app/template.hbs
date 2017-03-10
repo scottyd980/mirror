@@ -5,7 +5,7 @@
     {{#x-confirm-modal
       title=notification.title
       type=notification.type
-      onConfirm=notification.action}}
+      onConfirm=(route-action "closeConfirm" notification.action)}}
       {{notification.message}}
     {{/x-confirm-modal}}
   {{else}}

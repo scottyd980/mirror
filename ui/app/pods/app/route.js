@@ -28,5 +28,9 @@ export default Route.extend(AuthenticatedRouteMixin, {
             action: action
         });
     },
+    closeConfirm(action) {
+      action();
+      this.get('notificationCenter').clear();
+    }
   }
 });

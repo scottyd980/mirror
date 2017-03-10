@@ -149,15 +149,42 @@ defmodule Mirror.CardController do
   #   end
   # end
 
-  # def delete(conn, %{"id" => id}) do
-  #   card = Repo.get!(Card, id)
+  def delete(conn, %{"id" => id}) do
+    current_user = Guardian.Plug.current_resource(conn)
+    card = Repo.get_by!(Card, card_id: id)
+    |> Card.preload_relationships()
 
-  #   # Here we use delete! (with a bang) because we expect
-  #   # it to always work (and if it does not, it will raise).
-  #   Repo.delete!(card)
+    organization = card.organization
 
-  #   send_resp(conn, :no_content, "")
-  # end
+    case UserHelper.user_is_organization_admin?(current_user, organization) do
+      true ->
+        cond do
+          card.id != organization.default_payment_id ->
+            Repo.transaction fn ->
+              with removed_card <- remove_card(card),
+                   {:ok, removed_customer_card} <- remove_customer_card(card, organization) do
+                    conn
+                    |> render("delete.json", card: card)
+              else
+                {:error, changeset} ->
+                  Repo.rollback changeset
+              end
+            end
+          true ->
+            use_error_view(conn, 403, %{})
+        end
+      _ ->
+        use_error_view(conn, 401, %{})
+    end
+  end
+
+  defp remove_card(card) do
+    Repo.delete!(card)
+  end
+
+  defp remove_customer_card(card, organization) do
+    Stripe.Cards.delete(:customer, organization.billing_customer, card.card_id)
+  end
 
   defp use_error_view(conn, status, changeset) do
     conn
