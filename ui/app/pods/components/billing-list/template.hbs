@@ -22,14 +22,12 @@
                     Edit
                 {{/tooltip-on-element}}
             </a>
-            {{#unless (eq card.id default_payment)}}
             <a {{action onConfirm "Are you sure you want to remove this card?" (action onDelete card)}} class="btn btn-danger btn-outline btn-xs">
                 {{fa-icon "times" fixedWidth=true}}
                 {{#tooltip-on-element side="bottom"}}
                     Delete
                 {{/tooltip-on-element}}
             </a>
-            {{/unless}}
         </div>
     </li>
 {{/each}}

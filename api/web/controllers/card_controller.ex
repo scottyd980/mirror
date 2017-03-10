@@ -158,20 +158,15 @@ defmodule Mirror.CardController do
 
     case UserHelper.user_is_organization_admin?(current_user, organization) do
       true ->
-        cond do
-          card.id != organization.default_payment_id ->
-            Repo.transaction fn ->
-              with removed_card <- remove_card(card),
-                   {:ok, removed_customer_card} <- remove_customer_card(card, organization) do
-                    conn
-                    |> render("delete.json", card: card)
-              else
-                {:error, changeset} ->
-                  Repo.rollback changeset
-              end
-            end
-          true ->
-            use_error_view(conn, 403, %{})
+        Repo.transaction fn ->
+          with removed_card <- remove_card(card),
+                {:ok, removed_customer_card} <- remove_customer_card(card, organization) do
+                conn
+                |> render("delete.json", card: card)
+          else
+            {:error, changeset} ->
+              Repo.rollback changeset
+          end
         end
       _ ->
         use_error_view(conn, 401, %{})
