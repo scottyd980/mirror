@@ -9,6 +9,7 @@ export default Model.extend({
   exp_year: attr('number'),
   token_id: attr('string'),
   card_id: attr('string'),
+  zip_code: attr('string'),
   added_date: attr('date'),
   organization: belongsTo('organization')
 });

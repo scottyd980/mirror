@@ -9,7 +9,7 @@
         </div>
         <div class="actions">
             {{#unless (eq card.id default_payment)}}
-                <a class="btn btn-success btn-outline btn-xs">
+                <a {{action onConfirm "Are you sure you want to make this the default payment method?" (action onMakeDefault card)}} class="btn btn-success btn-outline btn-xs">
                     {{fa-icon "check" fixedWidth=true}}
                     {{#tooltip-on-element side="bottom"}}
                         Make Default
@@ -22,7 +22,7 @@
                     Edit
                 {{/tooltip-on-element}}
             </a>
-            <a {{action onConfirm "Are you sure you want to remove this card?" (action onDelete card)}} class="btn btn-danger btn-outline btn-xs">
+            <a {{action onConfirm "Are you sure you want to remove this payment method?" (action onDelete card)}} class="btn btn-danger btn-outline btn-xs">
                 {{fa-icon "times" fixedWidth=true}}
                 {{#tooltip-on-element side="bottom"}}
                     Delete

@@ -1,7 +1,7 @@
 defmodule Mirror.OrganizationController do
   use Mirror.Web, :controller
 
-  alias Mirror.{Organization}
+  alias Mirror.{Organization, Card}
 
   plug Guardian.Plug.EnsureAuthenticated, handler: Mirror.AuthErrorHandler
 
@@ -49,17 +49,36 @@ defmodule Mirror.OrganizationController do
     end
   end
 
-  def update(conn, %{"id" => id, "organization" => organization_params}) do
-    organization = Repo.get!(Organization, id)
-    changeset = Organization.changeset(organization, organization_params)
+  def update(conn, %{"data" => %{"id" => id, "attributes" => attributes, "relationships" => relationships, "type" => "organizations"}}) do
+    current_user = Guardian.Plug.current_resource(conn)
+    
+    organization = Repo.get_by!(Organization, uuid: id)
+    |> Organization.preload_relationships()
 
-    case Repo.update(changeset) do
-      {:ok, organization} ->
-        render(conn, "show.json", organization: organization)
-      {:error, changeset} ->
+    default_payment = Repo.get_by!(Card, card_id: attributes["default-payment"])
+
+    organization_params = %{
+      name: attributes["name"], 
+      avatar: attributes["avatar"],
+      default_payment_id: default_payment.id
+    }
+
+    case Enum.member?(organization.members, current_user) || Enum.member?(organization.admins, current_user) do
+      true ->
+        changeset = Organization.changeset(organization, organization_params)
+        case Repo.update(changeset) do
+          {:ok, organization} ->
+            Stripe.Customers.update(organization.billing_customer, %{default_source: attributes["default-payment"]})
+            render(conn, "show.json", organization: organization)
+          {:error, changeset} ->
+            conn
+            |> put_status(:unprocessable_entity)
+            |> render(Mirror.ChangesetView, "error.json", changeset: changeset)
+        end
+      _ ->
         conn
-        |> put_status(:unprocessable_entity)
-        |> render(Mirror.ChangesetView, "error.json", changeset: changeset)
+        |> put_status(404)
+        |> render(Mirror.ErrorView, "404.json")
     end
   end
 
