@@ -1,7 +1,7 @@
 defmodule Mirror.OrganizationController do
   use Mirror.Web, :controller
 
-  alias Mirror.{Organization, Card}
+  alias Mirror.{Organization, Card, Billing}
 
   plug Guardian.Plug.EnsureAuthenticated, handler: Mirror.AuthErrorHandler
 
@@ -55,7 +55,7 @@ defmodule Mirror.OrganizationController do
     organization = Repo.get_by!(Organization, uuid: id)
     |> Organization.preload_relationships()
 
-    default_payment = Repo.get_by!(Card, card_id: attributes["default-payment"])
+    default_payment = Repo.get_by!(Card, card_id: relationships["default-payment"]["data"]["id"])
 
     organization_params = %{
       name: attributes["name"], 
@@ -67,9 +67,12 @@ defmodule Mirror.OrganizationController do
       true ->
         changeset = Organization.changeset(organization, organization_params)
         case Repo.update(changeset) do
-          {:ok, organization} ->
-            Stripe.Customers.update(organization.billing_customer, %{default_source: attributes["default-payment"]})
-            render(conn, "show.json", organization: organization)
+          {:ok, updated_organization} ->
+            updated_organization = updated_organization
+            |> Organization.preload_relationships()
+
+            Billing.update_default_payment(updated_organization.billing_customer, relationships["default-payment"]["data"]["id"])
+            render(conn, "show.json", organization: updated_organization)
           {:error, changeset} ->
             conn
             |> put_status(:unprocessable_entity)

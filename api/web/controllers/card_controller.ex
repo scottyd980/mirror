@@ -110,7 +110,7 @@ defmodule Mirror.CardController do
   defp create_default_card(params) do
     Repo.transaction fn ->
       with {:ok, updated_org} <- update_default_card(params),
-           {:ok, updated_cust} <- Billing.update_default(params["organization"].billing_customer, params["attributes"]["card-id"])do
+           {:ok, updated_cust} <- Billing.update_default_payment(params["organization"].billing_customer, params["attributes"]["card-id"])do
              updated_org
              |> Organization.preload_relationships()
       else
@@ -126,10 +126,11 @@ defmodule Mirror.CardController do
     Organization.changeset(params["organization"], %{default_payment_id: card.id})
     |> Repo.update
   end
-  # def show(conn, %{"id" => id}) do
-  #   card = Repo.get!(Card, id)
-  #   render(conn, "show.json", card: card)
-  # end
+  
+  def show(conn, %{"id" => id}) do
+    card = Repo.get_by!(Card, card_id: id)
+    render(conn, "show.json", card: card)
+  end
 
   # def update(conn, %{"id" => id, "card" => card_params}) do
   #   card = Repo.get!(Card, id)

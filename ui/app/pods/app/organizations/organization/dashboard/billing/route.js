@@ -59,10 +59,9 @@ export default Ember.Route.extend({
             this.toggleLoadingScreen("Updating Payment Method...");
             var organization = card.get('organization');
             organization.then((org) => { 
-                org.set('default_payment', card.get('id'));
+                org.set('default_payment', card);
                 org.save().then(() => {
                     this.toggleLoadingScreen();
-                    this.send('invalidateApplicationModel');
                 }); 
             });
         }

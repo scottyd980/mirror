@@ -31,7 +31,7 @@ defmodule Mirror.Retrospective do
 
   def preload_relationships(retrospective) do
     retrospective
-    |> Repo.preload([:team, :moderator, :participants, :scores, :feedbacks, :type])
+    |> Repo.preload([:team, :moderator, :participants, :scores, :feedbacks, :type], force: true)
   end
 
   def create(params, current_user) do

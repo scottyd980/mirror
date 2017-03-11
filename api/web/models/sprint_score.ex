@@ -23,6 +23,6 @@ defmodule Mirror.SprintScore do
 
   def preload_relationships(score) do
     score
-    |> Repo.preload([:user, :retrospective])
+    |> Repo.preload([:user, :retrospective], force: true)
   end
 end

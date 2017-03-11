@@ -29,7 +29,7 @@ defmodule Mirror.Organization do
 
   def preload_relationships(organization) do
     organization
-    |> Repo.preload([:members, :admins, :teams, :default_payment, :cards])
+    |> Repo.preload([:members, :admins, :teams, :default_payment, :cards], force: true)
   end
 
   def create(params) do
