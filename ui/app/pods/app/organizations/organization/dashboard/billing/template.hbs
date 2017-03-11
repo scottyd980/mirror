@@ -6,6 +6,7 @@
           {{billing-list 
             cards=model.cards 
             default_payment=model.organization.default_payment
+            onMakeDefault=(route-action "makeDefaultBillingInformation")
             onConfirm=(route-action "confirmAction")
             onDelete=(route-action "deleteBillingInformation")
             onEdit=(route-action "editBillingInformation")

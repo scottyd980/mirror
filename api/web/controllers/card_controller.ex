@@ -160,9 +160,10 @@ defmodule Mirror.CardController do
       true ->
         Repo.transaction fn ->
           with removed_card <- remove_card(card),
-                {:ok, removed_customer_card} <- remove_customer_card(card, organization) do
-                conn
-                |> render("delete.json", card: card)
+               {:ok, removed_customer_card} <- remove_customer_card(card, organization)
+          do
+            conn
+            |> render("delete.json", card: card)
           else
             {:error, changeset} ->
               Repo.rollback changeset

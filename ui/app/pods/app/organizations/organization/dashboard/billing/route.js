@@ -23,6 +23,7 @@ export default Ember.Route.extend({
         controller.set('currentlyLoading', false);
     },
     toggleLoadingScreen(message) {
+        //message = message || "Updating Payment Method...";
         this.controller.set('loadingMessage', message);
         this.controller.toggleProperty('currentlyLoading');
     },
@@ -48,11 +49,22 @@ export default Ember.Route.extend({
         deleteBillingInformation(card) {
             this.toggleLoadingScreen("Removing Payment Method...");
             card.destroyRecord().then(() => {
-                this.toggleLoadingScreen("Removing Payment Method...");
+                this.toggleLoadingScreen();
             });
         },
         editBillingInformation(card) {
             console.log(card);
+        },
+        makeDefaultBillingInformation(card) {
+            this.toggleLoadingScreen("Updating Payment Method...");
+            var organization = card.get('organization');
+            organization.then((org) => { 
+                org.set('default_payment', card.get('id'));
+                org.save().then(() => {
+                    this.toggleLoadingScreen();
+                    this.send('invalidateApplicationModel');
+                }); 
+            });
         }
     }
 });
