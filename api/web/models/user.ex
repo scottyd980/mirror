@@ -37,7 +37,7 @@ defmodule Mirror.User do
 
   def preload_relationships(user) do
     user
-    |> Repo.preload([:scores, :teams, :organizations])
+    |> Repo.preload([:scores, :teams, :organizations], force: true)
   end
 
   defp hash_password(%{valid?: false} = changeset), do: changeset

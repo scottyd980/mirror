@@ -3,7 +3,7 @@ defmodule Mirror.Billing do
 
   alias Mirror.{Repo, Card, Organization}
 
-  def update_default(customer, new_default_source) do
+  def update_default_payment(customer, new_default_source) do
     Stripe.Customers.update(customer, %{default_source: new_default_source})
   end
 end

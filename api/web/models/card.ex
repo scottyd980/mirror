@@ -26,6 +26,6 @@ defmodule Mirror.Card do
 
   def preload_relationships(card) do
     card
-    |> Repo.preload([:organization])
+    |> Repo.preload([:organization], force: true)
   end
 end

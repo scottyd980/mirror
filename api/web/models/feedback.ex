@@ -32,7 +32,7 @@ defmodule Mirror.Feedback do
 
   def preload_relationships(feedback) do
     feedback
-    |> Repo.preload([:user, :retrospective])
+    |> Repo.preload([:user, :retrospective], force: true)
   end
 
   defp validate_retrospective_member(changeset) do
