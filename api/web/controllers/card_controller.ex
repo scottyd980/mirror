@@ -1,7 +1,7 @@
 defmodule Mirror.CardController do
   use Mirror.Web, :controller
 
-  alias Mirror.{Card, Organization, UserHelper}
+  alias Mirror.{Card, Organization, UserHelper, Billing}
 
   import Logger
 
@@ -110,7 +110,7 @@ defmodule Mirror.CardController do
   defp create_default_card(params) do
     Repo.transaction fn ->
       with {:ok, updated_org} <- update_default_card(params),
-           {:ok, updated_cust} <- update_default_customer_card(params) do
+           {:ok, updated_cust} <- Billing.update_default(params["organization"].billing_customer, params["attributes"]["card-id"])do
              updated_org
              |> Organization.preload_relationships()
       else
@@ -125,10 +125,6 @@ defmodule Mirror.CardController do
 
     Organization.changeset(params["organization"], %{default_payment_id: card.id})
     |> Repo.update
-  end
-
-  defp update_default_customer_card(params) do
-    Stripe.Customers.update(params["organization"].billing_customer, %{default_source: params["attributes"]["card-id"]})
   end
   # def show(conn, %{"id" => id}) do
   #   card = Repo.get!(Card, id)
