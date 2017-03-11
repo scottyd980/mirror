@@ -1,6 +1,10 @@
 <div class="container">
   <div class="row">
     <div class="col-md-8">
+      {{#x-card title="Billing"}}
+        All teams start with a 30 day free trial, with billing beginning on the 31st day. At the end of the trial period, a payment method is required to continue running retrospectives.
+        You can choose whether you would like payments to be charged monthly or yearly, depending on what suits your needs.
+      {{/x-card}}
       {{#x-card title="Payment Methods"}}
         {{#if model.cards}}
           {{billing-list 
@@ -17,6 +21,10 @@
       {{/x-card}}
     </div>
     <div class="col-md-4">
+        {{#x-card title="Billing Frequency"}}
+          Monthly ($6/Month)<br/>
+          Yearly ($60/Year) <span class="muted-text">• 16% off</span>
+        {{/x-card}}
         {{x-billing-card 
           title="Add New Payment Method"
           afterSubmission=(route-action "newOrganizationBilling")
