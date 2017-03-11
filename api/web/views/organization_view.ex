@@ -18,7 +18,6 @@ defmodule Mirror.OrganizationView do
           card_id: nil
         }
       _ ->
-        Logger.warn organization.default_payment_id
         default_card = organization.default_payment
     end
 

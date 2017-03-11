@@ -94,7 +94,8 @@ defmodule Mirror.CardController do
           exp_year: params["attributes"]["exp-year"],
           token_id: params["attributes"]["token-id"],
           card_id: params["attributes"]["card-id"],
-          organization_id: params["organization"].id
+          organization_id: params["organization"].id,
+          zip_code: params["attributes"]["zip-code"]
       })
     |> Repo.insert
   end

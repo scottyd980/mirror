@@ -10,6 +10,7 @@ defmodule Mirror.Card do
     field :exp_year, :integer
     field :token_id, :string
     field :card_id, :string
+    field :zip_code, :string
     belongs_to :organization, Organization
 
     timestamps()
@@ -20,8 +21,8 @@ defmodule Mirror.Card do
   """
   def changeset(struct, params \\ %{}) do
     struct
-    |> cast(params, [:brand, :last4, :exp_month, :exp_year, :token_id, :card_id, :organization_id])
-    |> validate_required([:brand, :last4, :exp_month, :exp_year, :token_id, :card_id, :organization_id])
+    |> cast(params, [:brand, :last4, :exp_month, :exp_year, :token_id, :card_id, :organization_id, :zip_code])
+    |> validate_required([:brand, :last4, :exp_month, :exp_year, :token_id, :card_id, :organization_id, :zip_code])
   end
 
   def preload_relationships(card) do

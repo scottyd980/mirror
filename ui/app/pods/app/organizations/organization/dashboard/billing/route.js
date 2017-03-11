@@ -37,6 +37,7 @@ export default Ember.Route.extend({
             card.set('exp_year', token.card.exp_year);
             card.set('token_id', token.id);
             card.set('card_id', token.card.id);
+            card.set('zip_code', token.card.address_zip);
             card.set('organization', this.controller.get('model.organization'));
             card.save().then(() => {
                 this.send('invalidateApplicationModel');
