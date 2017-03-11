@@ -22,6 +22,7 @@ defmodule Mirror.CardView do
         "last4": card.last4,
         "exp-month": card.exp_month,
         "exp-year": card.exp_year,
+        "zip-code": card.zip_code,
         "added-date": card.inserted_at
     	},
       "relationships": %{
