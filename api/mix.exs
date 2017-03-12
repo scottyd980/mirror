@@ -54,7 +54,8 @@ defmodule Mirror.Mixfile do
      {:stripity_stripe, "~> 1.4.0"},
      {:poison, "~> 2.2", override: true},
      {:hackney, "~> 1.7", override: true},
-     {:httpoison, "~> 0.11", override: true}
+     {:httpoison, "~> 0.11", override: true},
+     {:atomic_map, "~> 0.9"}
     ]
   end
 

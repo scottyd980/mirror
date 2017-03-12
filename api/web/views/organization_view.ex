@@ -14,9 +14,7 @@ defmodule Mirror.OrganizationView do
   def render("organization.json", %{organization: organization}) do
     case is_nil(organization.default_payment) do
       true ->
-        default_card = %{
-          card_id: nil
-        }
+        default_card = nil
       _ ->
         default_card = organization.default_payment
     end
