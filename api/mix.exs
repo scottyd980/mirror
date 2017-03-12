@@ -55,7 +55,8 @@ defmodule Mirror.Mixfile do
      {:poison, "~> 2.2", override: true},
      {:hackney, "~> 1.7", override: true},
      {:httpoison, "~> 0.11", override: true},
-     {:atomic_map, "~> 0.9"}
+     {:atomic_map, "~> 0.9"},
+     {:timex, "~> 3.0"}
     ]
   end
 
