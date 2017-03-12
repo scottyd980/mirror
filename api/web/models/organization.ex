@@ -1,7 +1,7 @@
 defmodule Mirror.Organization do
   use Mirror.Web, :model
 
-  alias Mirror.{Repo, Organization, OrganizationUser, OrganizationAdmin, HashHelper}
+  alias Mirror.{Repo, Organization, OrganizationUser, OrganizationAdmin, HashHelper, Billing}
 
   schema "organizations" do
     field :name, :string
@@ -32,14 +32,19 @@ defmodule Mirror.Organization do
     |> Repo.preload([:members, :admins, :teams, :default_payment, :cards], force: true)
   end
 
+  def get(id) do
+    Repo.get_by!(Organization, uuid: id)
+    |> Organization.preload_relationships()
+  end
+
   def create(params) do
     Repo.transaction fn ->
       with {:ok, org} <- insert_organization(params),
            {:ok, updated_org} <- add_unique_id_to_organization(org),
            {:ok, billing_customer} <- create_billing_customer(updated_org),
            {:ok, org_with_billing} <- add_billing_to_organization(org, billing_customer),
-           [{:ok, org_admins}] <- add_organization_admins(org, params["admins"]),
-           [{:ok, org_members}] <- add_organization_members(org, params["members"]) do
+           [{:ok, org_admins}] <- add_organization_admins(org, params.admins),
+           [{:ok, org_members}] <- add_organization_members(org, params.members) do
              updated_org
              |> Organization.preload_relationships()
       else
@@ -49,9 +54,23 @@ defmodule Mirror.Organization do
     end
   end
 
+  def update(organization, org_params, billing_params) do
+    changeset = Organization.changeset(organization, org_params)
+    case Repo.update(changeset) do
+      {:ok, updated_organization} ->
+        updated_organization = updated_organization
+        |> Organization.preload_relationships()
+        Billing.update_default_payment(updated_organization.billing_customer, billing_params.default_payment)
+        
+        {:ok, updated_organization}
+      {:error, changeset} ->
+        {:error, changeset}
+    end
+  end
+
   defp insert_organization(params) do
     %Organization{}
-    |> Organization.changeset(%{name: params["attributes"]["name"], isAnonymous: true, avatar: "default.png"})
+    |> Organization.changeset(%{name: params.attributes.name, isAnonymous: true, avatar: "default.png"})
     |> Repo.insert
   end
 

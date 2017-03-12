@@ -9,10 +9,10 @@ defmodule Mirror.CardController do
 
   # TODO: Better error handling...
 
-  def index(conn, params) do
+  def index(conn, %{"filter" => filter}) do
     current_user = Guardian.Plug.current_resource(conn)
 
-    organization = Repo.get_by!(Organization, uuid: params["filter"]["organization"])
+    organization = Repo.get_by!(Organization, uuid: filter["organization"])
     customer_id = organization.billing_customer
 
     case UserHelper.user_is_organization_admin?(current_user, organization) do
@@ -25,6 +25,10 @@ defmodule Mirror.CardController do
       _ ->
         use_error_view(conn, 401, %{})
     end
+  end
+
+  def index(conn, _) do
+    render(conn, "index.json", cards: [])
   end
 
   # TODO: Need better error handling
@@ -130,6 +134,7 @@ defmodule Mirror.CardController do
   
   def show(conn, %{"id" => id}) do
     card = Repo.get_by!(Card, card_id: id)
+    |> Card.preload_relationships()
     render(conn, "show.json", card: card)
   end
 

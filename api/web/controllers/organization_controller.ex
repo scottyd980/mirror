@@ -1,7 +1,7 @@
 defmodule Mirror.OrganizationController do
   use Mirror.Web, :controller
 
-  alias Mirror.{Organization, Card, Billing}
+  alias Mirror.{Organization, Card, Billing, UserHelper, Helpers}
 
   plug Guardian.Plug.EnsureAuthenticated, handler: Mirror.AuthErrorHandler
 
@@ -12,13 +12,17 @@ defmodule Mirror.OrganizationController do
   #   render(conn, "index.json", organizations: organizations)
   # end
 
-  def create(conn, %{"data" => %{"attributes" => attributes, "relationships" => relationships, "type" => "organizations"}}) do
+  def create(conn, %{"data" => data}) do
+    data = Helpers.atomic_map(data)
 
     org_members = [Guardian.Plug.current_resource(conn)]
     org_admins = [Guardian.Plug.current_resource(conn)]
-    # organization_member_delegates = attributes["member-delegates"]
 
-    params = %{"attributes" => attributes, "admins" => org_admins, "members" => org_members}
+    params = %{
+      attributes: data.attributes,
+      admins: org_admins,
+      members: org_members
+    }
 
     case Organization.create(params) do
       {:ok, organization} ->
@@ -35,11 +39,9 @@ defmodule Mirror.OrganizationController do
 
   def show(conn, %{"id" => id}) do
     current_user = Guardian.Plug.current_resource(conn)
-
-    organization = Repo.get_by!(Organization, uuid: id)
-    |> Organization.preload_relationships()
+    organization = Organization.get(id)
     
-    case Enum.member?(organization.members, current_user) || Enum.member?(organization.admins, current_user) do
+    case UserHelper.user_is_organization_admin?(current_user, organization) do
       true ->
         render(conn, "show.json", organization: organization)
       _ ->
@@ -49,30 +51,30 @@ defmodule Mirror.OrganizationController do
     end
   end
 
-  def update(conn, %{"data" => %{"id" => id, "attributes" => attributes, "relationships" => relationships, "type" => "organizations"}}) do
+  def update(conn, %{"data" => data}) do
     current_user = Guardian.Plug.current_resource(conn)
-    
-    organization = Repo.get_by!(Organization, uuid: id)
-    |> Organization.preload_relationships()
+    data = Helpers.atomic_map(data)
+    organization = Organization.get(data.id)
 
-    default_payment = Repo.get_by!(Card, card_id: relationships["default-payment"]["data"]["id"])
+    default_payment = Repo.get_by!(Card, card_id: data.relationships.default_payment.data.id)
 
     organization_params = %{
-      name: attributes["name"], 
-      avatar: attributes["avatar"],
+      name: data.attributes.name, 
+      avatar: data.attributes.avatar,
       default_payment_id: default_payment.id
     }
 
-    case Enum.member?(organization.members, current_user) || Enum.member?(organization.admins, current_user) do
-      true ->
-        changeset = Organization.changeset(organization, organization_params)
-        case Repo.update(changeset) do
-          {:ok, updated_organization} ->
-            updated_organization = updated_organization
-            |> Organization.preload_relationships()
+    billing_params = %{
+      default_payment: data.relationships.default_payment.data.id
+    }
 
-            Billing.update_default_payment(updated_organization.billing_customer, relationships["default-payment"]["data"]["id"])
-            render(conn, "show.json", organization: updated_organization)
+    case UserHelper.user_is_organization_admin?(current_user, organization) do
+      true ->
+        case Organization.update(organization, organization_params, billing_params) do
+          {:ok, updated_org} ->
+            conn
+            |> put_status(:ok)
+            |> render("show.json", organization: updated_org)
           {:error, changeset} ->
             conn
             |> put_status(:unprocessable_entity)
