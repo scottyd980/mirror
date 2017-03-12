@@ -3,6 +3,8 @@ defmodule Mirror.Team do
 
   alias Mirror.{Repo, Retrospective, RetrospectiveType}
 
+  import Logger
+
   schema "teams" do
     field :name, :string
     field :isAnonymous, :boolean, default: false
@@ -90,12 +92,21 @@ defmodule Mirror.Team do
     retro_count = retrospectives
     |> Enum.count
 
-    case retro_count < 3 do
+    case get_trial_period(team) > 0 do
       true ->
         true
       _ ->
         # TODO: This will need to be updated for billing
         false
     end
+  end
+
+  def get_trial_period(team) do
+    now = Timex.Duration.now(:seconds) |> DateTime.from_unix!
+    created_at = team.inserted_at |> Ecto.DateTime.to_erl |> :calendar.datetime_to_gregorian_seconds |> Kernel.-(62167219200) |> DateTime.from_unix!
+    days_old = Timex.diff(created_at, now, :days)
+    remaining_days = 30 + days_old
+    Logger.warn "Remaining days in trial period: #{remaining_days}"
+    remaining_days
   end
 end
