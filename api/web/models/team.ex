@@ -92,7 +92,7 @@ defmodule Mirror.Team do
     retro_count = retrospectives
     |> Enum.count
 
-    case get_trial_period(team) > 0 do
+    case get_remaining_trial_period(team) > 0 do
       true ->
         true
       _ ->
@@ -101,7 +101,7 @@ defmodule Mirror.Team do
     end
   end
 
-  def get_trial_period(team) do
+  def get_remaining_trial_period(team) do
     now = Timex.Duration.now(:seconds) |> DateTime.from_unix!
     created_at = team.inserted_at |> Ecto.DateTime.to_erl |> :calendar.datetime_to_gregorian_seconds |> Kernel.-(62167219200) |> DateTime.from_unix!
     days_old = Timex.diff(created_at, now, :days)
