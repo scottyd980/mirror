@@ -2,11 +2,13 @@
     <div class="row">
         <div class="col-md-8">
             {{#x-card title="Teams"}}
-                {{#each model.teams as |team|}}
-                    {{team.name}}
+                {{#if model.teams}}
+                    {{team-list 
+                        teams=model.teams
+                    }}
                 {{else}}
                     There are no teams associated with your organization.
-                {{/each}}
+                {{/if}}
             {{/x-card}}
         </div>
     </div>

@@ -1,0 +1,25 @@
+{{#each (sort-by "id:desc" teams) as |team|}}
+    <li>
+        <div class="info">
+            <h4>{{team.name}}</h4>
+            <p class="expiration">
+                {{fa-icon "users" fixedWidth=true}} 
+                {{pluralize-word team.members.length "team"}}
+            </p>
+        </div>
+        <div class="actions">
+            <a class="btn btn-danger btn-outline btn-xs">
+                {{fa-icon "times" fixedWidth=true}}
+                {{#tooltip-on-element side="bottom"}}
+                    Delete
+                {{/tooltip-on-element}}
+            </a>
+            <a class="btn btn-success btn-outline btn-xs">
+                {{fa-icon "arrow-right" fixedWidth=true}}
+                {{#tooltip-on-element side="bottom"}}
+                    View
+                {{/tooltip-on-element}}
+            </a>
+        </div>
+    </li>
+{{/each}}
