@@ -16,5 +16,10 @@ export default Ember.Route.extend({
         _this._super(controller, models);
 
         controller.set('isAdmin', models.organization.get('admins').includes(models.currentUser));
+    },
+    actions: {
+        viewTeam(team) {
+            this.transitionTo('app.teams.team.dashboard.retrospectives', team);
+        }
     }
 });
