@@ -5,6 +5,7 @@
                 {{#if model.teams}}
                     {{team-list 
                         teams=model.teams
+                        viewTeam=(route-action "viewTeam")
                     }}
                 {{else}}
                     There are no teams associated with your organization.
