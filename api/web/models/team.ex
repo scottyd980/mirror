@@ -1,7 +1,7 @@
 defmodule Mirror.Team do
   use Mirror.Web, :model
 
-  alias Mirror.{Repo, Retrospective, RetrospectiveType}
+  alias Mirror.{Repo, Retrospective, RetrospectiveType, Billing}
 
   import Logger
 
@@ -97,7 +97,7 @@ defmodule Mirror.Team do
         true
       _ ->
         # TODO: This will need to be updated for billing
-        false
+        Billing.is_active?(team)
     end
   end
 
