@@ -3,7 +3,7 @@
     <div class="col-md-12">
       {{#x-card title="Billing"}}
         {{#if model.team.organization}}
-          asdasdas
+          Billing is managed through a team's parent organization. The organization that handles this team is <strong>{{model.team.organization.name}}</strong>. If you are one of the organization admins (TODO), please update your billing information there. If you are not, please notify an organization admin that the organization needs attention.
         {{else}}
           <h3 class="text-center">Billing for a team is managed by a parent organization.</h3>
           <p class="text-center pad-bottom-lg">Since your team does not have a parent organization yet, you must add it to or create an organization to provide billing information.</p>
