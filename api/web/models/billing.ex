@@ -18,7 +18,6 @@ defmodule Mirror.Billing do
   end
 
   def is_active?(%Team{organization_id: organization_id}) do
-      Logger.warn "test1"
       case organization_id do
           nil -> false
           _ -> is_active?(Repo.get!(Organization, organization_id))
@@ -26,7 +25,6 @@ defmodule Mirror.Billing do
   end
 
   def is_active?(%Organization{billing_customer: billing_customer}) do
-      Logger.warn "test2"
       case billing_customer do
           nil -> false
           _ -> is_stripe_active?(billing_customer)
@@ -34,7 +32,6 @@ defmodule Mirror.Billing do
   end
 
   def is_stripe_active?(billing_customer) do
-      Logger.warn "test3"
       {:ok, subscriptions} = Stripe.Subscriptions.all(billing_customer)
       subscriptions = Helpers.atomic_map(subscriptions)
 
