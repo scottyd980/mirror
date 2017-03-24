@@ -3,6 +3,8 @@ defmodule Mirror.Card do
 
   alias Mirror.{Repo, Card, Organization, Billing}
 
+  require Logger
+
   schema "cards" do
     field :brand, :string
     field :last4, :string
@@ -58,6 +60,7 @@ defmodule Mirror.Card do
   end
 
   defp insert_customer_card(card_params) do
+    Logger.warn "#{inspect card_params}"
     Billing.add_payment(card_params.customer, card_params.token_id)
   end
 
