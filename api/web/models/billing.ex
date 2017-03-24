@@ -6,7 +6,31 @@ defmodule Mirror.Billing do
   alias Mirror.{Repo, Card, Organization, Team, Helpers}
 
   def add_payment(customer, source) do
+      Logger.warn "#{inspect source}"
+      Logger.warn "#{inspect customer}"
       Stripe.Cards.create(:customer, customer, %{source: source})
+  end
+
+  def add_subscription(customer) do
+      {:ok, subscriptions} = Stripe.Subscriptions.all(customer.billing_customer)
+      subscriptions = Helpers.atomic_map(subscriptions)
+
+      Logger.warn "#{inspect subscriptions}"
+
+      case length(subscriptions) > 0 do
+        true ->
+          update_subscription(customer, hd(subscriptions))
+        _ ->
+          create_subscription(customer)
+      end
+  end
+
+  defp create_subscription(customer) do
+      Logger.warn "Test"
+  end
+
+  defp update_subscription(customer, subscription) do
+      Logger.warn "Test2"
   end
 
   def update_default_payment(customer, new_default_source) do
