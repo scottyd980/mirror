@@ -26,7 +26,12 @@ defmodule Mirror.Billing do
   end
 
   defp create_subscription(customer) do
-      Logger.warn "Test"
+      new_sub = [
+        plan: "basic-monthly",
+        quantity: 4
+      ]
+
+      Stripe.Subscriptions.create(customer.billing_customer, new_sub)
   end
 
   defp update_subscription(customer, subscription) do
