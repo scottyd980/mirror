@@ -102,3 +102,9 @@
     {{/x-modal}}
   {{/if}}
 {{/if}}
+
+{{#if currentlyLoading}}
+  <div class="loading-screen">
+    {{x-loader message=loadingMessage}}
+  </div>
+{{/if}}
