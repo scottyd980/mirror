@@ -61,10 +61,14 @@ defmodule Mirror.Billing do
   end
 
   def is_stripe_active?(billing_customer) do
-      {:ok, subscriptions} = Stripe.Subscriptions.all(billing_customer)
-      subscriptions = Helpers.atomic_map(subscriptions)
-
-      subscription = hd(subscriptions)
-      subscription.status == "trialing" || subscription.status == "active"
+    {:ok, subscriptions} = Stripe.Subscriptions.all(billing_customer)
+    subscriptions = Helpers.atomic_map(subscriptions)
+    cond do
+        length(subscriptions) > 0 ->
+            subscription = hd(subscriptions)
+            subscription.status == "trialing" || subscription.status == "active"
+        true ->
+            false
+    end
   end
 end
