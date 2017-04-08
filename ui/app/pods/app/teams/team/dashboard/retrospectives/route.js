@@ -32,11 +32,19 @@ export default Ember.Route.extend({
     controller.set('isBillingModalShowing', false);
     controller.set('gameToStart', null);
     controller.set('isAdmin', model.team.get('admins').includes(model.currentUser));
+    controller.set('currentlyLoading', false);
 
     var retro = this.get('retrospectiveService').join_team_channel(model.team.get('id'));
 
     controller.set('retrospective', retro);
   },
+
+  toggleLoadingScreen(message) {
+      //message = message || "Updating Payment Method...";
+      this.controller.set('loadingMessage', message);
+      this.controller.toggleProperty('currentlyLoading');
+  },
+  
   actions: {
     enterRetrospectiveType(game_to_start) {
       this.controller.set('isRetroStartModalShowing', true);
@@ -57,9 +65,14 @@ export default Ember.Route.extend({
       retrospective.set('isAnonymous', true);
       retrospective.set('type', config.retrospective[this.controller.get('gameToStart')].type_id);
 
+      this.send('cancelEnterRetrospectiveType');
+      this.toggleLoadingScreen('Setting up retrospective...');
+
       this.get('retrospectiveService').start(retrospective).then((result) => {
         this.send('joinRetrospective', result.id);
+        this.toggleLoadingScreen();
       }).catch((error) => {
+        this.toggleLoadingScreen();
         if(error.errors[0].code === 403) {
           this.send('cancelEnterRetrospectiveType');
           this.send('toggleBillingModal');
