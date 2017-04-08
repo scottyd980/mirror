@@ -56,11 +56,11 @@ defmodule Mirror.Billing do
   def is_active?(%Organization{billing_customer: billing_customer}) do
       case billing_customer do
           nil -> false
-          _ -> is_stripe_active?(billing_customer)
+          _ -> is_billing_active?(billing_customer)
       end
   end
 
-  def is_stripe_active?(billing_customer) do
+  def is_billing_active?(billing_customer) do
     {:ok, subscriptions} = Stripe.Subscriptions.all(billing_customer)
     subscriptions = Helpers.atomic_map(subscriptions)
     cond do
