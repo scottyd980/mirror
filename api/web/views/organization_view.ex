@@ -24,7 +24,8 @@ defmodule Mirror.OrganizationView do
     	"id": organization.uuid,
     	"attributes": %{
         "name": organization.name,
-        "avatar": organization.avatar
+        "avatar": organization.avatar,
+        "billing-status": organization.billing_status
     	},
       "relationships": %{
         "admins": %{

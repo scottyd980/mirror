@@ -8,7 +8,17 @@
       </div>
       <div class="col-md-4">
         {{#x-card title="Billing Status"}}
-          Active (TODO)
+          <ul class="icons-list">
+            {{#if is_billing_active}}
+              <li class="icons-list--active">
+                Active
+              </li>
+            {{else}}
+              <li class="icons-list--inactive">
+                Inactive
+              </li>
+            {{/if}}
+          </ul>
         {{/x-card}}
       </div>
     {{else}}
