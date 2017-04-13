@@ -1,10 +1,19 @@
 <div class="container">
   <div class="row">
-    <div class="col-md-12">
-      {{#x-card title="Billing"}}
-        {{#if model.team.organization}}
+    {{#if model.team.organization}}
+      <div class="col-md-8">
+        {{#x-card title="Billing"}}
           Billing is managed through a team's parent organization. The organization that handles this team is <strong>{{model.team.organization.name}}</strong>. If you are one of the organization admins (TODO), please update your billing information there. If you are not, please notify an organization admin that the organization needs attention.
-        {{else}}
+        {{/x-card}}
+      </div>
+      <div class="col-md-4">
+        {{#x-card title="Billing Status"}}
+          Active (TODO)
+        {{/x-card}}
+      </div>
+    {{else}}
+      <div class="col-md-12">
+        {{#x-card title="Billing"}}
           <h3 class="text-center">Billing for a team is managed by a parent organization.</h3>
           <p class="text-center pad-bottom-lg">Since your team does not have a parent organization yet, you must add it to or create an organization to provide billing information.</p>
           <div class="row">
@@ -29,9 +38,9 @@
               <a {{action 'toggleJoinAnotherOrganizationModal'}} class="btn btn-success btn-block">Request To Add To Another Organization</a>
             </div>
           </div>
-        {{/if}}
-      {{/x-card}}
-    </div>
+        {{/x-card}}
+      </div>
+    {{/if}}
   </div>
 </div>
 
