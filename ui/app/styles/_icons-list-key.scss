@@ -26,4 +26,12 @@ ul.icons-list {
     .icons-list--remove {
         @include icon-list--icon("\f235", $brand-danger);
     }
+
+     .icons-list--active {
+        @include icon-list--icon("\f111", $brand-success);
+    }
+
+     .icons-list--inactive {
+        @include icon-list--icon("\f111", $brand-danger);
+    }
 }

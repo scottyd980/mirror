@@ -16,6 +16,12 @@ export default Ember.Route.extend({
         controller.set('isCreateNewOrganizationModalShowing', false);
         controller.set('isJoinAnotherOrganizationModalShowing', false);
         controller.set('newOrganizationName', '');
+        
+        let billing_status = model.team.get('organization.billing_status');
+        let active_billing = ["active", "monthly", "yearly"];
+        let is_billing_active = active_billing.indexOf(billing_status) > -1;
+        
+        controller.set("is_billing_active", is_billing_active);
     },
     actions: {
         toggleJoinOwnOrganizationModal() {
