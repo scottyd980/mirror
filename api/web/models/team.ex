@@ -92,21 +92,24 @@ defmodule Mirror.Team do
     retro_count = retrospectives
     |> Enum.count
 
-    case get_remaining_trial_period(team) > 0 do
+    case is_trial_active?(team) do
       true ->
         true
       _ ->
-        # TODO: This will need to be updated for billing
         Billing.is_active?(team)
     end
   end
 
-  def get_remaining_trial_period(team) do
-    now = Timex.Duration.now(:seconds) |> DateTime.from_unix!
-    created_at = team.inserted_at |> Ecto.DateTime.to_erl |> :calendar.datetime_to_gregorian_seconds |> Kernel.-(62167219200) |> DateTime.from_unix!
-    days_old = Timex.diff(created_at, now, :days)
-    remaining_days = 30 + days_old
-    Logger.warn "Remaining days in trial period: #{remaining_days}"
-    remaining_days
+  def is_trial_active?(team) do
+    now = Timex.Duration.now(:seconds)
+    created_at = team.inserted_at |> Ecto.DateTime.to_erl |> :calendar.datetime_to_gregorian_seconds |> Kernel.-(62167219200)
+
+    # Make sure right now is less than created date + 30 days (in seconds)
+    now < created_at + 2592000
+  end
+
+  def get_trial_period_end(team) do
+    created_at = team.inserted_at |> Ecto.DateTime.to_erl |> :calendar.datetime_to_gregorian_seconds |> Kernel.-(62167219200)
+    created_at + 2592000
   end
 end
