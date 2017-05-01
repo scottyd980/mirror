@@ -6,16 +6,12 @@ defmodule Mirror.Billing do
   alias Mirror.{Repo, Card, Organization, Team, Helpers}
 
   def add_payment(customer, source) do
-      Logger.warn "#{inspect source}"
-      Logger.warn "#{inspect customer}"
       Stripe.Cards.create(:customer, customer, %{source: source})
   end
 
   def add_subscription(customer) do
       {:ok, subscriptions} = Stripe.Subscriptions.all(customer.billing_customer)
       subscriptions = Helpers.atomic_map(subscriptions)
-
-      Logger.warn "#{inspect subscriptions}"
 
       case length(subscriptions) > 0 do
         true ->
@@ -26,15 +22,29 @@ defmodule Mirror.Billing do
   end
 
   defp create_subscription(customer) do
+      Logger.warn "#{inspect customer.teams}"
+
       new_sub = [
         plan: "basic-monthly",
-        quantity: 4
+        quantity: 1
       ]
+
+      now = Timex.Duration.now(:seconds)
+      trial_end = Team.get_trial_period_end(hd(customer.teams))
+
+      # Make sure right now + 60s (for request offset) is less than the end time for the trial period
+      new_sub = case (now - 60) < trial_end do
+          true ->
+            new_sub ++ [trial_end: trial_end]
+          _ ->
+            new_sub
+      end
 
       Stripe.Subscriptions.create(customer.billing_customer, new_sub)
   end
 
   defp update_subscription(customer, subscription) do
+      Logger.warn "#{inspect subscription}"
       Logger.warn "Test2"
   end
 
