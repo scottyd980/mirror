@@ -56,13 +56,15 @@ defmodule Mirror.Organization do
   end
 
   def update(organization, org_params, billing_params) do
+
     changeset = Organization.changeset(organization, org_params)
     case Repo.update(changeset) do
       {:ok, updated_organization} ->
         updated_organization = updated_organization
         |> Organization.preload_relationships()
+        
         Billing.update_default_payment(updated_organization.billing_customer, billing_params.default_payment)
-        Billing.add_subscription(organization)
+        Billing.build_subscriptions(organization)
         
         {:ok, updated_organization}
       {:error, changeset} ->
