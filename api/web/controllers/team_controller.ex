@@ -99,6 +99,7 @@ defmodule Mirror.TeamController do
     end
   end
 
+  # TODO: Implement
   def delete(conn, %{"id" => id}) do
     team = Repo.get_by!(Team, uuid: id)
 
