@@ -31,23 +31,10 @@ defmodule Mirror.Billing do
                 create_subscription(customer, team)
         end
     end
-    
-    # def add_subscription(customer, item) do
-    #     {:ok, subscriptions} = Stripe.Subscriptions.all(customer.billing_customer)
-    #     subscriptions = Helpers.atomic_map(subscriptions)
-        
-    #     case length(subscriptions) > 0 do
-    #         true ->
-    #             update_subscription(customer, hd(subscriptions))
-    #         _ ->
-    #             create_subscription(customer)
-    #     end
-    # end
 
     defp update_subscription(existing_subscription, customer, team) do
         # Update subscription
-        Logger.warn "#{inspect existing_subscription}"
-        Logger.warn "Test2"
+        Stripe.Subscriptions.change(customer.billing_customer, existing_subscription.id, "basic-yearly")
     end
             
     defp create_subscription(customer, team) do
@@ -59,18 +46,22 @@ defmodule Mirror.Billing do
             }
         ]
         
-        now = Timex.Duration.now(:seconds)
-        trial_end = Team.get_trial_period_end(team)
-        
         # Make sure right now + 60s (for request offset) is less than the end time for the trial period
-        new_sub = case (now - 60) < trial_end do
-            true ->
+        new_sub = case in_trial_window?(team) do
+            {true, trial_end} ->
                 new_sub ++ [trial_end: trial_end]
             _ ->
                 new_sub
         end
                 
         Stripe.Subscriptions.create(customer.billing_customer, new_sub)
+    end
+
+    defp in_trial_window?(team) do
+        now = Timex.Duration.now(:seconds)
+        trial_end = Team.get_trial_period_end(team)
+
+        {(now - 60) < trial_end, trial_end}
     end
     
     def update_default_payment(customer, new_default_source) do
