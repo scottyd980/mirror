@@ -9,6 +9,7 @@ defmodule Mirror.Organization do
     field :avatar, :string
     field :billing_customer, :string
     field :billing_status, :string, default: "inactive"
+    field :billing_frequency, :string, default: "none"
 
     has_many :teams, Mirror.Team, on_delete: :delete_all
     has_many :cards, Mirror.Card, on_delete: :delete_all
