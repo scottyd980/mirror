@@ -69,6 +69,11 @@ module.exports = function(environment) {
     CONFIRM_MESSAGES: {
       generic: "Please Confirm This Action"
     },
+    ACTIVE_BILLING_TYPES: [
+      'active',
+      'monthly',
+      'yearly'
+    ],
     retrospective: {
       sticky_notes: {
         type_id: 1,

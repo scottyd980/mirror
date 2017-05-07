@@ -1,5 +1,6 @@
 import Ember from 'ember';
 import RSVP from 'rsvp';
+import config from '../../../../../../config/environment';
 
 export default Ember.Route.extend({
     session: Ember.inject.service('session'),
@@ -16,6 +17,8 @@ export default Ember.Route.extend({
         controller.set('isCreateNewOrganizationModalShowing', false);
         controller.set('isJoinAnotherOrganizationModalShowing', false);
         controller.set('newOrganizationName', '');
+
+        controller.set('active_billing_types', config.ACTIVE_BILLING_TYPES);
     },
     actions: {
         toggleJoinOwnOrganizationModal() {

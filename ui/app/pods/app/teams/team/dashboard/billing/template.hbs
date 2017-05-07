@@ -9,7 +9,7 @@
       <div class="col-md-4">
         {{#x-card title="Billing Status"}}
           <ul class="icons-list">
-            {{#if (eq model.team.organization.billing_status "active")}}
+            {{#if (contains model.team.organization.billing_status active_billing_types)}}
               <li class="icons-list--active">
                 Active
               </li>
