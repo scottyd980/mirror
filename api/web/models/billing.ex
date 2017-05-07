@@ -10,7 +10,7 @@ defmodule Mirror.Billing do
     end
     
     def build_subscriptions(customer) do
-        # If card is set and frequency is set to an active state (otherwise the customer is not currently paying)
+        # TODO: If card is set and frequency is set to an active state (otherwise the customer is not currently paying)
         {:ok, subscriptions} = Stripe.Subscriptions.all(customer.billing_customer)
         existing_subs = Helpers.atomic_map(subscriptions)
 
@@ -33,8 +33,20 @@ defmodule Mirror.Billing do
     end
 
     defp update_subscription(existing_subscription, customer, team) do
-        # Update subscription
-        Stripe.Subscriptions.change(customer.billing_customer, existing_subscription.id, "basic-yearly")
+        updated_sub = [
+            plan: "basic-monthly"
+        ]
+
+        updated_sub = case in_trial_window?(team) do
+            {true, trial_end} ->
+                updated_sub ++ [trial_end: trial_end]
+            _ ->
+                updated_sub
+        end
+
+        # Making the request with the lower level API for now
+        response = Stripe.make_request_with_key(:post, "customers/#{customer.billing_customer}/subscriptions/#{existing_subscription.id}", Stripe.config_or_env_key, updated_sub)
+        |> Stripe.Util.handle_stripe_response
     end
             
     defp create_subscription(customer, team) do
