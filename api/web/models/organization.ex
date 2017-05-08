@@ -25,8 +25,9 @@ defmodule Mirror.Organization do
   """
   def changeset(struct, params \\ %{}) do
     struct
-    |> cast(params, [:name, :avatar, :uuid, :billing_customer, :default_payment_id])
+    |> cast(params, [:name, :avatar, :uuid, :billing_customer, :default_payment_id, :billing_frequency])
     |> validate_required([:name, :avatar])
+    |> validate_inclusion(:billing_frequency, ["none", "active", "monthly", "yearly"])
   end
 
   def preload_relationships(organization) do

@@ -54,6 +54,7 @@ export default Ember.Route.extend({
             });
         },
         editBillingInformation(card) {
+            // TODO: Allow edit
             console.log(card);
         },
         makeDefaultBillingInformation(card) {
@@ -64,6 +65,17 @@ export default Ember.Route.extend({
                 org.save().then(() => {
                     this.toggleLoadingScreen();
                 }); 
+            });
+        },
+        updateBillingFrequency() {
+            this.toggleLoadingScreen("Updating Billing Frequency...");
+            let organization = this.controller.get('model').organization;
+            let billingFrequency = $(`input[name="billing-freq-${organization.get('id')}"]:checked`).val();
+
+            organization.set('billing_frequency', billingFrequency);
+
+            organization.save().then(() => {
+                this.toggleLoadingScreen();
             });
         }
     }

@@ -61,7 +61,8 @@ defmodule Mirror.OrganizationController do
     organization_params = %{
       name: data.attributes.name, 
       avatar: data.attributes.avatar,
-      default_payment_id: default_payment.id
+      default_payment_id: default_payment.id,
+      billing_frequency: data.attributes.billing_frequency
     }
 
     billing_params = %{
