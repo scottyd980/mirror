@@ -6,6 +6,7 @@ export default Model.extend({
   name: attr('string'),
   avatar: attr('string'),
   billing_status: attr('string'),
+  billing_frequency: attr('string'),
   default_payment: belongsTo('card'),
   teams: hasMany('team'),
   admins: hasMany('user'),

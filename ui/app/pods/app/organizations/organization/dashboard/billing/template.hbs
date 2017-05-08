@@ -22,9 +22,38 @@
     </div>
     <div class="col-md-4">
         {{#x-card title="Billing Frequency"}}
-          None (Trial Only)<br/>
-          Monthly ($6/Month/Team)<br/>
-          Yearly ($60/Year/Team) <span class="muted-text">• 16% off</span>
+          <ul class="toggle-buttons">
+            <li class="three-wide">
+              <div class="radio-button">
+                  <input checked="{{if (eq model.organization.billing_frequency "none") 'checked'}}" type="radio" id={{concat "billing-freq-none-" model.organization.id}} value="none" name="{{concat "billing-freq-" model.organization.id}}" />
+                  <label for={{concat "billing-freq-none-" model.organization.id}} class="radio-list--item">
+                      None
+                      <span>Trial Only</span>
+                  </label>
+              </div>
+            </li>
+            <li class="three-wide">
+              <div class="radio-button">
+                  <input checked="{{if (eq model.organization.billing_frequency "monthly") 'checked'}}" type="radio" id={{concat "billing-freq-month-" model.organization.id}} value="monthly" name="{{concat "billing-freq-" model.organization.id}}" />
+                  <label for={{concat "billing-freq-month-" model.organization.id}} class="radio-list--item">
+                      Monthly
+                      <span>$5 / Team</span>
+                  </label>
+              </div>
+            </li>
+            <li class="three-wide">
+              <div class="radio-button">
+                  <input checked="{{if (eq model.organization.billing_frequency "yearly") 'checked'}}" type="radio" id={{concat "billing-freq-year-" model.organization.id}} value="yearly" name="{{concat "billing-freq-" model.organization.id}}" />
+                  <label for={{concat "billing-freq-year-" model.organization.id}} class="radio-list--item">
+                      Yearly
+                      <span>$60 / Team</span>
+                  </label>
+              </div>
+            </li>
+          </ul>
+          <div class="card-footer">
+              <a {{action "processCreditCard"}} class="btn btn-success">Update Billing Frequency</a>
+          </div>
         {{/x-card}}
         {{x-billing-card 
           title="Add New Payment Method"
