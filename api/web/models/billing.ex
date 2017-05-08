@@ -10,13 +10,19 @@ defmodule Mirror.Billing do
     end
     
     def build_subscriptions(customer) do
-        # TODO: If card is set and frequency is set to an active state (otherwise the customer is not currently paying)
-        {:ok, subscriptions} = Stripe.Subscriptions.all(customer.billing_customer)
-        existing_subs = Helpers.atomic_map(subscriptions)
+        # TODO: If card is set and frequency is set to an active state (otherwise the customer is not currently paying - remove all subscriptions)
+        Logger.warn "#{customer.default_payment_id}"
 
-        Enum.map(customer.teams, fn(team) ->
-            build_subscription(customer, team, existing_subs)
-        end)
+        case get_billing_frequency(customer) do
+            nil -> cancel_subscriptions(customer)
+            _ ->
+                {:ok, subscriptions} = Stripe.Subscriptions.all(customer.billing_customer)
+                existing_subs = Helpers.atomic_map(subscriptions)
+
+                Enum.map(customer.teams, fn(team) ->
+                    build_subscription(customer, team, existing_subs)
+                end)
+        end 
     end
 
     defp build_subscription(customer, team, existing_subs) do
@@ -34,7 +40,7 @@ defmodule Mirror.Billing do
 
     defp update_subscription(existing_subscription, customer, team) do
         updated_sub = [
-            plan: "basic-monthly"
+            plan: get_billing_frequency(customer)
         ]
 
         updated_sub = case in_trial_window?(team) do
@@ -51,7 +57,7 @@ defmodule Mirror.Billing do
             
     defp create_subscription(customer, team) do
         new_sub = [
-            plan: "basic-monthly",
+            plan: get_billing_frequency(customer),
             quantity: 1,
             metadata: %{
                 team: team.id
@@ -67,6 +73,10 @@ defmodule Mirror.Billing do
         end
                 
         Stripe.Subscriptions.create(customer.billing_customer, new_sub)
+    end
+
+    defp cancel_subscriptions(customer) do
+        Stripe.Subscriptions.cancel_all(customer.billing_customer, []);
     end
 
     defp in_trial_window?(team) do
@@ -107,6 +117,14 @@ defmodule Mirror.Billing do
                 subscription.status == "trialing" || subscription.status == "active"
             true ->
                 false
+        end
+    end
+
+    defp get_billing_frequency(customer) do
+        case customer.billing_frequency do
+            "none" -> nil
+            "monthly" -> "basic-monthly"
+            "yearly" -> "basic-yearly"
         end
     end
 end

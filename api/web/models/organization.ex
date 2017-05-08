@@ -66,7 +66,7 @@ defmodule Mirror.Organization do
         |> Organization.preload_relationships()
         
         Billing.update_default_payment(updated_organization.billing_customer, billing_params.default_payment)
-        Billing.build_subscriptions(organization)
+        Billing.build_subscriptions(updated_organization)
         
         {:ok, updated_organization}
       {:error, changeset} ->
