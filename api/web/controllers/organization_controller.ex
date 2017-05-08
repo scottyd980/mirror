@@ -56,7 +56,10 @@ defmodule Mirror.OrganizationController do
     data = Helpers.atomic_map(data)
     organization = Organization.get(data.id)
 
-    default_payment = Repo.get_by!(Card, card_id: data.relationships.default_payment.data.id)
+    default_payment = case data.relationships.default_payment.data do
+      nil -> %{id: nil}
+      _ -> Repo.get_by!(Card, card_id: data.relationships.default_payment.data.id)
+    end
 
     organization_params = %{
       name: data.attributes.name, 
@@ -64,9 +67,14 @@ defmodule Mirror.OrganizationController do
       default_payment_id: default_payment.id,
       billing_frequency: data.attributes.billing_frequency
     }
+    
+    billing_default_payment = case data.relationships.default_payment.data do
+      nil -> nil
+      _ -> data.relationships.default_payment.data.id
+    end
 
     billing_params = %{
-      default_payment: data.relationships.default_payment.data.id
+      default_payment: billing_default_payment
     }
 
     case UserHelper.user_is_organization_admin?(current_user, organization) do
