@@ -3,8 +3,7 @@
         <div class="info">
             <h4>{{team.name}}</h4>
             <p class="expiration">
-                {{fa-icon "users" fixedWidth=true}} 
-                {{pluralize-word team.members.length "member"}}
+                <span class="muted-text">{{pluralize-word team.members.length "member"}}</span>
             </p>
         </div>
         <div class="actions">

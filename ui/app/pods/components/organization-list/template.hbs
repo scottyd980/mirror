@@ -3,13 +3,12 @@
         <div class="info">
             <h4>{{organization.name}}</h4>
             <p class="expiration">
-                {{fa-icon "users" fixedWidth=true}} 
-                {{pluralize-word organization.teams.length "team"}} • 
                 {{#if (contains organization.billing_status active_billing_types)}}
                     <span class="success-text">Billing Active</span>
                 {{else}}
                     <span class="danger-text">Billing Inactive</span>
                 {{/if}}
+                 • <span class="muted-text">{{pluralize-word organization.teams.length "team"}}</span> 
             </p>
         </div>
         <div class="actions">
