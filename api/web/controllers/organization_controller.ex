@@ -1,7 +1,7 @@
 defmodule Mirror.OrganizationController do
   use Mirror.Web, :controller
 
-  alias Mirror.{Organization, Card, Billing, UserHelper, Helpers}
+  alias Mirror.{Organization, Card, Billing, UserHelper, OrgHelper, Helpers}
 
   plug Guardian.Plug.EnsureAuthenticated, handler: Mirror.AuthErrorHandler
 
@@ -56,28 +56,28 @@ defmodule Mirror.OrganizationController do
     data = Helpers.atomic_map(data)
     organization = Organization.get(data.id)
 
-    default_payment = case data.relationships.default_payment.data do
+    card_id = case data.relationships.default_payment.data do
+      nil -> nil
+      data -> data.id
+    end
+
+    card = case card_id do
       nil -> %{id: nil}
-      _ -> Repo.get_by!(Card, card_id: data.relationships.default_payment.data.id)
+      _ -> Repo.get_by!(Card, card_id: card_id)
     end
 
     organization_params = %{
       name: data.attributes.name, 
       avatar: data.attributes.avatar,
-      default_payment_id: default_payment.id,
-      billing_frequency: data.attributes.billing_frequency
+      billing_frequency: data.attributes.billing_frequency || "none",
+      default_payment_id: card.id
     }
-    
-    billing_default_payment = case data.relationships.default_payment.data do
-      nil -> nil
-      _ -> data.relationships.default_payment.data.id
-    end
 
     billing_params = %{
-      default_payment: billing_default_payment
+      default_payment: card_id
     }
 
-    case UserHelper.user_is_organization_admin?(current_user, organization) do
+    case UserHelper.user_is_organization_admin?(current_user, organization) && OrgHelper.card_on_file?(organization, card_id) do
       true ->
         case Organization.update(organization, organization_params, billing_params) do
           {:ok, updated_org} ->

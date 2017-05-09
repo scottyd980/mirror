@@ -1,7 +1,7 @@
 defmodule Mirror.Organization do
   use Mirror.Web, :model
 
-  alias Mirror.{Repo, Organization, OrganizationUser, OrganizationAdmin, HashHelper, Billing}
+  alias Mirror.{Repo, Organization, OrganizationUser, OrganizationAdmin, HashHelper, Billing, Card}
 
   schema "organizations" do
     field :name, :string
