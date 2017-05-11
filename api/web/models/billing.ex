@@ -10,19 +10,21 @@ defmodule Mirror.Billing do
     end
     
     def build_subscriptions(customer) do
-        # TODO: If card is set and frequency is set to an active state (otherwise the customer is not currently paying - remove all subscriptions)
-        Logger.warn "#{customer.default_payment_id}"
-
-        case get_billing_frequency(customer) do
+        case customer.default_payment_id do
             nil -> cancel_subscriptions(customer)
             _ ->
-                {:ok, subscriptions} = Stripe.Subscriptions.all(customer.billing_customer)
-                existing_subs = Helpers.atomic_map(subscriptions)
+                case get_billing_frequency(customer) do
+                    nil -> cancel_subscriptions(customer)
+                    "none" -> cancel_subscriptions(customer)
+                    _ ->
+                        {:ok, subscriptions} = Stripe.Subscriptions.all(customer.billing_customer)
+                        existing_subs = Helpers.atomic_map(subscriptions)
 
-                Enum.map(customer.teams, fn(team) ->
-                    build_subscription(customer, team, existing_subs)
-                end)
-        end 
+                        Enum.map(customer.teams, fn(team) ->
+                            build_subscription(customer, team, existing_subs)
+                        end)
+                end 
+        end
     end
 
     defp build_subscription(customer, team, existing_subs) do
@@ -76,7 +78,7 @@ defmodule Mirror.Billing do
     end
 
     defp cancel_subscriptions(customer) do
-        Stripe.Subscriptions.cancel_all(customer.billing_customer, []);
+        Stripe.Subscriptions.cancel_all(customer.billing_customer, [at_period_end: true]);
     end
 
     defp in_trial_window?(team) do

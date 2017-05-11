@@ -27,7 +27,7 @@ defmodule Mirror.Organization do
     struct
     |> cast(params, [:name, :avatar, :uuid, :billing_customer, :default_payment_id, :billing_frequency])
     |> validate_required([:name, :avatar])
-    |> validate_inclusion(:billing_frequency, ["none", "active", "monthly", "yearly"])
+    |> validate_inclusion(:billing_frequency, ["none", "monthly", "yearly"])
   end
 
   def preload_relationships(organization) do
