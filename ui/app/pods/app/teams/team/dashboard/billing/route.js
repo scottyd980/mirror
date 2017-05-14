@@ -8,8 +8,13 @@ export default Ember.Route.extend({
         var _this = this;
         return RSVP.hash({
             team: _this.modelFor('app.teams.team'),
-            user_organizations: this.get('session.currentUser').get('organizations')
+            user_organizations: this.get('session.currentUser').get('organizations'),
+            currentUser: _this.get('session').get('currentUser')
         });
+    },
+    toggleLoadingScreen(message) {
+        this.controller.set('loadingMessage', message);
+        this.controller.toggleProperty('currentlyLoading');
     },
     setupController(controller, model) {
         this._super(...arguments);
@@ -61,8 +66,10 @@ export default Ember.Route.extend({
                 });
 
                 this.get('currentModel').team.set('organization', team_organization);
+                this.send('toggleJoinOwnOrganizationModal');
+                this.toggleLoadingScreen('Joining Organization...');
                 this.get('currentModel').team.save().then(() => {
-                    this.send('toggleJoinOwnOrganizationModal');  
+                    this.toggleLoadingScreen();
                 });
             
             } else {
