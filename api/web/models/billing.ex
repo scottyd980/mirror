@@ -10,6 +10,8 @@ defmodule Mirror.Billing do
     end
     
     def build_subscriptions(customer) do
+        customer = customer |> Organization.preload_relationships
+
         case customer.default_payment_id do
             nil -> cancel_subscriptions(customer)
             _ ->

@@ -1,7 +1,7 @@
 defmodule Mirror.TeamController do
   use Mirror.Web, :controller
 
-  alias Mirror.{Team, Organization, UserTeam, TeamAdmin, MemberDelegate, UserHelper, HashHelper, Retrospective, Mailer, Email}
+  alias Mirror.{Team, Organization, UserTeam, TeamAdmin, MemberDelegate, UserHelper, HashHelper, Retrospective, Mailer, Email, Billing}
   alias Ecto.{Multi}
 
   import Logger
@@ -81,21 +81,35 @@ defmodule Mirror.TeamController do
 
     organization_id = body_params["data"]["relationships"]["organization"]["data"]["id"];
 
+    # TODO: Need to make sure this is an org admin
     organization = Repo.get_by!(Organization, uuid: organization_id)
 
     changeset = Team.changeset(team, %{organization_id: organization.id})
 
     # TODO: Need to make sure this is a team admin making changes
-    case Repo.update(changeset) do
-      {:ok, team} ->
-        team = team
-        |> Team.preload_relationships
-        
+    case update_team(changeset) do
+      {:ok, {:ok, team}} ->
+        Logger.warn "#{inspect team}"
         render(conn, "show.json", team: team)
       {:error, changeset} ->
         conn
         |> put_status(:unprocessable_entity)
         |> render(Mirror.ChangesetView, "error.json", changeset: changeset)
+    end
+  end
+
+  def update_team(changeset) do
+    Repo.transaction fn ->
+      with {:ok, team}      <- Repo.update(changeset),
+           team_with_assocs <- team |> Team.preload_relationships,
+           subscriptions    <- Billing.build_subscriptions(team_with_assocs.organization)
+      do
+        {:ok, team |> Team.preload_relationships}
+      else
+        {:error, changeset} ->
+          Repo.rollback changeset
+          {:error, changeset}
+      end
     end
   end
 
