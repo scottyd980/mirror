@@ -57,7 +57,11 @@ Router.map(function() {
 
       this.route('organization', { path: '/:id'}, function() {
         this.route('dashboard', function() {
-          this.route('teams');
+          this.route('teams', function() {
+            this.route('team', function() {
+              this.route('dashboard', function() {});
+            });
+          });
           this.route('billing');
           this.route('members');
         });
