@@ -16,14 +16,23 @@ export default Ember.Route.extend({
         let _this = this,
             feedback = model.feedback;
 
-        let positiveFeedback = feedback.filter((fb) => {
+        let positiveFeedback = this._shuffle(feedback.filter((fb) => {
             return fb.get('type') === "positive";
-        });
+        }));
 
         controller.set('positive_feedback', positiveFeedback);
     },
-    
-    actions: {
-        
+    _shuffle(array) {
+        var currentIndex = array.length, temporaryValue, randomIndex;
+        while (0 !== currentIndex) {
+            randomIndex = Math.floor(Math.random() * currentIndex);
+            currentIndex -= 1;
+            
+            temporaryValue = array[currentIndex];
+            array[currentIndex] = array[randomIndex];
+            array[randomIndex] = temporaryValue;
+        }
+
+        return array;
     }
 });
