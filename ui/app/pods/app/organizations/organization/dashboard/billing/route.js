@@ -50,6 +50,7 @@ export default Ember.Route.extend({
         deleteBillingInformation(card) {
             this.toggleLoadingScreen("Removing Payment Method...");
             card.destroyRecord().then(() => {
+                this.send('invalidateApplicationModel');
                 this.toggleLoadingScreen();
             });
         },

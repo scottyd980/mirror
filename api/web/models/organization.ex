@@ -74,6 +74,44 @@ defmodule Mirror.Organization do
     end
   end
 
+  def set_default_payment(organization) do
+    organization = organization
+    |> Organization.preload_relationships()
+
+    case length(organization.cards) do
+      0 -> {:error, "The organization has no cards on file."}
+      1 -> {:ok, nil}
+      _ ->
+        default_options = Enum.filter(organization.cards, fn(card) ->
+          !is_default_payment?(organization, card)
+        end)
+        set_default_payment(hd(default_options), organization)
+    end
+  end
+
+  def set_default_payment(card, organization) do
+    Repo.transaction fn ->
+      with {:ok, updated_org} <- insert_default_payment(card, organization),
+           {:ok, updated_cust} <- Billing.update_default_payment(organization.billing_customer, card.card_id)do
+             updated_org
+             |> Organization.preload_relationships()
+      else
+        {:error, changeset} ->
+          Repo.rollback changeset
+          {:error, changeset}
+      end
+    end
+  end
+
+  def is_default_payment?(organization, card) do
+    organization.default_payment_id == card.id
+  end
+
+  defp insert_default_payment(card, organization) do
+    Organization.changeset(organization, %{default_payment_id: card.id})
+    |> Repo.update
+  end
+
   defp insert_organization(params) do
     %Organization{}
     |> Organization.changeset(%{name: params.attributes.name, isAnonymous: true, avatar: "default.png"})
