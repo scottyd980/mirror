@@ -64,26 +64,6 @@ defmodule Mirror.Card do
     Billing.add_payment(card_params.customer, card_params.token_id)
   end
 
-  # TODO - Re-evaluate, do these belong here?
-  def make_default(card, organization) do
-    Repo.transaction fn ->
-      with {:ok, updated_org} <- insert_default_card(card, organization),
-           {:ok, updated_cust} <- Billing.update_default_payment(organization.billing_customer, card.card_id)do
-             updated_org
-             |> Organization.preload_relationships()
-      else
-        {:error, changeset} ->
-          Repo.rollback changeset
-          {:error, changeset}
-      end
-    end
-  end
-
-  defp insert_default_card(card, organization) do
-    Organization.changeset(organization, %{default_payment_id: card.id})
-    |> Repo.update
-  end
-
   # Update
   def update(card) do
     
@@ -91,11 +71,23 @@ defmodule Mirror.Card do
 
   # Delete
   def delete(card) do
+      case Organization.is_default_payment?(card.organization, card) do
+          true ->
+            case Organization.set_default_payment(card.organization) do
+                {:ok, new_default} -> remove_card(card)
+                {:error, changeset} -> {:error, changeset}
+            end
+          _ ->
+            remove_card(card)
+      end
+  end
+
+  defp remove_card(card) do
     Repo.transaction fn ->
       with removed_card <- delete_card(card),
-            {:ok, removed_customer_card} <- delete_customer_card(card)
+           {:ok, removed_customer_card} <- delete_customer_card(card)
       do
-        {:ok, removed_card}
+            {:ok, removed_card}
       else
         {:error, changeset} ->
           Repo.rollback changeset

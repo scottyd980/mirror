@@ -59,7 +59,7 @@ defmodule Mirror.CardController do
           {:ok, card} ->
             case make_default do
               true ->
-                case Card.make_default(card, organization) do
+                case Organization.set_default_payment(card, organization) do
                   {:ok, updated_org} ->
                     conn
                     |> put_status(:created)

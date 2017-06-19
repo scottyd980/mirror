@@ -64,7 +64,6 @@ export default Ember.Route.extend({
                     }
                 }));
             }).catch((error) => {
-                console.log(error);
                 _this.get('notificationCenter').error({
                     title: config.ERROR_MESSAGES.generic,
                     message: "We experienced an unexpected error. Please try again."
