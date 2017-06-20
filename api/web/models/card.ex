@@ -41,7 +41,7 @@ defmodule Mirror.Card do
   # Create
   def create(card_params) do
     Repo.transaction fn ->
-      with {:ok, card} <- insert_card(card_params),
+      with {:ok, card}      <- insert_card(card_params),
            {:ok, cust_card} <- insert_customer_card(card_params) do
              card
              |> Card.preload_relationships()
@@ -74,8 +74,9 @@ defmodule Mirror.Card do
       case Organization.is_default_payment?(card.organization, card) do
           true ->
             case Organization.set_default_payment(card.organization) do
-                {:ok, new_default} -> remove_card(card)
-                {:error, changeset} -> {:error, changeset}
+                {:ok, nil} ->           remove_card(card, :default)
+                {:ok, new_default} ->   remove_card(card)
+                {:error, changeset} ->  {:error, changeset}
             end
           _ ->
             remove_card(card)
@@ -84,7 +85,7 @@ defmodule Mirror.Card do
 
   defp remove_card(card) do
     Repo.transaction fn ->
-      with removed_card <- delete_card(card),
+      with removed_card                 <- delete_card(card),
            {:ok, removed_customer_card} <- delete_customer_card(card)
       do
             {:ok, removed_card}
@@ -93,6 +94,21 @@ defmodule Mirror.Card do
           Repo.rollback changeset
           {:error, changeset}
       end
+    end
+  end
+
+  defp remove_card(card, :default) do
+    Repo.transaction fn ->
+        with {:ok, updated_org}             <- Organization.remove_default_payment(card.organization),
+             removed_card                   <- delete_card(card),
+             {:ok, removed_customer_card}   <- delete_customer_card(card)
+        do
+            {:ok, removed_card}
+        else
+            {:error, changeset} ->
+                Repo.rollback changeset
+                {:error, changeset}
+        end
     end
   end
 

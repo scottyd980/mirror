@@ -65,7 +65,13 @@ defmodule Mirror.Organization do
         updated_organization = updated_organization
         |> Organization.preload_relationships()
         
-        Billing.update_default_payment(updated_organization.billing_customer, billing_params.default_payment)
+        case billing_params do
+          %{default_payment: default_payment} ->
+            Billing.update_default_payment(updated_organization.billing_customer, billing_params.default_payment)
+          _ ->
+            nil
+        end
+        
         Billing.build_subscriptions(updated_organization)
         
         {:ok, updated_organization}
@@ -101,6 +107,13 @@ defmodule Mirror.Organization do
           {:error, changeset}
       end
     end
+  end
+
+  def remove_default_payment(organization) do
+    org_params = %{default_payment_id: nil}
+    billing_params = %{}
+
+    Organization.update(organization, org_params, billing_params)
   end
 
   def is_default_payment?(organization, card) do
