@@ -61,6 +61,8 @@ defmodule Mirror.CardController do
               true ->
                 case Organization.set_default_payment(card, organization) do
                   {:ok, updated_org} ->
+                    Billing.build_subscriptions(updated_org) 
+                    
                     conn
                     |> put_status(:created)
                     |> render("show.json", card: card)
