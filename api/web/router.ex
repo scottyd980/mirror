@@ -38,7 +38,7 @@ defmodule Mirror.Router do
     resources "/feedbacks", FeedbackController, only: [:create, :show, :update]
     resources "/users", UserController, only: [:show]
     resources "/organizations", OrganizationController, only: [:index, :create, :show, :update]
-    resources "/cards", CardController, only: [:index, :create, :show, :delete, :update]
+    resources "/cards", CardController, only: [:index, :create, :show, :delete]
     
   end
 end
