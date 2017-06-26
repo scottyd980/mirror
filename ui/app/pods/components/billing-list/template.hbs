@@ -16,12 +16,6 @@
                     {{/tooltip-on-element}}
                 </a>
             {{/unless}}
-            <a {{action onEdit card}} class="btn btn-info btn-outline btn-xs">
-                {{fa-icon "pencil" fixedWidth=true}}
-                {{#tooltip-on-element side="bottom"}}
-                    Edit
-                {{/tooltip-on-element}}
-            </a>
             <a {{action onConfirm "Are you sure you want to remove this payment method?" (action onDelete card)}} class="btn btn-danger btn-outline btn-xs">
                 {{fa-icon "times" fixedWidth=true}}
                 {{#tooltip-on-element side="bottom"}}
