@@ -9,6 +9,10 @@ defmodule Mirror.TeamView do
     %{data: render_one(team, Mirror.TeamView, "team.json")}
   end
 
+  def render("delete.json", %{team: team}) do
+    %{meta: %{}}
+  end
+
   def render("team.json", %{team: team}) do
     %{
     	"type": "team",

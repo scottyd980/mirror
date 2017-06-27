@@ -17,9 +17,23 @@ export default Ember.Route.extend({
 
         controller.set('isAdmin', models.organization.get('admins').includes(models.currentUser));
     },
+    toggleLoadingScreen(message) {
+        this.controller.set('loadingMessage', message);
+        this.controller.toggleProperty('currentlyLoading');
+    },
     actions: {
         viewTeam(team) {
             this.transitionTo('app.teams.team.dashboard.retrospectives', team);
+        },
+        toggleLoadingScreen(message) {
+            this.toggleLoadingScreen(message);
+        },
+        deleteTeam(team) {
+            this.toggleLoadingScreen("Deleting Team...");
+            team.destroyRecord().then(() => {
+                //this.send('invalidateApplicationModel');
+                this.toggleLoadingScreen();
+            });
         }
     }
 });
