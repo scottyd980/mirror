@@ -6,6 +6,7 @@
                     {{team-list 
                         teams=model.teams
                         viewTeam=(route-action "viewTeam")
+                        deleteTeam=(route-action "deleteTeam")
                     }}
                 {{else}}
                     There are no teams associated with your organization.
@@ -20,3 +21,9 @@
         </div>
     </div>
 </div>
+
+{{#if currentlyLoading}}
+  <div class="loading-screen">
+    {{x-loader message=loadingMessage}}
+  </div>
+{{/if}}

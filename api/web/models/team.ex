@@ -11,8 +11,8 @@ defmodule Mirror.Team do
     field :avatar, :string
     field :uuid, :string
     belongs_to :organization, Mirror.Organization
-    many_to_many :admins, Mirror.User, join_through: Mirror.TeamAdmin
-    many_to_many :members, Mirror.User, join_through: Mirror.UserTeam
+    many_to_many :admins, Mirror.User, join_through: Mirror.TeamAdmin, on_delete: :delete_all
+    many_to_many :members, Mirror.User, join_through: Mirror.UserTeam, on_delete: :delete_all
 
     timestamps()
   end

@@ -20,7 +20,6 @@ defmodule Mirror.TeamController do
   end
 
   def create(conn, %{"data" => %{"attributes" => attributes, "relationships" => relationships, "type" => "teams"}}) do
-
     team_members = [Guardian.Plug.current_resource(conn)]
     team_admins = [Guardian.Plug.current_resource(conn)]
     team_member_delegates = attributes["member-delegates"]
@@ -113,15 +112,42 @@ defmodule Mirror.TeamController do
     end
   end
 
-  # TODO: Implement
+   # TODO: Need to finish delete
   def delete(conn, %{"id" => id}) do
     team = Repo.get_by!(Team, uuid: id)
+    |> Team.preload_relationships()
 
-    # Here we use delete! (with a bang) because we expect
-    # it to always work (and if it does not, it will raise).
-    Repo.delete!(team)
+    organization_id = team.organization.id
 
-    send_resp(conn, :no_content, "")
+    # TODO: Need to make sure this is an org admin
+    organization = Repo.get!(Organization, organization_id)
+
+    changeset = Team.changeset(team, %{organization_id: organization.id})
+
+    # TODO: Need to make sure this is a team admin making changes
+    case delete_team(team, organization) do
+      {:ok, team} ->
+        Logger.warn "#{inspect team}"
+        render(conn, "delete.json", team: team)
+      {:error, changeset} ->
+        conn
+        |> put_status(:unprocessable_entity)
+        |> render(Mirror.ChangesetView, "error.json", changeset: changeset)
+    end
+  end
+
+  defp delete_team(team, organization) do
+    Repo.transaction fn ->
+      with {:ok, team}      <- Repo.delete(team),
+           subscriptions    <- Billing.build_subscriptions(organization)
+      do
+        {:ok, team}
+      else
+        {:error, changeset} ->
+          Repo.rollback changeset
+          {:error, changeset}
+      end
+    end
   end
 
   defp create_team(params) do

@@ -54,10 +54,6 @@ export default Ember.Route.extend({
                 this.toggleLoadingScreen();
             });
         },
-        editBillingInformation(card) {
-            // TODO: Allow edit
-            console.log(card);
-        },
         makeDefaultBillingInformation(card) {
             this.toggleLoadingScreen("Updating Payment Method...");
             var organization = card.get('organization');
