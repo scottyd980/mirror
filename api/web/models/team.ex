@@ -11,8 +11,10 @@ defmodule Mirror.Team do
     field :avatar, :string
     field :uuid, :string
     belongs_to :organization, Mirror.Organization
-    many_to_many :admins, Mirror.User, join_through: Mirror.TeamAdmin, on_delete: :delete_all
-    many_to_many :members, Mirror.User, join_through: Mirror.UserTeam, on_delete: :delete_all
+    many_to_many :admins, Mirror.User, join_through: Mirror.TeamAdmin
+    many_to_many :members, Mirror.User, join_through: Mirror.UserTeam
+    has_many :member_delegates, Mirror.MemberDelegate
+    has_many :retrospectives, Mirror.Retrospective
 
     timestamps()
   end
@@ -23,14 +25,12 @@ defmodule Mirror.Team do
   def changeset(struct, params \\ %{}) do
     struct
     |> cast(params, [:name, :isAnonymous, :avatar, :uuid, :organization_id])
-    # |> cast_assoc(:admin)
     |> validate_required([:name, :isAnonymous, :avatar])
-    # |> assoc_constraint(:admin)
   end
 
   def preload_relationships(team) do
     team
-    |> Repo.preload([:members, :admins, :organization])
+    |> Repo.preload([:members, :admins, :organization], force: true)
   end
 
   def check_retrospective_in_progress(team) do

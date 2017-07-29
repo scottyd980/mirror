@@ -10,22 +10,50 @@ defmodule Mirror.Billing do
     end
     
     def build_subscriptions(customer) do
-        customer = customer |> Organization.preload_relationships
-
-        case customer.default_payment_id do
-            nil -> cancel_subscriptions(customer)
+        case is_nil(customer) do
+            true -> nil
             _ ->
-                case get_billing_frequency(customer) do
+                customer = customer |> Organization.preload_relationships
+
+                case customer.default_payment_id do
                     nil -> cancel_subscriptions(customer)
-                    "none" -> cancel_subscriptions(customer)
+                    _ ->
+                        case get_billing_frequency(customer) do
+                            nil -> cancel_subscriptions(customer)
+                            "none" -> cancel_subscriptions(customer)
+                            _ ->
+                                {:ok, subscriptions} = Stripe.Subscriptions.all(customer.billing_customer)
+                                existing_subs = Helpers.atomic_map(subscriptions)
+
+                                Enum.map(customer.teams, fn(team) ->
+                                    build_subscription(customer, team, existing_subs)
+                                end)
+                        end 
+                end
+        end
+    end
+
+    def remove_subscription(customer, team) do
+        case is_nil(customer) do
+            true -> nil
+            _ ->
+                case team.organization_id == customer.id do
+                    true -> nil
                     _ ->
                         {:ok, subscriptions} = Stripe.Subscriptions.all(customer.billing_customer)
                         existing_subs = Helpers.atomic_map(subscriptions)
 
-                        Enum.map(customer.teams, fn(team) ->
-                            build_subscription(customer, team, existing_subs)
+                        existing_sub = Enum.find(existing_subs, fn(sub) ->
+                            String.to_integer(sub.metadata.team) == team.id
                         end)
-                end 
+
+                        case existing_sub do
+                            %{} = subscription ->
+                                cancel_subscription(customer, subscription)
+                            _ ->
+                                nil
+                        end
+                end
         end
     end
 
@@ -77,6 +105,10 @@ defmodule Mirror.Billing do
         end
                 
         Stripe.Subscriptions.create(customer.billing_customer, new_sub)
+    end
+
+    defp cancel_subscription(customer, subscription) do
+        Stripe.Subscriptions.cancel(customer.billing_customer, subscription.id)
     end
 
     defp cancel_subscriptions(customer) do

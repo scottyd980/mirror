@@ -28,9 +28,10 @@ export default Ember.Route.extend({
         toggleLoadingScreen(message) {
             this.toggleLoadingScreen(message);
         },
-        deleteTeam(team) {
-            this.toggleLoadingScreen("Deleting Team...");
-            team.destroyRecord().then(() => {
+        removeTeam(team) {
+            this.toggleLoadingScreen("Removing Team...");
+            team.set('organization', null);
+            team.save().then(() => {
                 //this.send('invalidateApplicationModel');
                 this.toggleLoadingScreen();
             });

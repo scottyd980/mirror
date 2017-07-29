@@ -11,8 +11,8 @@ defmodule Mirror.Organization do
     field :billing_status, :string, default: "inactive"
     field :billing_frequency, :string, default: "none"
 
-    has_many :teams, Mirror.Team, on_delete: :delete_all
-    has_many :cards, Mirror.Card, on_delete: :delete_all
+    has_many :teams, Mirror.Team
+    has_many :cards, Mirror.Card
     belongs_to :default_payment, Mirror.Card
     many_to_many :admins, Mirror.User, join_through: Mirror.OrganizationAdmin
     many_to_many :members, Mirror.User, join_through: Mirror.OrganizationUser
