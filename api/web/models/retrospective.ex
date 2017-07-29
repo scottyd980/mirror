@@ -15,7 +15,7 @@ defmodule Mirror.Retrospective do
     belongs_to :team, Team
     belongs_to :moderator, User
     belongs_to :type, RetrospectiveType
-    many_to_many :participants, User, join_through: RetrospectiveUser, on_delete: :delete_all
+    many_to_many :participants, User, join_through: RetrospectiveUser
 
     timestamps()
   end

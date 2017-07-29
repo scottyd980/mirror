@@ -78,17 +78,22 @@ defmodule Mirror.TeamController do
     team = Repo.get_by!(Team, uuid: id)
     |> Team.preload_relationships()
 
+    current_org = team.organization
+
     organization_id = body_params["data"]["relationships"]["organization"]["data"]["id"];
 
-    # TODO: Need to make sure this is an org admin
-    organization = Repo.get_by!(Organization, uuid: organization_id)
+    # TODO: Need to make sure this is an org admin if the org is changing
+    changeset = case is_nil(organization_id) do
+      true ->
+        Team.changeset(team, %{organization_id: nil, organization: nil})
+      _ ->
+        organization = Repo.get_by!(Organization, uuid: organization_id)
+        Team.changeset(team, %{organization_id: organization.id})
+    end
 
-    changeset = Team.changeset(team, %{organization_id: organization.id})
-
-    # TODO: Need to make sure this is a team admin making changes
-    case update_team(changeset) do
+    # TODO: Need to make sure this is a team admin making changes if it's not an org change (org admin does not have to be a team admin)
+    case update_team(changeset, current_org) do
       {:ok, {:ok, team}} ->
-        Logger.warn "#{inspect team}"
         render(conn, "show.json", team: team)
       {:error, changeset} ->
         conn
@@ -97,13 +102,14 @@ defmodule Mirror.TeamController do
     end
   end
 
-  def update_team(changeset) do
+  def update_team(changeset, current_org) do
     Repo.transaction fn ->
       with {:ok, team}      <- Repo.update(changeset),
            team_with_assocs <- team |> Team.preload_relationships,
-           subscriptions    <- Billing.build_subscriptions(team_with_assocs.organization)
+           subscriptions    <- Billing.build_subscriptions(team_with_assocs.organization),
+           removed_sub      <- Billing.remove_subscription(current_org, team_with_assocs)
       do
-        {:ok, team |> Team.preload_relationships}
+        {:ok, team_with_assocs}
       else
         {:error, changeset} ->
           Repo.rollback changeset
