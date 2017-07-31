@@ -20,7 +20,8 @@ export default Ember.Route.extend({
             this.toggleLoadingScreen("Deleting Team...");
             team.destroyRecord().then(() => {
                 this.toggleLoadingScreen();
-                this.transitionTo('app.dashboard');
+                this.send('invalidateApplicationModel');
+                this.transitionTo('app');
             });
         }
     }

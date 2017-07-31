@@ -34,10 +34,14 @@ defmodule Mirror.Billing do
     end
 
     def remove_subscription(customer, team) do
+        remove_subscription(customer, team, false)
+    end
+
+    def remove_subscription(customer, team, force_remove) do
         case is_nil(customer) do
             true -> nil
             _ ->
-                case team.organization_id == customer.id do
+                case (team.organization_id == customer.id) && !force_remove do
                     true -> nil
                     _ ->
                         {:ok, subscriptions} = Stripe.Subscriptions.all(customer.billing_customer)
