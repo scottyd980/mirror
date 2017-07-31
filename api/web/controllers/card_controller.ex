@@ -51,7 +51,10 @@ defmodule Mirror.CardController do
       customer: organization.billing_customer
     }
     
-    make_default = true
+    make_default = case is_nil(organization.default_payment_id) do
+      true -> true
+      _ -> false
+    end
 
     case UserHelper.user_is_organization_admin?(current_user, organization) do
       true ->
