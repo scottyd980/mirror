@@ -113,7 +113,7 @@ export default Ember.Route.extend({
           // Can't delete last remaining admin
           _this.get('notificationCenter').error({
             title: config.ERROR_MESSAGES.generic,
-            message: "It looks like you're currently the only admin on the team. In order to leave the team, you must assign another admin."
+            message: "It looks like you're currently the only admin on the team. In order to leave the team, you must assign another admin. If you would like to delete the team instead, please go to the team's preferences."
           });
         } else {
           _this.get('notificationCenter').error({

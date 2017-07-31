@@ -1,9 +1,21 @@
 <div class="container">
   <div class="row">
-    <div class="col-md-12">
+    <div class="col-md-8">
       {{#x-card title="Preferences"}}
         Retrospective
       {{/x-card}}
     </div>
+    <div class="col-md-4">
+      {{#x-card title="Delete Team"}}
+        <p>This will delete the team. This action cannot be undone - please carefully consider this action before you delete the team.</p>
+        <a onclick={{route-action "confirmAction" "Are you sure you want to delete this team? This action cannot be undone." (route-action "deleteTeam" model.team)}} class="btn btn-danger btn-block">Delete Team</a>
+      {{/x-card}}
+    </div>
   </div>
 </div>
+
+{{#if currentlyLoading}}
+  <div class="loading-screen">
+    {{x-loader message=loadingMessage}}
+  </div>
+{{/if}}
