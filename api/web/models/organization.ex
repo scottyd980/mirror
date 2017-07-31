@@ -1,6 +1,8 @@
 defmodule Mirror.Organization do
   use Mirror.Web, :model
 
+  require Logger
+
   alias Mirror.{Repo, Organization, OrganizationUser, OrganizationAdmin, HashHelper, Billing, Card}
 
   schema "organizations" do
@@ -25,7 +27,7 @@ defmodule Mirror.Organization do
   """
   def changeset(struct, params \\ %{}) do
     struct
-    |> cast(params, [:name, :avatar, :uuid, :billing_customer, :default_payment_id, :billing_frequency])
+    |> cast(params, [:name, :avatar, :uuid, :billing_customer, :billing_status, :default_payment_id, :billing_frequency])
     |> validate_required([:name, :avatar])
     |> validate_inclusion(:billing_frequency, ["none", "monthly", "yearly"])
   end
@@ -74,7 +76,12 @@ defmodule Mirror.Organization do
         
         Billing.build_subscriptions(updated_organization)
         
-        {:ok, updated_organization}
+        case update_billing_status(updated_organization) do
+          {:ok, org_with_billing} -> 
+            Logger.warn "#{inspect org_with_billing}"
+            {:ok, org_with_billing}
+          _ -> {:ok, updated_organization}
+        end
       {:error, changeset} ->
         {:error, changeset}
     end
@@ -97,8 +104,9 @@ defmodule Mirror.Organization do
 
   def set_default_payment(card, organization) do
     Repo.transaction fn ->
-      with {:ok, updated_org} <- insert_default_payment(card, organization),
-           {:ok, updated_cust} <- Billing.update_default_payment(organization.billing_customer, card.card_id)do
+      with {:ok, updated_org}         <- insert_default_payment(card, organization),
+           {:ok, status_updated_org}  <- update_billing_status(updated_org),
+           {:ok, updated_cust}        <- Billing.update_default_payment(organization.billing_customer, card.card_id) do
              updated_org
              |> Organization.preload_relationships()
       else
@@ -106,6 +114,18 @@ defmodule Mirror.Organization do
           Repo.rollback changeset
           {:error, changeset}
       end
+    end
+  end
+
+  def update_billing_status(organization) do
+    billing_status_changeset = case !is_nil(organization.default_payment_id) && (organization.billing_frequency != "none") do
+      true -> Organization.changeset(organization, %{billing_status: "active"})
+      false -> Organization.changeset(organization, %{billing_status: "inactive"})
+    end
+
+    case Repo.update(billing_status_changeset) do
+      {:ok, updated_organization} -> {:ok, updated_organization}
+      {:error, changeset} -> {:error, changeset}
     end
   end
 
