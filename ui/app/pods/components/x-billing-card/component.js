@@ -15,6 +15,11 @@ export default Ember.Component.extend({
         elements = stripe.elements();
         _this.set('card', elements.create('card', {
             hidePostalCode: true,
+            style: {
+                invalid: {
+                    color: '#F53240'
+                }
+            }
         }));
 
         card = _this.get('card');
@@ -37,6 +42,10 @@ export default Ember.Component.extend({
 
             stripe.createToken(card, extra_details).then(function(result) {
                 if (result.error) {
+                    // Hide the loading method
+                    if(_this.get('loadMethod')) {
+                        _this.get('loadMethod')();
+                    }
                     // Inform the user if there was an error
                     var errorElement = document.getElementById('card-errors');
                     errorElement.textContent = result.error.message;
