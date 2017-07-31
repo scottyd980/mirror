@@ -21,22 +21,22 @@ defmodule Mirror.UserTeamController do
 
   end
 
-  # def delete(conn, %{"user_id" => user_id, "team_id" => team_id}) do
-  #   current_user = Guardian.Plug.current_resource(conn)
+  def delete(conn, %{"user_id" => user_id, "team_id" => team_id}) do
+    current_user = Guardian.Plug.current_resource(conn)
 
-  #   team = Repo.get_by!(Team, uuid: id)
-  #   user = Repo.get!(User, user_id)
+    team = Repo.get_by!(Team, uuid: team_id)
+    user = Repo.get!(User, user_id)
 
-  #   cond do
-  #     UserHelper.user_is_team_admin?(current_user, team) ->
-  #       remove_member(conn, user, team)
-  #     current_user.id == user.id ->
-  #       remove_member(conn, user, team)
-  #     true ->
-  #       use_error_view(conn, 401, %{})
-  #   end
+    cond do
+      UserHelper.user_is_team_admin?(current_user, team) ->
+        remove_member(conn, user, team)
+      current_user.id == user.id ->
+        remove_member(conn, user, team)
+      true ->
+        use_error_view(conn, 401, %{})
+    end
 
-  # end
+  end
 
   defp remove_member(conn, user, team) do
     cond do

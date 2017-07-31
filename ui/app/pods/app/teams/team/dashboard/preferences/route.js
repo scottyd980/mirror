@@ -7,5 +7,21 @@ export default Ember.Route.extend({
         return RSVP.hash({
             team: _this.modelFor('app.teams.team')
         });
+    },
+    toggleLoadingScreen(message) {
+        this.controller.set('loadingMessage', message);
+        this.controller.toggleProperty('currentlyLoading');
+    },
+    actions: {
+        toggleLoadingScreen(message) {
+            this.toggleLoadingScreen(message);
+        },
+        deleteTeam(team) {
+            this.toggleLoadingScreen("Deleting Team...");
+            team.destroyRecord().then(() => {
+                this.toggleLoadingScreen();
+                this.transitionTo('app.dashboard');
+            });
+        }
     }
 });
