@@ -85,7 +85,7 @@ defmodule Mirror.TeamController do
     # TODO: Need to make sure this is an org admin if the org is changing
     changeset = case is_nil(organization_id) do
       true ->
-        Team.changeset(team, %{organization_id: nil, organization: nil})
+        Team.changeset(team, %{organization_id: nil})
       _ ->
         organization = Repo.get_by!(Organization, uuid: organization_id)
         Team.changeset(team, %{organization_id: organization.id})
@@ -123,17 +123,20 @@ defmodule Mirror.TeamController do
     team = Repo.get_by!(Team, uuid: id)
     |> Team.preload_relationships()
 
-    organization_id = team.organization.id
+    current_org = team.organization
 
     # TODO: Need to make sure this is an org admin
-    organization = Repo.get!(Organization, organization_id)
+    changeset = case is_nil(current_org) || is_nil(current_org.id) do
+      true ->
+        Team.changeset(team, %{organization_id: nil})
+      _ ->
+        organization = Repo.get!(Organization, current_org.id)
+        Team.changeset(team, %{organization_id: organization.id})
+    end
 
-    changeset = Team.changeset(team, %{organization_id: organization.id})
-
-    # TODO: Need to make sure this is a team admin making changes
-    case delete_team(team, organization) do
+     # TODO: Need to make sure this is a team admin making changes if it's not an org change (org admin does not have to be a team admin)
+    case delete_team(team, current_org) do
       {:ok, team} ->
-        Logger.warn "#{inspect team}"
         render(conn, "delete.json", team: team)
       {:error, changeset} ->
         conn
@@ -142,10 +145,11 @@ defmodule Mirror.TeamController do
     end
   end
 
-  defp delete_team(team, organization) do
+  defp delete_team(team, current_org) do
     Repo.transaction fn ->
       with {:ok, team}      <- Repo.delete(team),
-           subscriptions    <- Billing.build_subscriptions(organization)
+           team_with_assocs <- team |> Team.preload_relationships,
+           removed_sub      <- Billing.remove_subscription(current_org, team_with_assocs, true)
       do
         {:ok, team}
       else
