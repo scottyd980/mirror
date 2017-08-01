@@ -16,6 +16,14 @@ export default Ember.Route.extend({
         toggleLoadingScreen(message) {
             this.toggleLoadingScreen(message);
         },
+        updateTeam(team) {
+            this.toggleLoadingScreen("Updating Team Preferences...");
+            let isAnonymous = $(`input[name="is-anon-${team.get('id')}"]:checked`).val() === "true" ? true : false;
+            team.set('isAnonymous', isAnonymous);
+            team.save().then(() => {
+                this.toggleLoadingScreen();
+            });
+        },
         deleteTeam(team) {
             this.toggleLoadingScreen("Deleting Team...");
             team.destroyRecord().then(() => {

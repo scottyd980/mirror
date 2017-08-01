@@ -2,7 +2,31 @@
   <div class="row">
     <div class="col-md-8">
       {{#x-card title="Preferences"}}
-        Retrospective
+        <h4>Feedback Anonymity</h4>
+        <ul class="toggle-buttons">
+          <li class="two-wide">
+            <div class="radio-button">
+                <input checked="{{if (eq model.team.isAnonymous "true") 'checked'}}" type="radio" id={{concat "is-anon-true-" model.team.id}} value="true" name="{{concat "is-anon-" model.team.id}}" />
+                <label for={{concat "is-anon-true-" model.team.id}} class="radio-list--item">
+                    Anonymous
+                    <span>No team members will see who posted what feedback</span>
+                </label>
+            </div>
+          </li>
+          <li class="two-wide">
+            <div class="radio-button">
+                <input checked="{{if (eq model.team.isAnonymous "false") 'checked'}}" type="radio" id={{concat "is-anon-false-" model.team.id}} value="false" name="{{concat "is-anon-" model.team.id}}" />
+                <label for={{concat "is-anon-false-" model.team.id}} class="radio-list--item">
+                    Public
+                    <span>All team members will see who posted what feedback</span>
+                </label>
+            </div>
+          </li>
+        </ul>
+        <p><small>Typically, newer teams feel more comfortable in an anonymous environment, while more mature teams openly discuss their feedback in public. This setting will not change past retrospectives - it will only affect retrospectives going forward.</small></p>
+        <div class="card-footer">
+          <a {{action "updateTeam" model.team}} class="btn btn-success">Update Preferences</a>
+        </div>
       {{/x-card}}
     </div>
     <div class="col-md-4">

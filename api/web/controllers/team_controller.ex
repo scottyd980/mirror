@@ -83,13 +83,17 @@ defmodule Mirror.TeamController do
     organization_id = body_params["data"]["relationships"]["organization"]["data"]["id"];
 
     # TODO: Need to make sure this is an org admin if the org is changing
-    changeset = case is_nil(organization_id) do
+    changeset_data = case is_nil(organization_id) do
       true ->
-        Team.changeset(team, %{organization_id: nil})
+        %{organization_id: nil}
       _ ->
         organization = Repo.get_by!(Organization, uuid: organization_id)
-        Team.changeset(team, %{organization_id: organization.id})
+        %{organization_id: organization.id}
     end
+
+    changeset_data = Map.put(changeset_data, :isAnonymous, body_params["data"]["attributes"]["is-anonymous"]);
+
+    changeset = Team.changeset(team, changeset_data)
 
     # TODO: Need to make sure this is a team admin making changes if it's not an org change (org admin does not have to be a team admin)
     case update_team(changeset, current_org) do

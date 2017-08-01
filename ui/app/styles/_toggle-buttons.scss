@@ -18,6 +18,10 @@ ul.toggle-buttons {
         vertical-align: middle;
         height: 100%;
         
+        &.two-wide {
+            width: 50%;
+        }
+
         &.three-wide {
             width: 33.33%;
         }
