@@ -1,6 +1,8 @@
 defmodule Mirror.RetrospectiveController do
   use Mirror.Web, :controller
 
+  require Logger
+
   alias Mirror.{Team, Retrospective, UserHelper, RetrospectiveUser, TeamChannel}
 
   plug Guardian.Plug.EnsureAuthenticated, handler: Mirror.AuthErrorHandler
@@ -46,6 +48,10 @@ defmodule Mirror.RetrospectiveController do
 
     current_user = Guardian.Plug.current_resource(conn)
     team = Repo.get_by!(Team, uuid: relationships["team"]["data"]["id"])
+
+    Logger.warn "#{inspect attributes}"
+
+    attributes = Map.put(attributes, "is-anonymous", team.isAnonymous)
 
     params = %{"attributes" => attributes, "participants" => relationships["participants"], "moderator" => relationships["moderator"], "team" => team}
 

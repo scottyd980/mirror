@@ -3,17 +3,17 @@
     {{#if model.team.organization}}
       <div class="col-md-8">
         {{#x-card title="Billing"}}
-          <h3 class="text-center">Billing is managed by a team's parent organization.</h3>
-          <h4 class="text-center pad-bottom-sm">The organization that manages this team is: <strong>{{model.team.organization.name}}</strong>.</h4>
+          <h3>Billing is managed by a team's parent organization.</h3>
+          <h4 class="pad-bottom-sm">The organization that manages this team is: <strong>{{model.team.organization.name}}</strong>.</h4>
           {{#if (contains model.currentUser model.team.organization.admins)}}
-            <p class="text-center">
+            <p>
               Since you are the organization administrator, you can update billing preferences for your team in your organization's billing preferences.
             </p>
-            <p class="text-center">
+            <div class="card-footer">
               {{#link-to 'app.organizations.organization.dashboard' model.team.organization class="btn btn-success"}}View Organization Preferences{{/link-to}}
-            </p>
+            </div>
           {{else}}
-            <p class="text-center">If changes to billing need to be made, please talk to your organization administrator.</p>
+            <p>If changes to billing need to be made, please talk to your organization administrator.</p>
           {{/if}}
           {{/x-card}}
       </div>
