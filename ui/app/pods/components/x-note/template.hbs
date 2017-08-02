@@ -1,1 +1,8 @@
-{{yield}}
+{{#if (eq isAnonymous "false")}}
+    <div class="note--provider">
+        {{data.user.username}}
+    </div>
+{{/if}}
+<div class="note--content">
+    {{yield}}
+</div>

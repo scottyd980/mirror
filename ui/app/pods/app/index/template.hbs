@@ -1,1 +1,26 @@
-{{outlet}}
+<div class="nav-push">
+    <div class="container">
+        <div class="row">
+            <div class="col-md-8">
+                {{#x-card title="Recent Retrospectives"}}
+                {{/x-card}}
+            </div>
+            <div class="col-md-4">
+                {{#x-card title="Your Teams"}}
+                    {{#each model.teams as |team|}}
+                        {{team.name}}
+                    {{else}}
+                        <p>It doesn't look like you're a member of any teams!</p>
+                    {{/each}}
+                {{/x-card}}
+                {{#if model.organizations}}
+                    {{#x-card title="Your Organizations"}}
+                        {{#each model.organizations as |org|}}
+                            {{org.name}}
+                        {{/each}}
+                    {{/x-card}}
+                {{/if}}
+            </div>
+        </div>
+    </div>
+</div>
