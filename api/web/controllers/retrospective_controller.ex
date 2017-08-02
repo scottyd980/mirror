@@ -3,7 +3,7 @@ defmodule Mirror.RetrospectiveController do
 
   require Logger
 
-  alias Mirror.{Team, Retrospective, UserHelper, RetrospectiveUser, TeamChannel}
+  alias Mirror.{Team, Retrospective, UserHelper, RetrospectiveUser, TeamChannel, User}
 
   plug Guardian.Plug.EnsureAuthenticated, handler: Mirror.AuthErrorHandler
 
@@ -23,6 +23,21 @@ defmodule Mirror.RetrospectiveController do
       true ->
         use_error_view(conn, 401, %{})
     end
+  end
+  
+  def recent(conn, params) do
+    current_user = Guardian.Plug.current_resource(conn)
+
+    query = from r in Retrospective,
+            join: ru in RetrospectiveUser, where: ru.retrospective_id == r.id,
+            join: u in User, where: ru.user_id == u.id,
+            where: u.id == ^current_user.id,
+            where: r.cancelled == false
+
+    retrospectives = Repo.all(query)
+    |> Retrospective.preload_relationships()
+
+    render(conn, "index.json", retrospectives: retrospectives)
   end
 
   def show(conn, %{"id" => id}) do
