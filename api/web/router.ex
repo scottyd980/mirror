@@ -32,8 +32,6 @@ defmodule Mirror.Router do
     delete "/team_users", UserTeamController, :delete
     delete "/team_admins", TeamAdminController, :delete
 
-    get "/retrospectives/recent", RetrospectiveController, :recent
-
     resources "/teams", TeamController
     resources "/retrospectives", RetrospectiveController, only: [:index, :create, :update, :show]
     resources "/scores", SprintScoreController, only: [:create, :show]
