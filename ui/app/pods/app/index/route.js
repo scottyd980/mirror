@@ -12,15 +12,43 @@ export default Ember.Route.extend({
         return RSVP.hash({
             teams: current_user.get('teams').sortBy('id'),
             organizations: current_user.get('organizations').sortBy('id'),
-            /* TODO: May want to look at getting this the ember way so data works correctly. */
-            recent_retrospectives: fetch(`${config.DS.host}/${config.DS.namespace}/retrospectives/recent`, {
-                type: 'GET',
-                headers: {
-                    'Authorization': `Bearer ${this.get('session').get('session.content.authenticated.access_token')}`
-                }
-            }).then((raw) => {
-                return raw.json().then(data => data.data);
+            recent_retrospectives: current_user.get('teams').then((teams) => {
+                let retros = teams.map((team) => {
+                    return this.store.query('retrospective', {
+                        filter: {
+                            team: team.get('id')
+                        }
+                    })
+                })
+
+                return RSVP.allSettled(retros).then((retrospectives) => {
+                    let retro_list = retrospectives.reduce((retro_arr, retrospective) => {
+                        return retro_arr.concat(retrospective.value.toArray());
+                    }, []);
+
+                    // TODO: Need to order by date and then take the most recent ones.
+                    
+                    return retro_list;
+                });
+                
+                // teams.forEach((team) => {
+                //     this.store.query('retrospective', {
+                //         filter: {
+                //             team: team.get('id')
+                //         }
+                //     }).then((retrospectives) => {
+                //         retrospectives.forEach((retrospective) => {
+                //             recent_retros.push(retrospective);
+                //         });
+                //     }).then(() => {
+                //         return recent_retros;
+                //     });
+                // });
             })
         });
+    },
+    setupController(controller, model) {
+        this._super(controller, model);
+        console.log(model.recent_retrospectives);
     }
 });
