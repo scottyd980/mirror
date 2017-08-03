@@ -4,7 +4,7 @@
             <div class="col-md-8">
                 {{#x-card title="Recent Retrospectives"}}
                     {{#each model.recent_retrospectives as |retrospective|}}
-                        {{retrospective.attributes.name}}
+                        {{retrospective.name}}
                     {{else}}
                         <p>It doesn't look like you're a member of any teams!</p>
                     {{/each}}
