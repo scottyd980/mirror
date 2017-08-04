@@ -246,25 +246,25 @@ ul.table-list {
         }
       }
 
-      &.retro-participants-container {
+      &.retro-participants-container, &.retro-team-container {
         display: table;
 
         @media (max-width: $screen-xs-max) {
           margin: 0 auto;
         }
 
-        .retro-participants-icon {
+        .retro-participants-icon, .retro-team-icon {
           display: table-cell;
           vertical-align: middle;
           padding-right: 5px;
         }
 
-        .retro-participants {
+        .retro-participants, .retro-team {
           display: table-cell;
         }
       }
 
-      .participant-name {
+      .participant-name, .team-name {
         max-width: 100%;
         overflow: hidden;
         &:after {
