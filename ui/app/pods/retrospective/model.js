@@ -12,5 +12,6 @@ export default Model.extend({
   participants: hasMany('user'),
   scores: hasMany('score'),
   feedbacks: hasMany('feedback'),
-  cancelled: attr('boolean')
+  cancelled: attr('boolean'),
+  updatedAt: attr('date')
 });

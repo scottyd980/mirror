@@ -3,11 +3,15 @@
         <div class="row">
             <div class="col-md-8">
                 {{#x-card title="Recent Retrospectives"}}
-                    {{#each model.recent_retrospectives as |retrospective|}}
-                        {{retrospective.name}}
+                    {{#if model.recent_retrospectives}}
+                        {{team-history-list
+                            retrospectives=model.recent_retrospectives
+                            isAdmin=isAdmin
+                            showTeams=true
+                        }}
                     {{else}}
                         <p>It doesn't look like you're a member of any teams!</p>
-                    {{/each}}
+                    {{/if}}
                 {{/x-card}}
             </div>
             <div class="col-md-4">

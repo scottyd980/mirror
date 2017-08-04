@@ -25,30 +25,41 @@ export default Ember.Route.extend({
                     let retro_list = retrospectives.reduce((retro_arr, retrospective) => {
                         return retro_arr.concat(retrospective.value.toArray());
                     }, []);
-
-                    // TODO: Need to order by date and then take the most recent ones.
                     
-                    return retro_list;
+                    return retro_list.sortBy('updatedAt').reverse().slice(0,10);
                 });
                 
-                // teams.forEach((team) => {
-                //     this.store.query('retrospective', {
-                //         filter: {
-                //             team: team.get('id')
-                //         }
-                //     }).then((retrospectives) => {
-                //         retrospectives.forEach((retrospective) => {
-                //             recent_retros.push(retrospective);
-                //         });
-                //     }).then(() => {
-                //         return recent_retros;
-                //     });
-                // });
             })
         });
     },
     setupController(controller, model) {
         this._super(controller, model);
-        console.log(model.recent_retrospectives);
+
+        let retrospectives = model.recent_retrospectives;
+
+        retrospectives.map((retro) => {
+            return retro.get('scores').then((scores) => {
+                let averageScore = Math.round((scores.reduce((total, score) => {
+                    return total + score.get('score');
+                }, 0) / scores.length) * 10) / 10;
+
+                let scoreType = function() {
+                    if(averageScore) {
+                        if(averageScore > 6.67) {
+                            return "success";
+                        } else if(averageScore > 3.34) {
+                            return "warning";
+                        } else {
+                            return "danger";
+                        }
+                    } else {
+                        return "info";
+                    }
+                }();
+
+                retro.set('averageScore', averageScore);
+                retro.set('scoreType', scoreType);
+            });
+        });
     }
 });
