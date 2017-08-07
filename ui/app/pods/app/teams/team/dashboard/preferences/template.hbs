@@ -32,7 +32,9 @@
     <div class="col-md-4">
       {{#x-card title="Delete Team"}}
         <p>This will delete the team. This action cannot be undone - please carefully consider this action before you delete the team.</p>
-        <a onclick={{route-action "confirmAction" "Are you sure you want to delete this team? This action cannot be undone." (route-action "deleteTeam" model.team)}} class="btn btn-danger btn-block">Delete Team</a>
+        <div class="card-footer">
+          <a onclick={{route-action "confirmAction" "Are you sure you want to delete this team? This action cannot be undone." (route-action "deleteTeam" model.team)}} class="btn btn-danger">Delete Team</a>
+        </div>
       {{/x-card}}
     </div>
   </div>
