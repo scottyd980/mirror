@@ -7,12 +7,14 @@
             </p>
         </div>
         <div class="actions">
-            <a class="btn btn-danger btn-outline btn-xs" {{action onConfirm "Are you sure you want to remove this team from your organization?" (action deleteTeam team)}}>
-                {{fa-icon "times" fixedWidth=true}}
-                {{#tooltip-on-element side="bottom"}}
-                    Remove From Organization
-                {{/tooltip-on-element}}
-            </a>
+            {{#unless hideDelete}}
+                <a class="btn btn-danger btn-outline btn-xs" {{action onConfirm "Are you sure you want to remove this team from your organization?" (action deleteTeam team)}}>
+                    {{fa-icon "times" fixedWidth=true}}
+                    {{#tooltip-on-element side="bottom"}}
+                        Remove From Organization
+                    {{/tooltip-on-element}}
+                </a>
+            {{/unless}}
             <a class="btn btn-success btn-outline btn-xs" {{action viewTeam team}}>
                 {{fa-icon "arrow-right" fixedWidth=true}}
                 {{#tooltip-on-element side="bottom"}}

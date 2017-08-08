@@ -61,5 +61,13 @@ export default Ember.Route.extend({
                 retro.set('scoreType', scoreType);
             });
         });
+    },
+    actions: {
+        viewOrganization(organization) {
+            this.transitionTo('app.organizations.organization.dashboard', organization);
+        },
+        viewTeam(team) {
+            this.transitionTo('app.teams.team.dashboard.retrospectives', team);
+        },
     }
 });
