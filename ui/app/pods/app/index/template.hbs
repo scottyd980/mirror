@@ -16,17 +16,23 @@
             </div>
             <div class="col-md-4">
                 {{#x-card title="Your Teams"}}
-                    {{#each model.teams as |team|}}
-                        {{team.name}}
+                    {{#if model.teams}}
+                        {{team-list 
+                            teams=model.teams
+                            viewTeam=(route-action "viewTeam")
+                            hideDelete=true
+                        }}
                     {{else}}
                         <p>It doesn't look like you're a member of any teams!</p>
-                    {{/each}}
+                    {{/if}}
                 {{/x-card}}
                 {{#if model.organizations}}
                     {{#x-card title="Your Organizations"}}
-                        {{#each model.organizations as |org|}}
-                            {{org.name}}
-                        {{/each}}
+                        {{organization-list 
+                            organizations=model.organizations
+                            viewOrganization=(route-action "viewOrganization")
+                            hideDelete=true
+                        }}
                     {{/x-card}}
                 {{/if}}
             </div>

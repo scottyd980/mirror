@@ -12,12 +12,14 @@
             </p>
         </div>
         <div class="actions">
-            <a class="btn btn-danger btn-outline btn-xs">
-                {{fa-icon "times" fixedWidth=true}}
-                {{#tooltip-on-element side="bottom"}}
-                    Delete
-                {{/tooltip-on-element}}
-            </a>
+            {{#unless hideDelete}}
+                <a class="btn btn-danger btn-outline btn-xs">
+                    {{fa-icon "times" fixedWidth=true}}
+                    {{#tooltip-on-element side="bottom"}}
+                        Delete
+                    {{/tooltip-on-element}}
+                </a>
+            {{/unless}}
             <a class="btn btn-success btn-outline btn-xs" {{action viewOrganization organization}}>
                 {{fa-icon "arrow-right" fixedWidth=true}}
                 {{#tooltip-on-element side="bottom"}}
