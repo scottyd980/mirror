@@ -11,6 +11,10 @@ defmodule Mirror.OrganizationView do
     %{data: render_one(organization, Mirror.OrganizationView, "organization.json")}
   end
 
+  def render("delete.json", %{organization: organization}) do
+    %{meta: %{}}
+  end
+
   def render("organization.json", %{organization: organization}) do
     case is_nil(organization.default_payment) do
       true ->

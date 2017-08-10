@@ -97,12 +97,13 @@ defmodule Mirror.OrganizationController do
   end
 
   def delete(conn, %{"id" => id}) do
-    organization = Repo.get!(Organization, id)
+    organization = Repo.get_by!(Organization, uuid: id)
+    |> Organization.preload_relationships()
 
     # Here we use delete! (with a bang) because we expect
     # it to always work (and if it does not, it will raise).
-    Repo.delete!(organization)
+    # Repo.delete!(organization)
 
-    send_resp(conn, :no_content, "")
+    render(conn, "delete.json", organization: organization)
   end
 end
