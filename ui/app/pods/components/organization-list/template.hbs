@@ -13,14 +13,14 @@
         </div>
         <div class="actions">
             {{#unless hideDelete}}
-                <a class="btn btn-danger btn-outline btn-xs">
+                <a class="btn btn-danger btn-outline btn-xs" {{action onConfirm "Are you sure you want to delete this organization? This action can not be undone. This will also stop all future billing for this organization and its teams." (action onDelete organization)}}>
                     {{fa-icon "times" fixedWidth=true}}
                     {{#tooltip-on-element side="bottom"}}
                         Delete
                     {{/tooltip-on-element}}
                 </a>
             {{/unless}}
-            <a class="btn btn-success btn-outline btn-xs" {{action viewOrganization organization}}>
+            <a class="btn btn-success btn-outline btn-xs" {{action onView organization}}>
                 {{fa-icon "arrow-right" fixedWidth=true}}
                 {{#tooltip-on-element side="bottom"}}
                     View

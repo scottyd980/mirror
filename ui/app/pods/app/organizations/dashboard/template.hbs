@@ -6,7 +6,9 @@
           {{#if model.organizations}}
             {{organization-list 
               organizations=model.organizations
-              viewOrganization=(route-action "viewOrganization")
+              onConfirm=(route-action "confirmAction")
+              onDelete=(route-action "deleteOrganization")
+              onView=(route-action "viewOrganization")
             }}
           {{else}}
             It doesn't look like you're a member of any organizations.
@@ -24,3 +26,9 @@
     </div>
   </div>
 </div>
+
+{{#if currentlyLoading}}
+  <div class="loading-screen">
+    {{x-loader message=loadingMessage}}
+  </div>
+{{/if}}
