@@ -30,7 +30,7 @@
                     {{#x-card title="Your Organizations"}}
                         {{organization-list 
                             organizations=model.organizations
-                            viewOrganization=(route-action "viewOrganization")
+                            onView=(route-action "viewOrganization")
                             hideDelete=true
                         }}
                     {{/x-card}}
