@@ -21,6 +21,7 @@ export default Ember.Route.extend({
     }).then((response) => {
       if(response.status === config.STATUS_CODES.created || response.status === config.STATUS_CODES.ok) {
         response.json().then((resp) => {
+          this.send('invalidateApplicationModel');
           this.transitionTo('app.teams.team.dashboard.retrospectives', resp.data.attributes.team_id);
         });
       } else {

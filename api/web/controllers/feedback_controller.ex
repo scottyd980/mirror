@@ -1,6 +1,8 @@
 defmodule Mirror.FeedbackController do
   use Mirror.Web, :controller
 
+  require Logger
+
   alias Mirror.{User, Retrospective, UserHelper, Feedback, Team}
 
   plug Guardian.Plug.EnsureAuthenticated, handler: Mirror.AuthErrorHandler
@@ -63,6 +65,8 @@ defmodule Mirror.FeedbackController do
     
     feedback = Repo.get!(Feedback, id)
     |> Feedback.preload_relationships()
+
+    Logger.warn "#{inspect feedback}"
 
     state = body_params["data"]["attributes"]["state"];
 
