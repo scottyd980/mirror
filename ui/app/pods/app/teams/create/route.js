@@ -52,6 +52,7 @@ export default Ember.Route.extend({
         _this.controller.set('teamMemberEmails', Ember.A());
         _this.controller.set('newTeamMemberEmail', '');
         _this.send('invalidateApplicationModel');
+        _this.transitionTo('app.teams.team.dashboard.retrospectives', _this.get('currentModel'));
       });
     }
   }

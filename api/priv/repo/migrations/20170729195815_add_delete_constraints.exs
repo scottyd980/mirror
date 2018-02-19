@@ -48,7 +48,7 @@ defmodule Mirror.Repo.Migrations.AddDeleteConstraints do
     end
 
     # Organizations Table
-    execute "ALTER TABLE organizations DROP FOREIGN KEY organizations_default_payment_fkey"
+    execute "ALTER TABLE organizations DROP FOREIGN KEY organizations_default_payment_id_fkey"
     alter table(:organizations) do
       modify :default_payment_id, references(:cards, on_delete: :nilify_all)
     end
@@ -92,7 +92,7 @@ defmodule Mirror.Repo.Migrations.AddDeleteConstraints do
     end
     
     # Team/Admins Join Table
-    execute "ALTER TABLE team_admin DROP FOREIGN KEY team_admin_admin_id_fkey"
+    execute "ALTER TABLE team_admin DROP FOREIGN KEY team_admin_user_id_fkey"
     alter table(:team_admin) do
       modify :user_id, references(:users, on_delete: :delete_all)
     end

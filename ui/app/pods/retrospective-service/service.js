@@ -108,7 +108,7 @@ export default Ember.Service.extend({
 
   _listen_for_retrospective_feedback(channel) {
     channel.on('feedback_added', (resp) => {
-
+      
       // Only push to store if it's not the current logged in user.
       if(parseInt(resp.data.relationships.user.data.id) !== parseInt(this.get('session').get('currentUser.id'))) {
         this.get('store').pushPayload(JSON.parse(JSON.stringify(resp)));
@@ -119,6 +119,8 @@ export default Ember.Service.extend({
 
   _listen_for_retrospective_feedback_change(channel) {
     channel.on('feedback_state_change', (resp) => {
+      console.log(resp);
+
       if(parseInt(resp.data.relationships.user.data.id) !== parseInt(this.get('session').get('currentUser.id'))) {
         this.get('store').pushPayload(JSON.parse(JSON.stringify(resp)));
       }

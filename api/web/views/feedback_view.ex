@@ -43,7 +43,12 @@ defmodule Mirror.FeedbackView do
 
   defp get_user(feedback) do
     case feedback.retrospective.isAnonymous do
-        true -> %{}
+        true -> %{
+            "links": %{
+                "self": "/api/users/"
+            },
+            "data": render_one(feedback.user, Mirror.UserView, "relationship.json", as: :user)
+        }
         _ -> 
             %{
                 "links": %{

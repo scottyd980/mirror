@@ -75,9 +75,11 @@ defmodule Mirror.UserTeamController do
   end
 
   defp handle_add_existing_member(conn, user_team) do
+    team = Repo.get!(Team, user_team.team_id)
+
     conn
     |> put_status(:ok)
-    |> render(Mirror.UserTeamView, "show.json", user_team: user_team)
+    |> render(Mirror.UserTeamView, "show.json", user_team: Map.put(user_team, :team_id, team.uuid))
   end
 
   defp handle_add_new_member(conn, current_user, member_delegate) do
@@ -92,7 +94,7 @@ defmodule Mirror.UserTeamController do
         conn
         |> mark_delegate_used(member_delegate)
         |> put_status(:created)
-        |> render(Mirror.UserTeamView, "show.json", user_team: user_team)
+        |> render(Mirror.UserTeamView, "show.json", user_team: Map.put(user_team, :team_id, member_delegate.team.uuid))
       {:error, changeset} ->
         use_error_view(conn, 422, changeset)
     end

@@ -42,7 +42,7 @@
               <div class="col-md-6 text-center marketing-block marketing-block-stacked">
                 <img class="marketing-icon" src="/img/marketing/use-user.svg" />
                 <h4>Add To One Of Your Organizations</h4>
-                <p>It's easy to add the team to an organization that you already administrate.</p>
+                <p>It's easy to add the team to an organization that you already administer.</p>
                 <a {{action 'toggleJoinOwnOrganizationModal'}} class="btn btn-success btn-block">Join One Of Your Organizations</a>
               </div>
             {{/if}}
@@ -71,7 +71,7 @@
     title="Join One Of Your Organizations"
   }}
     {{#x-modal-body}}
-      <p>Select the organization below that you want to associate this team with.</p>
+      <p>Select the organization below that you want the team to be a member of.</p>
       <ul class="radio-list">
         {{#each model.user_organizations as |organization|}}
           <li>
@@ -117,7 +117,7 @@
     title="Join Another Organization"
   }}
     {{#x-modal-body}}
-      Select the organization below that you want to associate the team with.
+      Select the organization below that you want the team to be a member of.
       {{#each model.user_organizations as |organization|}}
         {{organization.name}}
       {{/each}}
