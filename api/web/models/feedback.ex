@@ -1,6 +1,8 @@
 defmodule Mirror.Feedback do
   use Mirror.Web, :model
 
+  require Logger
+
   alias Mirror.{Repo, Retrospective, User, UserHelper}
 
   schema "feedbacks" do
@@ -24,10 +26,10 @@ defmodule Mirror.Feedback do
     |> validate_feedback_not_submitted
   end
 
-  def moderator_changeset(struct, params \\ %{}) do
+  def moderator_changeset(struct, current_user, params \\ %{}) do
     struct
     |> changeset(params)
-    |> validate_moderator
+    |> validate_moderator(current_user)
   end
 
   def preload_relationships(feedback) do
@@ -56,12 +58,10 @@ defmodule Mirror.Feedback do
     changeset
   end
 
-  # TODO: the field :user_id is currently the submitted used id, not the user taking the action
-  defp validate_moderator(changeset) do
+  defp validate_moderator(changeset, current_user) do
     user_id = get_field(changeset, :user_id)
     retrospective_id = get_field(changeset, :retrospective_id)
 
-    current_user = Repo.get!(User, user_id)
     retrospective = Repo.get!(Retrospective, retrospective_id)
 
     cond do
