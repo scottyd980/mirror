@@ -119,11 +119,9 @@ export default Ember.Service.extend({
 
   _listen_for_retrospective_feedback_change(channel) {
     channel.on('feedback_state_change', (resp) => {
-      console.log(resp);
-
-      if(parseInt(resp.data.relationships.user.data.id) !== parseInt(this.get('session').get('currentUser.id'))) {
-        this.get('store').pushPayload(JSON.parse(JSON.stringify(resp)));
-      }
+      // We want this to push to store to everyone, even if it's the user that submitted it, because they may not be the one
+      // moderating.
+      this.get('store').pushPayload(JSON.parse(JSON.stringify(resp)));
     });
   }
 });

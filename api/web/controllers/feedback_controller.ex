@@ -9,7 +9,6 @@ defmodule Mirror.FeedbackController do
 
   # TODO: Make sure current_user is a member of the team
   def create(conn, %{"data" => %{"attributes" => attributes, "relationships" => relationships, "type" => "feedbacks"}}) do
-
     current_user = Guardian.Plug.current_resource(conn)
 
     retrospective_id = relationships["retrospective"]["data"]["id"]
@@ -59,18 +58,18 @@ defmodule Mirror.FeedbackController do
     end
   end
 
-  # TODO: Need to make sure this is a user of the team making changes
+  # TODO: Need to make sure this is a moderator of the retrospective making changes
   def update(conn, %{"id" => id}) do
+    current_user = Guardian.Plug.current_resource(conn)
+
     body_params = conn.body_params
     
     feedback = Repo.get!(Feedback, id)
     |> Feedback.preload_relationships()
 
-    Logger.warn "#{inspect feedback}"
-
     state = body_params["data"]["attributes"]["state"];
 
-    changeset = Feedback.moderator_changeset(feedback, %{state: state})
+    changeset = Feedback.moderator_changeset(feedback, current_user, %{state: state})
   
     case Repo.update(changeset) do
       {:ok, feedback} ->

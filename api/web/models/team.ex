@@ -62,7 +62,7 @@ defmodule Mirror.Team do
       !r.cancelled
     end)
     |> Enum.sort(fn(d1, d2) ->
-      Ecto.DateTime.to_erl(d1.updated_at) > Ecto.DateTime.to_erl(d2.updated_at)
+      NaiveDateTime.to_erl(d1.updated_at) > NaiveDateTime.to_erl(d2.updated_at)
     end)
     |> List.first
   end
@@ -102,14 +102,14 @@ defmodule Mirror.Team do
 
   def is_trial_active?(team) do
     now = Timex.Duration.now(:seconds)
-    created_at = team.inserted_at |> Ecto.DateTime.to_erl |> :calendar.datetime_to_gregorian_seconds |> Kernel.-(62167219200)
+    created_at = team.inserted_at |> NaiveDateTime.to_erl |> :calendar.datetime_to_gregorian_seconds |> Kernel.-(62167219200)
 
     # Make sure right now is less than created date + 30 days (in seconds)
     now < created_at + 2592000
   end
 
   def get_trial_period_end(team) do
-    created_at = team.inserted_at |> Ecto.DateTime.to_erl |> :calendar.datetime_to_gregorian_seconds |> Kernel.-(62167219200)
+    created_at = team.inserted_at |> NaiveDateTime.to_erl |> :calendar.datetime_to_gregorian_seconds |> Kernel.-(62167219200)
     created_at + 2592000
   end
 end
