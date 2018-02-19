@@ -56,9 +56,13 @@ export default Ember.Route.extend({
         this.get('retrospectiveService').leave_retrospective_channel(this.get('currentModel').retrospective.get('id'));
     },
     actions: {
-        changeRetrospectiveState(state) {
+        changeRetrospectiveState(currentStateSegment, direction) {
             var retrospective = this.get('currentModel').retrospective;
-            retrospective.set('state', state);
+
+            //TODO: Need to account for games here
+            const currentState = config.retrospective.sticky_notes.states.indexOf(currentStateSegment);
+
+            retrospective.set('state', (currentState + direction));
             retrospective.save();
         },
         moveFeedback(id, state) {

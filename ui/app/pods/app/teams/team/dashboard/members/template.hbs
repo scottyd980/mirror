@@ -1,6 +1,6 @@
 <div class="container">
   <div class="row">
-    <div class="col-md-8">
+    <div class="col-md-12">
       {{#x-card title="Members"}}
         {{team-member-list
           members=model.members
@@ -11,33 +11,6 @@
           onMakeAdmin=(route-action "addAdmin")
           onRemoveAdmin=(route-action "removeAdmin")
           onDelete=(route-action "deleteMember")}}
-      {{/x-card}}
-    </div>
-    <div class="col-md-4">
-      {{#x-card title="Key"}}
-        <ul class="icons-list">
-          {{#if isAdmin}}
-            <li class="icons-list--promote">
-              Promote a team member to a team admin
-            </li>
-
-            <li class="icons-list--demote">
-              Remove a team member's admin priveleges
-            </li>
-
-            <li class="icons-list--remove">
-              Remove a member from the team
-            </li>
-
-            <li class="icons-list--leave">
-              Leave the team
-            </li>
-          {{else}}
-            <li class="icons-list--leave">
-              Leave the team
-            </li>
-          {{/if}}
-        </ul>
       {{/x-card}}
     </div>
   </div>
