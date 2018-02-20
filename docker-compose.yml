@@ -1,0 +1,29 @@
+version: '2'
+services:
+  db:
+    image: mysql
+    restart: on-failure
+    environment:
+      MYSQL_ROOT_PASSWORD: ${DB_PASS}
+      MYSQL_ALLOW_EMPTY_PASSWORD: "yes"
+    ports: 
+      - 3306
+  api:
+    build: ./api
+    command: mix phx.server
+    volumes:
+      - ./api:/api
+    environment:
+      DB_PASS: ${DB_PASS}
+    ports:
+      - "4000:4000"
+    links:
+      - db:db
+    depends_on:
+      - db
+      - ui
+  ui:
+    build: ./ui
+    command: ember build --environment=production
+    volumes:
+      - ./ui/dist:/ui/dist
