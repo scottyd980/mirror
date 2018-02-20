@@ -16,7 +16,7 @@ services:
     environment:
       DB_PASS: ${DB_PASS}
     ports:
-      - "4000:4000"
+      - "4001:4001"
     links:
       - db:db
     depends_on:

@@ -115,7 +115,7 @@ WORKDIR /api
 
 # setting the port and the environment (prod = PRODUCTION!)
 #ENV MIX_ENV=prod  
-ENV PORT=4000
+ENV PORT=4001
 
 # install dependencies (production only)
 RUN mix local.rebar --force  
