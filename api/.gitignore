@@ -18,3 +18,5 @@ erl_crash.dump
 /config/test.secret.exs
 /cover
 /rel
+
+/docker
