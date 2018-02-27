@@ -13,7 +13,7 @@ config :mirror,
 config :mirror, Mirror.Endpoint,
   url: [host: "localhost"],
   secret_key_base: "tsz0xVJbIMUVrpgZh47DvpIEjygMek+MvwbCx0qvJX5bkcbuQilUK6QY2e3nxf+Q",
-  render_errors: [view: Mirror.ErrorView, accepts: ~w(json)],
+  render_errors: [view: Mirror.ErrorView, accepts: ~w(json json-api)],
   pubsub: [name: Mirror.PubSub,
            adapter: Phoenix.PubSub.PG2]
 

@@ -23,7 +23,7 @@ defmodule Mirror.MemberDelegate do
     struct
     |> cast(params, [:email, :access_code, :is_accessed, :team_id])
     |> validate_required([:email, :is_accessed, :team_id])
-    |> validate_format(:email, ~r/@/)
+    |> validate_format(:email, ~r/^[^@\s]+@[^@\s]+\.[^@\s]+$/)
     |> create_access_code()
   end
 

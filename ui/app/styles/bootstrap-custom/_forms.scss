@@ -49,6 +49,30 @@
     transition: color 0.15s ease-in-out;
 }
 
+.form-control:read-only:focus + .fa {
+  color: #000;
+  transition: none;
+}
+
+#team-create-current-user {
+  .form-control {
+    padding-right: 60px;
+    cursor: unset;
+  }
+  
+  &::after {
+    content: "You";
+    right: 5px;
+    font-weight: bold;
+    color: #999;
+    position: absolute;
+    top: 11px;
+    text-transform: uppercase;
+    background: #eeeeee;
+    padding: 6px;
+  }
+}
+
 .input-group-addon {
   background-color: $white;
   color: $brand-success;
@@ -71,4 +95,12 @@
 
 textarea {
   resize: none;
+}
+
+.text-danger {
+  color: $brand-danger;
+}
+
+.help-block.creation {
+  margin-top: -8px;
 }
