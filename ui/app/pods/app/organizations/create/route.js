@@ -10,6 +10,7 @@ export default Ember.Route.extend({
     controller.set('errors', {});
     controller.set('orgMemberEmails', Ember.A());
     controller.set('newMemberIndex', 1);
+    controller.set('currentlyLoading', false);
   },
   actions: {
     addOrgMemberEmail(orgMember) {
@@ -32,6 +33,8 @@ export default Ember.Route.extend({
       var _this = this,
         delegates = [],
         membersToAdd = [];
+      
+      _this.controller.set('currentlyLoading', true);
 
       _this.get('currentModel').set('admin', _this.get('session').get('currentUser'));
 
@@ -46,12 +49,12 @@ export default Ember.Route.extend({
         return item.email;
       });
 
-      //_this.get('currentModel').set('memberDelegates', delegates);
-
       _this.get('currentModel').save().then(() => {
         _this.controller.set('orgMemberEmails', Ember.A());
         _this.controller.set('newOrgMemberEmail', '');
         _this.send('invalidateApplicationModel');
+        _this.controller.set('currentlyLoading', false);
+        _this.transitionTo('app.organizations.organization.dashboard', _this.get('currentModel'));
       });
     }
   }
