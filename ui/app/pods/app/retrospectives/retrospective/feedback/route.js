@@ -15,7 +15,7 @@ export default Ember.Route.extend({
         let _this = this,
             feedback = model.feedback;
 
-        this._super(...arguments);
+        _this._super(...arguments);
 
         controller.set('submitted', false);
         
@@ -24,33 +24,32 @@ export default Ember.Route.extend({
         });
 
         let userFeedback = feedback.filter((fb) => {
-            return parseInt(fb.get('user.id')) === parseInt(this.get('session').get('currentUser.id'));
+            return parseInt(fb.get('user.id')) === parseInt(_this.get('session').get('currentUser.id'));
         });
 
         if(typeof userFeedback !== "undefined" && userFeedback.length > 0) {
-            this._markFeedbackSubmitted(userFeedback);
+            _this._markFeedbackSubmitted(userFeedback);
         }
     },
     _markFeedbackSubmitted(feedbacks) {
+        let _this = this;
         if(feedbacks) {
-            this.currentModel.gameInput.forEach((input) => {
+            _this.currentModel.gameInput.forEach((input) => {
                 input.value = feedbacks.find((feedback) => {
                     return feedback.get('type') === input.type;
                 }).get('message');
             });
         }
-        this.controller.set('submitted', true);
+        _this.controller.set('submitted', true);
     },
     
     actions: {
         submitFeedback() {
             let _this = this;
 
-            var feedbacks = $('.feedbacks [id$=-textarea]');
-
             var feedbackToSubmit = [];
 
-            this.currentModel.gameInput.forEach((feedback) => {
+            _this.currentModel.gameInput.forEach((feedback) => {
                 if(feedback.value.trim() !== "") {
                     let fb = _this.store.createRecord('feedback', {
                         type: feedback.type,
@@ -65,9 +64,9 @@ export default Ember.Route.extend({
 
             RSVP.Promise.all(
                 feedbackToSubmit
-            ).then(function(submitted) {
+            ).then(function() {
                 _this._markFeedbackSubmitted();
-            }).catch(function(error) {
+            }).catch(function() {
                 _this.get('notificationCenter').error({
                     title: config.ERROR_MESSAGES.process,
                     message: "There was a problem submitting your feedback. Please try again."

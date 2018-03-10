@@ -1,5 +1,4 @@
 import Ember from 'ember';
-import config from '../../../../../config/environment';
 import RSVP from 'rsvp';
 
 export default Ember.Route.extend({

@@ -12,8 +12,7 @@ export default Ember.Component.extend({
         if(this.get('isStarted')) {
             let ms = this.get('clock.date') - this.get('start');
 
-            let milliseconds = parseInt((ms%1000)/100),
-                seconds = ("0" + parseInt((ms/1000)%60)).slice(-2),
+            let seconds = ("0" + parseInt((ms/1000)%60)).slice(-2),
                 minutes = ("0" + parseInt((ms/(1000*60))%60)).slice(-2),
                 hours = ("0" + parseInt((ms/(1000*60*60))%24)).slice(-2);
 
@@ -22,7 +21,7 @@ export default Ember.Component.extend({
             //     minutes: minutes,
             //     seconds: seconds
             // };
-            if(hours == "00") {
+            if(hours === "00") {
                 return `${minutes}:${seconds}`;
             } else {
                 return `${hours}:${minutes}:${seconds}`;

@@ -1,5 +1,4 @@
 import Ember from 'ember';
-import config from '../../../../../../config/environment';
 import RSVP from 'rsvp';
 
 export default Ember.Route.extend({
@@ -16,7 +15,7 @@ export default Ember.Route.extend({
         let _this = this,
             feedback = model.feedback;
 
-        let negativeFeedback = this._shuffle(feedback.filter((fb) => {
+        let negativeFeedback = _this._shuffle(feedback.filter((fb) => {
             return fb.get('type') === "negative";
         }));
 

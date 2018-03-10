@@ -16,7 +16,7 @@ export default Ember.Route.extend({
         this.controller.set('loadingMessage', message);
         this.controller.toggleProperty('currentlyLoading');
     },
-    setupController(controller, model) {
+    setupController(controller) {
         this._super(...arguments);
         controller.set('isJoinOwnOrganizationModalShowing', false);
         controller.set('isCreateNewOrganizationModalShowing', false);

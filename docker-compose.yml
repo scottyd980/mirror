@@ -7,7 +7,7 @@ services:
       MYSQL_ROOT_PASSWORD: ${DB_PASS}
       MYSQL_ALLOW_EMPTY_PASSWORD: "yes"
     ports: 
-      - 3306
+      - 3306:3306
   api:
     build: ./api
     command: mix phx.server
