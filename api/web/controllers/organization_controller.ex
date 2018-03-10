@@ -97,13 +97,27 @@ defmodule Mirror.OrganizationController do
   end
 
   def delete(conn, %{"id" => id}) do
+    current_user = Guardian.Plug.current_resource(conn)
+
     organization = Repo.get_by!(Organization, uuid: id)
     |> Organization.preload_relationships()
 
-    # Here we use delete! (with a bang) because we expect
-    # it to always work (and if it does not, it will raise).
-    # Repo.delete!(organization)
-
-    render(conn, "delete.json", organization: organization)
+    case UserHelper.user_is_organization_admin?(current_user, organization) do
+      true ->
+        case Repo.delete(organization) do
+          {:ok, _} ->
+            conn
+            |> put_status(:ok)
+            |> render("delete.json", organization: organization)
+          {:error, changeset} ->
+            conn
+            |> put_status(:unprocessable_entity)
+            |> render(Mirror.ChangesetView, "error.json", changeset: changeset)
+        end
+      _ ->
+        conn
+        |> put_status(404)
+        |> render(Mirror.ErrorView, "404.json")
+    end
   end
 end

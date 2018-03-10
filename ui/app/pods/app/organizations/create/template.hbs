@@ -16,26 +16,6 @@
             {{input type="text" class="form-control" placeholder="Organization Name" value=model.name}}
             {{fa-icon "group" fixedWidth=true}}
           </div>
-          <hr/>
-          <form {{action "addOrgMemberEmail" newOrgMemberEmail on="submit"}}>
-            
-            <div class="form-group input-group input-group-icon">
-              {{input type="text" class="form-control" id="org-member-add" placeholder="Organization Admin Email" value=newOrgMemberEmail}}
-              {{fa-icon "user" fixedWidth=true}}
-              <span class="input-group-btn">
-                <button class="btn btn-success simple-action" type="submit">+</button>
-              </span>
-            </div>
-            {{#each orgMemberEmails as |orgMemberEmail|}}
-              <div class="form-group input-group input-group-icon">
-                {{input type="text" class="form-control" placeholder="Organization Admin Email" value=orgMemberEmail.email}}
-                {{fa-icon "user" fixedWidth=true}}
-                <span class="input-group-btn">
-                  <button {{action "removeOrgMemberEmail" orgMemberEmail}} class="btn btn-danger simple-action" type="button">-</button>
-                </span>
-              </div>
-            {{/each}}
-          </form>
           <div class="card-footer">
             <button {{action "createOrganization"}} type="submit" class="btn btn-success">Create Organization</button>
           </div>
@@ -46,3 +26,9 @@
     </div>
   </div>
 </div>
+
+{{#if currentlyLoading}}
+  <div class="loading-screen">
+    {{x-loader message="Creating Your New Organization..."}}
+  </div>
+{{/if}}

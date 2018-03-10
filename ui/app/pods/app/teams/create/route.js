@@ -13,6 +13,7 @@ export default Ember.Route.extend({
     controller.set('session', this.session);
     controller.set('teamError', '');
     controller.set('unexpectedError', '');
+    controller.set('currentlyLoading', false);
 
     controller.get('teamMemberEmails').pushObject({
       email: "",
@@ -46,7 +47,8 @@ export default Ember.Route.extend({
         errors = [];
       
       _this.controller.set('teamError', '');
-      _this.controller.set('unexpectedError', 'There was an unexpected error, please review the fields and try again.');
+      _this.controller.set('unexpectedError', '');
+      _this.controller.set('currentlyLoading', true);
 
       _this.get('currentModel').set('admin', _this.get('session').get('currentUser'));
 
@@ -85,8 +87,9 @@ export default Ember.Route.extend({
         _this.controller.set('newTeamMemberEmail', '');
         _this.send('invalidateApplicationModel');
         _this.transitionTo('app.teams.team.dashboard.retrospectives', _this.get('currentModel'));
+        _this.controller.set('currentlyLoading', false);
       }).catch(() => {
-        _this.controller.set('unexpectedError', '');
+        _this.controller.set('unexpectedError', 'There was an unexpected error, please review the fields and try again.');
       });
     }
   }
