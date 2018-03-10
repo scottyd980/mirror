@@ -20,7 +20,7 @@ export default Ember.Service.extend({
   start(retrospective) {
     return retrospective.save();
   },
-  lookup_in_progress(team_id) {
+  lookup_in_progress() {
     this.get('team_channel').push('check_retrospective_in_progress', {});
   },
   reset_pre_retrospective() {
@@ -70,7 +70,7 @@ export default Ember.Service.extend({
 
   leave_retrospective_channel(retrospective_id) {
     var retrospective_channel = this.get('socket').leaveChannel(`retrospective:${retrospective_id}`);
-    retrospective_channel.then((chan) => {
+    retrospective_channel.then((/* chan */) => {
       this.set('retrospective_channel', null);
     });
   },

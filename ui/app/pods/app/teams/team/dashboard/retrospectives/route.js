@@ -56,8 +56,8 @@ export default Ember.Route.extend({
     toggleBillingModal() {
       this.controller.toggleProperty('isBillingModalShowing');
     },
-    startRetrospective(game) {
-      let retrospective = this.store.createRecord('retrospective')
+    startRetrospective(/* game */) {
+      let retrospective = this.store.createRecord('retrospective');
 
       retrospective.set('name', 'Sprint ' + this.currentModel.nextSprint);
       retrospective.set('team', this.currentModel.team);

@@ -41,7 +41,7 @@ export default Ember.Route.extend({
       });
 
       delegates = membersToAdd.filter((item) => {
-        return item.email != "" && item.email;
+        return item.email !== "" && item.email;
       }).map((item) => {
         return item.email;
       });

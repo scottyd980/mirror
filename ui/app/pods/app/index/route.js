@@ -1,6 +1,5 @@
 import Ember from 'ember';
 import RSVP from 'rsvp';
-import config from '../../../config/environment';
 
 const { inject } = Ember;
 
@@ -18,8 +17,8 @@ export default Ember.Route.extend({
                         filter: {
                             team: team.get('id')
                         }
-                    })
-                })
+                    });
+                });
 
                 return RSVP.allSettled(retros).then((retrospectives) => {
                     let retro_list = retrospectives.reduce((retro_arr, retrospective) => {

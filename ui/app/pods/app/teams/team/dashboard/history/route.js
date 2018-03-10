@@ -53,7 +53,7 @@ export default Ember.Route.extend({
             var _this = this;
             
             retrospective.set('cancelled', true);
-            retrospective.save().then((response) => {
+            retrospective.save().then(() => {
                 _this.get('notificationCenter').success({
                     title: config.SUCCESS_MESSAGES.generic,
                     message: "The retrospective was successfully removed from your team's history."
@@ -63,7 +63,7 @@ export default Ember.Route.extend({
                         team: _this.modelFor('app.teams.team').get('id')
                     }
                 }));
-            }).catch((error) => {
+            }).catch(() => {
                 _this.get('notificationCenter').error({
                     title: config.ERROR_MESSAGES.generic,
                     message: "We experienced an unexpected error. Please try again."

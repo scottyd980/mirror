@@ -39,7 +39,7 @@ export default Ember.Route.extend({
             isModerator: isModerator
         });
     },
-    redirect(model, transition) {
+    redirect(model) {
         var state = model.retrospective.get('state');
         var dynamicRouteSegment = config.retrospective.sticky_notes.states[state];
         this.transitionTo('app.retrospectives.retrospective.' + dynamicRouteSegment);
@@ -50,7 +50,7 @@ export default Ember.Route.extend({
         controller.set('hasRetroInProgress', false);
         controller.set('isRetroStartModalShowing', false);
 
-        var retro = this.get('retrospectiveService').join_retrospective_channel(model.retrospective.get('id'));
+        this.get('retrospectiveService').join_retrospective_channel(model.retrospective.get('id'));
     },
     deactivate() {
         this.get('retrospectiveService').leave_retrospective_channel(this.get('currentModel').retrospective.get('id'));
@@ -75,7 +75,7 @@ export default Ember.Route.extend({
             let _this = this;
             let retrospective = this.get('currentModel').retrospective;
             retrospective.set('cancelled', true);
-            retrospective.save().then((response) => {
+            retrospective.save().then(() => {
                 _this.transitionTo('app.teams.team.dashboard.retrospectives', this.get('currentModel').team).then(() => {
                     _this.get('notificationCenter').success({
                         title: config.SUCCESS_MESSAGES.generic,

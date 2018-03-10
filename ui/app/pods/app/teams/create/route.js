@@ -57,7 +57,7 @@ export default Ember.Route.extend({
       });
       
       membersToAdd = membersToAdd.filter((item) => {
-        return item.email != "" && item.email;
+        return item.email !== "" && item.email;
       });
       
       errors = membersToAdd.filter((item) => {
@@ -69,7 +69,7 @@ export default Ember.Route.extend({
           Ember.set(item, 'error', "This doesn't look like a valid email address!");
         });
         return;
-      } else if(!_this.get('currentModel').get('name') || _this.get('currentModel').get('name').trim() == "") {
+      } else if(!_this.get('currentModel').get('name') || _this.get('currentModel').get('name').trim() === "") {
         _this.controller.set('teamError', 'Your team needs a name!');
         return;
       }
@@ -85,7 +85,7 @@ export default Ember.Route.extend({
         _this.controller.set('newTeamMemberEmail', '');
         _this.send('invalidateApplicationModel');
         _this.transitionTo('app.teams.team.dashboard.retrospectives', _this.get('currentModel'));
-      }).catch((err) => {
+      }).catch(() => {
         _this.controller.set('unexpectedError', '');
       });
     }
