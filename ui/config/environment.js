@@ -124,7 +124,7 @@ module.exports = function(environment) {
 
   if (environment === 'production') {
     ENV.DS.host = '***HTTPS_HOST***'
-    ENV.DS.wshost = 'ws://usemirror.io';
+    ENV.DS.wshost = '***WSS_HOST***'
   }
 
   return ENV;
