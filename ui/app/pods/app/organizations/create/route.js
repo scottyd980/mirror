@@ -36,6 +36,8 @@ export default Ember.Route.extend({
         delegates = [],
         membersToAdd = [];
 
+      _this.controller.set('orgError', '');
+
       if(!_this.get('currentModel').get('name') || _this.get('currentModel').get('name').trim() === "") {
         _this.controller.set('orgError', 'Your organization needs a name!');
         return;
