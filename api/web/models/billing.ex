@@ -61,6 +61,10 @@ defmodule Mirror.Billing do
         end
     end
 
+    def remove_subscriptions(customer) do
+        cancel_subscriptions(customer)
+    end
+
     defp build_subscription(customer, team, existing_subs) do
         existing_sub = Enum.find(existing_subs, fn(sub) ->
             String.to_integer(sub.metadata.team) == team.id
