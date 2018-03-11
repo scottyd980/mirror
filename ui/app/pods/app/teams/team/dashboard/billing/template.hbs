@@ -84,6 +84,9 @@
           </li>
         {{/each}}
       </ul>
+      {{#if orgError}}
+        <p class="help-block creation text-danger">{{orgError}}</p>
+      {{/if}}
     {{/x-modal-body}}
     {{#x-modal-footer}}
       <a {{action 'toggleJoinOwnOrganizationModal'}} class="btn btn-default btn-outline">Cancel</a>
@@ -103,6 +106,9 @@
         {{input type="text" class="form-control" placeholder="Organization Name" value=newOrganizationName}}
         {{fa-icon "group" fixedWidth=true}}
       </div>
+      {{#if orgError}}
+        <p class="help-block creation text-danger">{{orgError}}</p>
+      {{/if}}
     {{/x-modal-body}}
     {{#x-modal-footer}}
       <a {{action 'toggleCreateNewOrganizationModal'}} class="btn btn-default btn-outline">Cancel</a>
