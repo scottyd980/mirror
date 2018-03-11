@@ -63,7 +63,7 @@ h1, .h1, h2, .h2, h3, .h3, h4, .h4 {
   position: relative;
 
   &.front-page {
-    background: linear-gradient(rgba(0,0,0,0.15), rgba(0,0,0,0.15)), url('../img/hero2.png') center -100px;
+    background: linear-gradient(rgba(0,0,0,0.15), rgba(0,0,0,0.15)), url('../img/hero2.png') center center;
     height: 700px;
   }
 }
