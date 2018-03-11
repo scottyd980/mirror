@@ -87,6 +87,11 @@ defmodule Mirror.Organization do
     end
   end
 
+  def delete(organization) do
+    Billing.remove_subscriptions(organization);
+    Repo.delete(organization)
+  end
+
   def set_default_payment(organization) do
     organization = organization
     |> Organization.preload_relationships()

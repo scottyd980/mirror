@@ -104,7 +104,7 @@ defmodule Mirror.OrganizationController do
 
     case UserHelper.user_is_organization_admin?(current_user, organization) do
       true ->
-        case Repo.delete(organization) do
+        case Organization.delete(organization) do
           {:ok, _} ->
             conn
             |> put_status(:ok)
