@@ -7,15 +7,18 @@
           <h2 class="pad-top-sm">Create An Organization</h2>
         </div>
         {{#x-card}}
-          {{#if errors.length}}
+          {{#if unexpectedError}}
             <div class="alert alert-danger" role="alert">
-              {{fa-icon "exclamation-triangle"}} Please correct the highlighted fields below.
+              {{fa-icon "exclamation-triangle"}} {{unexpectedError}}
             </div>
           {{/if}}
           <div class="form-group input-group-icon">
             {{input type="text" class="form-control" placeholder="Organization Name" value=model.name}}
             {{fa-icon "group" fixedWidth=true}}
           </div>
+          {{#if orgError}}
+            <p class="help-block creation text-danger">{{orgError}}</p>
+          {{/if}}
           <div class="card-footer">
             <button {{action "createOrganization"}} type="submit" class="btn btn-success">Create Organization</button>
           </div>
