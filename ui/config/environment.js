@@ -123,8 +123,8 @@ module.exports = function(environment) {
   }
 
   if (environment === 'production') {
-    ENV.DS.host = 'https://usemirror.io:4000';
-    ENV.DS.wshost = 'wss://usemirror.io:4000';
+    ENV.DS.host = '***HTTPS_HOST***'
+    ENV.DS.wshost = '***WSS_HOST***'
   }
 
   return ENV;
