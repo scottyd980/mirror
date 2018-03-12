@@ -4,6 +4,11 @@
     padding: 15px;
     color: $white;
     border-radius: 2px;
+    margin-bottom: 15px !important;
+
+    &:last-of-type {
+        margin-bottom: 0 !important;
+    }
 
     &.good {
         @extend .success-bg;
@@ -24,7 +29,26 @@
     }
 }
 
+.drop-zones {
+    display: flex;
+    
+    .dz {
+        flex: 1;
+        padding: 0 6px;
+
+        p {
+            padding: 0 5px;
+        }
+    }
+}
+
 .drop-zone {
-    min-height: 500px;
     width: 100%;
+    padding: 5px;
+    height: calc(100% - 29px);
+}
+
+.dz-border {
+    border: 3px dashed #bbb;
+    padding: 2px;
 }
