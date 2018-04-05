@@ -29,6 +29,12 @@ defmodule Mirror.FeedbackView do
                     "self": "/api/retrospectives/"
                 },
                 "data": render_one(feedback.retrospective, Mirror.RetrospectiveView, "relationship.json", as: :retrospective)
+            },
+            "action": %{
+                "links": %{
+                    "self": "/api/actions/"
+                },
+                "data": render_one(List.first(feedback.actions), Mirror.ActionView, "relationship.json", as: :action)
             }
         }
     }

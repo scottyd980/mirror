@@ -92,4 +92,8 @@
   &.btn-outline {
     @include btn-outline($brand-danger, $brand-danger, $brand-danger);
   }
+
+  &.btn-outline-alt {
+    @include btn-outline(#ffffff, #ffffff, #ffffff, $brand-danger);
+  }
 }

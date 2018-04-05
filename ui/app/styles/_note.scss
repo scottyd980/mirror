@@ -5,6 +5,8 @@
     color: $white;
     border-radius: 2px;
     margin-bottom: 15px !important;
+    display: flex;
+    flex-direction: column;
 
     &:last-of-type {
         margin-bottom: 0 !important;
@@ -26,6 +28,25 @@
         margin: -3px;
         margin-bottom: 3px;
         color: rgba(255,255,255,0.8);
+    }
+
+    .note--top {
+        margin-bottom: auto;
+    }
+
+    .note--bottom {
+        padding-top: 15px;
+        margin-top: auto;
+    }
+
+    .note--action {
+        text-align: center;
+
+        .btn {
+            font-weight: bold;
+            font-size: 10px;
+            text-transform: uppercase;
+        }
     }
 }
 

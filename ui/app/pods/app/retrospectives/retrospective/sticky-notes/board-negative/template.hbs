@@ -9,7 +9,13 @@
                     {{#x-note-drop onDrop="moveFeedback" data=0}}
                         {{#each negative_feedback as |fb|}}
                             {{#if (eq fb.state 0)}}
-                                {{#x-note data=fb isAnonymous=model.parent.retrospective.isAnonymous isModerator=model.parent.isModerator type='bad'}}
+                                {{#x-note 
+                                    data=fb 
+                                    isAnonymous=model.parent.retrospective.isAnonymous 
+                                    isModerator=model.parent.isModerator 
+                                    type='bad'
+                                    onFlag=(route-action "openActionModal" fb)
+                                }}
                                     {{fb.message}}
                                 {{/x-note}}
                             {{/if}}
@@ -22,7 +28,13 @@
                     {{#x-note-drop onDrop="moveFeedback" data=1}}
                         {{#each negative_feedback as |fb|}}
                             {{#if (eq fb.state 1)}}
-                                {{#x-note data=fb isAnonymous=model.parent.retrospective.isAnonymous isModerator=model.parent.isModerator type='bad'}}
+                                {{#x-note 
+                                    data=fb 
+                                    isAnonymous=model.parent.retrospective.isAnonymous 
+                                    isModerator=model.parent.isModerator 
+                                    type='bad'
+                                    onFlag=(route-action "openActionModal" fb)
+                                }}
                                     {{fb.message}}
                                 {{/x-note}}
                             {{/if}}
@@ -35,7 +47,13 @@
                     {{#x-note-drop onDrop="moveFeedback" data=2}}
                         {{#each negative_feedback as |fb|}}
                             {{#if (eq fb.state 2)}}
-                                {{#x-note data=fb isAnonymous=model.parent.retrospective.isAnonymous isModerator=model.parent.isModerator type='bad'}}
+                                {{#x-note 
+                                    data=fb 
+                                    isAnonymous=model.parent.retrospective.isAnonymous 
+                                    isModerator=model.parent.isModerator 
+                                    type='bad'
+                                    onFlag=(route-action "openActionModal" fb)
+                                }}
                                     {{fb.message}}
                                 {{/x-note}}
                             {{/if}}
