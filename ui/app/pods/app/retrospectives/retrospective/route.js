@@ -49,6 +49,7 @@ export default Ember.Route.extend({
 
         controller.set('hasRetroInProgress', false);
         controller.set('isRetroStartModalShowing', false);
+        controller.set('isActionModalShowing', false);
 
         this.get('retrospectiveService').join_retrospective_channel(model.retrospective.get('id'));
     },
@@ -90,6 +91,22 @@ export default Ember.Route.extend({
                     message: "We experienced an unexpected error. Please try again."
                 });
             });
+        },
+        openActionModal(feedback) {
+            let _this = this;
+            this.controller.set('activeFeedback', feedback);
+            this.controller.set('isActionModalShowing', true);
+        },
+        closeActionModal() {
+            this.controller.set('isActionModalShowing', false);
+            this.controller.set('activeFeedback', null);
+        },
+        submitActionItem(message) {
+            const _this = this;
+            _this.store.createRecord('action', {
+                message: message,
+                feedback: _this.controller.get('activeFeedback')
+            }).save();
         }
     }
 });

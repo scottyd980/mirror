@@ -9,6 +9,7 @@ defmodule Mirror.Feedback do
     field :type, :string
     field :message, :string
     field :state, :integer
+    has_many :actions, Mirror.Action, on_delete: :delete_all
     belongs_to :user, Mirror.User
     belongs_to :retrospective, Mirror.Retrospective
 
@@ -34,7 +35,7 @@ defmodule Mirror.Feedback do
 
   def preload_relationships(feedback) do
     feedback
-    |> Repo.preload([:user, :retrospective], force: true)
+    |> Repo.preload([:user, :retrospective, :actions], force: true)
   end
 
   defp validate_retrospective_member(changeset) do
