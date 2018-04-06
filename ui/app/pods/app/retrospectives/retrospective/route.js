@@ -50,6 +50,7 @@ export default Ember.Route.extend({
         controller.set('hasRetroInProgress', false);
         controller.set('isRetroStartModalShowing', false);
         controller.set('isActionModalShowing', false);
+        controller.set('actionMessage', '');
 
         this.get('retrospectiveService').join_retrospective_channel(model.retrospective.get('id'));
     },
@@ -85,7 +86,6 @@ export default Ember.Route.extend({
                 });
                 
             }).catch((error) => {
-                console.log(error);
                 _this.get('notificationCenter').error({
                     title: config.ERROR_MESSAGES.generic,
                     message: "We experienced an unexpected error. Please try again."
@@ -93,20 +93,43 @@ export default Ember.Route.extend({
             });
         },
         openActionModal(feedback) {
-            let _this = this;
-            this.controller.set('activeFeedback', feedback);
-            this.controller.set('isActionModalShowing', true);
+            const _this = this;
+            let actionMessage = '';
+
+            feedback.get('action').then((action) => {
+                if(action) {
+                    actionMessage = action.get('message');
+                }
+
+                _this.controller.set('activeFeedback', feedback);
+                _this.controller.set('actionMessage', actionMessage);
+                _this.controller.set('isActionModalShowing', true);
+            });
         },
         closeActionModal() {
+            const _this = this;
             this.controller.set('isActionModalShowing', false);
             this.controller.set('activeFeedback', null);
+            this.controller.set('actionMessage', '');
         },
-        submitActionItem(message) {
+        submitActionItem() {
             const _this = this;
-            _this.store.createRecord('action', {
-                message: message,
-                feedback: _this.controller.get('activeFeedback')
-            }).save();
+            const feedback = _this.controller.get('activeFeedback');
+            const message = _this.controller.get('actionMessage');
+
+            feedback.get('action').then((action) => {
+                if(action) {
+                    action.set('message', message);
+                    action.save();
+                } else {
+                    _this.store.createRecord('action', {
+                        message: message,
+                        feedback: feedback
+                    }).save();
+                }
+
+                _this.send('closeActionModal');
+            });
         }
     }
 });
