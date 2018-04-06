@@ -55,29 +55,31 @@ defmodule Mirror.ActionController do
     #   end
     end
   
-    # # TODO: Need to make sure this is a moderator of the retrospective making changes
-    # def update(conn, %{"id" => id}) do
-    #   current_user = Guardian.Plug.current_resource(conn)
+    # TODO: Need to make sure this is a moderator of the retrospective making changes
+    def update(conn, %{"id" => id}) do
+      current_user = Guardian.Plug.current_resource(conn)
   
-    #   body_params = conn.body_params
+      body_params = conn.body_params
       
-    #   feedback = Repo.get!(Feedback, id)
-    #   |> Feedback.preload_relationships()
+      action = Repo.get!(Action, id)
+      |> Action.preload_relationships()
   
-    #   state = body_params["data"]["attributes"]["state"];
+      message = body_params["data"]["attributes"]["message"];
   
-    #   changeset = Feedback.moderator_changeset(feedback, current_user, %{state: state})
+      changeset = Action.changeset action, %{
+          message: message
+      }
     
-    #   case Repo.update(changeset) do
-    #     {:ok, feedback} ->
-    #       Mirror.Endpoint.broadcast("retrospective:#{feedback.retrospective.id}", "feedback_state_change", Mirror.FeedbackView.render("show.json", feedback: feedback))
-    #       render(conn, "show.json", feedback: feedback)
-    #     {:error, changeset} ->
-    #       conn
-    #       |> put_status(:unprocessable_entity)
-    #       |> render(Mirror.ChangesetView, "error.json", changeset: changeset)
-    #   end
-    # end
+      case Repo.update(changeset) do
+        {:ok, action} ->
+          # Mirror.Endpoint.broadcast("retrospective:#{feedback.retrospective.id}", "feedback_state_change", Mirror.FeedbackView.render("show.json", feedback: feedback))
+          render(conn, "show.json", action: action)
+        {:error, changeset} ->
+          conn
+          |> put_status(:unprocessable_entity)
+          |> render(Mirror.ChangesetView, "error.json", changeset: changeset)
+      end
+    end
   
     defp use_error_view(conn, status, changeset) do
       conn
