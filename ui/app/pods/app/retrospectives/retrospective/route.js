@@ -118,16 +118,18 @@ export default Ember.Route.extend({
             const message = _this.controller.get('actionMessage');
 
             feedback.get('action').then((action) => {
-                if(action) {
+                if(message.trim() !== "" && action) {
                     action.set('message', message);
                     action.save();
-                } else {
+                } else if(message.trim() !== "") {
                     _this.store.createRecord('action', {
                         message: message,
                         feedback: feedback
                     }).save();
+                } else if(message.trim() === "" && action) {
+                    action.destroyRecord();
                 }
-
+                
                 _this.send('closeActionModal');
             });
         }

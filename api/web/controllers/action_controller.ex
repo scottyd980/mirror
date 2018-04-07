@@ -80,6 +80,23 @@ defmodule Mirror.ActionController do
           |> render(Mirror.ChangesetView, "error.json", changeset: changeset)
       end
     end
+
+    # TODO: Need to make sure this is a moderator of the retrospective making changes
+    def delete(conn, %{"id" => id}) do
+        current_user = Guardian.Plug.current_resource(conn)
+    
+        action = Repo.get!(Action, id)
+        |> Action.preload_relationships()
+    
+        case Repo.delete(action) do
+            {:ok, action} ->
+                render(conn, "delete.json", action: action)
+            {:error, changeset} ->
+                conn
+                |> put_status(:unprocessable_entity)
+                |> render(Mirror.ChangesetView, "error.json", changeset: changeset)
+        end
+    end
   
     defp use_error_view(conn, status, changeset) do
       conn
