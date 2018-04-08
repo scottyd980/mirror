@@ -81,6 +81,8 @@ export default Ember.Service.extend({
     this._listen_for_retrospective_scores(channel);
     this._listen_for_retrospective_feedback(channel);
     this._listen_for_retrospective_feedback_change(channel);
+    this._listen_for_retrospective_action_item(channel);
+    this._listen_for_retrospective_action_item_deleted(channel);
   },
 
   _listen_for_joined_retrospective(channel) {
@@ -122,6 +124,22 @@ export default Ember.Service.extend({
       // We want this to push to store to everyone, even if it's the user that submitted it, because they may not be the one
       // moderating.
       this.get('store').pushPayload(JSON.parse(JSON.stringify(resp)));
+    });
+  },
+
+  _listen_for_retrospective_action_item(channel) {
+    channel.on('feedback_action_change', (resp) => {
+      // We don't want to push these changes to the moderator
+      this.get('store').pushPayload(JSON.parse(JSON.stringify(resp)));
+    });
+  },
+
+  _listen_for_retrospective_action_item_deleted(channel) {
+    channel.on('feedback_action_deleted', (resp) => {
+      // We don't want to push these changes to the moderator
+      this.get('store').findRecord('feedback', resp.data.relationships.feedback.data.id).then((feedback) => {
+        feedback.set('action', null);
+      });
     });
   }
 });
