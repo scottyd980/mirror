@@ -24,9 +24,11 @@ defmodule Mirror.UserHelper do
 
   def user_is_moderator?(user, retrospective) do
     retro = retrospective
-    |> Repo.preload([:moderator])
+    |> Repo.preload([:moderator, :team])
 
-    retro.moderator == user
+    team = retro.team
+
+    retro.moderator == user and user_is_team_member?(user, team)
   end
 
   def user_is_organization_admin?(user, organization) do
