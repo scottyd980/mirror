@@ -1,7 +1,7 @@
 {{#each (sort-by "id:desc" cards) as |card|}}
     <li class={{if (eq card.id default_payment.id) "default"}}>
         <div class="card-brand">
-            <img class="img-responsive" src={{concat (concat "/img/cards/" (dasherize card.brand)) ".png"}} />
+            <img class="img-responsive" src="{{compute (action "cardImage" card)}}" />
         </div>
         <div class="info">
             <h4>{{card.brand}} xxxxx-{{card.last4}}</h4>
