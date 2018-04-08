@@ -36,9 +36,7 @@ defmodule Mirror.ActionController do
                   use_error_view(conn, 422, changeset)
           end
         _ ->
-          conn
-          |> put_status(404)
-          |> render(Mirror.ErrorView, "404.json")
+          use_error_view(conn, 401, %{})
       end
     end
     
@@ -60,9 +58,7 @@ defmodule Mirror.ActionController do
         true ->
           render(conn, "show.json", action: action)
         _ ->
-          conn
-          |> put_status(404)
-          |> render(Mirror.ErrorView, "404.json")
+          use_error_view(conn, 401, %{})
       end
     end
   
@@ -97,9 +93,7 @@ defmodule Mirror.ActionController do
               |> render(Mirror.ChangesetView, "error.json", changeset: changeset)
           end
         _ ->
-          conn
-          |> put_status(404)
-          |> render(Mirror.ErrorView, "404.json")
+          use_error_view(conn, 401, %{})
       end
     end
 
@@ -126,9 +120,7 @@ defmodule Mirror.ActionController do
                   |> render(Mirror.ChangesetView, "error.json", changeset: changeset)
             end
           _ ->
-            conn
-            |> put_status(404)
-            |> render(Mirror.ErrorView, "404.json")
+            use_error_view(conn, 401, %{})
         end
     end
   
