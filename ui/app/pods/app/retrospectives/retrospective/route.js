@@ -85,7 +85,7 @@ export default Ember.Route.extend({
                     });
                 });
                 
-            }).catch((error) => {
+            }).catch(() => {
                 _this.get('notificationCenter').error({
                     title: config.ERROR_MESSAGES.generic,
                     message: "We experienced an unexpected error. Please try again."
@@ -108,9 +108,9 @@ export default Ember.Route.extend({
         },
         closeActionModal() {
             const _this = this;
-            this.controller.set('isActionModalShowing', false);
-            this.controller.set('activeFeedback', null);
-            this.controller.set('actionMessage', '');
+            _this.controller.set('isActionModalShowing', false);
+            _this.controller.set('activeFeedback', null);
+            _this.controller.set('actionMessage', '');
         },
         submitActionItem() {
             const _this = this;
