@@ -12,6 +12,9 @@ defmodule Mirror.ActionController do
       current_user = Guardian.Plug.current_resource(conn)
   
       feedback_id = relationships["feedback"]["data"]["id"]
+
+      feedback = Repo.get!(Feedback, feedback_id)
+      |> Feedback.preload_relationships()
   
       changeset = Action.changeset %Action{}, %{
           message: attributes["message"],
@@ -23,7 +26,7 @@ defmodule Mirror.ActionController do
               action = action
               |> Action.preload_relationships
   
-              # Mirror.Endpoint.broadcast("retrospective:#{retrospective_id}", "action_added", Mirror.FeedbackView.render("show.json", action: action))
+              Mirror.Endpoint.broadcast("retrospective:#{feedback.retrospective.id}", "feedback_action_change", Mirror.ActionView.render("show.json", action: action))
   
               conn
               |> put_status(:created)
@@ -63,6 +66,9 @@ defmodule Mirror.ActionController do
       
       action = Repo.get!(Action, id)
       |> Action.preload_relationships()
+
+      feedback = action.feedback
+      |> Feedback.preload_relationships()
   
       message = body_params["data"]["attributes"]["message"];
   
@@ -72,7 +78,7 @@ defmodule Mirror.ActionController do
     
       case Repo.update(changeset) do
         {:ok, action} ->
-          # Mirror.Endpoint.broadcast("retrospective:#{feedback.retrospective.id}", "feedback_state_change", Mirror.FeedbackView.render("show.json", feedback: feedback))
+          Mirror.Endpoint.broadcast("retrospective:#{feedback.retrospective.id}", "feedback_action_change", Mirror.ActionView.render("show.json", action: action))
           render(conn, "show.json", action: action)
         {:error, changeset} ->
           conn
@@ -87,9 +93,13 @@ defmodule Mirror.ActionController do
     
         action = Repo.get!(Action, id)
         |> Action.preload_relationships()
+
+        feedback = action.feedback
+        |> Feedback.preload_relationships()
     
         case Repo.delete(action) do
             {:ok, action} ->
+                Mirror.Endpoint.broadcast("retrospective:#{feedback.retrospective.id}", "feedback_action_deleted", Mirror.ActionView.render("show.json", action: action))
                 render(conn, "delete.json", action: action)
             {:error, changeset} ->
                 conn

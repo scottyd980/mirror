@@ -29,10 +29,8 @@ defmodule Mirror.RetrospectiveChannel do
 
  # TODO: We're not getting here for some reason
  def leave("retrospective:" <> retrospective_id, %{"token" => token}, socket) do
-   Logger.warn "MADE IT HERE"
    case sign_in(socket, token) do
       {:ok, authed_socket, _guardian_params} ->
-        Logger.warn "LET'S SEE IF WE MADE IT HERE"
         {:ok, authed_socket}
       {:error, reason} ->
         {:error, :authentication_required}
