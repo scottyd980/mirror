@@ -1,7 +1,9 @@
 defmodule Mirror.Accounts.User do
   use Ecto.Schema
   import Ecto.Changeset
+  import Comeonin.Bcrypt
 
+  alias Mirror.Accounts
 
   schema "users" do
     field :username, :string
@@ -30,6 +32,25 @@ defmodule Mirror.Accounts.User do
   def preload_relationships(user) do
     user
     # |> Repo.preload([:scores, :teams, :organizations], force: true)
+  end
+
+  def login(username, password) do
+    try do
+      user = Accounts.find_user!(username)
+      # Attempt to retrieve exactly one user from the DB, whose
+      # email matches the one provided with the login request
+      cond do
+        checkpw(password, user.password_hash) ->
+          {:ok, jwt, _} = Mirror.Guardian.encode_and_sign(user)
+          {:ok, jwt, "LOGIN - SUCCESS: #{username}"}
+        true ->
+          {:error, "LOGIN - FAILURE: #{username}"}
+      end
+    rescue
+      e ->
+        IO.inspect e # Print error to the console for debugging
+        {:error, "LOGIN - UNEXPECTED ERROR: #{username}"}
+    end
   end
 
   defp hash_password(%{valid?: false} = changeset), do: changeset
