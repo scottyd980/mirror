@@ -41,6 +41,6 @@ config :mirror, Mirror.Repo,
   adapter: Ecto.Adapters.MySQL,
   username: "root",
   password: "",
-  database: "mirror_dev",
+  database: "mirror_new_dev",
   hostname: "localhost",
   pool_size: 10
