@@ -10,6 +10,7 @@ defmodule Mirror.Repo.Migrations.CreateTeams do
 
       timestamps()
     end
-
+    
+    execute "ALTER TABLE teams MODIFY uuid VARCHAR(255) COLLATE utf8_bin;"
   end
 end
