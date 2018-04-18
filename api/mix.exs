@@ -47,7 +47,8 @@ defmodule Mirror.Mixfile do
       {:hashids, "~> 2.0"},
       {:bamboo, "~> 0.8"},
       {:bamboo_smtp, "~> 1.4.0"},
-      {:timex, "~> 3.1"}
+      {:timex, "~> 3.1"},
+      {:uuid, "~> 1.1"}
     ]
 
 

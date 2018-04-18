@@ -26,6 +26,11 @@ defmodule MirrorWeb.Router do
     pipe_through [:api, :auth]
     
     get "/user/current", UserController, :current
+    post "/team_members", TeamMemberController, :create
+    delete "/team_members", TeamMemberController, :delete
+    post "/team_admins", TeamAdminController, :create
+    delete "/team_admins", TeamAdminController, :delete
+    get "/teams/:id/next_sprint", TeamController, :find_next_sprint
   end
 
   # JSON API Endpoints - Open endpoints
@@ -40,5 +45,7 @@ defmodule MirrorWeb.Router do
     pipe_through [:api, :auth, :json_api]
     
     resources "/users", UserController, only: [:show]
+    resources "/teams", TeamController
+    resources "/retrospectives", RetrospectiveController, only: [:index, :create, :update, :show]
   end
 end

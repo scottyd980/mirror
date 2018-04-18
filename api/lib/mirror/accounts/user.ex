@@ -1,9 +1,12 @@
 defmodule Mirror.Accounts.User do
   use Ecto.Schema
   import Ecto.Changeset
+  alias Mirror.Repo
+  
   import Comeonin.Bcrypt
 
   alias Mirror.Accounts
+  alias Mirror.Teams.{Team, Member}
 
   schema "users" do
     field :username, :string
@@ -13,6 +16,8 @@ defmodule Mirror.Accounts.User do
     field :password, :string, virtual: true
     field :password_confirmation, :string, virtual: true
 
+    many_to_many :teams, Team, join_through: Member
+    
     timestamps()
   end
 
@@ -31,6 +36,7 @@ defmodule Mirror.Accounts.User do
 
   def preload_relationships(user) do
     user
+    |> Repo.preload([:teams], force: true)
     # |> Repo.preload([:scores, :teams, :organizations], force: true)
   end
 
