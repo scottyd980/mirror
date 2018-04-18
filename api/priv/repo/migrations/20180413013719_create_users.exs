@@ -12,5 +12,6 @@ defmodule Mirror.Repo.Migrations.CreateUsers do
 
     create index(:users, [:email], unique: true)
     create index(:users, [:username], unique: true)
+    execute "ALTER TABLE users MODIFY password_hash VARCHAR(255) COLLATE utf8_bin;"
   end
 end
