@@ -17,8 +17,7 @@ defmodule MirrorWeb.UserController do
     do
       conn
       |> put_status(:created)
-      |> put_resp_header("location", user_path(conn, :show, user))
-      |> render("show.json-api", data: user)
+      |> render("show.json-api", data: user |> User.preload_relationships)
     else
       {:error, changeset} -> 
         conn
@@ -52,7 +51,7 @@ defmodule MirrorWeb.UserController do
       |> put_status(201)
       |> json(%{access_token: jwt}) # Return token to the client
     else
-      {:error, message} ->
+      {:error, _} ->
         conn
         |> put_status(401)
         |> render(MirrorWeb.ErrorView, "401.json") # 401

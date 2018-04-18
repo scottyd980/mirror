@@ -70,9 +70,11 @@ export default Ember.Route.extend({
         errors.forEach((item) => {
           Ember.set(item, 'error', "This doesn't look like a valid email address!");
         });
+        _this.controller.set('currentlyLoading', false);
         return;
       } else if(!_this.get('currentModel').get('name') || _this.get('currentModel').get('name').trim() === "") {
         _this.controller.set('teamError', 'Your team needs a name!');
+        _this.controller.set('currentlyLoading', false);
         return;
       }
 
@@ -90,6 +92,7 @@ export default Ember.Route.extend({
         _this.controller.set('currentlyLoading', false);
       }).catch(() => {
         _this.controller.set('unexpectedError', 'There was an unexpected error, please review the fields and try again.');
+        _this.controller.set('currentlyLoading', false);
       });
     }
   }
