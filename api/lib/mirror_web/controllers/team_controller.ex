@@ -78,7 +78,7 @@ defmodule MirrorWeb.TeamController do
       _ ->
         conn
         |> put_status(404)
-        |> render(Mirror.ErrorView, "404.json")
+        |> render(Mirror.ErrorView, "404.json-api")
     end
   end
 end
