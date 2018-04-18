@@ -3,15 +3,28 @@ defmodule MirrorWeb.RetrospectiveController do
 
   alias Mirror.Retrospectives
   alias Mirror.Retrospectives.Retrospective
+  alias Mirror.Teams
+
+  alias Mirror.Helpers
 
   action_fallback MirrorWeb.FallbackController
 
-  # TODO: WORK
-  # def index(conn, _params) do
-  #   retrospectives = Retrospectives.list_retrospectives()
-  #   render(conn, "index.json", retrospectives: retrospectives)
-  # end
+  def index(conn, params) do
+    current_user = Mirror.Guardian.Plug.current_resource(conn)
 
+    team = Teams.get_team!(params["filter"]["team"])
+    case Helpers.User.user_is_team_member?(current_user, team) do
+      true ->
+        retrospectives = Retrospectives.list_retrospectives(team)
+        render(conn, "index.json-api", data: retrospectives)
+      _ ->
+        conn
+        |> put_status(404)
+        |> render(Mirror.ErrorView, "404.json-api")
+    end
+  end
+
+  # TODO: WORK
   # def create(conn, %{"retrospective" => retrospective_params}) do
   #   with {:ok, %Retrospective{} = retrospective} <- Retrospectives.create_retrospective(retrospective_params) do
   #     conn

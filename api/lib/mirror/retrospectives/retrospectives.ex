@@ -9,16 +9,21 @@ defmodule Mirror.Retrospectives do
   alias Mirror.Retrospectives.Retrospective
 
   @doc """
-  Returns the list of retrospectives.
+  Returns the list of retrospectives for the given team.
 
   ## Examples
 
-      iex> list_retrospectives()
+      iex> list_retrospectives(team)
       [%Retrospective{}, ...]
 
   """
-  def list_retrospectives do
-    Repo.all(Retrospective)
+  def list_retrospectives(team) do
+    query = from r in Retrospective,
+            where: r.team_id == ^team.id,
+            where: r.cancelled == false
+    
+    Repo.all(query)
+    |> Retrospective.preload_relationships()
   end
 
   @doc """
