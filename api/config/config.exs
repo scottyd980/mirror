@@ -22,6 +22,11 @@ config :logger, :console,
   format: "$time $metadata[$level] $message\n",
   metadata: [:user_id]
 
+config :mirror, Mirror.Mailer,
+  adapter: Bamboo.MailgunAdapter,
+  api_key: "***MAILGUN_API_KEY***",
+  domain: "***MAIL_DOMAIN***"
+
 config :phoenix, :format_encoders,
   "json-api": Poison
 

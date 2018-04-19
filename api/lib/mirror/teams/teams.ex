@@ -7,6 +7,9 @@ defmodule Mirror.Teams do
   alias Mirror.Repo
 
   alias Mirror.Teams.Team
+  alias Mirror.Teams.MemberDelegate
+  alias Mirror.Teams.Member
+  alias Mirror.Teams.Admin
 
   @doc """
   Returns the list of teams.
@@ -55,8 +58,8 @@ defmodule Mirror.Teams do
             {:ok, updated_team}   <- Team.add_unique_id(team),
             [{:ok, team_admins}]  <- Team.add_admins(team, admins),
             team_member_delegates <- Team.add_member_delegates(team, delegates),
-          #  {:ok} <- Team.send_delegate_emails(team_member_delegates, team),
-            [{:ok, _}] <- Team.add_members(updated_team, members) 
+            {:ok}                 <- MemberDelegate.send_invitations(team_member_delegates, team),
+            [{:ok, _}]            <- Team.add_members(updated_team, members) 
       do
         updated_team
         |> Team.preload_relationships()
@@ -114,8 +117,6 @@ defmodule Mirror.Teams do
   def change_team(%Team{} = team) do
     Team.changeset(team, %{})
   end
-
-  alias Mirror.Teams.Member
 
   @doc """
   Returns the list of members.
@@ -211,8 +212,6 @@ defmodule Mirror.Teams do
     Member.changeset(member, %{})
   end
 
-  alias Mirror.Teams.Admin
-
   @doc """
   Returns the list of admins.
 
@@ -306,8 +305,6 @@ defmodule Mirror.Teams do
   def change_admin(%Admin{} = admin) do
     Admin.changeset(admin, %{})
   end
-
-  alias Mirror.Teams.MemberDelegate
 
   @doc """
   Returns the list of member_delegates.
