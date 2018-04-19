@@ -3,7 +3,10 @@ defmodule Mirror.Teams.MemberDelegate do
   import Ecto.Changeset
 
   alias Mirror.Teams.Team
+
   alias Mirror.Helpers.Hash
+  alias Mirror.Email
+  alias Mirror.Mailer
 
   schema "team_member_delegates" do
     field :access_code, :string
@@ -28,5 +31,13 @@ defmodule Mirror.Teams.MemberDelegate do
   defp create_access_code(%{valid?: true} = changeset) do
       access_code = Hash.generate_unique_id(Ecto.Changeset.get_field(changeset, :team_id), Ecto.Changeset.get_field(changeset, :email))
       Ecto.Changeset.put_change(changeset, :access_code, access_code)
+  end
+
+  def send_invitations(delegates, team) do
+    Enum.each(delegates, fn {:ok, delegate} ->
+      Email.invitation_email(delegate.email, delegate.access_code, team.name) 
+      |> Mailer.deliver_later
+    end)
+    {:ok}
   end
 end

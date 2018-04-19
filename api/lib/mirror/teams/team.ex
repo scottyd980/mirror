@@ -8,16 +8,16 @@ defmodule Mirror.Teams.Team do
   alias Mirror.Accounts.User
   alias Mirror.Teams.{Team, Admin, Member, MemberDelegate}
   alias Mirror.Retrospectives.Retrospective
+  alias Mirror.Organizations.Organization
 
   alias Mirror.Helpers.Hash
-  #alias Mirror.Organizations.Organization
 
   schema "teams" do
     field :avatar, :string, default: "default.png"
     field :is_anonymous, :boolean, default: true
     field :name, :string
     field :uuid, :string
-    # belongs_to :organization, Organization
+    belongs_to :organization, Organization
     many_to_many :admins, User, join_through: Admin
     many_to_many :members, User, join_through: Member
     has_many :member_delegates, MemberDelegate
@@ -35,7 +35,7 @@ defmodule Mirror.Teams.Team do
 
   def preload_relationships(team) do
     team
-    # |> Repo.preload([:members, :admins, :organization], force: true)
+    |> Repo.preload([:members, :admins, :retrospectives, :organization], force: true)
   end
 
   def create(params) do
@@ -87,7 +87,7 @@ defmodule Mirror.Teams.Team do
 
   def find_last_retrospective(team) do
     retros = find_all_retrospectives(team)
-    most_recent = Enum.filter(retros, fn(r) ->
+    Enum.filter(retros, fn(r) ->
       !r.cancelled
     end)
     |> Enum.sort(fn(d1, d2) ->
