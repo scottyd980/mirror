@@ -9,6 +9,7 @@ export default Model.extend({
   isAnonymous: attr('string'),
   admins: hasMany('user'),
   members: hasMany('user'),
+  retrospectives: hasMany('retrospective'),
   organization: belongsTo('organization'),
   memberDelegates: array()
 });
