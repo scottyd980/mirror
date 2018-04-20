@@ -42,7 +42,25 @@ defmodule MirrorWeb.TeamController do
 
     case Helpers.User.user_is_team_member?(current_user, team) do
       true ->
-        render(conn, "show.json-api", data: team)
+        render(conn, "show.json-api", data: team |> Team.preload_relationships)
+      _ ->
+        conn
+        |> put_status(404)
+        |> render(Mirror.ErrorView, "404.json-api")
+    end
+  end
+
+  def update(conn, %{"id" => id, "data" => data}) do
+    current_user = Mirror.Guardian.Plug.current_resource(conn)
+
+    team_params = JaSerializer.Params.to_attributes(data)
+    team = Teams.get_team!(id)
+
+    case Helpers.User.user_is_team_admin?(current_user, team) do
+      true ->
+        with {:ok, %Team{} = team} <- Teams.update_team(team, team_params) do
+          render(conn, "show.json-api", data: team |> Team.preload_relationships)
+        end
       _ ->
         conn
         |> put_status(404)
@@ -51,14 +69,6 @@ defmodule MirrorWeb.TeamController do
   end
 
   # TODO: WORK
-  # def update(conn, %{"id" => id, "team" => team_params}) do
-  #   team = Teams.get_team!(id)
-
-  #   with {:ok, %Team{} = team} <- Teams.update_team(team, team_params) do
-  #     render(conn, "show.json-api", team: team)
-  #   end
-  # end
-
   # def delete(conn, %{"id" => id}) do
   #   team = Teams.get_team!(id)
   #   with {:ok, %Team{}} <- Teams.delete_team(team) do
