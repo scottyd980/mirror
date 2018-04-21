@@ -11,8 +11,6 @@ defmodule Mirror.Teams do
   alias Mirror.Teams.Member
   alias Mirror.Teams.Admin
 
-  require Logger
-
   @doc """
   Returns the list of teams.
 
