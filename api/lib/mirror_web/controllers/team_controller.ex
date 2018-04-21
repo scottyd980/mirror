@@ -8,14 +8,6 @@ defmodule MirrorWeb.TeamController do
 
   action_fallback MirrorWeb.FallbackController
 
-  # TODO: DO WE NEED THIS?
-  def index(conn, _params) do
-    teams = Teams.list_teams()
-    |> Team.preload_relationships()
-
-    render(conn, "index.json-api", data: teams)
-  end
-
   def create(conn, %{"data" => data}) do
     team_members = [Mirror.Guardian.Plug.current_resource(conn)]
     team_admins = [Mirror.Guardian.Plug.current_resource(conn)]
@@ -60,6 +52,11 @@ defmodule MirrorWeb.TeamController do
       true ->
         with {:ok, %Team{} = team} <- Teams.update_team(team, team_params) do
           render(conn, "show.json-api", data: team |> Team.preload_relationships)
+        else
+          {:error, changeset} ->
+            conn
+            |> put_status(:unprocessable_entity)
+            |> render(Mirror.ChangesetView, "error.json", changeset: changeset)
         end
       _ ->
         conn
@@ -68,13 +65,27 @@ defmodule MirrorWeb.TeamController do
     end
   end
 
-  # TODO: WORK
-  # def delete(conn, %{"id" => id}) do
-  #   team = Teams.get_team!(id)
-  #   with {:ok, %Team{}} <- Teams.delete_team(team) do
-  #     send_resp(conn, :no_content, "")
-  #   end
-  # end
+  def delete(conn, %{"id" => id}) do
+    current_user = Mirror.Guardian.Plug.current_resource(conn)
+
+    team = Teams.get_team!(id)
+
+    case Helpers.User.user_is_team_admin?(current_user, team) do
+      true ->
+        with {:ok, %Team{}} <- Teams.delete_team(team) do
+          send_resp(conn, :no_content, "")
+        else
+          {:error, changeset} ->
+            conn
+            |> put_status(:unprocessable_entity)
+            |> render(Mirror.ChangesetView, "error.json", changeset: changeset)
+        end
+      _ ->
+        conn
+        |> put_status(404)
+        |> render(Mirror.ErrorView, "404.json-api")
+    end
+  end
 
   def find_next_sprint(conn, %{"id" => id}) do
     current_user = Mirror.Guardian.Plug.current_resource(conn)
