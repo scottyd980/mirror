@@ -11,6 +11,8 @@ defmodule Mirror.Teams do
   alias Mirror.Teams.Member
   alias Mirror.Teams.Admin
 
+  require Logger
+
   @doc """
   Returns the list of teams.
 
@@ -56,7 +58,7 @@ defmodule Mirror.Teams do
     Repo.transaction fn ->
       with  {:ok, team}           <- Team.create(attrs),
             {:ok, updated_team}   <- Team.add_unique_id(team),
-            [{:ok, team_admins}]  <- Team.add_admins(team, admins),
+            [{:ok, _}]  <- Team.add_admins(team, admins),
             team_member_delegates <- Team.add_member_delegates(team, delegates),
             {:ok}                 <- MemberDelegate.send_invitations(team_member_delegates, team),
             [{:ok, _}]            <- Team.add_members(updated_team, members) 
@@ -103,6 +105,18 @@ defmodule Mirror.Teams do
   """
   def delete_team(%Team{} = team) do
     Repo.delete(team)
+    # Repo.transaction fn ->
+    #     with {:ok, team}      <- Repo.delete(team)
+    #          team_with_assocs <- team |> Team.preload_relationships
+    #          removed_sub      <- Billing.remove_subscription(current_org, team_with_assocs, true)
+    #     do
+    #         team
+    #     else
+    #         {:error, changeset} ->
+    #             Repo.rollback changeset
+    #             {:error, changeset}
+    #     end
+    # end
   end
 
   @doc """
