@@ -2,7 +2,7 @@ defmodule MirrorWeb.RetrospectiveView do
   use MirrorWeb, :view
   use JaSerializer.PhoenixView
   
-  alias MirrorWeb.TeamSerializer
+  alias MirrorWeb.{TeamSerializer, UserSerializer, ScoreSerializer, FeedbackSerializer}
   alias MirrorWeb.UserSerializer
 
   attributes [:name, :state, :is_anonymous, :cancelled]
@@ -20,6 +20,30 @@ defmodule MirrorWeb.RetrospectiveView do
       self: "/api/users/"
     ],
     serializer: UserSerializer,
+    include: false,
+    identifiers: :always
+    
+  has_many :participants,
+    links: [
+      self: "/api/users/"
+    ],
+    serializer: UserSerializer,
+    include: false,
+    identifiers: :always
+
+  has_many :scores,
+    links: [
+      self: "/api/scores/"
+    ],
+    serializer: ScoreSerializer,
+    include: false,
+    identifiers: :always
+
+  has_many :feedbacks,
+    links: [
+      self: "/api/feedbacks/"
+    ],
+    serializer: FeedbackSerializer,
     include: false,
     identifiers: :always
 end

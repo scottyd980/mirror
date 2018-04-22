@@ -5,6 +5,7 @@ defmodule Mirror.Retrospectives.Retrospective do
 
   alias Mirror.Accounts.User
   alias Mirror.Teams.Team
+  alias Mirror.Retrospectives.{Participant, Score, Feedback}
 
   schema "retrospectives" do
     field :cancelled, :boolean, default: false
@@ -13,6 +14,9 @@ defmodule Mirror.Retrospectives.Retrospective do
     field :state, :integer
     belongs_to :team, Team
     belongs_to :moderator, User
+    has_many :scores, Score, on_delete: :delete_all
+    has_many :feedbacks, Feedback, on_delete: :delete_all
+    many_to_many :participants, User, join_through: Participant
 
     timestamps()
   end
@@ -26,7 +30,7 @@ defmodule Mirror.Retrospectives.Retrospective do
 
   def preload_relationships(retrospective) do
     retrospective
-    |> Repo.preload([:team, :moderator], force: true)
+    |> Repo.preload([:team, :moderator, :participants, :scores], force: true)
     # |> Repo.preload([:team, :moderator, :participants, :scores, :feedbacks, :type], force: true)
   end
 end
