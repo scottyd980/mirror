@@ -82,7 +82,7 @@ defmodule Mirror.Retrospectives do
   """
   def update_retrospective(%Retrospective{} = retrospective, attrs) do
     retrospective
-    |> Retrospective.changeset(attrs)
+    |> Retrospective.changeset(%{state: attrs["state"], cancelled: attrs["cancelled"]})
     |> Repo.update()
   end
 

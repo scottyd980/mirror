@@ -59,18 +59,54 @@ defmodule MirrorWeb.RetrospectiveController do
   #   render(conn, "show.json", retrospective: retrospective)
   # end
 
-  # def update(conn, %{"id" => id, "retrospective" => retrospective_params}) do
-  #   retrospective = Retrospectives.get_retrospective!(id)
+  def update(conn, %{"id" => id}) do
+    current_user = Mirror.Guardian.Plug.current_resource(conn)
 
-  #   with {:ok, %Retrospective{} = retrospective} <- Retrospectives.update_retrospective(retrospective, retrospective_params) do
-  #     render(conn, "show.json", retrospective: retrospective)
-  #   end
-  # end
+    retrospective_params = JaSerializer.Params.to_attributes(conn.body_params)
+
+    retrospective = Retrospectives.get_retrospective!(id)
+    |> Retrospective.preload_relationships
+
+    case Helpers.User.user_is_team_admin?(current_user, retrospective.team) || Helpers.User.user_is_moderator?(current_user, retrospective) do
+      true ->
+        with {:ok, %Retrospective{} = retrospective} <- Retrospectives.update_retrospective(retrospective, retrospective_params) 
+        do
+          MirrorWeb.Endpoint.broadcast("retrospective:#{retrospective.id}", "retrospective_update", MirrorWeb.RetrospectiveView.render("show.json", data: retrospective |> Retrospective.preload_relationships))
+          render(conn, "show.json", data: retrospective |> Retrospective.preload_relationships)
+        else
+          {:error, changeset} ->
+            conn
+            |> put_status(:unprocessable_entity)
+            |> render(MirrorWeb.ChangesetView, "error.json-api", changeset: changeset)
+        end
+      _ ->
+        conn
+        |> put_status(404)
+        |> render(Mirror.ErrorView, "404.json-api")
+    end
+  end
 
   # def delete(conn, %{"id" => id}) do
+  #   current_user = Mirror.Guardian.Plug.current_resource(conn)
+
   #   retrospective = Retrospectives.get_retrospective!(id)
-  #   with {:ok, %Retrospective{}} <- Retrospectives.delete_retrospective(retrospective) do
-  #     send_resp(conn, :no_content, "")
+  #   |> Retrospective.preload_relationships
+
+  #   case Helpers.User.user_is_team_member?(current_user, retrospective.team) do
+  #     true ->
+  #       with {:ok, %Retrospective{}} <- Retrospectives.delete_retrospective(retrospective)
+  #       do
+  #         render(conn, "delete.json")
+  #       else
+  #         {:error, changeset} ->
+  #           conn
+  #           |> put_status(:unprocessable_entity)
+  #           |> render(MirrorWeb.ChangesetView, "error.json-api", changeset: changeset)
+  #       end
+  #     _ ->
+  #       conn
+  #       |> put_status(404)
+  #       |> render(Mirror.ErrorView, "404.json-api")
   #   end
   # end
 end
