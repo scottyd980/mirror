@@ -87,7 +87,7 @@ export default Ember.Route.extend({
     joinRetrospective(retrospective_id) {
       var _this = this;
 
-      return fetch(`${config.DS.host}/${config.DS.namespace}/retrospective_users`, {
+      return fetch(`${config.DS.host}/${config.DS.namespace}/retrospective_participants`, {
         method: 'POST',
         headers: {
           'Authorization': `Bearer ${this.get('session').get('session.content.authenticated.access_token')}`,
@@ -100,7 +100,7 @@ export default Ember.Route.extend({
         if(response.status === config.STATUS_CODES.created || response.status === config.STATUS_CODES.ok) {
           response.json().then((resp) => {
             // Always direct to start, the retrospective controller will handle additional re-routing
-            _this.transitionTo('app.retrospectives.retrospective.start', resp.data.attributes.retrospective_id);
+            _this.transitionTo('app.retrospectives.retrospective.start', resp.data.attributes["retrospective-id"]);
           });
         } else {
           if(response.status === config.STATUS_CODES.unprocessable_entity) {

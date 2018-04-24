@@ -31,6 +31,7 @@ defmodule MirrorWeb.Router do
     post "/team_admins", TeamAdminController, :create
     delete "/team_admins", TeamAdminController, :delete
     get "/teams/:id/next_sprint", TeamController, :find_next_sprint
+    post "/retrospective_participants", RetrospectiveParticipantController, :create
   end
 
   # JSON API Endpoints - Open endpoints

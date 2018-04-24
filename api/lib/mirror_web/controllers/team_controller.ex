@@ -17,7 +17,7 @@ defmodule MirrorWeb.TeamController do
     with {:ok, %Team{} = team} <- Teams.create_team(team_params, team_admins, team_members, team_member_delegates) do
       conn
       |> put_status(:created)
-      |> render("show.json-api", data: team)
+      |> render("show.json-api", data: team |> Team.preload_relationships)
     else
       {:error, changeset} ->
         conn
