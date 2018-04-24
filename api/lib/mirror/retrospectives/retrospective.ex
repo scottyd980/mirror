@@ -5,8 +5,8 @@ defmodule Mirror.Retrospectives.Retrospective do
 
   alias Mirror.Accounts.User
   alias Mirror.Teams.Team
-  alias Mirror.Retrospectives.{Participant, Score, Feedback}
-
+  alias Mirror.Retrospectives.{Retrospective, Participant, Score, Feedback, Game}
+  
   schema "retrospectives" do
     field :cancelled, :boolean, default: false
     field :is_anonymous, :boolean, default: false
@@ -14,6 +14,7 @@ defmodule Mirror.Retrospectives.Retrospective do
     field :state, :integer
     belongs_to :team, Team
     belongs_to :moderator, User
+    belongs_to :game, Game
     has_many :scores, Score, on_delete: :delete_all
     has_many :feedbacks, Feedback, on_delete: :delete_all
     many_to_many :participants, User, join_through: Participant
@@ -30,7 +31,34 @@ defmodule Mirror.Retrospectives.Retrospective do
 
   def preload_relationships(retrospective) do
     retrospective
-    |> Repo.preload([:team, :moderator, :participants, :scores], force: true)
-    # |> Repo.preload([:team, :moderator, :participants, :scores, :feedbacks, :type], force: true)
+    |> Repo.preload([:team, :moderator, :participants, :scores, :feedbacks, :game], force: true)
+  end
+
+  def create(params) do
+    Logger.warn "#{inspect params}"
+
+    %Retrospective{}
+    |> Retrospective.changeset(%{
+      name: params["name"], 
+      state: params["state"], 
+      is_anonymous: params["is_anonymous"],
+      cancelled: false,
+      team_id: params["team_id"],
+      moderator_id: params["moderator_id"]
+    })
+    |> Repo.insert
+  end
+
+  def add_participants(retrospective, participants) do
+    cond do
+      length(participants) > 0 ->
+        Enum.map participants, fn participant ->
+          %Participant{}
+          |> Participant.changeset(%{user_id: participant, retrospective_id: retrospective.id})
+          |> Repo.insert
+        end
+      true ->
+        [{:ok, nil}]
+    end
   end
 end
