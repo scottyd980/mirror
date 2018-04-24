@@ -250,4 +250,66 @@ defmodule Mirror.RetrospectivesTest do
       assert %Ecto.Changeset{} = Retrospectives.change_feedback(feedback)
     end
   end
+
+  describe "games" do
+    alias Mirror.Retrospectives.Game
+
+    @valid_attrs %{finished_state: 42, name: "some name"}
+    @update_attrs %{finished_state: 43, name: "some updated name"}
+    @invalid_attrs %{finished_state: nil, name: nil}
+
+    def game_fixture(attrs \\ %{}) do
+      {:ok, game} =
+        attrs
+        |> Enum.into(@valid_attrs)
+        |> Retrospectives.create_game()
+
+      game
+    end
+
+    test "list_games/0 returns all games" do
+      game = game_fixture()
+      assert Retrospectives.list_games() == [game]
+    end
+
+    test "get_game!/1 returns the game with given id" do
+      game = game_fixture()
+      assert Retrospectives.get_game!(game.id) == game
+    end
+
+    test "create_game/1 with valid data creates a game" do
+      assert {:ok, %Game{} = game} = Retrospectives.create_game(@valid_attrs)
+      assert game.finished_state == 42
+      assert game.name == "some name"
+    end
+
+    test "create_game/1 with invalid data returns error changeset" do
+      assert {:error, %Ecto.Changeset{}} = Retrospectives.create_game(@invalid_attrs)
+    end
+
+    test "update_game/2 with valid data updates the game" do
+      game = game_fixture()
+      assert {:ok, game} = Retrospectives.update_game(game, @update_attrs)
+      assert %Game{} = game
+      assert game.finished_state == 43
+      assert game.name == "some updated name"
+    end
+
+    test "update_game/2 with invalid data returns error changeset" do
+      game = game_fixture()
+      assert {:error, %Ecto.Changeset{}} = Retrospectives.update_game(game, @invalid_attrs)
+      assert game == Retrospectives.get_game!(game.id)
+    end
+
+    test "delete_game/1 deletes the game" do
+      game = game_fixture()
+      assert {:ok, %Game{}} = Retrospectives.delete_game(game)
+      assert_raise Ecto.NoResultsError, fn -> Retrospectives.get_game!(game.id) end
+    end
+
+    test "change_game/1 returns a game changeset" do
+      game = game_fixture()
+      assert %Ecto.Changeset{} = Retrospectives.change_game(game)
+    end
+  end
 end

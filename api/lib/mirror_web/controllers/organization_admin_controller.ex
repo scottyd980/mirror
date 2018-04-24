@@ -1,4 +1,4 @@
-defmodule MirrorWeb.AdminController do
+defmodule MirrorWeb.OrganizationAdminController do
   use MirrorWeb, :controller
 
   alias Mirror.Organizations
