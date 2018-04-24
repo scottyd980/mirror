@@ -35,8 +35,6 @@ defmodule Mirror.Retrospectives.Retrospective do
   end
 
   def create(params) do
-    Logger.warn "#{inspect params}"
-
     %Retrospective{}
     |> Retrospective.changeset(%{
       name: params["name"], 
