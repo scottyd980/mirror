@@ -53,11 +53,21 @@ defmodule MirrorWeb.RetrospectiveController do
     end
   end
 
-  # TODO: WORK
-  # def show(conn, %{"id" => id}) do
-  #   retrospective = Retrospectives.get_retrospective!(id)
-  #   render(conn, "show.json", retrospective: retrospective)
-  # end
+  def show(conn, %{"id" => id}) do
+    current_user = Mirror.Guardian.Plug.current_resource(conn)
+
+    retrospective = Retrospectives.get_retrospective!(id)
+    |> Retrospective.preload_relationships
+
+    case Helpers.User.user_is_team_member?(current_user, retrospective.team) do
+      true ->
+        render(conn, "show.json", retrospective: retrospective)
+      _ ->
+        conn
+        |> put_status(404)
+        |> render(Mirror.ErrorView, "404.json-api")
+    end
+  end
 
   def update(conn, %{"id" => id}) do
     current_user = Mirror.Guardian.Plug.current_resource(conn)
@@ -86,6 +96,7 @@ defmodule MirrorWeb.RetrospectiveController do
     end
   end
 
+  # TODO: Not sure this is necessary
   # def delete(conn, %{"id" => id}) do
   #   current_user = Mirror.Guardian.Plug.current_resource(conn)
 
