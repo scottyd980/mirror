@@ -11,8 +11,8 @@ defmodule MirrorWeb.RetrospectiveController do
 
   def index(conn, params) do
     current_user = Mirror.Guardian.Plug.current_resource(conn)
-
     team = Teams.get_team!(params["filter"]["team"])
+
     case Helpers.User.user_is_team_member?(current_user, team) do
       true ->
         retrospectives = Retrospectives.list_retrospectives(team)
@@ -24,16 +24,36 @@ defmodule MirrorWeb.RetrospectiveController do
     end
   end
 
-  # TODO: WORK
-  # def create(conn, %{"retrospective" => retrospective_params}) do
-  #   with {:ok, %Retrospective{} = retrospective} <- Retrospectives.create_retrospective(retrospective_params) do
-  #     conn
-  #     |> put_status(:created)
-  #     |> put_resp_header("location", retrospective_path(conn, :show, retrospective))
-  #     |> render("show.json", retrospective: retrospective)
-  #   end
-  # end
+  def create(conn, %{"data" => data}) do
+    current_user = Mirror.Guardian.Plug.current_resource(conn)
+    retrospective_params = JaSerializer.Params.to_attributes(data)
+    retrospective_params = Map.put(retrospective_params, "moderator_id", current_user.id)
+    team = Teams.get_team!(retrospective_params["team_id"])
+    retrospective_params = Map.put(retrospective_params, "team_id", team.id)
 
+    case Helpers.User.user_is_team_member?(current_user, team) do
+      true ->
+        with {:ok, %Retrospective{} = retrospective} <- Retrospectives.create_retrospective(retrospective_params) do
+          # WS BROADCAST
+          MirrorWeb.Endpoint.broadcast("team:#{retrospective.team.uuid}", "retrospective_in_progress", %{retrospective_in_progress: true, retrospective_id: retrospective.id})
+
+          conn
+          |> put_status(:created)
+          |> render("show.json-api", data: retrospective |> Retrospective.preload_relationships)
+        else
+          {:error, changeset} ->
+            conn
+            |> put_status(:unprocessable_entity)
+            |> render(MirrorWeb.ChangesetView, "error.json-api", changeset: changeset)
+        end
+      _ ->
+        conn
+        |> put_status(404)
+        |> render(Mirror.ErrorView, "404.json-api")
+    end
+  end
+
+  # TODO: WORK
   # def show(conn, %{"id" => id}) do
   #   retrospective = Retrospectives.get_retrospective!(id)
   #   render(conn, "show.json", retrospective: retrospective)
