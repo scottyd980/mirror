@@ -44,7 +44,9 @@ defmodule MirrorWeb.Router do
   # JSON API Endpoints - Authorized endpoints
   scope "/api", MirrorWeb do
     pipe_through [:api, :auth, :json_api]
-    
+
+    post "/team_admins", TeamAdminController, :create
+
     resources "/users", UserController, only: [:show]
     resources "/teams", TeamController
     resources "/retrospectives", RetrospectiveController, only: [:index, :create, :update, :show]
