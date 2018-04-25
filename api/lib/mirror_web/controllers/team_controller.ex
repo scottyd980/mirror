@@ -38,7 +38,7 @@ defmodule MirrorWeb.TeamController do
       _ ->
         conn
         |> put_status(404)
-        |> render(Mirror.ErrorView, "404.json-api")
+        |> render(MirrorWeb.ErrorView, "404.json-api")
     end
   end
 
@@ -56,12 +56,12 @@ defmodule MirrorWeb.TeamController do
           {:error, changeset} ->
             conn
             |> put_status(:unprocessable_entity)
-            |> render(Mirror.ChangesetView, "error.json", changeset: changeset)
+            |> render(MirrorWeb.ChangesetView, "error.json", changeset: changeset)
         end
       _ ->
         conn
         |> put_status(404)
-        |> render(Mirror.ErrorView, "404.json-api")
+        |> render(MirrorWeb.ErrorView, "404.json-api")
     end
   end
 
@@ -78,12 +78,12 @@ defmodule MirrorWeb.TeamController do
           {:error, changeset} ->
             conn
             |> put_status(:unprocessable_entity)
-            |> render(Mirror.ChangesetView, "error.json", changeset: changeset)
+            |> render(MirrorWeb.ChangesetView, "error.json", changeset: changeset)
         end
       _ ->
         conn
         |> put_status(404)
-        |> render(Mirror.ErrorView, "404.json-api")
+        |> render(MirrorWeb.ErrorView, "404.json-api")
     end
   end
 
@@ -99,7 +99,7 @@ defmodule MirrorWeb.TeamController do
       _ ->
         conn
         |> put_status(404)
-        |> render(Mirror.ErrorView, "404.json-api")
+        |> render(MirrorWeb.ErrorView, "404.json-api")
     end
   end
 end
