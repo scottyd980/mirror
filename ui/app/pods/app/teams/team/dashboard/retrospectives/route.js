@@ -63,7 +63,7 @@ export default Ember.Route.extend({
       retrospective.set('team', this.currentModel.team);
       retrospective.set('moderator', this.get('session').get('currentUser'));
       retrospective.set('isAnonymous', true);
-      retrospective.set('type', config.retrospective[this.controller.get('gameToStart')].type_id);
+      retrospective.set('game', config.retrospective[this.controller.get('gameToStart')].type_id);
 
       this.send('cancelEnterRetrospectiveType');
       this.toggleLoadingScreen('Setting up retrospective...');
