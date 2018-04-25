@@ -8,7 +8,7 @@ defmodule MirrorWeb.UserController do
 
   def show(conn, %{"id" => id}) do
     user = Accounts.get_user!(id)
-    render(conn, "show.json-api", data: user)
+    render(conn, "show.json-api", data: user |> User.preload_relationships)
   end
 
   def create(conn, %{"data" => data}) do

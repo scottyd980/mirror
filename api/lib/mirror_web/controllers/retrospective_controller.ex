@@ -61,7 +61,7 @@ defmodule MirrorWeb.RetrospectiveController do
 
     case Helpers.User.user_is_team_member?(current_user, retrospective.team) do
       true ->
-        render(conn, "show.json", retrospective: retrospective)
+        render(conn, "show.json-api", data: retrospective |> Retrospective.preload_relationships)
       _ ->
         conn
         |> put_status(404)
