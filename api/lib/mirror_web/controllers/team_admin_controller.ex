@@ -3,23 +3,61 @@ defmodule MirrorWeb.TeamAdminController do
 
   alias Mirror.Teams
   alias Mirror.Teams.Admin
+  alias Mirror.Accounts
+
+  alias Mirror.Helpers
 
   action_fallback MirrorWeb.FallbackController
 
-  # TODO: WORK
-  # def create(conn, %{"admin" => admin_params}) do
-  #   with {:ok, %Admin{} = admin} <- Teams.create_admin(admin_params) do
-  #     conn
-  #     |> put_status(:created)
-  #     |> put_resp_header("location", team_admin_path(conn, :show, admin))
-  #     |> render("show.json", admin: admin)
-  #   end
-  # end
+  def create(conn, %{"admin_id" => admin_id, "team_id" => team_id}) do
+    current_user = Mirror.Guardian.Plug.current_resource(conn)
 
-  # def delete(conn, %{"id" => id}) do
-  #   admin = Teams.get_admin!(id)
-  #   with {:ok, %Admin{}} <- Teams.delete_admin(admin) do
-  #     send_resp(conn, :no_content, "")
-  #   end
-  # end
+    team = Teams.get_team!(team_id)
+    user = Accounts.get_user!(admin_id)
+
+    case Helpers.User.user_is_team_admin?(current_user, team) && Helpers.User.user_is_team_member?(user, team) do
+      true ->
+        with {:ok, %Admin{} = admin} <- Teams.create_admin(%{team_id: team_id, user_id: admin_id}) 
+        do
+          conn
+          |> put_status(:created)
+          |> render("show.json-api", data: admin |> Admin.preload_relationships)
+        else
+          {:error, changeset} ->
+            conn
+            |> put_status(:unprocessable_entity)
+            |> render(MirrorWeb.ChangesetView, "error.json-api", changeset: changeset)
+        end
+      _ ->
+        conn
+        |> put_status(404)
+        |> render(MirrorWeb.ErrorView, "404.json-api")
+    end
+  end
+
+  def delete(conn, %{"admin_id" => admin_id, "team_id" => team_id}) do
+    current_user = Mirror.Guardian.Plug.current_resource(conn)
+
+    team = Teams.get_team!(team_id)
+    user = Accounts.get_user!(admin_id)
+
+    case Helpers.User.user_is_team_admin?(current_user, team) && Helpers.User.user_is_team_admin?(user, team) do
+      true ->
+        with {:ok, _} <- Teams.delete_admin(%{team_id: team_id, user_id: admin_id}) 
+        do
+          conn
+          |> put_status(:ok)
+          |> render("delete.json-api")
+        else 
+          {:error, _} ->
+            conn
+            |> put_status(:unprocessable_entity)
+            |> render(Mirror.ChangesetView, "error.json-api", changeset: %{})
+        end
+      _ ->
+        conn
+        |> put_status(404)
+        |> render(MirrorWeb.ErrorView, "404.json-api")
+    end
+  end
 end

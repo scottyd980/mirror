@@ -6,6 +6,7 @@ defmodule Mirror.Teams do
   import Ecto.Query, warn: false
   alias Mirror.Repo
 
+  alias Mirror.Teams
   alias Mirror.Teams.Team
   alias Mirror.Teams.MemberDelegate
   alias Mirror.Teams.Member
@@ -258,7 +259,7 @@ defmodule Mirror.Teams do
 
   ## Examples
 
-      iex> create_admin(%{field: value})
+      iex> create_admin(%{team_id: value, user_id: value})
       {:ok, %Admin{}}
 
       iex> create_admin(%{field: bad_value})
@@ -266,27 +267,10 @@ defmodule Mirror.Teams do
 
   """
   def create_admin(attrs \\ %{}) do
+    team = Teams.get_team!(attrs.team_id)
     %Admin{}
-    |> Admin.changeset(attrs)
+    |> Admin.changeset(%{team_id: team.id, user_id: attrs.user_id})
     |> Repo.insert()
-  end
-
-  @doc """
-  Updates a admin.
-
-  ## Examples
-
-      iex> update_admin(admin, %{field: new_value})
-      {:ok, %Admin{}}
-
-      iex> update_admin(admin, %{field: bad_value})
-      {:error, %Ecto.Changeset{}}
-
-  """
-  def update_admin(%Admin{} = admin, attrs) do
-    admin
-    |> Admin.changeset(attrs)
-    |> Repo.update()
   end
 
   @doc """
@@ -301,8 +285,12 @@ defmodule Mirror.Teams do
       {:error, %Ecto.Changeset{}}
 
   """
-  def delete_admin(%Admin{} = admin) do
-    Repo.delete(admin)
+  def delete_admin(attrs \\ %{}) do
+    team = Teams.get_team!(attrs.team_id)
+    case Repo.delete_all(from u in Admin, where: u.user_id == ^attrs.user_id and u.team_id == ^team.id) do
+        {:error, _} -> {:error, nil}
+        {affected_rows, _} -> {:ok, affected_rows}
+    end
   end
 
   @doc """

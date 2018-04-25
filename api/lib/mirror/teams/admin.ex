@@ -2,6 +2,7 @@ defmodule Mirror.Teams.Admin do
   use Ecto.Schema
   import Ecto.Changeset
 
+  alias Mirror.Repo
   alias Mirror.Teams.Team
   alias Mirror.Accounts.User
 
@@ -11,11 +12,16 @@ defmodule Mirror.Teams.Admin do
     belongs_to :team, Team
 
     timestamps()
-    end
+  end
 
-    def changeset(struct, params \\ %{}) do
+  def changeset(struct, params \\ %{}) do
     struct
     |> cast(params, [:user_id, :team_id])
     |> validate_required([:user_id, :team_id])
+  end
+
+  def preload_relationships(admin) do
+    admin
+    |> Repo.preload([:user, :team], force: true)
   end
 end
