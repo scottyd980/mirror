@@ -35,7 +35,7 @@ defmodule Mirror.Organizations do
       ** (Ecto.NoResultsError)
 
   """
-  def get_organization!(id), do: Repo.get!(Organization, id)
+  def get_organization!(id), do: Repo.get_by!(Organization, uuid: id)
 
   @doc """
   Creates a organization.
@@ -49,10 +49,22 @@ defmodule Mirror.Organizations do
       {:error, %Ecto.Changeset{}}
 
   """
-  def create_organization(attrs \\ %{}) do
-    %Organization{}
-    |> Organization.changeset(attrs)
-    |> Repo.insert()
+  def create_organization(attrs \\ %{}, admins \\ [], members \\ []) do
+    Repo.transaction fn ->
+      with  {:ok, org}          <- Organization.create(attrs),
+            {:ok, updated_org}  <- Organization.add_unique_id(org),
+            # {:ok, billing_customer} <- create_billing_customer(updated_org),
+            # {:ok, org_with_billing} <- add_billing_to_organization(org, billing_customer),
+            [{:ok, _}]          <- Organization.add_admins(updated_org, admins),
+            [{:ok, _}]          <- Organization.add_members(updated_org, members) 
+      do
+        updated_org
+        |> Organization.preload_relationships()
+      else
+        {:error, changeset} ->
+          Repo.rollback changeset
+      end
+    end
   end
 
   @doc """

@@ -41,7 +41,7 @@ defmodule MirrorWeb.UserController do
     |> User.preload_relationships
 
     conn
-    |> render("show.json-api", data: user)
+    |> render("show.json-api", data: user |> User.preload_relationships)
   end
 
   def login(conn, %{"grant_type" => "password", "username" => username, "password" => password}) do

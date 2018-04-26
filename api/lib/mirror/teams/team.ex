@@ -38,9 +38,9 @@ defmodule Mirror.Teams.Team do
     |> Repo.preload([:members, :admins, :retrospectives, :organization], force: true)
   end
 
-  def create(params) do
+  def create(attrs) do
     %Team{}
-    |> Team.changeset(%{name: params["name"]})
+    |> Team.changeset(%{name: attrs["name"]})
     |> Repo.insert
   end
 
@@ -50,6 +50,17 @@ defmodule Mirror.Teams.Team do
     team
     |> Team.changeset(%{uuid: team_unique_id})
     |> Repo.update
+  end
+
+  def add_admins(team, users) do
+    case length(users) > 0 do
+      true ->
+        Enum.map users, fn user ->
+          Teams.create_admin(%{user_id: user.id, team_id: team.id})
+        end
+      _ ->
+        [{:ok, nil}]
+    end
   end
 
   def add_members(team, users) do
@@ -71,17 +82,6 @@ defmodule Mirror.Teams.Team do
         end
       true ->
         []
-    end
-  end
-
-  def add_admins(team, users) do
-    case length(users) > 0 do
-      true ->
-        Enum.map users, fn user ->
-          Teams.create_admin(%{user_id: user.id, team_id: team.id})
-        end
-      _ ->
-        [{:ok, nil}]
     end
   end
 

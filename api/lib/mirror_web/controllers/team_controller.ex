@@ -73,7 +73,9 @@ defmodule MirrorWeb.TeamController do
     case Helpers.User.user_is_team_admin?(current_user, team) do
       true ->
         with {:ok, %Team{}} <- Teams.delete_team(team) do
-          send_resp(conn, :no_content, "")
+          conn
+          |> put_status(:ok)
+          |> render("delete.json-api")
         else
           {:error, changeset} ->
             conn

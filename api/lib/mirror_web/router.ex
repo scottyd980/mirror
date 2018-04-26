@@ -48,7 +48,8 @@ defmodule MirrorWeb.Router do
     post "/team_admins", TeamAdminController, :create
 
     resources "/users", UserController, only: [:show]
-    resources "/teams", TeamController
+    resources "/teams", TeamController, only: [:index, :create, :show, :update, :delete]
+    resources "/organizations", OrganizationController, only: [:create, :show, :update, :delete]
     resources "/retrospectives", RetrospectiveController, only: [:index, :create, :update, :show]
   end
 end

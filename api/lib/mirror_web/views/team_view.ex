@@ -4,7 +4,7 @@ defmodule MirrorWeb.TeamView do
 
   alias MirrorWeb.{UserSerializer, RetrospectiveSerializer, OrganizationSerializer}
 
-  attributes [:name, :avatar, :uuid, :is_anonymous]
+  attributes [:name, :avatar, :is_anonymous]
 
   has_many :members,
     links: [
@@ -47,5 +47,9 @@ defmodule MirrorWeb.TeamView do
       "id": team.uuid,
       "next_sprint": next_sprint
     }
+  end
+
+  def render("delete.json-api", _) do
+    %{meta: %{}}
   end
 end

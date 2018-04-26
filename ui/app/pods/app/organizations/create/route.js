@@ -66,6 +66,7 @@ export default Ember.Route.extend({
         _this.transitionTo('app.organizations.organization.dashboard', _this.get('currentModel'));
       }).catch(() => {
         _this.controller.set('unexpectedError', 'There was an unexpected error, please review the fields and try again.');
+        _this.controller.set('currentlyLoading', false);
       });
     }
   }

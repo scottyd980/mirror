@@ -6,7 +6,10 @@ defmodule Mirror.Accounts.User do
   import Comeonin.Bcrypt
 
   alias Mirror.Accounts
-  alias Mirror.Teams.{Team, Member}
+  alias Mirror.Teams
+  alias Mirror.Teams.Team
+  alias Mirror.Organizations
+  alias Mirror.Organizations.Organization
 
   schema "users" do
     field :username, :string
@@ -16,7 +19,8 @@ defmodule Mirror.Accounts.User do
     field :password, :string, virtual: true
     field :password_confirmation, :string, virtual: true
 
-    many_to_many :teams, Team, join_through: Member
+    many_to_many :teams, Team, join_through: Teams.Member
+    many_to_many :organizations, Organization, join_through: Organizations.Member
     
     timestamps()
   end
@@ -36,7 +40,7 @@ defmodule Mirror.Accounts.User do
 
   def preload_relationships(user) do
     user
-    |> Repo.preload([:teams], force: true)
+    |> Repo.preload([:teams, :organizations], force: true)
     # |> Repo.preload([:scores, :teams, :organizations], force: true)
   end
 
