@@ -2,18 +2,41 @@ defmodule MirrorWeb.OrganizationView do
   use MirrorWeb, :view
   alias MirrorWeb.OrganizationView
 
-  def render("index.json", %{organizations: organizations}) do
-    %{data: render_many(organizations, OrganizationView, "organization.json")}
+  use JaSerializer.PhoenixView
+
+  alias MirrorWeb.{UserSerializer, TeamSerializer}
+
+  attributes [:name, :is_anonymous]
+
+  has_many :members,
+    links: [
+      self: "/api/users/"
+    ],
+    serializer: UserSerializer,
+    include: false,
+    identifiers: :always
+
+  has_many :admins,
+    links: [
+      self: "/api/users/"
+    ],
+    serializer: UserSerializer,
+    include: false,
+    identifiers: :always
+
+  has_many :teams,
+    links: [
+      self: "/api/teams/"
+    ],
+    serializer: TeamSerializer,
+    include: false,
+    identifiers: :always
+
+  def id(struct, conn) do
+    struct.uuid
   end
 
-  def render("show.json", %{organization: organization}) do
-    %{data: render_one(organization, OrganizationView, "organization.json")}
-  end
-
-  def render("organization.json", %{organization: organization}) do
-    %{id: organization.id,
-      name: organization.name,
-      uuid: organization.uuid,
-      avatar: organization.avatar}
+  def render("delete.json-api", _) do
+    %{meta: %{}}
   end
 end
