@@ -23,6 +23,7 @@ defmodule Mirror.Retrospectives.Retrospective do
   end
 
   @doc false
+  # TODO: Should probably validate that the game ID is valid
   def changeset(retrospective, attrs) do
     retrospective
     |> cast(attrs, [:name, :state, :is_anonymous, :cancelled, :team_id, :moderator_id, :game_id])
