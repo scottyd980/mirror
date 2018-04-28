@@ -7,7 +7,7 @@ defmodule Mirror.Teams.Team do
   alias Mirror.Teams
   alias Mirror.Accounts.User
   alias Mirror.Teams.{Team, Admin, Member, MemberDelegate}
-  alias Mirror.Retrospectives.Retrospective
+  alias Mirror.Retrospectives.{Retrospective, Game}
   alias Mirror.Organizations.Organization
 
   alias Mirror.Helpers.Hash
@@ -96,17 +96,28 @@ defmodule Mirror.Teams.Team do
     |> List.first
   end
 
-  # def find_retrospective_in_progress(team) do
-  #   retros = find_all_retrospectives(team)
+  def find_retrospective_in_progress(team) do
+    retros = find_all_retrospectives(team)
 
-  #   retro_in_progress = retros
-  #   |> Enum.filter(fn(r) ->
-  #     retro_type = Repo.get!(RetrospectiveType, r.type_id)
-  #     r.state < retro_type.finished_state && !r.cancelled
-  #   end)
+    retro_in_progress = retros
+    |> Enum.filter(fn(r) ->
+      retro_type = Repo.get!(Game, r.game_id)
+      r.state < retro_type.finished_state && !r.cancelled
+    end)
     
-  #   retro_in_progress
-  # end
+    retro_in_progress
+  end
+
+  def check_retrospective_in_progress(team) do
+    retro = find_retrospective_in_progress(team)
+
+    retro_count = retro
+    |> Enum.count
+
+    in_progress = retro_count > 0
+
+    {in_progress, retro}
+  end
 
   def find_next_retrospective(team) do
     last_retro = find_last_retrospective(team)
