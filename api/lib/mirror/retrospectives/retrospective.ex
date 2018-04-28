@@ -25,8 +25,8 @@ defmodule Mirror.Retrospectives.Retrospective do
   @doc false
   def changeset(retrospective, attrs) do
     retrospective
-    |> cast(attrs, [:name, :state, :is_anonymous, :cancelled, :team_id, :moderator_id])
-    |> validate_required([:name, :state, :is_anonymous, :cancelled, :team_id, :moderator_id])
+    |> cast(attrs, [:name, :state, :is_anonymous, :cancelled, :team_id, :moderator_id, :game_id])
+    |> validate_required([:name, :state, :is_anonymous, :cancelled, :team_id, :moderator_id, :game_id])
   end
 
   def preload_relationships(retrospective) do
@@ -43,7 +43,8 @@ defmodule Mirror.Retrospectives.Retrospective do
       is_anonymous: params["is_anonymous"],
       cancelled: false,
       team_id: params["team_id"],
-      moderator_id: params["moderator_id"]
+      moderator_id: params["moderator_id"],
+      game_id: params["game"]
     })
     |> Repo.insert
   end
