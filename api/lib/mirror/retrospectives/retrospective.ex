@@ -34,6 +34,7 @@ defmodule Mirror.Retrospectives.Retrospective do
     |> Repo.preload([:team, :moderator, :participants, :scores, :feedbacks, :game], force: true)
   end
 
+  # TODO: Should probably make sure that a retrospective is not in progress for this team
   def create(params) do
     %Retrospective{}
     |> Retrospective.changeset(%{
