@@ -1,19 +1,24 @@
 defmodule MirrorWeb.FeedbackView do
   use MirrorWeb, :view
-  alias MirrorWeb.FeedbackView
+  use JaSerializer.PhoenixView
+  
+  alias MirrorWeb.{UserSerializer, RetrospectiveSerializer}
 
-  def render("index.json", %{feedbacks: feedbacks}) do
-    %{data: render_many(feedbacks, FeedbackView, "feedback.json")}
-  end
+  attributes [:category, :message, :state]
 
-  def render("show.json", %{feedback: feedback}) do
-    %{data: render_one(feedback, FeedbackView, "feedback.json")}
-  end
-
-  def render("feedback.json", %{feedback: feedback}) do
-    %{id: feedback.id,
-      category: feedback.category,
-      message: feedback.message,
-      state: feedback.state}
-  end
+  has_one :user,
+    links: [
+      self: "/api/users/"
+    ],
+    serializer: UserSerializer,
+    include: false,
+    identifiers: :always
+  
+  has_one :retrospective,
+    links: [
+      self: "/api/retrospectives/"
+    ],
+    serializer: RetrospectiveSerializer,
+    include: false,
+    identifiers: :always
 end

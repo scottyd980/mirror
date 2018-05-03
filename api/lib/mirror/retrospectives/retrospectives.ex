@@ -370,7 +370,9 @@ defmodule Mirror.Retrospectives do
   """
   def update_feedback(%Feedback{} = feedback, attrs) do
     feedback
-    |> Feedback.changeset(attrs)
+    |> Feedback.changeset(%{
+        state: attrs["state"]
+    })
     |> Repo.update()
   end
 

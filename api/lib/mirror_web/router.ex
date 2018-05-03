@@ -51,5 +51,6 @@ defmodule MirrorWeb.Router do
     resources "/teams", TeamController, only: [:index, :create, :show, :update, :delete]
     resources "/organizations", OrganizationController, only: [:create, :show, :update, :delete]
     resources "/retrospectives", RetrospectiveController, only: [:index, :create, :update, :show]
+    resources "/feedbacks", FeedbackController, only: [:create, :show, :update]
   end
 end

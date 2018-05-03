@@ -9,7 +9,7 @@ defmodule Mirror.Retrospectives.Feedback do
   schema "retrospective_feedbacks" do
     field :category, :string
     field :message, :string
-    field :state, :integer
+    field :state, :integer, default: 0
     belongs_to :user, User
     belongs_to :retrospective, Retrospective
 
@@ -20,7 +20,7 @@ defmodule Mirror.Retrospectives.Feedback do
   def changeset(feedback, attrs) do
     feedback
     |> cast(attrs, [:category, :message, :state, :user_id, :retrospective_id])
-    |> validate_required([:category, :message, :state, :user_id, :retrospective_id])
+    |> validate_required([:category, :message, :user_id, :retrospective_id])
   end
 
   def preload_relationships(feedback) do
