@@ -36,7 +36,7 @@ export default Ember.Route.extend({
         if(feedbacks) {
             _this.currentModel.gameInput.forEach((input) => {
                 input.value = feedbacks.find((feedback) => {
-                    return feedback.get('type') === input.type;
+                    return feedback.get('category') === input.type;
                 }).get('message');
             });
         }
@@ -52,7 +52,7 @@ export default Ember.Route.extend({
             _this.currentModel.gameInput.forEach((feedback) => {
                 if(feedback.value.trim() !== "") {
                     let fb = _this.store.createRecord('feedback', {
-                        type: feedback.type,
+                        category: feedback.type,
                         message: feedback.value,
                         user: _this.get('session').get('currentUser'),
                         retrospective: _this.currentModel.parent.retrospective

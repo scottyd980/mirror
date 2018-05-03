@@ -16,7 +16,7 @@ export default Ember.Route.extend({
             feedback = model.feedback;
 
         let negativeFeedback = _this._shuffle(feedback.filter((fb) => {
-            return fb.get('type') === "negative";
+            return fb.get('category') === "negative";
         }));
 
         controller.set('negative_feedback', negativeFeedback);

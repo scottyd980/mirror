@@ -16,7 +16,7 @@ export default Ember.Route.extend({
             feedback = model.feedback;
 
         let positiveFeedback = _this._shuffle(feedback.filter((fb) => {
-            return fb.get('type') === "positive";
+            return fb.get('category') === "positive";
         }));
 
         controller.set('positive_feedback', positiveFeedback);
