@@ -1,4 +1,4 @@
-defmodule MirrorWeb.FeedbackController do
+defmodule MirrorWeb.RetrospectiveFeedbackController do
   use MirrorWeb, :controller
 
   alias Mirror.Retrospectives
@@ -23,7 +23,7 @@ defmodule MirrorWeb.FeedbackController do
       true ->
         with {:ok, %Feedback{} = feedback} <- Retrospectives.create_feedback(feedback_params) do
           # WS BROADCAST
-          MirrorWeb.Endpoint.broadcast("retrospective:#{feedback_params["retrospective_id"]}", "feedback_added", MirrorWeb.FeedbackView.render("show.json-api", data: feedback |> Feedback.preload_relationships))
+          MirrorWeb.Endpoint.broadcast("retrospective:#{feedback_params["retrospective_id"]}", "feedback_added", MirrorWeb.RetrospectiveFeedbackView.render("show.json-api", data: feedback |> Feedback.preload_relationships))
 
           conn
           |> put_status(:created)
@@ -74,7 +74,7 @@ defmodule MirrorWeb.FeedbackController do
       true ->
         with {:ok, %Feedback{} = feedback} <- Retrospectives.update_feedback(feedback, feedback_params) 
         do
-          MirrorWeb.Endpoint.broadcast("retrospective:#{retrospective.id}", "retrospective_update", MirrorWeb.FeedbackView.render("show.json", data: feedback |> Feedback.preload_relationships))
+          MirrorWeb.Endpoint.broadcast("retrospective:#{retrospective.id}", "retrospective_update", MirrorWeb.RetrospectiveFeedbackView.render("show.json", data: feedback |> Feedback.preload_relationships))
           render(conn, "show.json-api", data: retrospective |> Retrospective.preload_relationships)
         else
           {:error, changeset} ->

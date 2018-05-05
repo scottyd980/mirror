@@ -1,4 +1,4 @@
-defmodule MirrorWeb.FeedbackView do
+defmodule MirrorWeb.RetrospectiveFeedbackView do
   use MirrorWeb, :view
   use JaSerializer.PhoenixView
   
@@ -21,4 +21,6 @@ defmodule MirrorWeb.FeedbackView do
     serializer: RetrospectiveSerializer,
     include: false,
     identifiers: :always
+
+  def type, do: "feedback"
 end
