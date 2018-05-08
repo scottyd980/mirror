@@ -74,7 +74,7 @@ defmodule MirrorWeb.RetrospectiveFeedbackController do
       true ->
         with {:ok, %Feedback{} = feedback} <- Retrospectives.update_feedback(feedback, feedback_params) 
         do
-          MirrorWeb.Endpoint.broadcast("retrospective:#{retrospective.id}", "retrospective_update", MirrorWeb.RetrospectiveFeedbackView.render("show.json", data: feedback |> Feedback.preload_relationships))
+          MirrorWeb.Endpoint.broadcast("retrospective:#{retrospective.id}", "retrospective_update", MirrorWeb.RetrospectiveFeedbackView.render("show.json-api", data: feedback |> Feedback.preload_relationships))
           render(conn, "show.json-api", data: retrospective |> Retrospective.preload_relationships)
         else
           {:error, changeset} ->

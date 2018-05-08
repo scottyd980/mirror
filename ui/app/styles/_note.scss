@@ -32,6 +32,14 @@
 
     .note--top {
         margin-bottom: auto;
+
+        .note--content {
+            white-space: pre-line;
+
+            &:first-line {
+                line-height: 0;
+            }
+        }
     }
 
     .note--bottom {
