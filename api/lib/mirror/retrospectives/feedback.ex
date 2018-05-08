@@ -5,6 +5,7 @@ defmodule Mirror.Retrospectives.Feedback do
 
   alias Mirror.Accounts.User
   alias Mirror.Retrospectives.Retrospective
+  alias Mirror.Retrospectives.Action
 
   schema "retrospective_feedbacks" do
     field :category, :string
@@ -12,6 +13,7 @@ defmodule Mirror.Retrospectives.Feedback do
     field :state, :integer, default: 0
     belongs_to :user, User
     belongs_to :retrospective, Retrospective
+    has_many :actions, Action, on_delete: :delete_all
 
     timestamps()
   end
@@ -25,6 +27,6 @@ defmodule Mirror.Retrospectives.Feedback do
 
   def preload_relationships(feedback) do
     feedback
-    |> Repo.preload([:user, :retrospective], force: true)
+    |> Repo.preload([:user, :retrospective, :actions], force: true)
   end
 end

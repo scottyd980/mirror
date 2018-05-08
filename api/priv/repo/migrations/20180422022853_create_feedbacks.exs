@@ -6,7 +6,7 @@ defmodule Mirror.Repo.Migrations.CreateFeedbacks do
       add :category, :string
       add :message, :text
       add :state, :integer
-      add :user_id, references(:users, on_delete: :delete_all)
+      add :user_id, references(:users, on_delete: :nothing)
       add :retrospective_id, references(:retrospectives, on_delete: :delete_all)
 
       timestamps()
