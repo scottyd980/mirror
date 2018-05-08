@@ -57,7 +57,7 @@ defmodule Mirror.Teams do
     Repo.transaction fn ->
       with  {:ok, team}           <- Team.create(attrs),
             {:ok, updated_team}   <- Team.add_unique_id(team),
-            [{:ok, _}]  <- Team.add_admins(team, admins),
+            [{:ok, _}]            <- Team.add_admins(team, admins),
             team_member_delegates <- Team.add_member_delegates(team, delegates),
             {:ok}                 <- MemberDelegate.send_invitations(team_member_delegates, team),
             [{:ok, _}]            <- Team.add_members(updated_team, members) 
@@ -267,9 +267,8 @@ defmodule Mirror.Teams do
 
   """
   def create_admin(attrs \\ %{}) do
-    team = Teams.get_team!(attrs.team_id)
     %Admin{}
-    |> Admin.changeset(%{team_id: team.id, user_id: attrs.user_id})
+    |> Admin.changeset(attrs)
     |> Repo.insert()
   end
 
@@ -286,8 +285,7 @@ defmodule Mirror.Teams do
 
   """
   def delete_admin(attrs \\ %{}) do
-    team = Teams.get_team!(attrs.team_id)
-    case Repo.delete_all(from u in Admin, where: u.user_id == ^attrs.user_id and u.team_id == ^team.id) do
+    case Repo.delete_all(from u in Admin, where: u.user_id == ^attrs.user_id and u.team_id == ^attrs.team_id) do
         {:error, _} -> {:error, nil}
         {affected_rows, _} -> {:ok, affected_rows}
     end

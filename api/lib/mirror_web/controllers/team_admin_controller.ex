@@ -17,7 +17,7 @@ defmodule MirrorWeb.TeamAdminController do
 
     case Helpers.User.user_is_team_admin?(current_user, team) && Helpers.User.user_is_team_member?(user, team) do
       true ->
-        with {:ok, %Admin{} = admin} <- Teams.create_admin(%{team_id: team_id, user_id: admin_id}) 
+        with {:ok, %Admin{} = admin} <- Teams.create_admin(%{team_id: team.id, user_id: admin_id}) 
         do
           conn
           |> put_status(:created)
@@ -43,7 +43,7 @@ defmodule MirrorWeb.TeamAdminController do
 
     case Helpers.User.user_is_team_admin?(current_user, team) && Helpers.User.user_is_team_admin?(user, team) do
       true ->
-        with {:ok, _} <- Teams.delete_admin(%{team_id: team_id, user_id: admin_id}) 
+        with {:ok, _} <- Teams.delete_admin(%{team_id: team.id, user_id: admin_id}) 
         do
           conn
           |> put_status(:ok)
