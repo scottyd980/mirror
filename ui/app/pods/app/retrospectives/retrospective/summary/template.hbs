@@ -36,7 +36,7 @@
                     <ul class="icons-list">
                         {{#each (sort-by "category" model.feedback) as |feedback|}}
                             <li class="{{concat "icons-list--" feedback.category}}">
-                                {{feedback.message}}
+                                <div class="pre">{{feedback.message}}</div>
                                 {{#if feedback.action.message}}
                                     <br/><strong>Action:</strong> {{feedback.action.message}}
                                 {{/if}}
