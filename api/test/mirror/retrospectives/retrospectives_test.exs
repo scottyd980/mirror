@@ -312,4 +312,64 @@ defmodule Mirror.RetrospectivesTest do
       assert %Ecto.Changeset{} = Retrospectives.change_game(game)
     end
   end
+
+  describe "actions" do
+    alias Mirror.Retrospectives.Action
+
+    @valid_attrs %{message: "some message"}
+    @update_attrs %{message: "some updated message"}
+    @invalid_attrs %{message: nil}
+
+    def action_fixture(attrs \\ %{}) do
+      {:ok, action} =
+        attrs
+        |> Enum.into(@valid_attrs)
+        |> Retrospectives.create_action()
+
+      action
+    end
+
+    test "list_actions/0 returns all actions" do
+      action = action_fixture()
+      assert Retrospectives.list_actions() == [action]
+    end
+
+    test "get_action!/1 returns the action with given id" do
+      action = action_fixture()
+      assert Retrospectives.get_action!(action.id) == action
+    end
+
+    test "create_action/1 with valid data creates a action" do
+      assert {:ok, %Action{} = action} = Retrospectives.create_action(@valid_attrs)
+      assert action.message == "some message"
+    end
+
+    test "create_action/1 with invalid data returns error changeset" do
+      assert {:error, %Ecto.Changeset{}} = Retrospectives.create_action(@invalid_attrs)
+    end
+
+    test "update_action/2 with valid data updates the action" do
+      action = action_fixture()
+      assert {:ok, action} = Retrospectives.update_action(action, @update_attrs)
+      assert %Action{} = action
+      assert action.message == "some updated message"
+    end
+
+    test "update_action/2 with invalid data returns error changeset" do
+      action = action_fixture()
+      assert {:error, %Ecto.Changeset{}} = Retrospectives.update_action(action, @invalid_attrs)
+      assert action == Retrospectives.get_action!(action.id)
+    end
+
+    test "delete_action/1 deletes the action" do
+      action = action_fixture()
+      assert {:ok, %Action{}} = Retrospectives.delete_action(action)
+      assert_raise Ecto.NoResultsError, fn -> Retrospectives.get_action!(action.id) end
+    end
+
+    test "change_action/1 returns a action changeset" do
+      action = action_fixture()
+      assert %Ecto.Changeset{} = Retrospectives.change_action(action)
+    end
+  end
 end

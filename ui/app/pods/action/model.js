@@ -4,5 +4,6 @@ import { belongsTo } from 'ember-data/relationships';
 
 export default Model.extend({
   message: attr('string'),
-  feedback: belongsTo('feedback')
+  feedback: belongsTo('feedback'),
+  user: belongsTo('user')
 });

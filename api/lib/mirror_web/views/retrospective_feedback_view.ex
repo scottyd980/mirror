@@ -2,7 +2,7 @@ defmodule MirrorWeb.RetrospectiveFeedbackView do
   use MirrorWeb, :view
   use JaSerializer.PhoenixView
   
-  alias MirrorWeb.{UserSerializer, RetrospectiveSerializer}
+  alias MirrorWeb.{UserSerializer, ActionSerializer, RetrospectiveSerializer}
 
   attributes [:category, :message, :state]
 
@@ -21,6 +21,19 @@ defmodule MirrorWeb.RetrospectiveFeedbackView do
     serializer: RetrospectiveSerializer,
     include: false,
     identifiers: :always
+
+  has_one :action,
+    links: [
+      self: "/api/actions/"
+    ],
+    serializer: ActionSerializer,
+    include: false,
+    identifiers: :always,
+    field: :actions
+
+  def action(feedback, _conn) do
+    List.first(feedback.actions)
+  end
 
   def type, do: "feedback"
 end
