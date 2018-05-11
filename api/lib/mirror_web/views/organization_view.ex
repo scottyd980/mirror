@@ -1,6 +1,5 @@
 defmodule MirrorWeb.OrganizationView do
   use MirrorWeb, :view
-  alias MirrorWeb.OrganizationView
 
   use JaSerializer.PhoenixView
 

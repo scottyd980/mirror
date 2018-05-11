@@ -57,7 +57,7 @@ defmodule Mirror.Retrospectives do
   def create_retrospective(attrs \\ %{}) do
     Repo.transaction fn ->
       with  {:ok, retrospective}                <- Retrospective.create(attrs),
-            [{:ok, retrospective_participants}] <- Retrospective.add_participants(retrospective, attrs["participants_ids"]) 
+            [{:ok, _retrospective_participants}] <- Retrospective.add_participants(retrospective, attrs["participants_ids"]) 
       do
         retrospective
         |> Retrospective.preload_relationships()

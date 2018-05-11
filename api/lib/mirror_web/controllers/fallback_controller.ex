@@ -17,4 +17,10 @@ defmodule MirrorWeb.FallbackController do
     |> put_status(:not_found)
     |> render(MirrorWeb.ErrorView, "404.json-api")
   end
+
+  def call(conn, _) do
+    conn
+    |> put_status(:not_found)
+    |> render(MirrorWeb.ErrorView, "404.json-api")
+  end
 end

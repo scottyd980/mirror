@@ -2,6 +2,8 @@ defmodule Mirror.Teams.MemberDelegate do
   use Ecto.Schema
   import Ecto.Changeset
 
+  alias Mirror.Repo
+
   alias Mirror.Teams.Team
 
   alias Mirror.Helpers.Hash
@@ -25,6 +27,11 @@ defmodule Mirror.Teams.MemberDelegate do
     |> validate_required([:email, :is_accessed, :team_id])
     |> validate_format(:email, ~r/@/, message: "is invalid")
     |> create_access_code()
+  end
+
+  def preload_relationships(member_delegate) do
+    member_delegate
+    |> Repo.preload([:team], force: true)
   end
 
   defp create_access_code(%{valid?: false} = changeset), do: changeset
