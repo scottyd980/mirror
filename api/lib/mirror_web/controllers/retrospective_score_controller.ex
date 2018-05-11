@@ -3,7 +3,6 @@ defmodule MirrorWeb.RetrospectiveScoreController do
 
   alias Mirror.Retrospectives
   alias Mirror.Retrospectives.{Retrospective, Score}
-  alias Mirror.Teams
 
   alias Mirror.Helpers
 

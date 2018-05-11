@@ -9,7 +9,7 @@ export default Ember.Route.extend({
     };
   },
   afterModel(model) {
-    return fetch(`${config.DS.host}/${config.DS.namespace}/team_users`, {
+    return fetch(`${config.DS.host}/${config.DS.namespace}/team_members`, {
       method: 'POST',
       headers: {
         'Authorization': `Bearer ${this.get('session').get('session.content.authenticated.access_token')}`,
@@ -22,7 +22,7 @@ export default Ember.Route.extend({
       if(response.status === config.STATUS_CODES.created || response.status === config.STATUS_CODES.ok) {
         response.json().then((resp) => {
           this.send('invalidateApplicationModel');
-          this.transitionTo('app.teams.team.dashboard.retrospectives', resp.data.attributes.team_id);
+          this.transitionTo('app.teams.team.dashboard.retrospectives', resp.data.relationships.team.data.id);
         });
       } else {
         if(response.status === config.STATUS_CODES.unprocessable_entity) {

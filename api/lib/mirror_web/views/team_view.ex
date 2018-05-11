@@ -38,7 +38,7 @@ defmodule MirrorWeb.TeamView do
     include: false,
     identifiers: :always
 
-  def id(struct, conn) do
+  def id(struct, _conn) do
     struct.uuid
   end
 

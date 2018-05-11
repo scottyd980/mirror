@@ -6,7 +6,6 @@ defmodule Mirror.Teams do
   import Ecto.Query, warn: false
   alias Mirror.Repo
 
-  alias Mirror.Teams
   alias Mirror.Teams.Team
   alias Mirror.Teams.MemberDelegate
   alias Mirror.Teams.Member
@@ -331,7 +330,7 @@ defmodule Mirror.Teams do
       ** (Ecto.NoResultsError)
 
   """
-  def get_member_delegate!(id), do: Repo.get!(MemberDelegate, id)
+  def get_member_delegate!(access_code), do: Repo.get_by!(MemberDelegate, access_code: access_code)
 
   @doc """
   Creates a member_delegate.

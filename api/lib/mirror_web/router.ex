@@ -45,8 +45,6 @@ defmodule MirrorWeb.Router do
   scope "/api", MirrorWeb do
     pipe_through [:api, :auth, :json_api]
 
-    post "/team_admins", TeamAdminController, :create
-
     resources "/users", UserController, only: [:show]
     resources "/teams", TeamController, only: [:index, :create, :show, :update, :delete]
     resources "/organizations", OrganizationController, only: [:create, :show, :update, :delete]
@@ -54,5 +52,6 @@ defmodule MirrorWeb.Router do
     resources "/feedbacks", RetrospectiveFeedbackController, only: [:create, :show, :update]
     resources "/scores", RetrospectiveScoreController, only: [:create, :show, :update]
     resources "/actions", RetrospectiveActionController, only: [:create, :show, :update, :delete]
+    resources "/team_members", TeamMemberController, only: [:create, :delete]
   end
 end

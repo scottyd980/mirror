@@ -29,7 +29,8 @@ defmodule MirrorWeb.RetrospectiveFeedbackView do
     serializer: ActionSerializer,
     include: false,
     identifiers: :always,
-    field: :actions
+    field: :actions,
+    type: "action"
 
   def action(feedback, _conn) do
     List.first(feedback.actions)

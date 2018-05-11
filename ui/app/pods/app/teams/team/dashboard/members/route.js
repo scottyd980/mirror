@@ -90,7 +90,7 @@ export default Ember.Route.extend({
     deleteMember(member, team) {
       var _this = this;
 
-      return fetch(`${config.DS.host}/${config.DS.namespace}/team_users`, {
+      return fetch(`${config.DS.host}/${config.DS.namespace}/team_members`, {
         method: 'DELETE',
         headers: {
           'Authorization': `Bearer ${this.get('session').get('session.content.authenticated.access_token')}`,

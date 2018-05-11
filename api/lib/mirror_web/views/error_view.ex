@@ -17,6 +17,11 @@ defmodule MirrorWeb.ErrorView do
     |> JaSerializer.ErrorSerializer.format
   end
 
+  def render("404.json", _assigns) do
+    %{title: "Not Found", code: 404}
+    |> JaSerializer.ErrorSerializer.format
+  end
+
   def render("500.json-api", _assigns) do
     %{title: "Internal Server Error", code: 500}
     |> JaSerializer.ErrorSerializer.format
