@@ -41,7 +41,7 @@ defmodule MirrorWeb.TeamAdminController do
     team = Teams.get_team!(team_id)
     user = Accounts.get_user!(admin_id)
 
-    case Helpers.User.user_is_team_admin?(current_user, team) && Helpers.User.user_is_team_admin?(user, team) do
+    case Helpers.User.user_is_team_admin?(current_user, team) && Helpers.User.user_is_team_member?(user, team) do
       true ->
         with {:ok, _} <- Teams.delete_admin(%{team_id: team.id, user_id: admin_id}) 
         do
@@ -49,10 +49,14 @@ defmodule MirrorWeb.TeamAdminController do
           |> put_status(:ok)
           |> render("delete.json-api")
         else 
+          {:error, :no_additional_admins} ->
+            conn
+            |> put_status(403)
+            |> render(MirrorWeb.ErrorView, "403.json-api")
           {:error, _} ->
             conn
             |> put_status(:unprocessable_entity)
-            |> render(Mirror.ChangesetView, "error.json-api", changeset: %{})
+            |> render(MirrorWeb.ChangesetView, "error.json-api", changeset: %{})
         end
       _ ->
         conn
