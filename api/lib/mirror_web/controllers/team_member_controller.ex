@@ -2,6 +2,7 @@ defmodule MirrorWeb.TeamMemberController do
   use MirrorWeb, :controller
 
   alias Mirror.Teams
+  alias Mirror.Accounts
   alias Mirror.Teams.{Member, MemberDelegate}
 
   alias Mirror.Helpers
@@ -24,7 +25,7 @@ defmodule MirrorWeb.TeamMemberController do
             |> render(MirrorWeb.ErrorView, "404.json-api", %{})
           false ->
             with {:ok, %Member{} = member} <- Teams.create_member(%{team_id: member_delegate.team.id, user_id: current_user.id}),
-                 {:ok, %MemberDelegate{} = member_delegate} <- Teams.update_member_delegate(member_delegate, %{is_accessed: true})
+                 {:ok, %MemberDelegate{} = _member_delegate} <- Teams.update_member_delegate(member_delegate, %{is_accessed: true})
             do
               conn
               |> put_status(:created)
@@ -38,10 +39,33 @@ defmodule MirrorWeb.TeamMemberController do
     end
   end
 
-  # def delete(conn, %{"id" => id}) do
-  #   member = Teams.get_member!(id)
-  #   with {:ok, %Member{}} <- Teams.delete_member(member) do
-  #     send_resp(conn, :no_content, "")
-  #   end
-  # end
+  def delete(conn, %{"user_id" => user_id, "team_id" => team_id}) do
+    current_user = Mirror.Guardian.Plug.current_resource(conn)
+
+    team = Teams.get_team!(team_id)
+    user = Accounts.get_user!(user_id)
+    member = Teams.get_member!(%{user_id: user.id, team_id: team.id})
+
+    case Helpers.User.user_is_team_admin?(current_user, team) || current_user.id == user.id do
+      true ->
+        with {:ok, _} <- Teams.delete_member(member) do
+          conn
+          |> put_status(:ok)
+          |> render("delete.json-api")
+        else 
+          {:error, :no_additional_admins} ->
+            conn
+            |> put_status(403)
+            |> render(MirrorWeb.ErrorView, "403.json-api")
+          _ -> 
+            conn
+            |> put_status(422)
+            |> render(MirrorWeb.ErrorView, "422.json-api")
+        end
+      false ->
+        conn
+        |> put_status(404)
+        |> render(MirrorWeb.ErrorView, "404.json-api")
+    end
+  end
 end

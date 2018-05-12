@@ -6,10 +6,15 @@ defmodule Mirror.Teams do
   import Ecto.Query, warn: false
   alias Mirror.Repo
 
+  alias Mirror.Teams
   alias Mirror.Teams.Team
   alias Mirror.Teams.MemberDelegate
   alias Mirror.Teams.Member
   alias Mirror.Teams.Admin
+
+  alias Mirror.Helpers
+
+  require Logger
 
   @doc """
   Returns the list of teams.
@@ -157,7 +162,9 @@ defmodule Mirror.Teams do
       ** (Ecto.NoResultsError)
 
   """
-  def get_member!(id), do: Repo.get!(Member, id)
+  def get_member!(%{team_id: team_id, user_id: user_id}) do
+    Repo.get_by!(Member, %{team_id: team_id, user_id: user_id})
+  end
 
   @doc """
   Creates a member.
@@ -208,7 +215,31 @@ defmodule Mirror.Teams do
 
   """
   def delete_member(%Member{} = member) do
-    Repo.delete(member)
+    member = member
+    |> Member.preload_relationships
+
+    team = member.team
+    user = member.user
+
+    cond do
+        Helpers.User.user_is_team_admin?(user, team) ->
+            with {:ok, _admin_affected_rows} <- Teams.delete_admin(%{user_id: user.id, team_id: team.id}),
+                 {:ok, _member_affected_rows} <- Teams.delete_member(member)
+            do
+                {:ok, :removed}
+            else
+                {:error, :no_additional_admins} -> {:error, :no_additional_admins}
+                {:error, changeset} -> Repo.rollback changeset
+            end
+
+        Helpers.User.user_is_team_member?(user, team) ->
+            case Repo.delete_all(from u in Member, where: u.user_id == ^user.id and u.team_id == ^team.id) do
+                {:error, _} -> {:error, nil}
+                {affected_rows, _} -> {:ok, affected_rows}
+            end
+        true ->
+            {:error, :unknown}
+    end
   end
 
   @doc """
@@ -284,9 +315,19 @@ defmodule Mirror.Teams do
 
   """
   def delete_admin(attrs \\ %{}) do
-    case Repo.delete_all(from u in Admin, where: u.user_id == ^attrs.user_id and u.team_id == ^attrs.team_id) do
-        {:error, _} -> {:error, nil}
-        {affected_rows, _} -> {:ok, affected_rows}
+    team = Repo.get!(Team, attrs.team_id)
+    |> Team.preload_relationships
+
+    cond do
+        (length(team.admins) > 1) ->
+            case Repo.delete_all(from u in Admin, where: u.user_id == ^attrs.user_id and u.team_id == ^attrs.team_id) do
+                {:error, _} -> {:error, nil}
+                {affected_rows, _} -> {:ok, affected_rows}
+            end
+        (length(team.admins) > 0) ->
+            {:error, :no_additional_admins}
+        true -> 
+            {:error, :unexpected}
     end
   end
 
