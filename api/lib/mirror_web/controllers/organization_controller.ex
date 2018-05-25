@@ -43,7 +43,7 @@ defmodule MirrorWeb.OrganizationController do
     end
   end
 
-  # TODO: WORK
+  # TODO: WORK - BILLING
   # def update(conn, %{"id" => id, "organization" => organization_params}) do
   #   organization = Organizations.get_organization!(id)
 

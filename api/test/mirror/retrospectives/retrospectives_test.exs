@@ -372,4 +372,66 @@ defmodule Mirror.RetrospectivesTest do
       assert %Ecto.Changeset{} = Retrospectives.change_action(action)
     end
   end
+
+  describe "submissions" do
+    alias Mirror.Retrospectives.Submission
+
+    @valid_attrs %{feedback: true, score: true}
+    @update_attrs %{feedback: false, score: false}
+    @invalid_attrs %{feedback: nil, score: nil}
+
+    def submission_fixture(attrs \\ %{}) do
+      {:ok, submission} =
+        attrs
+        |> Enum.into(@valid_attrs)
+        |> Retrospectives.create_submission()
+
+      submission
+    end
+
+    test "list_submissions/0 returns all submissions" do
+      submission = submission_fixture()
+      assert Retrospectives.list_submissions() == [submission]
+    end
+
+    test "get_submission!/1 returns the submission with given id" do
+      submission = submission_fixture()
+      assert Retrospectives.get_submission!(submission.id) == submission
+    end
+
+    test "create_submission/1 with valid data creates a submission" do
+      assert {:ok, %Submission{} = submission} = Retrospectives.create_submission(@valid_attrs)
+      assert submission.feedback == true
+      assert submission.score == true
+    end
+
+    test "create_submission/1 with invalid data returns error changeset" do
+      assert {:error, %Ecto.Changeset{}} = Retrospectives.create_submission(@invalid_attrs)
+    end
+
+    test "update_submission/2 with valid data updates the submission" do
+      submission = submission_fixture()
+      assert {:ok, submission} = Retrospectives.update_submission(submission, @update_attrs)
+      assert %Submission{} = submission
+      assert submission.feedback == false
+      assert submission.score == false
+    end
+
+    test "update_submission/2 with invalid data returns error changeset" do
+      submission = submission_fixture()
+      assert {:error, %Ecto.Changeset{}} = Retrospectives.update_submission(submission, @invalid_attrs)
+      assert submission == Retrospectives.get_submission!(submission.id)
+    end
+
+    test "delete_submission/1 deletes the submission" do
+      submission = submission_fixture()
+      assert {:ok, %Submission{}} = Retrospectives.delete_submission(submission)
+      assert_raise Ecto.NoResultsError, fn -> Retrospectives.get_submission!(submission.id) end
+    end
+
+    test "change_submission/1 returns a submission changeset" do
+      submission = submission_fixture()
+      assert %Ecto.Changeset{} = Retrospectives.change_submission(submission)
+    end
+  end
 end

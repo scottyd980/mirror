@@ -5,7 +5,7 @@ defmodule Mirror.Retrospectives.Retrospective do
 
   alias Mirror.Accounts.User
   alias Mirror.Teams.Team
-  alias Mirror.Retrospectives.{Retrospective, Participant, Score, Feedback, Game}
+  alias Mirror.Retrospectives.{Retrospective, Participant, Score, Feedback, Game, FeedbackSubmission, ScoreSubmission}
   
   schema "retrospectives" do
     field :cancelled, :boolean, default: false
@@ -17,13 +17,14 @@ defmodule Mirror.Retrospectives.Retrospective do
     belongs_to :game, Game
     has_many :scores, Score, on_delete: :delete_all
     has_many :feedbacks, Feedback, on_delete: :delete_all
+    has_many :feedback_submissions, FeedbackSubmission, on_delete: :delete_all
+    has_many :score_submissions, ScoreSubmission, on_delete: :delete_all
     many_to_many :participants, User, join_through: Participant
 
     timestamps()
   end
 
   @doc false
-  # TODO: Should probably validate that the game ID is valid
   def changeset(retrospective, attrs) do
     retrospective
     |> cast(attrs, [:name, :state, :is_anonymous, :cancelled, :team_id, :moderator_id, :game_id])
@@ -32,7 +33,7 @@ defmodule Mirror.Retrospectives.Retrospective do
 
   def preload_relationships(retrospective) do
     retrospective
-    |> Repo.preload([:team, :moderator, :participants, :scores, :feedbacks, :game], force: true)
+    |> Repo.preload([:team, :moderator, :participants, :scores, :feedbacks, :game, :feedback_submissions, :score_submissions], force: true)
   end
 
   # TODO: Should probably make sure that a retrospective is not in progress for this team
