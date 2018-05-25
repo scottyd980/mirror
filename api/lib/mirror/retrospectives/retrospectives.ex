@@ -596,4 +596,28 @@ defmodule Mirror.Retrospectives do
   def change_action(%Action{} = action) do
     Action.changeset(action, %{})
   end
+
+  alias Mirror.Retrospectives.FeedbackSubmission
+
+  def get_feedback_submission!(id), do: Repo.get!(FeedbackSubmission, id)
+
+  def create_feedback_submission(attrs \\ %{}) do
+    attrs = Map.put(attrs, :submitted, true)
+
+    %FeedbackSubmission{}
+    |> FeedbackSubmission.changeset(attrs)
+    |> Repo.insert()
+  end
+
+  alias Mirror.Retrospectives.ScoreSubmission
+
+  def get_score_submission!(id), do: Repo.get!(ScoreSubmission, id)
+
+  def create_score_submission(attrs \\ %{}) do
+    attrs = Map.put(attrs, :submitted, true)
+
+    %ScoreSubmission{}
+    |> ScoreSubmission.changeset(attrs)
+    |> Repo.insert()
+  end
 end

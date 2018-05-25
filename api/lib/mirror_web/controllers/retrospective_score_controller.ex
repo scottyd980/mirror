@@ -2,7 +2,7 @@ defmodule MirrorWeb.RetrospectiveScoreController do
   use MirrorWeb, :controller
 
   alias Mirror.Retrospectives
-  alias Mirror.Retrospectives.{Retrospective, Score}
+  alias Mirror.Retrospectives.{Retrospective, Score, ScoreSubmission}
 
   alias Mirror.Helpers
 
@@ -22,7 +22,14 @@ defmodule MirrorWeb.RetrospectiveScoreController do
       true ->
         with {:ok, %Score{} = score} <- Retrospectives.create_score(score_params) do
           # WS BROADCAST
-          MirrorWeb.Endpoint.broadcast("retrospective:#{score_params["retrospective_id"]}", "sprint_score_added", MirrorWeb.RetrospectiveScoreView.render("show.json-api", data: score |> Score.preload_relationships))
+          case Retrospectives.create_score_submission(%{user_id: current_user.id, retrospective_id: retrospective.id}) do
+            {:ok, score_submission} -> MirrorWeb.Endpoint.broadcast("retrospective:#{score_params["retrospective_id"]}", "sprint_score_submitted", MirrorWeb.RetrospectiveScoreSubmissionView.render("show.json-api", data: score_submission |> ScoreSubmission.preload_relationships))
+            _ -> :nil # Score was already submitted by this user, no need to re-broadcast
+          end
+
+          score = score |> Score.preload_relationships
+          score = Map.put(score, :uuid, score_params["uuid"])
+          MirrorWeb.Endpoint.broadcast("retrospective:#{score_params["retrospective_id"]}", "sprint_score_added", MirrorWeb.RetrospectiveScoreView.render("show.json-api", data: score))
 
           conn
           |> put_status(:created)

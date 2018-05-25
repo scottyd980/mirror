@@ -9,7 +9,6 @@ defmodule MirrorWeb.TeamMemberController do
 
   action_fallback MirrorWeb.FallbackController
 
-  # TODO: Work
   def create(conn, %{"access-code" => access_code}) do
     current_user = Mirror.Guardian.Plug.current_resource(conn)
 

@@ -4,7 +4,7 @@ defmodule MirrorWeb.RetrospectiveScoreView do
   
   alias MirrorWeb.{UserSerializer, RetrospectiveSerializer}
 
-  attributes [:score]
+  attributes [:score, :uuid]
 
   has_one :user,
     links: [
@@ -12,7 +12,9 @@ defmodule MirrorWeb.RetrospectiveScoreView do
     ],
     serializer: UserSerializer,
     include: false,
-    identifiers: :always
+    identifiers: :always,
+    field: :user,
+    type: "user"
   
   has_one :retrospective,
     links: [
@@ -21,6 +23,23 @@ defmodule MirrorWeb.RetrospectiveScoreView do
     serializer: RetrospectiveSerializer,
     include: false,
     identifiers: :always
+
+  def user(score, conn) do
+    case score.retrospective.is_anonymous do
+      true ->
+        case conn do
+          nil -> nil
+          _ ->
+            current_user = Mirror.Guardian.Plug.current_resource(conn)
+
+            case current_user.id == score.user.id do
+              true -> score.user
+              false -> nil
+            end
+        end
+      false -> score.user
+    end
+  end
 
   def type, do: "score"
 end

@@ -2,7 +2,7 @@ defmodule MirrorWeb.RetrospectiveFeedbackController do
   use MirrorWeb, :controller
 
   alias Mirror.Retrospectives
-  alias Mirror.Retrospectives.{Retrospective, Feedback}
+  alias Mirror.Retrospectives.{Retrospective, Feedback, FeedbackSubmission}
 
   alias Mirror.Helpers
 
@@ -22,8 +22,14 @@ defmodule MirrorWeb.RetrospectiveFeedbackController do
       true ->
         with {:ok, %Feedback{} = feedback} <- Retrospectives.create_feedback(feedback_params) do
           # WS BROADCAST
-          MirrorWeb.Endpoint.broadcast("retrospective:#{feedback_params["retrospective_id"]}", "feedback_added", MirrorWeb.RetrospectiveFeedbackView.render("show.json-api", data: feedback |> Feedback.preload_relationships))
+          case Retrospectives.create_feedback_submission(%{user_id: current_user.id, retrospective_id: retrospective.id}) do
+            {:ok, feedback_submission} -> MirrorWeb.Endpoint.broadcast("retrospective:#{feedback_params["retrospective_id"]}", "feedback_submitted", MirrorWeb.RetrospectiveFeedbackSubmissionView.render("show.json-api", data: feedback_submission |> FeedbackSubmission.preload_relationships))
+            _ -> :nil # Feedback was already submitted by this user, no need to re-broadcast
+          end
 
+          feedback = feedback |> Feedback.preload_relationships
+          feedback = Map.put(feedback, :uuid, feedback_params["uuid"])
+          MirrorWeb.Endpoint.broadcast("retrospective:#{feedback_params["retrospective_id"]}", "feedback_added", MirrorWeb.RetrospectiveFeedbackView.render("show.json-api", data: feedback))
           conn
           |> put_status(:created)
           |> render("show.json-api", data: feedback |> Feedback.preload_relationships)

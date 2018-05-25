@@ -8,5 +8,6 @@ export default Model.extend({
   state: attr('number', {defaultValue: 0}),
   user: belongsTo('user'),
   retrospective: belongsTo('retrospective'),
-  action: belongsTo('action')
+  action: belongsTo('action'),
+  uuid: attr('string')
 });
