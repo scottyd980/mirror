@@ -3,6 +3,10 @@ import RSVP from 'rsvp';
 
 export default Ember.Route.extend({
     model() {
+        // Need to reload scores in case someone left the retrospective but isn't listening for changes.
+        const scores = this.modelFor('app.retrospectives.retrospective').retrospective.hasMany('scores');
+        scores.reload();
+
         return RSVP.hash({
             parent: this.modelFor('app.retrospectives.retrospective'),
             scores: this.modelFor('app.retrospectives.retrospective').retrospective.get('scores')
