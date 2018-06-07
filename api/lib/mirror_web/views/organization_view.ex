@@ -3,9 +3,9 @@ defmodule MirrorWeb.OrganizationView do
 
   use JaSerializer.PhoenixView
 
-  alias MirrorWeb.{UserSerializer, TeamSerializer}
+  alias MirrorWeb.{UserSerializer, TeamSerializer, CardSerializer}
 
-  attributes [:name, :is_anonymous]
+  attributes [:name, :is_anonymous, :billing_status, :billing_frequency, :billing_customer]
 
   has_many :members,
     links: [
@@ -23,6 +23,22 @@ defmodule MirrorWeb.OrganizationView do
     include: false,
     identifiers: :always
 
+  has_many :cards,
+    links: [
+      self: "/api/cards"
+    ],
+    serializer: CardSerializer,
+    include: false,
+    identifiers: :always
+
+  has_one :default_payment,
+    links: [
+      self: "/api/cards"
+    ],
+    serializer: CardSerializer,
+    include: false,
+    identifiers: :always
+
   has_many :teams,
     links: [
       self: "/api/teams/"
@@ -31,7 +47,7 @@ defmodule MirrorWeb.OrganizationView do
     include: false,
     identifiers: :always
 
-  def id(struct, conn) do
+  def id(struct, _conn) do
     struct.uuid
   end
 

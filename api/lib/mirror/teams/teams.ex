@@ -72,6 +72,8 @@ defmodule Mirror.Teams do
         {:error, changeset} ->
           Repo.rollback changeset
           {:error, changeset}
+        _ ->
+            {:error, :unknown}
       end
     end
   end
@@ -106,6 +108,7 @@ defmodule Mirror.Teams do
       {:error, %Ecto.Changeset{}}
 
   """
+  # TODO: BILLING ON DELETE
   def delete_team(%Team{} = team) do
     Repo.delete(team)
     # Repo.transaction fn ->

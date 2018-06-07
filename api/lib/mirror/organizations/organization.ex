@@ -10,14 +10,21 @@ defmodule Mirror.Organizations.Organization do
   alias Mirror.Organizations
   alias Mirror.Organizations.{Organization, Admin, Member}
 
+  alias Mirror.Payments.Card
+
   alias Mirror.Helpers.Hash
 
   schema "organizations" do
     field :avatar, :string, default: "default.png"
     field :name, :string
     field :uuid, :string
+    field :billing_customer, :string
+    field :billing_status, :string, default: "inactive"
+    field :billing_frequency, :string, default: "none"
 
     has_many :teams, Team
+    has_many :cards, Card
+    belongs_to :default_payment, Card
     many_to_many :admins, User, join_through: Admin
     many_to_many :members, User, join_through: Member
 
@@ -27,13 +34,14 @@ defmodule Mirror.Organizations.Organization do
   @doc false
   def changeset(organization, attrs) do
     organization
-    |> cast(attrs, [:name, :uuid, :avatar])
-    |> validate_required([:name])
+    |> cast(attrs, [:name, :avatar, :uuid, :billing_customer, :billing_status, :default_payment_id, :billing_frequency])
+    |> validate_required([:name, :avatar])
+    |> validate_inclusion(:billing_frequency, ["none", "monthly", "yearly"])
   end
 
   def preload_relationships(organization) do
     organization
-    |> Repo.preload([:teams, :admins, :members], force: true)
+    |> Repo.preload([:teams, :admins, :members, :default_payment, :cards], force: true)
   end
   
   def create(attrs) do
@@ -69,6 +77,21 @@ defmodule Mirror.Organizations.Organization do
         end
       _ ->
         [{:ok, nil}]
+    end
+  end
+
+  def set_default_payment(card, default) do
+    card = card
+    |> Card.preload_relationships
+
+    organization = card.organization
+
+    case default do
+      true -> 
+        organization
+        |> Organization.changeset(%{default_payment_id: card.id})
+        |> Repo.update
+      _ -> {:ok, organization}
     end
   end
 end

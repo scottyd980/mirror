@@ -57,5 +57,6 @@ defmodule MirrorWeb.Router do
     resources "/scores", RetrospectiveScoreController, only: [:create, :show, :update]
     resources "/score-submissions", RetrospectiveScoreSubmissionController, only: [:show]
     resources "/actions", RetrospectiveActionController, only: [:create, :show, :update, :delete]
+    resources "/cards", PaymentCardController, only: [:index, :create, :show, :delete]
   end
 end
