@@ -5,7 +5,7 @@ defmodule MirrorWeb.UUIDController do
 
   action_fallback MirrorWeb.FallbackController
 
-  def index(conn, params) do
+  def index(conn, _params) do
     conn
     |> json(%{ hash: Helpers.Hash.generate_unique_id() })
   end

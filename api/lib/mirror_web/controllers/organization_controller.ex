@@ -25,6 +25,10 @@ defmodule MirrorWeb.OrganizationController do
         conn
         |> put_status(:unprocessable_entity)
         |> render(MirrorWeb.ChangesetView, "error.json-api", changeset: changeset)
+      _ ->
+        conn
+        |> put_status(:unprocessable_entity)
+        |> render(MirrorWeb.ChangesetView, "error.json-api", changeset: %{})
     end
   end
   
@@ -73,7 +77,7 @@ defmodule MirrorWeb.OrganizationController do
       _ ->
         conn
         |> put_status(404)
-        |> render(MirrorWeb.ErrorView, "404.json")
+        |> render(MirrorWeb.ErrorView, "404.json-api")
     end
   end
 end

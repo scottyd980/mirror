@@ -29,7 +29,7 @@ defmodule Mirror.Teams.Team do
   @doc false
   def changeset(team, attrs) do
     team
-    |> cast(attrs, [:name, :avatar, :uuid, :is_anonymous])
+    |> cast(attrs, [:name, :avatar, :uuid, :is_anonymous, :organization_id])
     |> validate_required([:name])
   end
 

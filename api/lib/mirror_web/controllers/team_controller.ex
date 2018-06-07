@@ -1,7 +1,7 @@
 defmodule MirrorWeb.TeamController do
   use MirrorWeb, :controller
 
-  alias Mirror.Teams
+  alias Mirror.{Teams, Organizations}
   alias Mirror.Teams.Team
 
   alias Mirror.Helpers
@@ -23,6 +23,10 @@ defmodule MirrorWeb.TeamController do
         conn
         |> put_status(:unprocessable_entity)
         |> render(MirrorWeb.ChangesetView, "error.json-api", changeset: changeset)
+      _ ->
+        conn
+        |> put_status(:unprocessable_entity)
+        |> render(MirrorWeb.ChangesetView, "error.json-api", changeset: %{})
     end
   end
 
@@ -46,9 +50,27 @@ defmodule MirrorWeb.TeamController do
     current_user = Mirror.Guardian.Plug.current_resource(conn)
 
     team_params = JaSerializer.Params.to_attributes(data)
-    team = Teams.get_team!(id)
 
-    case Helpers.User.user_is_team_admin?(current_user, team) do
+    team = Teams.get_team!(id)
+  
+    organization_id = team_params["organization_id"]
+
+    organization = case organization_id do
+      nil -> nil
+      org_id -> Organizations.get_organization!(org_id)
+    end
+
+    team_params = case organization do
+      nil -> team_params
+      _ -> Map.put(team_params, "organization_id", organization.id)
+    end
+
+    case Helpers.User.user_is_team_admin?(current_user, team) && (
+          organization == nil || 
+          team.organization_id == organization_id || 
+          Helpers.User.user_is_organization_admin?(current_user, organization)
+        ) 
+    do
       true ->
         with {:ok, %Team{} = team} <- Teams.update_team(team, team_params) do
           render(conn, "show.json-api", data: team |> Team.preload_relationships)
@@ -56,7 +78,7 @@ defmodule MirrorWeb.TeamController do
           {:error, changeset} ->
             conn
             |> put_status(:unprocessable_entity)
-            |> render(MirrorWeb.ChangesetView, "error.json", changeset: changeset)
+            |> render(MirrorWeb.ChangesetView, "error.json-api", changeset: changeset)
         end
       _ ->
         conn
