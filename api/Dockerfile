@@ -1,6 +1,6 @@
 FROM 'elixir:latest'
 
-COPY ./api .
+COPY . .
 
 RUN export MIX_ENV=prod && \
     rm -Rf _build && \
