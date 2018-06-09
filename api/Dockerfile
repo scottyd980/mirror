@@ -9,4 +9,4 @@ RUN export MIX_ENV=prod && \
     rm -Rf _build && \
     mix deps.get
 
-RUN mix edeliver build release production --verbose
+RUN mix edeliver build release production --branch=distillery
