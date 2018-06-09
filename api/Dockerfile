@@ -2,7 +2,8 @@ FROM 'elixir:latest'
 
 COPY . .
 
-RUN mix local.hex --force
+RUN mix local.hex --force && \
+    mix local.rebar --force
 
 RUN export MIX_ENV=prod && \
     rm -Rf _build && \
