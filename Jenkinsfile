@@ -11,7 +11,7 @@ pipeline {
   }
   post {
     always {
-      sh "chmod -R 777 ."
+      sh "sudo chmod -R 777 ."
       cleanWs()
     }
   }
