@@ -14,10 +14,10 @@ pipeline {
 
       steps {
         script {
-          archive = "${PWD}/mirror-${BUILD_NUMBER}.tar.gz"
+          archive = "${WORKSPACE}/mirror-${BUILD_NUMBER}.tar.gz"
         }
         echo "Deploying API (${archive})..."
-        sh "tar -cvzf ${archive} ${PWD}/_build"
+        sh "tar -cvzf ${archive} ${WORKSPACE}/_build"
         echo 'Successfully deployed API'
       }
     }
