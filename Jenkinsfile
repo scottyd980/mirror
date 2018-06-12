@@ -3,7 +3,8 @@ pipeline {
   stages {
     stage('Build API') {
       steps {
-        sh 'docker build -t mirror ./api -v ${PWD}:/_build'
+        sh 'docker build -t mirror ./api'
+        sh 'docker run --rm mirror -v ${PWD}:/_build'
       }
     }
   }
