@@ -16,7 +16,7 @@ pipeline {
         script {
           archive = "${WORKSPACE}/mirror-${BUILD_NUMBER}.tar.gz"
         }
-        echo "Deploying API (${archive})..."
+        echo "Deploying API (mirror-${BUILD_NUMBER}.tar.gz)..."
         sh "tar -cvzf ${archive} ${WORKSPACE}/_build"
         echo 'Successfully deployed API'
       }
