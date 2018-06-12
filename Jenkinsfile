@@ -1,10 +1,9 @@
 pipeline {
   agent any
   stages {
-    stage('Build') {
+    stage('Build API') {
       steps {
-        sh 'echo "Hello"'
-        sh 'docker build -t mirror ./api'
+        sh 'docker build -t mirror ./api -v ${PWD}:/_build'
       }
     }
   }
