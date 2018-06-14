@@ -18,6 +18,7 @@ pipeline {
         }
         echo "Deploying API (mirror-${BUILD_NUMBER}.tar.gz)..."
         sh "tar -cvzf ${archive} ${WORKSPACE}/_build"
+        sh "pv ${archive} | ssh deploy@192.241.152.231 'cat | tar xz -C /var/www/mirror'"
         echo 'Successfully deployed API'
       }
     }
