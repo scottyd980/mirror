@@ -53,34 +53,6 @@ defmodule Mirror.Mixfile do
       {:edeliver, "~> 1.5.0"},
       {:distillery, "~> 1.5", runtime: false}
     ]
-
-
-
-    # [
-    #   {:phoenix, "~> 1.3.0-rc", override: true},
-    #  {:phoenix_pubsub, "~> 1.0"},
-    #  {:phoenix_ecto, "~> 3.0"},
-    #  {:phoenix_live_reload, "~> 1.0"},
-    #  {:phoenix_html, "~> 2.9.3"},
-    #  {:mariaex, ">= 0.0.0"},
-    #  {:gettext, "~> 0.11"},
-    #  {:cowboy, "~> 1.0"},
-    #  {:cors_plug, "~> 1.1"},
-    #  {:guardian, "~> 0.13.0"},
-    #  {:comeonin, "~> 2.5"},
-    #  {:ja_serializer, "~> 0.11.0"},
-    #  {:hashids, "~> 2.0"},
-    #  {:excoveralls, "~> 0.5", only: :test},
-    #  {:distillery, "~> 1.0"},
-    #  {:bamboo, "~> 0.7"},
-    #  {:bamboo_smtp, "~> 1.2.1"},
-    #  {:stripity_stripe, "~> 1.4.0"},
-    #  {:poison, "~> 2.2", override: true},
-    #  {:hackney, "~> 1.7", override: true},
-    #  {:httpoison, "~> 0.11", override: true},
-    #  {:atomic_map, "~> 0.9"},
-    #  {:timex, "~> 3.0"}
-    # ]
   end
 
   # Aliases are shortcuts or tasks specific to the current project.

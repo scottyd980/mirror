@@ -9,4 +9,4 @@ RUN export MIX_ENV=prod && \
     rm -Rf _build && \
     mix deps.get
 
-CMD MIX_ENV=prod mix release
+CMD MIX_ENV=prod mix release --env=prod
