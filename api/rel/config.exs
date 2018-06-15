@@ -47,7 +47,9 @@ end
 release :mirror do
   set version: current_version(:mirror)
   set applications: [
-    :runtime_tools
+    :runtime_tools,
+    elixir_make: :load,
+    parse_trans: :load
   ]
 end
 
