@@ -13,7 +13,7 @@ RUN wget https://packages.erlang-solutions.com/erlang-solutions_1.0_all.deb && \
   dpkg -i erlang-solutions_1.0_all.deb && \
   apt-get update && \
   apt-get install -y \
-    esl-erlang=1:21.0 && \
+    esl-erlang=1:20.3 && \
   apt-get install elixir
 
 COPY . .
