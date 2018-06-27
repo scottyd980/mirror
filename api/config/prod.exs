@@ -70,4 +70,4 @@ config :mirror, Mirror.Repo,
   username: "${USERNAME}",
   password: "${PASSWORD}",
   database: "${DATABASE}",
-  pool_size: 15
+  pool_size: 10
