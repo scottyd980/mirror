@@ -51,5 +51,8 @@ release :mirror do
     elixir_make: :load,
     parse_trans: :load
   ]
+  set commands: [
+    "migrate": "rel/commands/migrate.sh"
+  ]
 end
 
