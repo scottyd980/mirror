@@ -26,7 +26,7 @@ pipeline {
 
       steps {
         echo "Starting API..."
-        sh "ssh deploy@192.241.152.231 '/var/www/mirror/prod/rel/mirror/bin/mirror migrate && /var/www/mirror/prod/rel/mirror/bin/mirror start'"
+        sh "cat startup.sh | ssh deploy@192.241.152.231"
         echo 'Successfully started API'
       }
     }
