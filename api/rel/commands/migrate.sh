@@ -1,3 +1,3 @@
 #!/bin/sh
 
-$RELEASE_ROOT_DIR/bin/mirror command Elixir.MyApp.ReleaseTasks migrate
+$RELEASE_ROOT_DIR/bin/mirror command Elixir.Mirror.ReleaseTasks migrate
