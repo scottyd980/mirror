@@ -26,7 +26,7 @@ pipeline {
 
       steps {
         echo "Starting API..."
-        sh "cat ./api/startup.sh | ssh deploy@192.241.152.231"
+        sh "cat ./api/startup.sh | ssh -L 3306:localhost:3306 deploy@192.241.152.231"
         echo 'Successfully started API'
       }
     }
