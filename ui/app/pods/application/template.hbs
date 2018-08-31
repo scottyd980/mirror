@@ -9,9 +9,17 @@
         <span class="icon-bar"></span>
       </button>
       {{#if session.isAuthenticated}}
-        <div onclick={{action 'navbarCollapse' value='target'}}>{{#link-to "app.index" class="navbar-brand"}}{{fa-icon "medium"}} Mirror{{/link-to}}</div>
+        <div onclick={{action 'navbarCollapse' value='target'}}>
+          {{#link-to "app.index" class="navbar-brand navbar-brand-icon"}}
+              Mirror
+          {{/link-to}}
+        </div>
       {{else}}
-        <div onclick={{action 'navbarCollapse' value='target'}}>{{#link-to "index" class="navbar-brand"}}{{fa-icon "medium"}} Mirror{{/link-to}}</div>
+        <div onclick={{action 'navbarCollapse' value='target'}}>
+          {{#link-to "index" class="navbar-brand navbar-brand-icon"}}
+            Mirror
+          {{/link-to}}
+        </div>
       {{/if}}
     </div>
 

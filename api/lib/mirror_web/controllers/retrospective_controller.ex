@@ -95,29 +95,4 @@ defmodule MirrorWeb.RetrospectiveController do
         |> render(MirrorWeb.ErrorView, "404.json-api")
     end
   end
-
-  # TODO: Not sure this is necessary
-  # def delete(conn, %{"id" => id}) do
-  #   current_user = Mirror.Guardian.Plug.current_resource(conn)
-
-  #   retrospective = Retrospectives.get_retrospective!(id)
-  #   |> Retrospective.preload_relationships
-
-  #   case Helpers.User.user_is_team_member?(current_user, retrospective.team) do
-  #     true ->
-  #       with {:ok, %Retrospective{}} <- Retrospectives.delete_retrospective(retrospective)
-  #       do
-  #         render(conn, "delete.json")
-  #       else
-  #         {:error, changeset} ->
-  #           conn
-  #           |> put_status(:unprocessable_entity)
-  #           |> render(MirrorWeb.ChangesetView, "error.json-api", changeset: changeset)
-  #       end
-  #     _ ->
-  #       conn
-  #       |> put_status(404)
-  #       |> render(MirrorWeb.ErrorView, "404.json-api")
-  #   end
-  # end
 end

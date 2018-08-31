@@ -81,7 +81,7 @@ export default Ember.Route.extend({
             let _this = this;
             const uuid = this.get('uuid').get('hash');
             if(uuid) {
-                _this.submitFeedback(uuid)
+                _this.submitFeedback(uuid);
             } else {
                 fetch(`${config.DS.host}/${config.DS.namespace}/uuid`, {
                     type: 'GET',

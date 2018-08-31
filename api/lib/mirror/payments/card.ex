@@ -37,4 +37,37 @@ defmodule Mirror.Payments.Card do
     |> Card.changeset(attrs)
     |> Repo.insert
   end
+
+  def delete(card) do
+    Repo.transaction fn ->
+      if Card.is_default_payment?(card) do
+        Organization.set_alternate_default_payment(card)
+      end
+  
+      with removed_card           <- Repo.delete!(card),
+           {:ok, removed_billing} <- Stripe.Card.delete(card.card_id, %{customer: card.organization.billing_customer})
+      do
+        {:ok, removed_card}
+      else
+        {:error, changeset} ->
+          Repo.rollback changeset
+          {:error, changeset}
+      end
+    end
+  end
+
+  def is_default_payment?(card) do
+    card = card
+    |> Card.preload_relationships
+
+    card.organization.default_payment_id == card.id
+  end
+
+  # TODO: Implement get_status
+  def get_status(card) do
+    case card do
+      nil -> :invalid
+      _ -> :valid
+    end
+  end
 end

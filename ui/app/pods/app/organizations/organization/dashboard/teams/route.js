@@ -34,7 +34,10 @@ export default Ember.Route.extend({
             team.save().then(() => {
                 //this.send('invalidateApplicationModel');
                 this.toggleLoadingScreen();
-            });
+            }).catch((error) => {
+                // TODO: Handle error
+                this.toggleLoadingScreen();
+            }); 
         }
     }
 });

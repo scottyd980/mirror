@@ -1,5 +1,6 @@
 import Ember from 'ember';
 import RSVP from 'rsvp';
+import config from 'mirror/config/environment';
 
 export default Ember.Route.extend({
     session: Ember.inject.service('session'),
@@ -52,16 +53,30 @@ export default Ember.Route.extend({
             card.destroyRecord().then(() => {
                 this.send('invalidateApplicationModel');
                 this.toggleLoadingScreen();
-            });
+            }).catch((error) => {
+                this.toggleLoadingScreen();
+                this.get('notificationCenter').error({
+                    title: config.ERROR_MESSAGES.generic,
+                    message: "We experienced an unexpected error trying to delete your payment method. Please try again."
+                });
+            }); 
         },
         makeDefaultBillingInformation(card) {
             this.toggleLoadingScreen("Updating Payment Method...");
             var organization = card.get('organization');
             organization.then((org) => { 
+                const pre_default_payment = org.get('default_payment');
                 org.set('default_payment', card);
                 org.save().then(() => {
                     this.toggleLoadingScreen();
-                }); 
+                }).catch((error) => {
+                    this.toggleLoadingScreen();
+                    org.reload();
+                    this.get('notificationCenter').error({
+                        title: config.ERROR_MESSAGES.generic,
+                        message: "We experienced an unexpected error trying to update your default payment method. Please try again."
+                    });
+                });
             });
         },
         updateBillingFrequency() {
@@ -73,7 +88,13 @@ export default Ember.Route.extend({
 
             organization.save().then(() => {
                 this.toggleLoadingScreen();
-            });
+            }).catch((error) => {
+                this.toggleLoadingScreen();
+                this.get('notificationCenter').error({
+                    title: config.ERROR_MESSAGES.generic,
+                    message: "We experienced an unexpected error trying to update your billing frequency. Please try again."
+                });
+            }); 
         }
     }
 });
