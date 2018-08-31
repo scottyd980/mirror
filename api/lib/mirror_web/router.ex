@@ -32,6 +32,7 @@ defmodule MirrorWeb.Router do
     post "/retrospective_participants", RetrospectiveParticipantController, :create
     post "/team_admins", TeamAdminController, :create
     post "/team_members", TeamMemberController, :create
+    post "/member_delegates", MemberDelegateController, :create
     
     delete "/team_members", TeamMemberController, :delete
     delete "/team_admins", TeamAdminController, :delete

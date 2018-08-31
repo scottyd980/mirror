@@ -91,9 +91,7 @@ defmodule Mirror.Teams do
 
   """
   def update_team(%Team{} = team, attrs) do
-    team
-    |> Team.changeset(attrs)
-    |> Repo.update()
+    Team.update(team, attrs)
   end
 
   @doc """
@@ -108,21 +106,9 @@ defmodule Mirror.Teams do
       {:error, %Ecto.Changeset{}}
 
   """
-  # TODO: BILLING ON DELETE
+  
   def delete_team(%Team{} = team) do
-    Repo.delete(team)
-    # Repo.transaction fn ->
-    #     with {:ok, team}      <- Repo.delete(team)
-    #          team_with_assocs <- team |> Team.preload_relationships
-    #          removed_sub      <- Billing.remove_subscription(current_org, team_with_assocs, true)
-    #     do
-    #         team
-    #     else
-    #         {:error, changeset} ->
-    #             Repo.rollback changeset
-    #             {:error, changeset}
-    #     end
-    # end
+    Team.delete(team)
   end
 
   @doc """
@@ -392,6 +378,22 @@ defmodule Mirror.Teams do
     %MemberDelegate{}
     |> MemberDelegate.changeset(attrs)
     |> Repo.insert()
+  end
+
+  def create_member_delegates(%Team{} = team, memeber_delegates \\ []) do
+    Repo.transaction fn ->
+        with  team_member_delegates <- Team.add_member_delegates(team, memeber_delegates),
+              {:ok}                 <- MemberDelegate.send_invitations(team_member_delegates, team)
+        do
+          team_member_delegates
+        else
+          {:error, changeset} ->
+            Repo.rollback changeset
+            {:error, changeset}
+          _ ->
+              {:error, :unknown}
+        end
+      end
   end
 
   @doc """

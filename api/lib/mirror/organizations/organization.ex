@@ -10,7 +10,9 @@ defmodule Mirror.Organizations.Organization do
   alias Mirror.Organizations
   alias Mirror.Organizations.{Organization, Admin, Member}
 
+  alias Mirror.Payments
   alias Mirror.Payments.Card
+  alias Mirror.Payments.Billing
 
   alias Mirror.Helpers.Hash
 
@@ -50,11 +52,40 @@ defmodule Mirror.Organizations.Organization do
     |> Repo.insert
   end
 
+  # TODO: Stripe / with do end
+  def update(%Organization{} = organization, attrs) do
+    resp = organization
+    |> Organization.changeset(attrs)
+    |> Repo.update()
+
+    {:ok, org} = resp
+
+    org = org
+    |> Organization.preload_relationships()
+
+    {:ok, _} = Billing.set_default_payment(organization)
+    {:ok, _} = Billing.setup_subscriptions(organization)
+
+    resp
+  end
+
   def add_unique_id(organization) do
     organization_unique_id = Hash.generate_unique_id(organization.id, "organization")
 
     organization
     |> Organization.changeset(%{uuid: organization_unique_id})
+    |> Repo.update
+  end
+
+  def add_billing_customer(organization) do
+    new_customer = %{
+      email: organization.uuid
+    }
+
+    {:ok, billing_customer} = Stripe.Customer.create new_customer
+
+    organization
+    |> Organization.changeset(%{billing_customer: billing_customer.id})
     |> Repo.update
   end
 
@@ -87,11 +118,56 @@ defmodule Mirror.Organizations.Organization do
     organization = card.organization
 
     case default do
-      true -> 
-        organization
-        |> Organization.changeset(%{default_payment_id: card.id})
-        |> Repo.update
+      true -> Organization.update(organization, %{default_payment_id: card.id})
       _ -> {:ok, organization}
     end
+  end
+
+  def remove_default_payment(organization) do
+    organization
+    |> Organization.changeset(%{default_payment_id: nil})
+    |> Repo.update
+  end
+
+  def set_alternate_default_payment(card) do
+    card = card
+    |> Card.preload_relationships()
+
+    organization = card.organization
+    |> Organization.preload_relationships()
+
+    available_cards = Enum.filter(organization.cards, fn(new_card) ->
+      new_card.id != card.id
+    end)
+
+    case length(available_cards) do
+      0 -> Organization.remove_default_payment(organization)
+      _ -> Organization.update(organization, %{default_payment_id: hd(available_cards)})
+    end
+  end
+
+  # TODO: Handle stripe subscription or call billing service to handle
+  def set_billing_status(organization) do
+    org = organization
+    |> Organization.preload_relationships
+
+    card = case organization.default_payment_id do
+      nil -> nil
+      _ -> Payments.get_card!(organization.default_payment_id)
+    end
+    
+    frequency = org.billing_frequency
+
+    status = case frequency do
+      "none" -> "inactive"
+      _ ->
+        case Card.get_status(card) do
+          :valid -> "active"
+          # TODO: Might return something else here describing why inactive
+          _ -> "inactive"
+        end
+    end
+
+    Organization.update(org, %{billing_status: status})
   end
 end
