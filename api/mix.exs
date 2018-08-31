@@ -50,6 +50,7 @@ defmodule Mirror.Mixfile do
       {:bamboo_smtp, "~> 1.4.0"},
       {:timex, "~> 3.1"},
       {:uuid, "~> 1.1"},
+      {:stripity_stripe, "~> 2.0"},
       {:edeliver, "~> 1.5.0"},
       {:distillery, "~> 1.5", runtime: false}
     ]

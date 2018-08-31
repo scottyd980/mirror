@@ -27,6 +27,8 @@ config :mirror, Mirror.Mailer,
   api_key: "***MAILGUN_API_KEY***",
   domain: "***MAIL_DOMAIN***"
 
+config :stripity_stripe, api_key: "***STRIPE_API_KEY***"
+
 config :phoenix, :format_encoders,
   "json-api": Poison
 
