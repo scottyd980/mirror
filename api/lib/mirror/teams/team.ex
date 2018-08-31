@@ -10,6 +10,8 @@ defmodule Mirror.Teams.Team do
   alias Mirror.Retrospectives.{Retrospective, Game}
   alias Mirror.Organizations.Organization
 
+  alias Mirror.Payments.Billing
+
   alias Mirror.Helpers.Hash
 
   schema "teams" do
@@ -42,6 +44,48 @@ defmodule Mirror.Teams.Team do
     %Team{}
     |> Team.changeset(%{name: attrs["name"]})
     |> Repo.insert
+  end
+
+  # Stripe / with do end
+  def update(%Team{} = team, attrs) do
+    original_team = team
+    |> Team.preload_relationships()
+
+    resp = team
+    |> Team.changeset(attrs)
+    |> Repo.update()
+
+    {:ok, team} = resp
+
+    team = team
+    |> Team.preload_relationships
+
+    case team.organization do
+      nil -> Billing.tear_down_subscriptions(original_team.organization)
+      organization -> 
+        {:ok, _} = Billing.setup_subscriptions(organization)
+    end
+
+    resp
+  end
+
+  def delete(%Team{} = team) do
+    team = team
+    |> Team.preload_relationships()
+
+    current_org = team.organization
+
+    Repo.transaction fn ->
+        with {:ok, team}  <- Repo.delete(team),
+             removed_sub  <- Billing.tear_down_subscriptions(current_org)
+        do
+            team
+        else
+            {:error, changeset} ->
+                Repo.rollback changeset
+                {:error, changeset}
+        end
+    end
   end
 
   def add_unique_id(team) do
@@ -136,5 +180,17 @@ defmodule Mirror.Teams.Team do
 
   def find_all_retrospectives(team) do
     Repo.all(from retro in Retrospective, where: retro.team_id == ^team.id)
+  end
+
+  def in_trial_period?(team) do
+    now = Timex.Duration.now(:seconds)
+    trial_end = Team.get_trial_period_end(team)
+
+    {(now - 60) < trial_end, trial_end}
+  end
+
+  def get_trial_period_end(team) do
+    created_at = team.inserted_at |> NaiveDateTime.to_erl |> :calendar.datetime_to_gregorian_seconds |> Kernel.-(62167219200)
+    created_at + 2592000
   end
 end

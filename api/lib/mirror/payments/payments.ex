@@ -55,7 +55,10 @@ defmodule Mirror.Payments do
   def create_card(attrs \\ %{}, default \\ true) do
     Repo.transaction fn ->
       with  {:ok, %Card{} = card}   <- Card.create(attrs),
-            {:ok, %Organization{}}  <- Organization.set_default_payment(card, default)
+            {:ok, stripe_card}      <- Stripe.Card.create(%{customer: attrs["customer"], source: attrs["token_id"]}),
+            {:ok, %Organization{}}  <- Organization.set_default_payment(card, default),
+            preload_card            <- Card.preload_relationships(card),
+            {:ok, %Organization{}}  <- Organization.set_billing_status(preload_card.organization)
       do
         card
       else
@@ -99,7 +102,9 @@ defmodule Mirror.Payments do
 
   """
   def delete_card(%Card{} = card) do
-    Repo.delete(card)
+    {:ok, resp} = Card.delete(card)
+
+    resp
   end
 
   @doc """

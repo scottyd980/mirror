@@ -54,6 +54,7 @@ defmodule Mirror.Retrospectives do
       {:error, %Ecto.Changeset{}}
 
   """
+  #TODO: Verify billing status
   def create_retrospective(attrs \\ %{}) do
     Repo.transaction fn ->
       with  {:ok, retrospective}                <- Retrospective.create(attrs),

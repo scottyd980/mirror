@@ -6,6 +6,10 @@ defmodule MirrorWeb.MemberDelegateView do
     %{data: render_many(member_delegates, MemberDelegateView, "member_delegate.json")}
   end
 
+  def render("show.json-api", _) do
+    %{}
+  end
+
   def render("show.json", %{member_delegate: member_delegate}) do
     %{data: render_one(member_delegate, MemberDelegateView, "member_delegate.json")}
   end

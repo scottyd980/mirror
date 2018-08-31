@@ -4,6 +4,8 @@ defmodule MirrorWeb.OrganizationController do
   alias Mirror.Organizations
   alias Mirror.Organizations.Organization
 
+  alias Mirror.Payments
+
   alias Mirror.Helpers
 
   action_fallback MirrorWeb.FallbackController
@@ -47,14 +49,42 @@ defmodule MirrorWeb.OrganizationController do
     end
   end
 
-  # TODO: WORK - BILLING
-  # def update(conn, %{"id" => id, "organization" => organization_params}) do
-  #   organization = Organizations.get_organization!(id)
+  def update(conn, %{"data" => data}) do
+    current_user = Mirror.Guardian.Plug.current_resource(conn)
 
-  #   with {:ok, %Organization{} = organization} <- Organizations.update_organization(organization, organization_params) do
-  #     render(conn, "show.json", organization: organization)
-  #   end
-  # end
+    update_params = JaSerializer.Params.to_attributes(data)
+    organization = Organizations.get_organization!(data["id"])
+
+    card_id = update_params["default_payment_id"]
+
+    card = case card_id do
+      nil -> %{id: nil}
+      _ -> Payments.get_card!(card_id)
+    end
+    
+    organization_params = %{
+      name: update_params["name"],
+      billing_frequency: update_params["billing_frequency"],
+      default_payment_id: card.id
+    }
+
+    case Helpers.User.user_is_organization_admin?(current_user, organization) && Helpers.Organization.card_on_file?(organization, card_id) do
+      true ->
+        with {:ok, %Organization{} = organization} <- Organizations.update_organization(organization, organization_params) 
+        do
+          render(conn, "show.json-api", data: organization |> Organization.preload_relationships)
+        else 
+          {:error, changeset} ->
+            conn
+            |> put_status(:unprocessable_entity)
+            |> render(MirrorWeb.ChangesetView, "error.json-api", changeset: changeset)
+        end
+      _ ->
+        conn
+        |> put_status(404)
+        |> render(MirrorWeb.ErrorView, "404.json-api")
+    end
+  end
 
   def delete(conn, %{"id" => id}) do
     current_user = Mirror.Guardian.Plug.current_resource(conn)

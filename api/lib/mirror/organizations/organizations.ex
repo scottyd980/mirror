@@ -51,12 +51,11 @@ defmodule Mirror.Organizations do
   """
   def create_organization(attrs \\ %{}, admins \\ [], members \\ []) do
     Repo.transaction fn ->
-      with  {:ok, org}          <- Organization.create(attrs),
-            {:ok, updated_org}  <- Organization.add_unique_id(org),
-            # {:ok, billing_customer} <- create_billing_customer(updated_org),
-            # {:ok, org_with_billing} <- add_billing_to_organization(org, billing_customer),
-            [{:ok, _}]          <- Organization.add_admins(updated_org, admins),
-            [{:ok, _}]          <- Organization.add_members(updated_org, members) 
+      with  {:ok, org}              <- Organization.create(attrs),
+            {:ok, updated_org}      <- Organization.add_unique_id(org),
+            {:ok, org_with_billing} <- Organization.add_billing_customer(updated_org),
+            [{:ok, _}]              <- Organization.add_admins(updated_org, admins),
+            [{:ok, _}]              <- Organization.add_members(updated_org, members) 
       do
         updated_org
         |> Organization.preload_relationships()
@@ -80,9 +79,19 @@ defmodule Mirror.Organizations do
 
   """
   def update_organization(%Organization{} = organization, attrs) do
-    organization
-    |> Organization.changeset(attrs)
-    |> Repo.update()
+    Repo.transaction fn ->
+      with  {:ok, %Organization{} = updated_org}        <- Organization.update(organization, attrs),
+            {:ok, %Organization{} = org_with_billing }  <- Organization.set_billing_status(updated_org)
+      do
+        org_with_billing
+      else
+        {:error, changeset} ->
+          Repo.rollback changeset
+          {:error, changeset}
+        _ ->
+          {:error, :unknown}
+      end
+    end
   end
 
   @doc """
