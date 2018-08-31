@@ -47,15 +47,39 @@ export default Ember.Route.extend({
     setupController(controller, model) {
         this._super(...arguments);
 
+        const _this = this;
+
         controller.set('hasRetroInProgress', false);
         controller.set('isRetroStartModalShowing', false);
         controller.set('isActionModalShowing', false);
         controller.set('actionMessage', '');
 
         this.get('retrospectiveService').join_retrospective_channel(model.retrospective.get('id'));
+        
+        $(window).on('navigationListener', function(e){ 
+            _this.updateRetrospectiveState(e);
+        });
+
+        if(model.isModerator) {
+            $(window).on('popstate', function(e) {
+                $(window).trigger('navigationListener', [e]);
+            });
+        }
     },
     deactivate() {
         this.get('retrospectiveService').leave_retrospective_channel(this.get('currentModel').retrospective.get('id'));
+        $(window).off('navigationListener');
+    },
+    updateRetrospectiveState(e) {
+        const retrospective = this.get('currentModel').retrospective;
+        const path = window.location.pathname;
+        if(path.startsWith('/app/retrospectives/')) {
+            const stateSegment = path.replace(/\/app\/retrospectives\/\d+\//, '').replace(/\//g, ".");
+            const state = config.retrospective.sticky_notes.states.indexOf(stateSegment);
+            
+            retrospective.set('state', state);
+            retrospective.save();
+        }
     },
     actions: {
         changeRetrospectiveState(currentStateSegment, direction) {
