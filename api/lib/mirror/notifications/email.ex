@@ -5,9 +5,9 @@ defmodule Mirror.Email do
   def invitation_email(email_address, access_code, team_name) do
     new_email()
     |> to(email_address)
-    |> from("noreply@mail.usemirror.io")
-    |> subject("Welcome To Mirror | Successful, Distributed Retrospectives")
-    |> put_html_layout({MirrorWeb.LayoutView, "invite.html"})
-    |> render("invite.html", access_code: access_code, team: team_name)
+    |> from("Mirror <noreply@mail.usemirror.io>")
+    |> subject("Someone invited you to join a team!")
+    |> put_html_layout({MirrorWeb.LayoutView, "invite2.html"})
+    |> render("invite2.html", access_code: access_code, team: team_name)
   end
 end
