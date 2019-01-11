@@ -5,10 +5,17 @@
         </div>
         <div class="info">
             <h4>{{card.brand}} xxxxx-{{card.last4}}</h4>
-            <p class="expiration muted-text">Expires {{card.exp_month}}/{{card.exp_year}} • Added {{moment-format card.added_date "MMMM Do, YYYY"}}</p>
+            <p class="expiration muted-text">
+                {{#if card.is_expired}}
+                    <span class="danger-text">Expired {{card.exp_month}}/{{card.exp_year}}</span>
+                {{else}}
+                    Expires {{card.exp_month}}/{{card.exp_year}}
+                {{/if}}
+                &nbsp;• Added {{moment-format card.added_date "MMMM Do, YYYY"}}
+            </p>
         </div>
         <div class="actions">
-            {{#unless (eq card.id default_payment.id)}}
+            {{#unless (or (eq card.id default_payment.id) card.is_expired)}}
                 <a {{action onConfirm "Are you sure you want to make this the default payment method?" (action onMakeDefault card)}} class="btn btn-success btn-outline btn-xs">
                     {{fa-icon "check" fixedWidth=true}}
                     {{#tooltip-on-element side="bottom"}}

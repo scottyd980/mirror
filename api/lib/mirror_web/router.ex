@@ -19,6 +19,7 @@ defmodule MirrorWeb.Router do
     pipe_through [:api]
 
     post "/token", UserController, :login
+    post "/stripe_webhooks", WebhookController, :create
   end
   
   # NON-JSON API Endpoints - Authorized endpoints

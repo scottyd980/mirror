@@ -13,8 +13,11 @@ defmodule Mirror.Organizations.Organization do
   alias Mirror.Payments
   alias Mirror.Payments.Card
   alias Mirror.Payments.Billing
+  alias Mirror.Payments.BillingNew
 
-  alias Mirror.Helpers.Hash
+  alias Mirror.Helpers.{Hash, Trial}
+
+  require Logger
 
   schema "organizations" do
     field :avatar, :string, default: "default.png"
@@ -23,6 +26,8 @@ defmodule Mirror.Organizations.Organization do
     field :billing_customer, :string
     field :billing_status, :string, default: "inactive"
     field :billing_frequency, :string, default: "none"
+    field :trial_end, :integer
+    field :period_end, :integer
 
     has_many :teams, Team
     has_many :cards, Card
@@ -41,34 +46,42 @@ defmodule Mirror.Organizations.Organization do
     |> validate_inclusion(:billing_frequency, ["none", "monthly", "yearly"])
   end
 
+  # Changesets
+  def create_changeset(organization, attrs) do
+    period_end = Trial.create_end_date()
+
+    organization
+    |> changeset(attrs)
+    |> put_change(:trial_end, period_end)
+    |> put_change(:period_end, period_end)
+  end
+
+  def update_changeset(organization, attrs) do
+    organization
+    |> cast(attrs, [:name, :default_payment_id, :billing_frequency])
+    |> validate_inclusion(:billing_frequency, ["none", "monthly", "yearly"])
+  end
+
+  def webhook_changeset(organization, attrs) do
+    organization
+    |> cast(attrs, [:period_end])
+  end
+
+  def billing_changeset(organization, attrs) do
+    organization
+    |> cast(attrs, [:billing_status, :billing_frequency, :default_payment_id])
+    |> validate_inclusion(:billing_status, ["active", "inactive"])
+  end
+  # End Changesets
+
+  # Preload helper
   def preload_relationships(organization) do
     organization
     |> Repo.preload([:teams, :admins, :members, :default_payment, :cards], force: true)
   end
-  
-  def create(attrs) do
-    %Organization{}
-    |> Organization.changeset(%{name: attrs["name"]})
-    |> Repo.insert
-  end
+  # End Preload helper
 
-  # TODO: Stripe / with do end
-  def update(%Organization{} = organization, attrs) do
-    resp = organization
-    |> Organization.changeset(attrs)
-    |> Repo.update()
-
-    {:ok, org} = resp
-
-    org = org
-    |> Organization.preload_relationships()
-
-    {:ok, _} = Billing.set_default_payment(organization)
-    {:ok, _} = Billing.setup_subscriptions(organization)
-
-    resp
-  end
-
+  # Organization Creation Helpers
   def add_unique_id(organization) do
     organization_unique_id = Hash.generate_unique_id(organization.id, "organization")
 
@@ -110,6 +123,47 @@ defmodule Mirror.Organizations.Organization do
         [{:ok, nil}]
     end
   end
+  # End Organization Creation Helpers
+
+  # Basic Interfaces
+  def create(attrs) do
+    %Organization{}
+    |> Organization.create_changeset(%{name: attrs["name"]})
+    |> Repo.insert
+  end
+
+  def update(%Organization{} = organization, attrs) do
+    resp = organization
+    |> Organization.update_changeset(attrs)
+    |> Repo.update()
+
+    resp
+  end
+  # End Basic Interfaces
+
+  # Payment Processor Interfaces
+  def update_payment_source(organization, card_status \\ :modified) do
+    case card_status do
+      :modified -> BillingNew.set_default_source(organization)
+      _ -> {:ok, :unmodified}
+    end
+  end
+
+  def update_subscription_period(organization, attrs) do
+    organization
+    |> Organization.webhook_changeset(attrs)
+    |> Repo.update()
+  end
+
+  # TODO: Stripe / with do end?
+  def process_subscription(organization, frequency_updated \\ false) do
+    case organization.billing_status do
+      "active" -> BillingNew.process_subscription(organization, frequency_updated)
+      # TODO: Update to handle frequency to trial ("inactive")
+      _ -> {:ok, nil}
+    end
+  end
+  # End Payment Processor Interfaces
 
   def set_default_payment(card, default) do
     card = card
@@ -129,6 +183,9 @@ defmodule Mirror.Organizations.Organization do
     |> Repo.update
   end
 
+  # TODO: Make sure everything here calls the right things at the right time (or even gets called itself)
+  # Currently deleting a card that is the default and not the only one on the account errors.
+  # Also consider making sure the card isn't expired
   def set_alternate_default_payment(card) do
     card = card
     |> Card.preload_relationships()
@@ -148,6 +205,18 @@ defmodule Mirror.Organizations.Organization do
 
   # TODO: Handle stripe subscription or call billing service to handle
   def set_billing_status(organization) do
+    {:ok, status} = get_billing_status(organization)
+
+    result = organization
+    |> Organization.billing_changeset(%{billing_status: status})
+    |> Repo.update()
+
+    BillingNew.process_subscription(organization)
+
+    result
+  end
+
+  def get_billing_status(organization) do
     org = organization
     |> Organization.preload_relationships
 
@@ -155,7 +224,7 @@ defmodule Mirror.Organizations.Organization do
       nil -> nil
       _ -> Payments.get_card!(organization.default_payment_id)
     end
-    
+
     frequency = org.billing_frequency
 
     status = case frequency do
@@ -168,6 +237,6 @@ defmodule Mirror.Organizations.Organization do
         end
     end
 
-    Organization.update(org, %{billing_status: status})
+    {:ok, status}
   end
 end

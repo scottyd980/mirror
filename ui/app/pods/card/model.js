@@ -11,5 +11,6 @@ export default Model.extend({
   card_id: attr('string'),
   zip_code: attr('string'),
   added_date: attr('date'),
+  is_expired: attr('boolean'),
   organization: belongsTo('organization')
 });
