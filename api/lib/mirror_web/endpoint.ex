@@ -20,7 +20,7 @@ defmodule MirrorWeb.Endpoint do
   plug Plug.Logger
 
   plug Plug.Parsers,
-    parsers: [:urlencoded, :multipart, :json],
+    parsers: [MirrorWeb.Parsers.Webhook, :urlencoded, :multipart, :json],
     pass: ["*/*"],
     json_decoder: Poison
 

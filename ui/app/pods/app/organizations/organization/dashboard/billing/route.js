@@ -71,11 +71,19 @@ export default Ember.Route.extend({
                     this.toggleLoadingScreen();
                 }).catch((error) => {
                     this.toggleLoadingScreen();
+                    org.rollbackAttributes();
                     org.reload();
-                    this.get('notificationCenter').error({
-                        title: config.ERROR_MESSAGES.generic,
-                        message: "We experienced an unexpected error trying to update your default payment method. Please try again."
-                    });
+                    if(error.errors && Array.isArray(error.errors) && error.errors[0].code === 422) {
+                        this.get('notificationCenter').error({
+                            title: config.ERROR_MESSAGES.generic,
+                            message: "It looks like their was an issue trying to update your card. Please make sure it's not expired and try again."
+                        });
+                    } else {
+                        this.get('notificationCenter').error({
+                            title: config.ERROR_MESSAGES.generic,
+                            message: "We experienced an unexpected error trying to update your default payment method. Please try again."
+                        });
+                    }
                 });
             });
         },
@@ -90,6 +98,8 @@ export default Ember.Route.extend({
                 this.toggleLoadingScreen();
             }).catch((error) => {
                 this.toggleLoadingScreen();
+                organization.rollbackAttributes();
+                organization.reload();
                 this.get('notificationCenter').error({
                     title: config.ERROR_MESSAGES.generic,
                     message: "We experienced an unexpected error trying to update your billing frequency. Please try again."

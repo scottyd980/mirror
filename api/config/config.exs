@@ -27,7 +27,9 @@ config :mirror, Mirror.Mailer,
   api_key: "key-96e671978cde9c46125523b1588cbd4d",
   domain: "mail.usemirror.io"
 
-config :stripity_stripe, api_key: "sk_test_olzWYbRvUnGfyAbvOMtYvW79"
+config :stripity_stripe, 
+  api_key: "sk_test_olzWYbRvUnGfyAbvOMtYvW79",
+  webhook_secret: "whsec_0bUTjwUFxzvU5jplnO911pFigZNJJHLd"
 
 config :phoenix, :format_encoders,
   "json-api": Poison

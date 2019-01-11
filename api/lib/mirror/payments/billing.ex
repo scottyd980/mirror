@@ -2,7 +2,11 @@ defmodule Mirror.Payments.Billing do
   alias Mirror.Organizations
   alias Mirror.Organizations.Organization
   alias Mirror.Payments.{Card, Billing}
+  alias Mirror.Teams
   alias Mirror.Teams.Team
+
+  # We add 7 days of tolerancy for plan payments
+  @tolerancy_period 604_800
 
   require Logger
 
@@ -17,7 +21,7 @@ defmodule Mirror.Payments.Billing do
   end
 
   def setup_subscriptions(organization) do
-    organization = organization 
+    organization = organization
     |> Organization.preload_relationships()
 
     resp = case organization.default_payment_id do
@@ -48,7 +52,7 @@ defmodule Mirror.Payments.Billing do
         {:ok, existing_subs} = Stripe.Subscription.list(%{customer: organization.billing_customer})
 
         old_subscriptions = Enum.filter(existing_subs.data, fn(sub) ->
-          !Enum.any?(organization.teams, fn(team) -> 
+          !Enum.any?(organization.teams, fn(team) ->
             String.to_integer(sub.metadata["team"]) == team.id
           end)
         end)
@@ -57,6 +61,47 @@ defmodule Mirror.Payments.Billing do
 
         {:ok, resp}
     end
+  end
+
+  def start_subscription(team, organization) do
+    new_sub = get_new_subscription(organization, team)
+
+    # Make sure right now is less than the end time for the trial period
+    Logger.error "#{inspect Team.in_trial_period?(team)}"
+    new_sub = case Team.in_trial_period?(team) do
+      {true, trial_end} ->
+        new_sub
+        |> Map.put(:trial_end, trial_end)
+      _ -> new_sub
+    end
+
+    result = case Stripe.Subscription.create(new_sub) do
+      {:ok, final_sub} ->
+        Team.update_subscription_details(team, %{
+          subscription_id: final_sub.id,
+          period_end: final_sub.current_period_end + @tolerance_period,
+          status: "active"
+        })
+        {:ok, final_sub}
+      {:error, error} ->
+        case Team.in_trial_period?(team) do
+          {true, trial_end} ->
+            Team.update_subscription_details(team, %{
+              subscription_id: nil,
+              period_end: trial_end,
+              status: "inactive"
+            })
+          _ ->
+            Team.update_subscription_details(team, %{
+              subscription_id: nil,
+              period_end: nil,
+              status: "inactive"
+            })
+        end
+        {:ok, error}
+    end
+
+    result
   end
 
   def upsert_subscription(organization, team, existing_subscriptions) do
@@ -68,13 +113,14 @@ defmodule Mirror.Payments.Billing do
       %{} = subscription ->
         Billing.update_subscription(subscription, organization, team)
       _ ->
-        Billing.create_subscription(organization, team)
+        #Billing.create_subscription(organization, team)
+        Billing.start_subscription(team, organization)
     end
   end
 
   def create_subscription(organization, team) do
     new_sub = get_new_subscription(organization, team)
-    
+
     # Make sure right now is less than the end time for the trial period
     new_sub = case Team.in_trial_period?(team) do
       {true, trial_end} ->
@@ -82,8 +128,15 @@ defmodule Mirror.Payments.Billing do
         |> Map.put(:trial_end, trial_end)
       _ -> new_sub
     end
-            
-    Stripe.Subscription.create(new_sub)
+
+    {:ok, final_sub} = Stripe.Subscription.create(new_sub)
+
+    Team.update_subscription_details(team, %{
+      subscription_id: final_sub.id,
+      period_end: final_sub.current_period_end + @tolerancy_period
+    })
+
+    {:ok, final_sub}
   end
 
   def update_subscription(existing_subscription, organization, team) do
@@ -98,7 +151,14 @@ defmodule Mirror.Payments.Billing do
       _ -> updated_sub
     end
 
-    Stripe.Subscription.update(existing_subscription.id, updated_sub)
+    {:ok, final_sub} = Stripe.Subscription.update(existing_subscription.id, updated_sub)
+
+    Team.update_subscription_details(team, %{
+      subscription_id: final_sub.id,
+      period_end: final_sub.current_period_end + @tolerancy_period
+    })
+
+    {:ok, final_sub}
   end
 
   def delete_subscriptions(organization) do
@@ -112,7 +172,7 @@ defmodule Mirror.Payments.Billing do
       delete_subscription(organization, sub)
     end)
   end
-  
+
   defp delete_subscription(organization, subscription) do
     Stripe.Subscription.delete(subscription.id, %{at_period_end: true})
   end
@@ -131,11 +191,11 @@ defmodule Mirror.Payments.Billing do
       }
     }
   end
-  
+
   def map_plan(billing_frequency) do
     case billing_frequency do
-      "monthly" -> "basic-monthly"
-      "yearly" -> "basic-yearly"
+      "monthly" -> "mirror-monthly-10"
+      "yearly" -> "mirror-yearly-100"
       _ -> nil
     end
   end

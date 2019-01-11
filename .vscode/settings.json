@@ -1,3 +1,4 @@
 {
-    "elixir.projectPath": "api/"
+    "elixir.projectPath": "api/",
+    "editor.acceptSuggestionOnEnter": "on"
 }

@@ -46,6 +46,22 @@ defmodule Mirror.Teams do
   def get_team!(id), do: Repo.get_by!(Team, uuid: id)
 
   @doc """
+  Gets a single team by subscription_id.
+
+  Raises `Ecto.NoResultsError` if the Team does not exist.
+
+  ## Examples
+
+      iex> get_team_by_subscription_id!(sub_Dasdasdgasdasd)
+      %Team{}
+
+      iex> get_team_by_subscription_id!(sub_notfound)
+      ** (Ecto.NoResultsError)
+
+  """
+  def get_team_by_subscription_id!(sub_id), do: Repo.get_by!(Team, subscription_id: sub_id)
+
+  @doc """
   Creates a team.
 
   ## Examples
@@ -64,7 +80,7 @@ defmodule Mirror.Teams do
             [{:ok, _}]            <- Team.add_admins(team, admins),
             team_member_delegates <- Team.add_member_delegates(team, delegates),
             {:ok}                 <- MemberDelegate.send_invitations(team_member_delegates, team),
-            [{:ok, _}]            <- Team.add_members(updated_team, members) 
+            [{:ok, _}]            <- Team.add_members(updated_team, members)
       do
         updated_team
         |> Team.preload_relationships()
@@ -106,7 +122,7 @@ defmodule Mirror.Teams do
       {:error, %Ecto.Changeset{}}
 
   """
-  
+
   def delete_team(%Team{} = team) do
     Team.delete(team)
   end
@@ -315,7 +331,7 @@ defmodule Mirror.Teams do
             end
         (length(team.admins) > 0) ->
             {:error, :no_additional_admins}
-        true -> 
+        true ->
             {:error, :unexpected}
     end
   end
