@@ -10,15 +10,19 @@ defmodule Mirror.Teams.Team do
   alias Mirror.Retrospectives.{Retrospective, Game}
   alias Mirror.Organizations.Organization
 
-  alias Mirror.Payments.Billing
+  alias Mirror.Payments.{Billing, BillingNew}
 
-  alias Mirror.Helpers.Hash
+  alias Mirror.Helpers.{Hash, Trial}
+
+  @trial_period 2678400
 
   schema "teams" do
     field :avatar, :string, default: "default.png"
     field :is_anonymous, :boolean, default: true
     field :name, :string
     field :uuid, :string
+    field :trial_end, :integer
+    field :period_end, :integer
     belongs_to :organization, Organization
     many_to_many :admins, User, join_through: Admin
     many_to_many :members, User, join_through: Member
@@ -35,6 +39,27 @@ defmodule Mirror.Teams.Team do
     |> validate_required([:name])
   end
 
+  def create_changeset(team, attrs) do
+    period_end = Trial.create_end_date()
+
+    team
+    |> cast(attrs, [:name, :avatar, :uuid, :is_anonymous, :organization_id])
+    |> validate_required([:name])
+    |> put_change(:trial_end, period_end)
+    |> put_change(:period_end, period_end)
+  end
+
+  def billing_changeset(team, attrs) do
+    team
+    |> cast(attrs, [:name, :avatar, :uuid, :is_anonymous, :organization_id])
+    |> validate_required([:name])
+  end
+
+  def webhook_changeset(team, attrs) do
+    team
+    |> cast(attrs, [:period_end])
+  end
+
   def preload_relationships(team) do
     team
     |> Repo.preload([:members, :admins, :retrospectives, :organization], force: true)
@@ -42,7 +67,7 @@ defmodule Mirror.Teams.Team do
 
   def create(attrs) do
     %Team{}
-    |> Team.changeset(%{name: attrs["name"]})
+    |> Team.create_changeset(%{name: attrs["name"]})
     |> Repo.insert
   end
 
@@ -60,13 +85,26 @@ defmodule Mirror.Teams.Team do
     team = team
     |> Team.preload_relationships
 
+    # case team.organization do
+    #   nil -> Billing.tear_down_subscriptions(original_team.organization)
+    #   organization ->
+    #     {:ok, _} = Billing.setup_subscriptions(organization)
+    # end
+
     case team.organization do
-      nil -> Billing.tear_down_subscriptions(original_team.organization)
-      organization -> 
-        {:ok, _} = Billing.setup_subscriptions(organization)
+      nil ->
+        {:ok, _} = BillingNew.process_subscription(original_team.organization)
+      organization ->
+        {:ok, _} = BillingNew.process_subscription(organization)
     end
 
     resp
+  end
+
+  def update_subscription_period(%Team{} = team, attrs) do
+    team
+    |> Team.webhook_changeset(attrs)
+    |> Repo.update()
   end
 
   def delete(%Team{} = team) do
@@ -148,7 +186,7 @@ defmodule Mirror.Teams.Team do
       retro_type = Repo.get!(Game, r.game_id)
       r.state < retro_type.finished_state && !r.cancelled
     end)
-    
+
     retro_in_progress
   end
 
@@ -182,6 +220,7 @@ defmodule Mirror.Teams.Team do
     Repo.all(from retro in Retrospective, where: retro.team_id == ^team.id)
   end
 
+  #TODO: find uses of these
   def in_trial_period?(team) do
     now = Timex.Duration.now(:seconds)
     trial_end = Team.get_trial_period_end(team)
@@ -191,6 +230,6 @@ defmodule Mirror.Teams.Team do
 
   def get_trial_period_end(team) do
     created_at = team.inserted_at |> NaiveDateTime.to_erl |> :calendar.datetime_to_gregorian_seconds |> Kernel.-(62167219200)
-    created_at + 2592000
+    created_at + @trial_period
   end
 end

@@ -7,6 +7,7 @@ defmodule Mirror.Organizations do
   alias Mirror.Repo
 
   alias Mirror.Organizations.Organization
+  alias Mirror.Helpers
 
   @doc """
   Returns the list of organizations.
@@ -38,6 +39,22 @@ defmodule Mirror.Organizations do
   def get_organization!(id), do: Repo.get_by!(Organization, uuid: id)
 
   @doc """
+  Gets a single organization by billing_customer.
+
+  Raises `Ecto.NoResultsError` if the Organization does not exist.
+
+  ## Examples
+
+      iex> get_organization_by_customer_id!(cus_asdSAg123Sad)
+      %Team{}
+
+      iex> get_organization_by_customer_id!(sub_notfound)
+      ** (Ecto.NoResultsError)
+
+  """
+  def get_organization_by_customer_id!(customer_id), do: Repo.get_by!(Organization, billing_customer: customer_id)
+
+  @doc """
   Creates a organization.
 
   ## Examples
@@ -55,7 +72,7 @@ defmodule Mirror.Organizations do
             {:ok, updated_org}      <- Organization.add_unique_id(org),
             {:ok, org_with_billing} <- Organization.add_billing_customer(updated_org),
             [{:ok, _}]              <- Organization.add_admins(updated_org, admins),
-            [{:ok, _}]              <- Organization.add_members(updated_org, members) 
+            [{:ok, _}]              <- Organization.add_members(updated_org, members)
       do
         updated_org
         |> Organization.preload_relationships()
@@ -80,10 +97,16 @@ defmodule Mirror.Organizations do
   """
   def update_organization(%Organization{} = organization, attrs) do
     Repo.transaction fn ->
-      with  {:ok, %Organization{} = updated_org}        <- Organization.update(organization, attrs),
-            {:ok, %Organization{} = org_with_billing }  <- Organization.set_billing_status(updated_org)
+      with  true                                        <- Helpers.Organization.card_on_file?(organization, attrs.default_payment_id),
+            {:ok, card_status}                          <- Helpers.Organization.valid_card_update?(organization, attrs.default_payment_id),
+            {:ok, %Organization{} = updated_org}        <- Organization.update(organization, attrs),
+            {:ok, %Organization{} = org_with_billing}   <- Organization.set_billing_status(updated_org),
+            {:ok, updated_payment}                      <- Organization.update_payment_source(org_with_billing, card_status),
+            frequency_change                            <- Helpers.Organization.frequency_modified?(organization, org_with_billing),
+            {:ok, subscription}                         <- Organization.process_subscription(org_with_billing, frequency_change)
       do
-        org_with_billing
+        updated_org
+        |> Organization.preload_relationships()
       else
         {:error, changeset} ->
           Repo.rollback changeset

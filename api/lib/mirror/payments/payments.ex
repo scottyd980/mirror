@@ -6,7 +6,7 @@ defmodule Mirror.Payments do
   import Ecto.Query, warn: false
   alias Mirror.Repo
 
-  alias Mirror.Payments.Card
+  alias Mirror.Payments.{Card, Event}
   alias Mirror.Organizations.Organization
 
   @doc """
@@ -118,5 +118,39 @@ defmodule Mirror.Payments do
   """
   def change_card(%Card{} = card) do
     Card.changeset(card, %{})
+  end
+
+  @doc """
+  Gets a single event.
+
+  Raises `Ecto.NoResultsError` if the Event does not exist.
+
+  ## Examples
+
+      iex> get_event!(123)
+      %Event{}
+
+      iex> get_event!(456)
+      ** nil
+
+  """
+  def get_event(event_id), do: Repo.get_by(Event, event_id: event_id)
+
+  @doc """
+  Creates a event.
+
+  ## Examples
+
+      iex> create_event(%{field: value})
+      {:ok, %Event{}}
+
+      iex> create_event(%{field: bad_value})
+      {:error, %Ecto.Changeset{}}
+
+  """
+  def create_event(attrs \\ %{}) do
+    %Event{}
+    |> Event.changeset(attrs)
+    |> Repo.insert()
   end
 end
