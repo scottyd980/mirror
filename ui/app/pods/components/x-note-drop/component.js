@@ -6,6 +6,7 @@ export default Ember.Component.extend({
     },
     classNames: ["drop-zone"],
     drop(event) {
+        $('.drop-zone').removeClass('dz-border');
         var id = event.dataTransfer.getData('text/data');
         this.sendAction('onDrop', id, this.get('data'));
     }

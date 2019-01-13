@@ -17,6 +17,15 @@
     padding: 0 15px;
   }
 
+  .navbar-brand-icon:before {
+    background-image: url(/img/mirror-logo.svg);
+    content: " ";
+    padding: 25px;
+    background-repeat: no-repeat;
+    background-position-y: 10px;
+    margin-right: 2px;
+  }
+
   &.navbar-logged-in {
     .navbar-brand,
     .navbar-nav li a {

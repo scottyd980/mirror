@@ -9,7 +9,7 @@ export default Ember.Component.extend({
         let _this = this;
         let stripe, elements, card;
 
-        _this.set('stripe', Stripe(config.stripe.publishableKey));
+        _this.set('stripe', new Stripe(config.stripe.publishableKey));
         stripe = _this.get('stripe');
         
         elements = stripe.elements();

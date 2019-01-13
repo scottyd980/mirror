@@ -1,6 +1,6 @@
 import Model from 'ember-data/model';
 import attr from 'ember-data/attr';
-import { hasMany, belongsTo } from 'ember-data/relationships';
+import { belongsTo } from 'ember-data/relationships';
 
 export default Model.extend({
   brand: attr('string'),
@@ -11,5 +11,6 @@ export default Model.extend({
   card_id: attr('string'),
   zip_code: attr('string'),
   added_date: attr('date'),
+  is_expired: attr('boolean'),
   organization: belongsTo('organization')
 });

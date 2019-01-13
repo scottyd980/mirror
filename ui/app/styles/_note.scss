@@ -4,6 +4,13 @@
     padding: 15px;
     color: $white;
     border-radius: 2px;
+    margin-bottom: 15px !important;
+    display: flex;
+    flex-direction: column;
+
+    &:last-of-type {
+        margin-bottom: 0 !important;
+    }
 
     &.good {
         @extend .success-bg;
@@ -22,9 +29,55 @@
         margin-bottom: 3px;
         color: rgba(255,255,255,0.8);
     }
+
+    .note--top {
+        margin-bottom: auto;
+
+        .note--content {
+            white-space: pre-line;
+
+            &:first-line {
+                line-height: 0;
+            }
+        }
+    }
+
+    .note--bottom {
+        padding-top: 15px;
+        margin-top: auto;
+    }
+
+    .note--action {
+        text-align: center;
+
+        .btn {
+            font-weight: bold;
+            font-size: 10px;
+            text-transform: uppercase;
+        }
+    }
+}
+
+.drop-zones {
+    display: flex;
+    
+    .dz {
+        flex: 1;
+        padding: 0 6px;
+
+        p {
+            padding: 0 5px;
+        }
+    }
 }
 
 .drop-zone {
-    min-height: 500px;
     width: 100%;
+    padding: 5px;
+    height: calc(100% - 29px);
+}
+
+.dz-border {
+    border: 3px dashed #bbb;
+    padding: 2px;
 }

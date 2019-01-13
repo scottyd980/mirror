@@ -56,7 +56,7 @@ export default Ember.Service.extend({
 
         let chan = _this.channels[channel_to_join];
 
-        chan.join().receive("ok", (resp) => {
+        chan.join().receive("ok", (/* resp */) => {
           // User has joined channel successfully
           resolve(chan);
         }).receive("ignore", () => {
@@ -84,7 +84,7 @@ export default Ember.Service.extend({
 
         let chan = _this.channels[channel_to_leave];
 
-        chan.leave().receive("ok", (resp) => {
+        chan.leave().receive("ok", (/* resp */) => {
           // User has left channel successfully
           resolve(chan);
         }).receive("ignore", () => {

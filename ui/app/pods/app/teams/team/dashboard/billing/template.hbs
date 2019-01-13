@@ -36,7 +36,7 @@
       <div class="col-md-12">
         {{#x-card title="Billing"}}
           <h3 class="text-center">Billing is managed by a team's parent organization.</h3>
-          <p class="text-center pad-bottom-lg">Since your team does not have a parent organization yet, you must add it to an existing organization or create an organization to provide billing information.</p>
+          <p class="text-center pad-bottom-lg">Since your team does not have a parent organization yet, you must either add it to an existing organization, or create a new organization to provide billing information.</p>
           <div class="row">
             {{#if model.user_organizations}}
               <div class="col-md-6 text-center marketing-block marketing-block-stacked">
@@ -84,6 +84,9 @@
           </li>
         {{/each}}
       </ul>
+      {{#if orgError}}
+        <p class="help-block creation text-danger">{{orgError}}</p>
+      {{/if}}
     {{/x-modal-body}}
     {{#x-modal-footer}}
       <a {{action 'toggleJoinOwnOrganizationModal'}} class="btn btn-default btn-outline">Cancel</a>
@@ -103,6 +106,9 @@
         {{input type="text" class="form-control" placeholder="Organization Name" value=newOrganizationName}}
         {{fa-icon "group" fixedWidth=true}}
       </div>
+      {{#if orgError}}
+        <p class="help-block creation text-danger">{{orgError}}</p>
+      {{/if}}
     {{/x-modal-body}}
     {{#x-modal-footer}}
       <a {{action 'toggleCreateNewOrganizationModal'}} class="btn btn-default btn-outline">Cancel</a>
