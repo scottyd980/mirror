@@ -144,7 +144,7 @@ defmodule Mirror.Organizations.Organization do
   # Payment Processor Interfaces
   def update_payment_source(organization, card_status \\ :modified) do
     case card_status do
-      :modified -> BillingNew.set_default_source(organization)
+      :modified -> Billing.set_default_source(organization)
       _ -> {:ok, :unmodified}
     end
   end
@@ -155,13 +155,8 @@ defmodule Mirror.Organizations.Organization do
     |> Repo.update()
   end
 
-  # TODO: Stripe / with do end?
   def process_subscription(organization, frequency_updated \\ false) do
-    case organization.billing_status do
-      "active" -> BillingNew.process_subscription(organization, frequency_updated)
-      # TODO: Update to handle frequency to trial ("inactive")
-      _ -> {:ok, nil}
-    end
+    Billing.process_subscription(organization, frequency_updated)
   end
   # End Payment Processor Interfaces
 
@@ -211,7 +206,7 @@ defmodule Mirror.Organizations.Organization do
     |> Organization.billing_changeset(%{billing_status: status})
     |> Repo.update()
 
-    BillingNew.process_subscription(organization)
+    Billing.process_subscription(organization)
 
     result
   end
