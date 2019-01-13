@@ -85,17 +85,11 @@ defmodule Mirror.Teams.Team do
     team = team
     |> Team.preload_relationships
 
-    # case team.organization do
-    #   nil -> Billing.tear_down_subscriptions(original_team.organization)
-    #   organization ->
-    #     {:ok, _} = Billing.setup_subscriptions(organization)
-    # end
-
     case team.organization do
       nil ->
-        {:ok, _} = BillingNew.process_subscription(original_team.organization)
+        {:ok, _} = Billing.process_subscription(original_team.organization)
       organization ->
-        {:ok, _} = BillingNew.process_subscription(organization)
+        {:ok, _} = Billing.process_subscription(organization)
     end
 
     resp
@@ -115,7 +109,7 @@ defmodule Mirror.Teams.Team do
 
     Repo.transaction fn ->
         with {:ok, team}  <- Repo.delete(team),
-             removed_sub  <- Billing.tear_down_subscriptions(current_org)
+             removed_sub  <- Billing.process_subscription(current_org)
         do
             team
         else
