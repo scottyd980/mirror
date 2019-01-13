@@ -19,6 +19,10 @@ ul.icons-list {
     position: relative;
     padding-left: 24px;
 
+    .pre {
+      white-space: pre-line;
+    }
+
     &:before {
       position: absolute;
       font-family: FontAwesome;

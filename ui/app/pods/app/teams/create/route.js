@@ -9,7 +9,16 @@ export default Ember.Route.extend({
     this._super(controller, model);
     controller.set('errors', {});
     controller.set('teamMemberEmails', Ember.A());
-    controller.set('newMemberIndex', 1);
+    controller.set('newMemberIndex', 2);
+    controller.set('session', this.session);
+    controller.set('teamError', '');
+    controller.set('unexpectedError', '');
+    controller.set('currentlyLoading', false);
+
+    controller.get('teamMemberEmails').pushObject({
+      email: "",
+      index: 1
+    });
   },
   actions: {
     addTeamMemberEmail(teamMember) {
@@ -18,11 +27,14 @@ export default Ember.Route.extend({
 
       _this.controller.get('teamMemberEmails').pushObject({
         email: teamMember,
-        index: idx
+        index: idx,
+        error: null,
       });
       _this.controller.set('newMemberIndex', idx + 1);
       _this.controller.set('newTeamMemberEmail', '');
-      $('#team-member-add').focus();
+      setTimeout(() => {
+        $('#team-member-email-' + idx).focus();
+      }, 0);
     },
     removeTeamMemberEmail(teamMember) {
       var _this = this;
@@ -31,18 +43,42 @@ export default Ember.Route.extend({
     createTeam() {
       var _this = this,
         delegates = [],
-        membersToAdd = [];
+        membersToAdd = [],
+        errors = [];
+      
+      _this.controller.set('teamError', '');
+      _this.controller.set('unexpectedError', '');
+      _this.controller.set('currentlyLoading', true);
 
       _this.get('currentModel').set('admin', _this.get('session').get('currentUser'));
 
       membersToAdd = _this.controller.get('teamMemberEmails');
-      membersToAdd.push({
-        email: _this.controller.get('newTeamMemberEmail')
+
+      membersToAdd.forEach((item) => {
+        Ember.set(item, 'error', null);
+      });
+      
+      membersToAdd = membersToAdd.filter((item) => {
+        return item.email !== "" && item.email;
+      });
+      
+      errors = membersToAdd.filter((item) => {
+        return !item.email.match(/^[^@\s]+@[^@\s]+\.[^@\s]+$/);
       });
 
-      delegates = membersToAdd.filter((item) => {
-        return item.email != "" && item.email;
-      }).map((item) => {
+      if(errors.length > 0) {
+        errors.forEach((item) => {
+          Ember.set(item, 'error', "This doesn't look like a valid email address!");
+        });
+        _this.controller.set('currentlyLoading', false);
+        return;
+      } else if(!_this.get('currentModel').get('name') || _this.get('currentModel').get('name').trim() === "") {
+        _this.controller.set('teamError', 'Your team needs a name!');
+        _this.controller.set('currentlyLoading', false);
+        return;
+      }
+
+      delegates = membersToAdd.map((item) => {
         return item.email;
       });
 
@@ -53,6 +89,10 @@ export default Ember.Route.extend({
         _this.controller.set('newTeamMemberEmail', '');
         _this.send('invalidateApplicationModel');
         _this.transitionTo('app.teams.team.dashboard.retrospectives', _this.get('currentModel'));
+        _this.controller.set('currentlyLoading', false);
+      }).catch(() => {
+        _this.controller.set('unexpectedError', 'There was an unexpected error, please review the fields and try again.');
+        _this.controller.set('currentlyLoading', false);
       });
     }
   }

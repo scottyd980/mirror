@@ -34,8 +34,13 @@
             <div class="row">
                 <div class="col-md-12">
                     <ul class="icons-list">
-                        {{#each (sort-by "type" model.feedback) as |feedback|}}
-                            <li class="{{concat "icons-list--" feedback.type}}">{{feedback.message}}</li>
+                        {{#each (sort-by "category" model.feedback) as |feedback|}}
+                            <li class="{{concat "icons-list--" feedback.category}}">
+                                <div class="pre">{{feedback.message}}</div>
+                                {{#if feedback.action.message}}
+                                    <strong>Action:</strong> {{feedback.action.message}}
+                                {{/if}}
+                            </li>
                         {{else}}
                             <li class="icons-list--negative">It looks like there was no feedback for this retrospective.</li>
                         {{/each}}

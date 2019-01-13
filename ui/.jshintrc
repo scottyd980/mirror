@@ -4,7 +4,9 @@
     "window",
     "-Promise",
     "$",
-    "Ember"
+    "Ember",
+    "Stripe",
+    "Promise"
   ],
   "browser": true,
   "boss": true,

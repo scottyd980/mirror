@@ -4,20 +4,45 @@
     <div class="list-actions">
       {{#if isAdmin}}
         {{#unless (array-contains member.teamAdmin team)}}
-          <a {{action onConfirm "Are you sure you want to make this team member an admin?" (action onMakeAdmin member team)}} class="btn btn-success btn-outline btn-xs">{{fa-icon "arrow-up" fixedWidth=true}}</a>
+          <a {{action onConfirm "Are you sure you want to make this team member an admin?" (action onMakeAdmin member team)}} class="btn btn-success btn-outline btn-xs">
+            {{fa-icon "arrow-up" fixedWidth=true}}
+            {{#tooltip-on-element side="bottom"}}
+              Promote To Admin
+            {{/tooltip-on-element}}
+          </a>
         {{else}}
           {{#unless (eq member.id currentUser.id)}}
-            <a {{action onConfirm "Are you sure you want to take away this member's admin rights?" (action onRemoveAdmin member team)}} class="btn btn-warning btn-outline btn-xs">{{fa-icon "arrow-down" fixedWidth=true}}</a>
+            <a {{action onConfirm "Are you sure you want to take away this member's admin rights?" (action onRemoveAdmin member team)}} class="btn btn-warning btn-outline btn-xs">
+              {{fa-icon "arrow-down" fixedWidth=true}}
+              {{#tooltip-on-element side="bottom"}}
+                Remove Admin Priveleges
+              {{/tooltip-on-element}}
+            </a>
           {{/unless}}
         {{/unless}}
         {{#unless (eq member.id currentUser.id)}}
-          <a {{action onConfirm "Are you sure you want to remove this member from the team?" (action onDelete member team)}} class="btn btn-danger btn-outline btn-xs">{{fa-icon "user-times" fixedWidth=true}}</a>
+          <a {{action onConfirm "Are you sure you want to remove this member from the team?" (action onDelete member team)}} class="btn btn-danger btn-outline btn-xs">
+            {{fa-icon "user-times" fixedWidth=true}}
+            {{#tooltip-on-element side="bottom"}}
+              Remove From Team
+            {{/tooltip-on-element}}
+          </a>
         {{else}}
-          <a {{action onConfirm "Are you sure you want to leave the team?" (action onDelete member team)}} class="btn btn-danger btn-outline btn-xs">{{fa-icon "sign-out" fixedWidth=true}}</a>
+          <a {{action onConfirm "Are you sure you want to leave the team?" (action onDelete member team)}} class="btn btn-danger btn-outline btn-xs">
+            {{fa-icon "sign-out" fixedWidth=true}}
+            {{#tooltip-on-element side="bottom"}}
+              Leave Team
+            {{/tooltip-on-element}}
+          </a>
         {{/unless}}
       {{else}}
         {{#if (eq member.id currentUser.id)}}
-          <a {{action onConfirm "Are you sure you want to leave the team?" (action onDelete member team)}} class="btn btn-danger btn-outline btn-xs">{{fa-icon "sign-out" fixedWidth=true}}</a>
+          <a {{action onConfirm "Are you sure you want to leave the team?" (action onDelete member team)}} class="btn btn-danger btn-outline btn-xs">
+            {{fa-icon "sign-out" fixedWidth=true}}
+            {{#tooltip-on-element side="bottom"}}
+              Leave Team
+            {{/tooltip-on-element}}
+          </a>
         {{/if}}
       {{/if}}
     </div>

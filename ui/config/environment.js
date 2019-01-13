@@ -77,7 +77,7 @@ module.exports = function(environment) {
     retrospective: {
       sticky_notes: {
         type_id: 1,
-        states: ["start", "score", "aggregate", "feedback", "sticky-notes.board-negative", "sticky-notes.board-positive", "summary"],
+        states: ["start", "feedback", "sticky-notes.board-negative", "sticky-notes.board-positive", "score", "aggregate", "summary"],
         min_complete_state: 6,
         feedback: [
           {
@@ -123,8 +123,8 @@ module.exports = function(environment) {
   }
 
   if (environment === 'production') {
-    ENV.DS.host = 'http://getmirror.io:4001';
-    ENV.DS.wshost = 'ws://getmirror.io:4001';
+    ENV.DS.host = 'https://usemirror.io';
+    ENV.DS.wshost = 'wss://usemirror.io';
   }
 
   return ENV;

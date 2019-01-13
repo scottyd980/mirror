@@ -10,22 +10,26 @@ config :mirror,
   ecto_repos: [Mirror.Repo]
 
 # Configures the endpoint
-config :mirror, Mirror.Endpoint,
+config :mirror, MirrorWeb.Endpoint,
   url: [host: "localhost"],
-  secret_key_base: "tsz0xVJbIMUVrpgZh47DvpIEjygMek+MvwbCx0qvJX5bkcbuQilUK6QY2e3nxf+Q",
-  render_errors: [view: Mirror.ErrorView, accepts: ~w(json)],
+  secret_key_base: "MZh10vXebi5sBh8qXKuvIhbpcCwWUcyC5hh9tFNfdpjVNIxYZ++kw1zept3gmNWu",
+  render_errors: [view: MirrorWeb.ErrorView, accepts: ~w(json json-api)],
   pubsub: [name: Mirror.PubSub,
            adapter: Phoenix.PubSub.PG2]
 
 # Configures Elixir's Logger
 config :logger, :console,
   format: "$time $metadata[$level] $message\n",
-  metadata: [:request_id]
+  metadata: [:user_id]
 
 config :mirror, Mirror.Mailer,
   adapter: Bamboo.MailgunAdapter,
   api_key: "key-96e671978cde9c46125523b1588cbd4d",
   domain: "mail.usemirror.io"
+
+config :stripity_stripe, 
+  api_key: "sk_test_olzWYbRvUnGfyAbvOMtYvW79",
+  webhook_secret: "whsec_0bUTjwUFxzvU5jplnO911pFigZNJJHLd"
 
 config :phoenix, :format_encoders,
   "json-api": Poison
@@ -34,17 +38,15 @@ config :mime, :types, %{
   "application/vnd.api+json" => ["json-api"]
 }
 
-config :stripity_stripe, secret_key: "sk_test_olzWYbRvUnGfyAbvOMtYvW79"
-
-config :guardian, Guardian,
-  allowed_algos: ["HS512"], # optional
-  verify_module: Guardian.JWT,  # optional
+config :mirror, Mirror.Guardian,
   issuer: "Mirror",
   ttl: { 30, :days },
   verify_issuer: true, # optional
-  secret_key: System.get_env("GUARDIAN_SECRET") || "nGeq4o2xpePnwn46bhB4ItyiuiwM3doUuWi5T7yprcbWtF0xdpB5DqjkAEa6/2a/",
-  serializer: Mirror.GuardianSerializer
+  secret_key: System.get_env("GUARDIAN_SECRET") || "nGeq4o2xpePnwn46bhB4ItyiuiwM3doUuWi5T7yprcbWtF0xdpB5DqjkAEa6/2a/"
 
+config :mirror, Mirror.Guardian.AuthPipeline,
+  module: Mirror.Guardian,
+  error_handler: Mirror.Guardian.AuthErrorHandler
 # Import environment specific config. This must remain at the bottom
 # of this file so it overrides the configuration defined above.
 import_config "#{Mix.env}.exs"

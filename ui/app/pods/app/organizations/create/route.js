@@ -10,6 +10,9 @@ export default Ember.Route.extend({
     controller.set('errors', {});
     controller.set('orgMemberEmails', Ember.A());
     controller.set('newMemberIndex', 1);
+    controller.set('currentlyLoading', false);
+    controller.set('unexpectedError', '');
+    controller.set('orgError', '');
   },
   actions: {
     addOrgMemberEmail(orgMember) {
@@ -33,6 +36,15 @@ export default Ember.Route.extend({
         delegates = [],
         membersToAdd = [];
 
+      _this.controller.set('orgError', '');
+
+      if(!_this.get('currentModel').get('name') || _this.get('currentModel').get('name').trim() === "") {
+        _this.controller.set('orgError', 'Your organization needs a name!');
+        return;
+      }
+      
+      _this.controller.set('currentlyLoading', true);
+
       _this.get('currentModel').set('admin', _this.get('session').get('currentUser'));
 
       membersToAdd = _this.controller.get('orgMemberEmails');
@@ -41,17 +53,20 @@ export default Ember.Route.extend({
       });
 
       delegates = membersToAdd.filter((item) => {
-        return item.email != "" && item.email;
+        return item.email !== "" && item.email;
       }).map((item) => {
         return item.email;
       });
-
-      //_this.get('currentModel').set('memberDelegates', delegates);
 
       _this.get('currentModel').save().then(() => {
         _this.controller.set('orgMemberEmails', Ember.A());
         _this.controller.set('newOrgMemberEmail', '');
         _this.send('invalidateApplicationModel');
+        _this.controller.set('currentlyLoading', false);
+        _this.transitionTo('app.organizations.organization.dashboard', _this.get('currentModel'));
+      }).catch(() => {
+        _this.controller.set('unexpectedError', 'There was an unexpected error, please review the fields and try again.');
+        _this.controller.set('currentlyLoading', false);
       });
     }
   }
