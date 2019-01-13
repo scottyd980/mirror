@@ -12,8 +12,8 @@
   <div class="row">
     <div class="col-md-8">
       {{#x-card title="Billing"}}
-        All teams start with a 30 day free trial, with billing beginning on the 31st day. At the end of the trial period, a payment method is required for teams to continue running retrospectives.
-        We offer both monthly and yearly plans - yearly plans recieve over a 15% discount over monthly plans.
+        All teams start with a free, no obligation, month-long trial period. At the end of the trial period, a payment method is required for teams to continue running retrospectives.
+        We offer both monthly and yearly plans - yearly plans recieve a substantial discount versus our monthly plans.
       {{/x-card}}
       {{#x-card title="Payment Methods"}}
         {{#if model.cards}}
@@ -46,7 +46,7 @@
                   <input checked="{{if (eq model.organization.billing_frequency "monthly") 'checked'}}" type="radio" id={{concat "billing-freq-month-" model.organization.id}} value="monthly" name="{{concat "billing-freq-" model.organization.id}}" />
                   <label for={{concat "billing-freq-month-" model.organization.id}} class="radio-list--item">
                       Monthly
-                      <span>$6 / Team</span>
+                      <span>$10 / Team</span>
                   </label>
               </div>
             </li>
@@ -55,7 +55,7 @@
                   <input checked="{{if (eq model.organization.billing_frequency "yearly") 'checked'}}" type="radio" id={{concat "billing-freq-year-" model.organization.id}} value="yearly" name="{{concat "billing-freq-" model.organization.id}}" />
                   <label for={{concat "billing-freq-year-" model.organization.id}} class="radio-list--item">
                       Yearly
-                      <span>$60 / Team</span>
+                      <span>$100 / Team</span>
                   </label>
               </div>
             </li>

@@ -10,22 +10,26 @@ config :mirror,
   ecto_repos: [Mirror.Repo]
 
 # Configures the endpoint
-config :mirror, Mirror.Endpoint,
+config :mirror, MirrorWeb.Endpoint,
   url: [host: "localhost"],
-  secret_key_base: "tsz0xVJbIMUVrpgZh47DvpIEjygMek+MvwbCx0qvJX5bkcbuQilUK6QY2e3nxf+Q",
-  render_errors: [view: Mirror.ErrorView, accepts: ~w(json)],
+  secret_key_base: "***SECRET_KEY_BASE***",
+  render_errors: [view: MirrorWeb.ErrorView, accepts: ~w(json json-api)],
   pubsub: [name: Mirror.PubSub,
            adapter: Phoenix.PubSub.PG2]
 
 # Configures Elixir's Logger
 config :logger, :console,
   format: "$time $metadata[$level] $message\n",
-  metadata: [:request_id]
+  metadata: [:user_id]
 
 config :mirror, Mirror.Mailer,
   adapter: Bamboo.MailgunAdapter,
   api_key: "***MAILGUN_API_KEY***",
   domain: "***MAIL_DOMAIN***"
+
+config :stripity_stripe, 
+  api_key: "***STRIPE_API_KEY***",
+  webhook_secret: "***STRIPE_WEBHOOK_SECRET***"
 
 config :phoenix, :format_encoders,
   "json-api": Poison
@@ -34,17 +38,15 @@ config :mime, :types, %{
   "application/vnd.api+json" => ["json-api"]
 }
 
-config :stripity_stripe, secret_key: "***STRIPE_API_KEY***"
-
-config :guardian, Guardian,
-  allowed_algos: ["HS512"], # optional
-  verify_module: Guardian.JWT,  # optional
+config :mirror, Mirror.Guardian,
   issuer: "Mirror",
   ttl: { 30, :days },
   verify_issuer: true, # optional
-  secret_key: System.get_env("GUARDIAN_SECRET") || "***GUARDIAN_SECRET***",
-  serializer: Mirror.GuardianSerializer
+  secret_key: System.get_env("GUARDIAN_SECRET") || "***GUARDIAN_SECRET***"
 
+config :mirror, Mirror.Guardian.AuthPipeline,
+  module: Mirror.Guardian,
+  error_handler: Mirror.Guardian.AuthErrorHandler
 # Import environment specific config. This must remain at the bottom
 # of this file so it overrides the configuration defined above.
 import_config "#{Mix.env}.exs"

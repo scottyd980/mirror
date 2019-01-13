@@ -1,30 +1,28 @@
-# ./Dockerfile
+FROM ubuntu:16.04
 
-# Starting from the official Elixir 1.3.2 image:
-# https://hub.docker.com/_/elixir/
-FROM elixir:latest
+RUN apt-get update && apt-get install -y \
+  curl locales aptitude git wget build-essential automake \
+  autoconf m4 nginx
+RUN locale-gen en_US.UTF-8
+ENV LANG=en_US.UTF-8
+ENV LANGUAGE=en_US:en
+ENV LC_ALL=en_US.UTF-8
+ENV TERM=linux
 
-# RUN apt-get update && \
-#     apt-get install -y mysql-server
+RUN wget https://packages.erlang-solutions.com/erlang-solutions_1.0_all.deb && \
+  dpkg -i erlang-solutions_1.0_all.deb && \
+  apt-get update && \
+  apt-get install -y \
+    esl-erlang=1:20.3 && \
+  apt-get install elixir
 
-ENV MYSQL_USER=mysql \
-    MYSQL_DATA_DIR=/var/lib/mysql \
-    MYSQL_RUN_DIR=/run/mysqld \
-    MYSQL_LOG_DIR=/var/log/mysql
+COPY . .
 
-RUN apt-get update \
- && DEBIAN_FRONTEND=noninteractive apt-get install -y mysql-server \
- && rm -rf ${MYSQL_DATA_DIR} \
- && rm -rf /var/lib/apt/lists/*
+RUN mix local.hex --force && \
+    mix local.rebar --force
 
-# Install hex
-RUN mix local.hex --force
+RUN export MIX_ENV=prod && \
+    rm -Rf _build && \
+    mix deps.get
 
-# Install rebar
-RUN mix local.rebar --force
-
-# Install the Phoenix framework itself
-RUN mix archive.install --force https://github.com/phoenixframework/archives/raw/master/phoenix_new.ez
-
-# Set /app as workdir
-WORKDIR /app
+CMD MIX_ENV=prod mix release --env=prod

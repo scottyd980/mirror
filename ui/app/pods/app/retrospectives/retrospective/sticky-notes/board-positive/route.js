@@ -1,10 +1,13 @@
 import Ember from 'ember';
-import config from '../../../../../../config/environment';
 import RSVP from 'rsvp';
 
 export default Ember.Route.extend({
     session: Ember.inject.service('session'),
     model() {
+        // Need to reload feedbacks in case someone left the retrospective but isn't listening for changes.
+        const feedbacks = this.modelFor('app.retrospectives.retrospective').retrospective.hasMany('feedbacks');
+        feedbacks.reload();
+        
         return RSVP.hash({
             parent: this.modelFor('app.retrospectives.retrospective'),
             feedback: this.modelFor('app.retrospectives.retrospective').retrospective.get('feedbacks')
@@ -16,8 +19,8 @@ export default Ember.Route.extend({
         let _this = this,
             feedback = model.feedback;
 
-        let positiveFeedback = this._shuffle(feedback.filter((fb) => {
-            return fb.get('type') === "positive";
+        let positiveFeedback = _this._shuffle(feedback.filter((fb) => {
+            return fb.get('category') === "positive";
         }));
 
         controller.set('positive_feedback', positiveFeedback);

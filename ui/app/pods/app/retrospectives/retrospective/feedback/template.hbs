@@ -27,10 +27,10 @@
             <div class="card-header">
                 {{x-timer}}
             </div>
-            <a onclick={{route-action "changeRetrospectiveState" 4}} class="btn btn-block btn-success btn-lg btn-callout">Continue {{fa-icon "angle-right" fixedWidth=true}}</a>
+            <a onclick={{route-action "changeRetrospectiveState" "feedback" 1}} class="btn btn-block btn-success btn-lg btn-callout">Continue {{fa-icon "angle-right" fixedWidth=true}}</a>
             <div class="row">
                 <div class="col-xs-6">
-                    <a onclick={{route-action "changeRetrospectiveState" 2}} class="btn btn-block btn-info btn-outline">{{fa-icon "angle-left" fixedWidth=true}} Back</a>
+                    <a onclick={{route-action "changeRetrospectiveState" "feedback" -1}} class="btn btn-block btn-info btn-outline">{{fa-icon "angle-left" fixedWidth=true}} Back</a>
                 </div>
                 <div class="col-xs-6">
                     <a onclick={{route-action "confirmAction" "Are you sure you want to cancel the retrospective in progress?" (route-action "cancelRetrospective" retrospective)}} class="btn btn-block btn-danger btn-outline">{{fa-icon "times" fixedWidth=true}} Cancel</a>
@@ -41,7 +41,7 @@
         {{#x-card title="Participants"}}
             {{retrospective-submission-list
                 members=model.parent.retrospective.participants
-                submitted=model.feedback 
+                submitted=model.feedbackSubmissions 
                 currentUser=model.parent.currentUser
             }}
         {{/x-card}}

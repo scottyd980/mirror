@@ -6,4 +6,5 @@ export default Model.extend({
   score: attr('number'),
   user: belongsTo('user'),
   retrospective: belongsTo('retrospective'),
+  uuid: attr('string')
 });

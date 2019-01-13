@@ -39,7 +39,7 @@ export default Ember.Route.extend({
             isModerator: isModerator
         });
     },
-    redirect(model, transition) {
+    redirect(model) {
         var state = model.retrospective.get('state');
         var dynamicRouteSegment = config.retrospective.sticky_notes.states[state];
         this.transitionTo('app.retrospectives.retrospective.' + dynamicRouteSegment);
@@ -47,18 +47,48 @@ export default Ember.Route.extend({
     setupController(controller, model) {
         this._super(...arguments);
 
+        const _this = this;
+
         controller.set('hasRetroInProgress', false);
         controller.set('isRetroStartModalShowing', false);
+        controller.set('isActionModalShowing', false);
+        controller.set('actionMessage', '');
 
-        var retro = this.get('retrospectiveService').join_retrospective_channel(model.retrospective.get('id'));
+        this.get('retrospectiveService').join_retrospective_channel(model.retrospective.get('id'));
+        
+        $(window).on('navigationListener', function(e){ 
+            _this.updateRetrospectiveState(e);
+        });
+
+        if(model.isModerator) {
+            $(window).on('popstate', function(e) {
+                $(window).trigger('navigationListener', [e]);
+            });
+        }
     },
     deactivate() {
         this.get('retrospectiveService').leave_retrospective_channel(this.get('currentModel').retrospective.get('id'));
+        $(window).off('navigationListener');
+    },
+    updateRetrospectiveState(e) {
+        const retrospective = this.get('currentModel').retrospective;
+        const path = window.location.pathname;
+        if(path.startsWith('/app/retrospectives/')) {
+            const stateSegment = path.replace(/\/app\/retrospectives\/\d+\//, '').replace(/\//g, ".");
+            const state = config.retrospective.sticky_notes.states.indexOf(stateSegment);
+            
+            retrospective.set('state', state);
+            retrospective.save();
+        }
     },
     actions: {
-        changeRetrospectiveState(state) {
+        changeRetrospectiveState(currentStateSegment, direction) {
             var retrospective = this.get('currentModel').retrospective;
-            retrospective.set('state', state);
+
+            //TODO: Need to account for games here
+            const currentState = config.retrospective.sticky_notes.states.indexOf(currentStateSegment);
+
+            retrospective.set('state', (currentState + direction));
             retrospective.save();
         },
         moveFeedback(id, state) {
@@ -71,7 +101,7 @@ export default Ember.Route.extend({
             let _this = this;
             let retrospective = this.get('currentModel').retrospective;
             retrospective.set('cancelled', true);
-            retrospective.save().then((response) => {
+            retrospective.save().then(() => {
                 _this.transitionTo('app.teams.team.dashboard.retrospectives', this.get('currentModel').team).then(() => {
                     _this.get('notificationCenter').success({
                         title: config.SUCCESS_MESSAGES.generic,
@@ -79,12 +109,52 @@ export default Ember.Route.extend({
                     });
                 });
                 
-            }).catch((error) => {
-                console.log(error);
+            }).catch(() => {
                 _this.get('notificationCenter').error({
                     title: config.ERROR_MESSAGES.generic,
                     message: "We experienced an unexpected error. Please try again."
                 });
+            });
+        },
+        openActionModal(feedback) {
+            const _this = this;
+            let actionMessage = '';
+
+            feedback.get('action').then((action) => {
+                if(action) {
+                    actionMessage = action.get('message');
+                }
+
+                _this.controller.set('activeFeedback', feedback);
+                _this.controller.set('actionMessage', actionMessage);
+                _this.controller.set('isActionModalShowing', true);
+            });
+        },
+        closeActionModal() {
+            const _this = this;
+            _this.controller.set('isActionModalShowing', false);
+            _this.controller.set('activeFeedback', null);
+            _this.controller.set('actionMessage', '');
+        },
+        submitActionItem() {
+            const _this = this;
+            const feedback = _this.controller.get('activeFeedback');
+            const message = _this.controller.get('actionMessage');
+
+            feedback.get('action').then((action) => {
+                if(message.trim() !== "" && action) {
+                    action.set('message', message);
+                    action.save();
+                } else if(message.trim() !== "") {
+                    _this.store.createRecord('action', {
+                        message: message,
+                        feedback: feedback
+                    }).save();
+                } else if(message.trim() === "" && action) {
+                    action.destroyRecord();
+                }
+                
+                _this.send('closeActionModal');
             });
         }
     }

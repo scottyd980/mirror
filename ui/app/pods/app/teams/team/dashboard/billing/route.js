@@ -16,20 +16,23 @@ export default Ember.Route.extend({
         this.controller.set('loadingMessage', message);
         this.controller.toggleProperty('currentlyLoading');
     },
-    setupController(controller, model) {
+    setupController(controller) {
         this._super(...arguments);
         controller.set('isJoinOwnOrganizationModalShowing', false);
         controller.set('isCreateNewOrganizationModalShowing', false);
         controller.set('isJoinAnotherOrganizationModalShowing', false);
         controller.set('newOrganizationName', '');
+        controller.set('orgError', '');
 
         controller.set('active_billing_types', config.ACTIVE_BILLING_TYPES);
     },
     actions: {
         toggleJoinOwnOrganizationModal() {
+            this.controller.set('orgError', '');
             this.controller.toggleProperty('isJoinOwnOrganizationModalShowing');
         },
         toggleCreateNewOrganizationModal() {
+            this.controller.set('orgError', '');
             this.controller.toggleProperty('isCreateNewOrganizationModalShowing');
         },
         toggleJoinAnotherOrganizationModal() {
@@ -37,6 +40,13 @@ export default Ember.Route.extend({
         },
         createOrganization() {
             var _this = this;
+
+            _this.controller.set('orgError', '');
+
+            if(!_this.controller.get('newOrganizationName') || _this.controller.get('newOrganizationName').trim() === "") {
+                _this.controller.set('orgError', 'Your organization needs a name!');
+                return;
+            }
 
             var newOrganization = this.store.createRecord('organization');
 
@@ -49,10 +59,13 @@ export default Ember.Route.extend({
             newOrganization.set('teams', teams);
             newOrganization.set('name', this.controller.get('newOrganizationName'));
 
+
+            _this.send('toggleCreateNewOrganizationModal');
+            _this.toggleLoadingScreen('Creating Organization...');
             newOrganization.save().then((organization) => {
                 _this.get('currentModel').team.set('organization', organization);
                 _this.get('currentModel').team.save();
-                _this.send('toggleCreateNewOrganizationModal');
+                this.toggleLoadingScreen();
             });
         },
         joinOwnOrganization() {
@@ -73,7 +86,7 @@ export default Ember.Route.extend({
                 });
             
             } else {
-                // TODO: Error
+                this.controller.set('orgError', 'You need to select an organization!');
             }
         }
     }

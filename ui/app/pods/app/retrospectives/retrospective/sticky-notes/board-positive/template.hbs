@@ -3,13 +3,19 @@
     <div class="row">
       <div class="col-md-8">
         {{#x-card title="What Went Well" overlay=submitted}}
-            <div class="row">
-                <div class="col-sm-4">
+            <div class="row drop-zones">
+                <div class="dz">
                     <p><strong>To Do</strong></p>
                     {{#x-note-drop onDrop="moveFeedback" data=0}}
                         {{#each positive_feedback as |fb|}}
                             {{#if (eq fb.state 0)}}
-                                {{#x-note data=fb isAnonymous=model.parent.retrospective.isAnonymous isModerator=model.parent.isModerator type='good'}}
+                                {{#x-note 
+                                    data=fb 
+                                    isAnonymous=model.parent.retrospective.isAnonymous 
+                                    isModerator=model.parent.isModerator 
+                                    type='good'
+                                    onFlag=(route-action "openActionModal" fb)
+                                }}
                                     {{fb.message}}
                                 {{/x-note}}
                             {{/if}}
@@ -17,14 +23,18 @@
                     {{/x-note-drop}}
                 </div>
 
-                <div class="mg-bottom-md visible-xs"></div>
-
-                <div class="col-sm-4">
+                <div class="dz">
                     <p><strong>In Progress</strong></p>
                     {{#x-note-drop onDrop="moveFeedback" data=1}}
                         {{#each positive_feedback as |fb|}}
                             {{#if (eq fb.state 1)}}
-                                {{#x-note data=fb isAnonymous=model.parent.retrospective.isAnonymous isModerator=model.parent.isModerator type='good'}}
+                                {{#x-note 
+                                    data=fb 
+                                    isAnonymous=model.parent.retrospective.isAnonymous 
+                                    isModerator=model.parent.isModerator 
+                                    type='good'
+                                    onFlag=(route-action "openActionModal" fb)
+                                }}
                                     {{fb.message}}
                                 {{/x-note}}
                             {{/if}}
@@ -32,14 +42,18 @@
                     {{/x-note-drop}}
                 </div>
 
-                <div class="mg-bottom-md visible-xs"></div>
-
-                <div class="col-sm-4">
+                <div class="dz">
                     <p><strong>Done</strong></p>
                     {{#x-note-drop onDrop="moveFeedback" data=2}}
                         {{#each positive_feedback as |fb|}}
                             {{#if (eq fb.state 2)}}
-                                {{#x-note data=fb isAnonymous=model.parent.retrospective.isAnonymous isModerator=model.parent.isModerator type='good'}}
+                                {{#x-note 
+                                    data=fb 
+                                    isAnonymous=model.parent.retrospective.isAnonymous 
+                                    isModerator=model.parent.isModerator 
+                                    type='good'
+                                    onFlag=(route-action "openActionModal" fb)
+                                }}
                                     {{fb.message}}
                                 {{/x-note}}
                             {{/if}}
@@ -55,10 +69,10 @@
             <div class="card-header">
                 {{x-timer}}
             </div>
-            <a onclick={{route-action "changeRetrospectiveState" 6}} class="btn btn-block btn-success btn-lg btn-callout">Continue {{fa-icon "angle-right" fixedWidth=true}}</a>
+            <a onclick={{route-action "changeRetrospectiveState" "sticky-notes.board-positive" 1}} class="btn btn-block btn-success btn-lg btn-callout">Continue {{fa-icon "angle-right" fixedWidth=true}}</a>
             <div class="row">
                 <div class="col-xs-6">
-                    <a onclick={{route-action "changeRetrospectiveState" 4}} class="btn btn-block btn-info btn-outline">{{fa-icon "angle-left" fixedWidth=true}} Back</a>
+                    <a onclick={{route-action "changeRetrospectiveState" "sticky-notes.board-positive" -1}} class="btn btn-block btn-info btn-outline">{{fa-icon "angle-left" fixedWidth=true}} Back</a>
                 </div>
                 <div class="col-xs-6">
                     <a onclick={{route-action "confirmAction" "Are you sure you want to cancel the retrospective in progress?" (route-action "cancelRetrospective" retrospective)}} class="btn btn-block btn-danger btn-outline">{{fa-icon "times" fixedWidth=true}} Cancel</a>
