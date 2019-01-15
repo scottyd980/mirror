@@ -95,7 +95,7 @@ defmodule Mirror.Teams.Team do
     resp
   end
 
-  def update_subscription_period(%Team{} = team, attrs) do
+  def update_via_webhook(%Team{} = team, attrs) do
     team
     |> Team.webhook_changeset(attrs)
     |> Repo.update()
@@ -215,15 +215,15 @@ defmodule Mirror.Teams.Team do
   end
 
   #TODO: find uses of these
-  def in_trial_period?(team) do
-    now = Timex.Duration.now(:seconds)
-    trial_end = Team.get_trial_period_end(team)
+  # def in_trial_period?(team) do
+  #   now = Timex.Duration.now(:seconds)
+  #   trial_end = Team.get_trial_period_end(team)
 
-    {(now - 60) < trial_end, trial_end}
-  end
+  #   {(now - 60) < trial_end, trial_end}
+  # end
 
-  def get_trial_period_end(team) do
-    created_at = team.inserted_at |> NaiveDateTime.to_erl |> :calendar.datetime_to_gregorian_seconds |> Kernel.-(62167219200)
-    created_at + @trial_period
-  end
+  # def get_trial_period_end(team) do
+  #   created_at = team.inserted_at |> NaiveDateTime.to_erl |> :calendar.datetime_to_gregorian_seconds |> Kernel.-(62167219200)
+  #   created_at + @trial_period
+  # end
 end

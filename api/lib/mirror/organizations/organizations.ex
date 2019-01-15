@@ -46,13 +46,27 @@ defmodule Mirror.Organizations do
   ## Examples
 
       iex> get_organization_by_customer_id!(cus_asdSAg123Sad)
-      %Team{}
+      %Organization{}
 
       iex> get_organization_by_customer_id!(sub_notfound)
       ** (Ecto.NoResultsError)
 
   """
   def get_organization_by_customer_id!(customer_id), do: Repo.get_by!(Organization, billing_customer: customer_id)
+
+  @doc """
+  Gets a single organization by billing_customer.
+
+  ## Examples
+
+      iex> get_organization_by_customer_id(cus_asdSAg123Sad)
+      %Organization{}
+
+      iex> get_organization_by_customer_id(sub_notfound)
+      nil
+
+  """
+  def get_organization_by_customer_id(customer_id), do: Repo.get_by(Organization, billing_customer: customer_id)
 
   @doc """
   Creates a organization.
@@ -97,7 +111,8 @@ defmodule Mirror.Organizations do
   """
   def update_organization(%Organization{} = organization, attrs) do
     Repo.transaction fn ->
-      with  true                                        <- Helpers.Organization.card_on_file?(organization, attrs.default_payment_id),
+      with  attrs                                       <- map_default_payment_id(organization, attrs),
+            true                                        <- Helpers.Organization.card_on_file?(organization, attrs.default_payment_id),
             {:ok, card_status}                          <- Helpers.Organization.valid_card_update?(organization, attrs.default_payment_id),
             {:ok, %Organization{} = updated_org}        <- Organization.update(organization, attrs),
             {:ok, %Organization{} = org_with_billing}   <- Organization.set_billing_status(updated_org),
@@ -114,6 +129,15 @@ defmodule Mirror.Organizations do
         _ ->
           {:error, :unknown}
       end
+    end
+  end
+
+  defp map_default_payment_id(organization, attrs) do
+    try do
+      attrs.default_payment_id
+      attrs
+    rescue
+      e in KeyError -> Map.put(attrs, :default_payment_id, organization.default_payment_id)
     end
   end
 

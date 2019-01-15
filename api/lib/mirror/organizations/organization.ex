@@ -13,7 +13,6 @@ defmodule Mirror.Organizations.Organization do
   alias Mirror.Payments
   alias Mirror.Payments.Card
   alias Mirror.Payments.Billing
-  alias Mirror.Payments.BillingNew
 
   alias Mirror.Helpers.{Hash, Trial}
 
@@ -28,6 +27,8 @@ defmodule Mirror.Organizations.Organization do
     field :billing_frequency, :string, default: "none"
     field :trial_end, :integer
     field :period_end, :integer
+    field :is_delinquent, :boolean
+    field :is_deleted, :boolean
 
     has_many :teams, Team
     has_many :cards, Card
@@ -64,7 +65,7 @@ defmodule Mirror.Organizations.Organization do
 
   def webhook_changeset(organization, attrs) do
     organization
-    |> cast(attrs, [:period_end])
+    |> cast(attrs, [:period_end, :default_payment_id, :is_delinquent])
   end
 
   def billing_changeset(organization, attrs) do
@@ -149,7 +150,7 @@ defmodule Mirror.Organizations.Organization do
     end
   end
 
-  def update_subscription_period(organization, attrs) do
+  def update_via_webhook(organization, attrs) do
     organization
     |> Organization.webhook_changeset(attrs)
     |> Repo.update()
@@ -167,7 +168,10 @@ defmodule Mirror.Organizations.Organization do
     organization = card.organization
 
     case default do
-      true -> Organization.update(organization, %{default_payment_id: card.id})
+      true ->
+        {:ok, updated_org} = Organization.update(organization, %{default_payment_id: card.id})
+        Billing.set_default_source(updated_org)
+        {:ok, updated_org}
       _ -> {:ok, organization}
     end
   end
@@ -198,17 +202,12 @@ defmodule Mirror.Organizations.Organization do
     end
   end
 
-  # TODO: Handle stripe subscription or call billing service to handle
   def set_billing_status(organization) do
     {:ok, status} = get_billing_status(organization)
 
-    result = organization
+    organization
     |> Organization.billing_changeset(%{billing_status: status})
     |> Repo.update()
-
-    Billing.process_subscription(organization)
-
-    result
   end
 
   def get_billing_status(organization) do
@@ -227,7 +226,6 @@ defmodule Mirror.Organizations.Organization do
       _ ->
         case Card.get_status(card) do
           :valid -> "active"
-          # TODO: Might return something else here describing why inactive
           _ -> "inactive"
         end
     end
