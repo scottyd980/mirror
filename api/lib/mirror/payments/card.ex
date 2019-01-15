@@ -24,7 +24,12 @@ defmodule Mirror.Payments.Card do
   def changeset(card, attrs) do
     card
     |> cast(attrs, [:brand, :last4, :exp_month, :exp_year, :token_id, :card_id, :organization_id, :zip_code])
-    |> validate_required([:brand, :last4, :exp_month, :exp_year, :token_id, :card_id, :organization_id, :zip_code])
+    |> validate_required([:brand, :last4, :exp_month, :exp_year, :card_id, :organization_id])
+  end
+
+  def webhook_changeset(card, attrs) do
+    card
+    |> cast(attrs, [:exp_month, :exp_year])
   end
 
   def preload_relationships(card) do
@@ -43,7 +48,7 @@ defmodule Mirror.Payments.Card do
       if Card.is_default_payment?(card) do
         Organization.set_alternate_default_payment(card)
       end
-  
+
       with removed_card           <- Repo.delete!(card),
            {:ok, removed_billing} <- Stripe.Card.delete(card.card_id, %{customer: card.organization.billing_customer})
       do
@@ -54,6 +59,12 @@ defmodule Mirror.Payments.Card do
           {:error, changeset}
       end
     end
+  end
+
+  def update_expiration_date(card, attrs) do
+    card
+    |> Card.webhook_changeset(attrs)
+    |> Repo.update()
   end
 
   def is_default_payment?(card) do

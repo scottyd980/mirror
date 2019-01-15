@@ -21,7 +21,7 @@ defmodule Mirror.Retrospectives do
     query = from r in Retrospective,
             where: r.team_id == ^team.id,
             where: r.cancelled == false
-    
+
     Repo.all(query)
     |> Retrospective.preload_relationships()
   end
@@ -57,8 +57,8 @@ defmodule Mirror.Retrospectives do
   #TODO: Verify billing status
   def create_retrospective(attrs \\ %{}) do
     Repo.transaction fn ->
-      with  {:ok, retrospective}                <- Retrospective.create(attrs),
-            [{:ok, _retrospective_participants}] <- Retrospective.add_participants(retrospective, attrs["participants_ids"]) 
+      with  {:ok, retrospective}                    <- Retrospective.create(attrs),
+            [{:ok, _retrospective_participants}]    <- Retrospective.add_participants(retrospective, attrs["participants_ids"])
       do
         retrospective
         |> Retrospective.preload_relationships()
