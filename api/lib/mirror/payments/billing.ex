@@ -6,6 +6,8 @@ defmodule Mirror.Payments.Billing do
   alias Mirror.Teams.Team
   alias Mirror.Helpers
 
+  require Logger
+
   # We add 7 days of tolerancy for plan payments
   @tolerancy_period 604_800
   @timeout 30_000
@@ -34,7 +36,7 @@ defmodule Mirror.Payments.Billing do
     num_teams = length(organization.teams)
     num_subs = length(existing_subs.data)
 
-    # TODO: Need to handle removing credit card or updating to trial only
+    # TODO: Need to handle removing credit card
     case organization_status do
       :new ->
         case num_teams > 0 && organization.billing_status == "active" do
@@ -223,7 +225,9 @@ defmodule Mirror.Payments.Billing do
 
     case org.default_payment do
       nil -> {:ok, nil}
-      payment -> Stripe.Customer.update(org.billing_customer, %{default_source: payment.card_id})
+      payment ->
+        Logger.warn "#{inspect payment}"
+        Stripe.Customer.update(org.billing_customer, %{default_source: payment.card_id})
     end
   end
 

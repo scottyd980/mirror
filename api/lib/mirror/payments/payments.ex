@@ -41,6 +41,36 @@ defmodule Mirror.Payments do
   def get_card!(id), do: Repo.get!(Card, id)
 
   @doc """
+  Gets a single card by card_id.
+
+  Raises `Ecto.NoResultsError` if the Card does not exist.
+
+  ## Examples
+
+      iex> get_card_by_card_id!(card_gasdadag123da)
+      %Card{}
+
+      iex> get_card_by_card_id!(card_notfound)
+      ** (Ecto.NoResultsError)
+
+  """
+  def get_card_by_card_id!(card_id), do: Repo.get_by!(Card, card_id: card_id)
+
+  @doc """
+  Gets a single card by card_id.
+
+  ## Examples
+
+      iex> get_card_by_card_id!(card_gasdadag123da)
+      %Card{}
+
+      iex> get_card_by_card_id!(card_notfound)
+      nil
+
+  """
+  def get_card_by_card_id(card_id), do: Repo.get_by(Card, card_id: card_id)
+
+  @doc """
   Creates a card.
 
   ## Examples
@@ -58,7 +88,8 @@ defmodule Mirror.Payments do
             {:ok, stripe_card}      <- Stripe.Card.create(%{customer: attrs["customer"], source: attrs["token_id"]}),
             {:ok, %Organization{}}  <- Organization.set_default_payment(card, default),
             preload_card            <- Card.preload_relationships(card),
-            {:ok, %Organization{}}  <- Organization.set_billing_status(preload_card.organization)
+            {:ok, %Organization{}}  <- Organization.set_billing_status(preload_card.organization),
+            {:ok, subscription}     <- Organization.process_subscription(preload_card.organization)
       do
         card
       else

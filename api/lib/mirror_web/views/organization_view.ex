@@ -5,7 +5,7 @@ defmodule MirrorWeb.OrganizationView do
 
   alias MirrorWeb.{UserSerializer, TeamSerializer, CardSerializer}
 
-  attributes [:name, :is_anonymous, :billing_status, :billing_frequency, :billing_customer]
+  attributes [:name, :is_anonymous, :billing_status, :billing_frequency, :billing_customer, :is_delinquent]
 
   has_many :members,
     links: [
