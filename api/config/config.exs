@@ -27,7 +27,7 @@ config :mirror, Mirror.Mailer,
   api_key: "key-96e671978cde9c46125523b1588cbd4d",
   domain: "mail.usemirror.io"
 
-config :stripity_stripe, 
+config :stripity_stripe,
   api_key: "sk_test_olzWYbRvUnGfyAbvOMtYvW79",
   webhook_secret: "whsec_0bUTjwUFxzvU5jplnO911pFigZNJJHLd"
 
@@ -37,6 +37,9 @@ config :phoenix, :format_encoders,
 config :mime, :types, %{
   "application/vnd.api+json" => ["json-api"]
 }
+
+config :mirror,
+  billing_active: false
 
 config :mirror, Mirror.Guardian,
   issuer: "Mirror",

@@ -1,5 +1,6 @@
 import Ember from 'ember';
 import RSVP from 'rsvp';
+import ENV from 'mirror/config/environment';
 
 const { inject } = Ember;
 
@@ -10,7 +11,7 @@ export default Ember.Route.extend({
 
         return RSVP.hash({
             teams: current_user.get('teams').sortBy('id'),
-            organizations: current_user.get('organizations').sortBy('id'),
+            organizations: (ENV.FLAGS.billing ? current_user.get('organizations').sortBy('id') : null),
             recent_retrospectives: current_user.get('teams').then((teams) => {
                 let retros = teams.map((team) => {
                     return this.store.query('retrospective', {

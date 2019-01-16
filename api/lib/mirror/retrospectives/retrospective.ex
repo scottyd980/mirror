@@ -37,7 +37,6 @@ defmodule Mirror.Retrospectives.Retrospective do
     |> Repo.preload([:team, :moderator, :participants, :scores, :feedbacks, :game, :feedback_submissions, :score_submissions], force: true)
   end
 
-  # TODO: Should probably make sure that a retrospective is not in progress for this team
   def create(params) do
     team = Teams.get_team!(params["team_uuid"])
     case Team.check_retrospective_in_progress(team) do
