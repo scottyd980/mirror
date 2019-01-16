@@ -13,20 +13,20 @@ defmodule MirrorWeb.UserController do
 
   def create(conn, %{"data" => data}) do
     user_params = JaSerializer.Params.to_attributes(data)
-    with {:ok, %User{} = user} <- Accounts.create_user(user_params) 
+    with {:ok, %User{} = user} <- Accounts.create_user(user_params)
     do
       conn
       |> put_status(:created)
       |> render("show.json-api", data: user |> User.preload_relationships)
     else
-      {:error, changeset} -> 
+      {:error, changeset} ->
         conn
         |> put_status(:unprocessable_entity)
         |> render(MirrorWeb.ChangesetView, "error.json-api", changeset: changeset)
     end
   end
-  
-  # TODO: Future
+
+  # TODO: Future - Not needed for release
   # def update(conn, %{"id" => id, "user" => user_params}) do
   #   user = Accounts.get_user!(id)
 
