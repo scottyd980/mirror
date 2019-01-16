@@ -26,14 +26,16 @@
                         <p>It doesn't look like you're a member of any teams!</p>
                     {{/if}}
                 {{/x-card}}
-                {{#if model.organizations}}
-                    {{#x-card title="Your Organizations"}}
-                        {{organization-list 
-                            organizations=model.organizations
-                            onView=(route-action "viewOrganization")
-                            hideDelete=true
-                        }}
-                    {{/x-card}}
+                {{#if billing_active}}
+                    {{#if model.organizations}}
+                        {{#x-card title="Your Organizations"}}
+                            {{organization-list 
+                                organizations=model.organizations
+                                onView=(route-action "viewOrganization")
+                                hideDelete=true
+                            }}
+                        {{/x-card}}
+                    {{/if}}
                 {{/if}}
             </div>
         </div>

@@ -71,16 +71,15 @@ defmodule MirrorWeb.WebhookController do
             %Organization{} = organization ->
               org = organization |> Organization.preload_relationships()
 
-              # TODO: Turn back on
-              # Organization.update_via_webhook(org, %{
-              #   period_end: sub.current_period_end
-              # })
+              Organization.update_via_webhook(org, %{
+                period_end: sub.current_period_end
+              })
 
-              # Enum.each(org.teams, fn team ->
-              #   Team.update_via_webhook(team, %{
-              #     period_end: sub.current_period_end
-              #   })
-              # end)
+              Enum.each(org.teams, fn team ->
+                Team.update_via_webhook(team, %{
+                  period_end: sub.current_period_end
+                })
+              end)
 
               Billing.process_subscription(org)
             _ -> Logger.error "[WebhookController.process_successful_payment/1] No organization found with customer id: #{sub.customer} for subscription: #{sub.id}"
