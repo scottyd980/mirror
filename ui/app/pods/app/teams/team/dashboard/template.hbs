@@ -12,7 +12,9 @@
             <li>{{#link-to "app.teams.team.dashboard.history" model.team}}History{{/link-to}}</li>
             {{#if isAdmin}}
               <li>{{#link-to "app.teams.team.dashboard.preferences" model.team}}Preferences{{/link-to}}</li>
-              <li>{{#link-to "app.teams.team.dashboard.billing" model.team}}Billing{{/link-to}}</li>
+              {{#if billing_active}}
+                <li>{{#link-to "app.teams.team.dashboard.billing" model.team}}Billing{{/link-to}}</li>
+              {{/if}}
             {{/if}}
           </ul>
         </div>

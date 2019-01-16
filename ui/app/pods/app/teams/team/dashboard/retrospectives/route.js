@@ -76,6 +76,11 @@ export default Ember.Route.extend({
         if(error.errors[0].code === 403) {
           this.send('cancelEnterRetrospectiveType');
           this.send('toggleBillingModal');
+        } else if(error.errors[0].code === 409) {
+          this.get('notificationCenter').error({
+            title: config.ERROR_MESSAGES.retrospective_in_progress,
+            message: "There is currently a retrospective in progress. Please join the retrospective already in progress or wait until it is completed or cancelled before trying to start another one. If the retrospective in progress was started in error, an admin can cancel it from the history page."
+          });
         } else {
           this.get('notificationCenter').error({
             title: config.ERROR_MESSAGES.generic,

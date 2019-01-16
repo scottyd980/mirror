@@ -52,22 +52,26 @@ Router.map(function() {
         this.route('profile');
       });
     });
-    this.route('organizations', function() {
-      this.route('create');
 
-      this.route('organization', { path: '/:id'}, function() {
-        this.route('dashboard', function() {
-          this.route('teams', function() {
-            this.route('team', function() {
-              this.route('dashboard', function() {});
+    if(config.FLAGS.billing) {
+      this.route('organizations', function() {
+        this.route('create');
+
+        this.route('organization', { path: '/:id'}, function() {
+          this.route('dashboard', function() {
+            this.route('teams', function() {
+              this.route('team', function() {
+                this.route('dashboard', function() {});
+              });
             });
+            this.route('billing');
+            this.route('members');
           });
-          this.route('billing');
-          this.route('members');
         });
+        this.route('dashboard');
       });
-      this.route('dashboard');
-    });
+    }
+
   });
 });
 

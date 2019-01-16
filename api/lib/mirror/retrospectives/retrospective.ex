@@ -4,9 +4,10 @@ defmodule Mirror.Retrospectives.Retrospective do
   alias Mirror.Repo
 
   alias Mirror.Accounts.User
+  alias Mirror.Teams
   alias Mirror.Teams.Team
   alias Mirror.Retrospectives.{Retrospective, Participant, Score, Feedback, Game, FeedbackSubmission, ScoreSubmission}
-  
+
   schema "retrospectives" do
     field :cancelled, :boolean, default: false
     field :is_anonymous, :boolean, default: false
@@ -38,17 +39,23 @@ defmodule Mirror.Retrospectives.Retrospective do
 
   # TODO: Should probably make sure that a retrospective is not in progress for this team
   def create(params) do
-    %Retrospective{}
-    |> Retrospective.changeset(%{
-      name: params["name"], 
-      state: params["state"], 
-      is_anonymous: params["is_anonymous"],
-      cancelled: false,
-      team_id: params["team_id"],
-      moderator_id: params["moderator_id"],
-      game_id: params["game"]
-    })
-    |> Repo.insert
+    team = Teams.get_team!(params["team_uuid"])
+    case Team.check_retrospective_in_progress(team) do
+      {true, _}->
+        {:error, :retrospective_in_progress}
+      {false, _} ->
+        %Retrospective{}
+          |> Retrospective.changeset(%{
+          name: params["name"],
+          state: params["state"],
+          is_anonymous: params["is_anonymous"],
+          cancelled: false,
+          team_id: params["team_id"],
+          moderator_id: params["moderator_id"],
+          game_id: params["game"]
+        })
+        |> Repo.insert
+    end
   end
 
   def add_participants(retrospective, participants) do
