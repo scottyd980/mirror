@@ -22,6 +22,11 @@ defmodule MirrorWeb.ErrorView do
     |> JaSerializer.ErrorSerializer.format
   end
 
+  def render("409.json-api", _assigns) do
+    %{title: "Conflict", code: 409}
+    |> JaSerializer.ErrorSerializer.format
+  end
+
   def render("422.json-api", _assigns) do
     %{title: "Unprocessable Entity", code: 422}
     |> JaSerializer.ErrorSerializer.format
