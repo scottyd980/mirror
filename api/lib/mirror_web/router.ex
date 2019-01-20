@@ -18,6 +18,7 @@ defmodule MirrorWeb.Router do
   scope "/api", MirrorWeb do
     pipe_through [:api]
 
+    get "/kube_health", HealthController, :index
     post "/token", UserController, :login
     post "/stripe_webhooks", WebhookController, :create
   end
