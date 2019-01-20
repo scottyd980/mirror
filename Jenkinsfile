@@ -1,7 +1,3 @@
-script {
-  def commitId = sh(returnStdout: true, script: 'git rev-parse HEAD')
-}
-
 properties([
   parameters([
     booleanParam(defaultValue: false, description: 'If set to true, on completion of docker build, the image will be deployed to production', name: 'deploy_to_prod')
@@ -9,6 +5,9 @@ properties([
 ])
 
 node {
+  script {
+    def commitId = sh(returnStdout: true, script: 'git rev-parse HEAD')
+  }
   try {
     stage("Build API") {
       echo 'Building API...'
