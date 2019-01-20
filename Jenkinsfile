@@ -35,13 +35,11 @@ node {
       echo 'Successfully built API'
     }
     stage('Push API to Docker Hub') {
-      steps {
-        echo 'Pushing to Docker Hub...'
-        docker.withRegistry('https://index.docker.io/v1/', 'docker-hub-credentials-id') {
-          sh "docker push nonbreakingspace/mirror-api"
-        }
-        echo 'Successfully pushed to Docker Hub'
+      echo 'Pushing to Docker Hub...'
+      docker.withRegistry('https://index.docker.io/v1/', 'docker-hub-credentials-id') {
+        sh "docker push nonbreakingspace/mirror-api"
       }
+      echo 'Successfully pushed to Docker Hub'
     }
   } catch(e) {
     echo "Pipeline failed"
