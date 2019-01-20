@@ -40,6 +40,7 @@ node {
           // docker.withRegistry('https://index.docker.io/v1/', 'docker-hub-credentials-id') {
           //   sh "docker push nonbreakingspace/mirror-client"
           // }
+          //
           echo 'Successfully pushed Client to Docker Hub'
         }
       )
