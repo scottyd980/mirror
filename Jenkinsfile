@@ -95,6 +95,7 @@ node {
     throw e
   } finally {
     sh "sudo chmod -R 777 ."
-    sh "docker image prune -a --force --filter 'label!=elixir' --filter 'label!=alpine'"
+    echo "Cleaning up docker images..."
+    sh "docker image rm $(docker image ls --filter reference='nonbreakingspace/mirror-api' --quiet) --force"
   }
 }
