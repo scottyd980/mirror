@@ -95,6 +95,6 @@ node {
     throw e
   } finally {
     sh "sudo chmod -R 777 ."
-    sh "docker system prune -a -f"
+    sh "docker image prune -a --force --filter 'label!=elixir' --filter 'label!=alpine'"
   }
 }
