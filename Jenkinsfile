@@ -6,6 +6,9 @@ properties([
 ])
 
 node {
+  script {
+    sh "cd ${WORKSPACE}"
+  }
   def commitId = "`git rev-parse HEAD`"
   def buildNumber = currentBuild.number
   
