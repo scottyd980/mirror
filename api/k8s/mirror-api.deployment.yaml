@@ -1,0 +1,33 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: mirror-api
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: mirror-api
+  template:
+    metadata:
+      labels:
+        app: mirror-api
+    spec:
+      containers:
+        - name: mirror-api
+          image: nonbreakingspace/mirror-api:latest
+          ports:
+            - containerPort: 4000
+          args: ["foreground"]
+          env:
+            - name: DB_HOST
+              value: "68.183.98.121"
+            - name: USERNAME
+              value: "admin"
+            - name: PASSWORD
+              value: "35764652727ab62770b9295cfb80f2bfd5fbec0bb0303efa"
+            - name: DATABASE
+              value: "mirror_new_prod"
+            - name: SECRET_KEY_BASE
+              value: "PaiowhrbZBKyE5NxFlvy1tpJ03BvK9jS9IHhoOXfxQ7wbU7VX/cDJLJbPlnjtVeK"
+      imagePullSecrets:
+      - name: regcred
