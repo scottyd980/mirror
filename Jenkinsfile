@@ -6,9 +6,7 @@ properties([
 ])
 
 node {
-  script {
-    sh "checkout scm"
-  }
+  checkout scm
   def commitId = "`git rev-parse HEAD`"
   def buildNumber = currentBuild.number
   
