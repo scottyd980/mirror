@@ -5,9 +5,8 @@ properties([
 ])
 
 node {
-
-  def commitId = sh "git rev-parse HEAD"
-
+  def commitId = sh(returnStdout: true, script: 'git rev-parse HEAD')
+  
   try {
     stage("Build API") {
       echo 'Building API...'
