@@ -5,13 +5,14 @@ properties([
 ])
 
 node {
-  def commitId = "`git rev-parse HEAD`"
+  // def commitId = "`git rev-parse HEAD`"
+  def buildNumber = currentBuild.number
   
   try {
     stage("Build API") {
       echo 'Building API...'
-      sh "docker build -t nonbreakingspace/mirror-api:${commitId} ./api"
-      sh "docker tag nonbreakingspace/mirror-api:${commitId} nonbreakingspace/mirror-api:latest"
+      sh "docker build -t nonbreakingspace/mirror-api:1.0.${buildNumber} ./api"
+      sh "docker tag nonbreakingspace/mirror-api:1.0.${buildNumber} nonbreakingspace/mirror-api:latest"
       echo 'Successfully built API'
     }
     stage('Push API to Docker Hub') {
@@ -24,7 +25,7 @@ node {
     stage('Deploy to Production') {
       if(params.deploy_to_prod) {
         echo 'Rolling deployment to Kubernetes cluster...'
-        sh "kubectl --kubeconfig='./kubeconfig.yaml' set image deployment.apps/mirror-api mirror-api=nonbreakingspace/mirror-api:${commitId} --record"
+        sh "kubectl --kubeconfig='./kubeconfig.yaml' set image deployment.apps/mirror-api mirror-api=nonbreakingspace/mirror-api:1.0.${buildNumber} --record"
         sh "kubectl --kubeconfig='./kubeconfig.yaml' rollout status deployment.apps/mirror-api"
         echo 'Successfully deployed to production'
       } else {
