@@ -29,5 +29,11 @@ spec:
               value: "mirror_new_prod"
             - name: SECRET_KEY_BASE
               value: "***SECRET_KEY_BASE***"
+          livenessProbe:
+            httpGet:
+              path: /api/kube_health
+              port: 8080
+            initialDelaySeconds: 3
+            periodSeconds: 3
       imagePullSecrets:
       - name: regcred
