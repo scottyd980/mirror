@@ -13,6 +13,7 @@ node {
     stage("Build") {
       parallel (
         "API": {
+          echo "`ls -la`"
           echo 'Building API...'
           sh "docker build -t nonbreakingspace/mirror-api:${commitId} ./api"
           sh "docker tag nonbreakingspace/mirror-api:${commitId} nonbreakingspace/mirror-api:latest"
