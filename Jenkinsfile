@@ -1,6 +1,7 @@
 properties([
   parameters([
-    booleanParam(defaultValue: false, description: 'If set to true, on completion of docker build, the image will be deployed to production', name: 'deploy_to_prod')
+    booleanParam(defaultValue: false, description: 'If set to true, on completion of docker build, the API image will be deployed to production', name: 'deploy_api_to_prod')
+    booleanParam(defaultValue: false, description: 'If set to true, on completion of docker build, the client image will be deployed to production', name: 'deploy_client_to_prod')
   ])
 ])
 
@@ -9,21 +10,42 @@ node {
   def buildNumber = currentBuild.number
   
   try {
-    stage("Build API") {
-      echo 'Building API...'
-      sh "docker build -t nonbreakingspace/mirror-api:1.0.${buildNumber} ./api"
-      sh "docker tag nonbreakingspace/mirror-api:1.0.${buildNumber} nonbreakingspace/mirror-api:latest"
-      echo 'Successfully built API'
+    stage("Build") {
+      parallel (
+        "API": {
+          echo 'Building API...'
+          sh "docker build -t nonbreakingspace/mirror-api:1.0.${buildNumber} ./api"
+          sh "docker tag nonbreakingspace/mirror-api:1.0.${buildNumber} nonbreakingspace/mirror-api:latest"
+          echo 'Successfully built API'
+        },
+        "Client": {
+          echo 'Building Client...'
+          // sh "docker build -t nonbreakingspace/mirror-client:1.0.${buildNumber} ./client"
+          // sh "docker tag nonbreakingspace/mirror-client:1.0.${buildNumber} nonbreakingspace/mirror-client:latest"
+          echo 'Successfully built Client'
+        }
+      )
     }
-    stage('Push API to Docker Hub') {
-      echo 'Pushing to Docker Hub...'
-      docker.withRegistry('https://index.docker.io/v1/', 'docker-hub-credentials-id') {
-        sh "docker push nonbreakingspace/mirror-api"
-      }
-      echo 'Successfully pushed to Docker Hub'
+    stage('Push to Docker Hub') {
+      parallel(
+        "API": {
+          echo 'Pushing API to Docker Hub...'
+          docker.withRegistry('https://index.docker.io/v1/', 'docker-hub-credentials-id') {
+            sh "docker push nonbreakingspace/mirror-api"
+          }
+          echo 'Successfully pushed API to Docker Hub'
+        },
+        "Client": {
+          echo 'Pushing Client to Docker Hub...'
+          // docker.withRegistry('https://index.docker.io/v1/', 'docker-hub-credentials-id') {
+          //   sh "docker push nonbreakingspace/mirror-client"
+          // }
+          echo 'Successfully pushed Client to Docker Hub'
+        }
+      )
     }
-    stage('Deploy to Production') {
-      if(params.deploy_to_prod) {
+    stage('Deploy API to Production') {
+      if(params.deploy_api_to_prod) {
         parallel (
           "Tag Release Build": {
             echo "Tagging current build as the release build..."
@@ -42,6 +64,24 @@ node {
         )
       } else {
         echo 'No deployment to production was requested'
+      }
+    }
+    stage('Deploy Client to Production') {
+      if(params.deploy_client_to_prod) {
+        "Tag Release Build": {
+          echo "Tagging current build as the release build..."
+          sh "docker tag nonbreakingspace/mirror-client:1.0.${buildNumber} nonbreakingspace/mirror-client:release"
+          docker.withRegistry('https://index.docker.io/v1/', 'docker-hub-credentials-id') {
+            sh "docker push nonbreakingspace/mirror-client"
+          }
+          echo "Build has been tagged as release and pushed to Docker Hub"
+        },
+        "Rollout on Kubernetes Cluster": {
+          echo 'Rolling deployment to Kubernetes cluster...'
+          sh "kubectl --kubeconfig='./kubeconfig.yaml' set image deployment.apps/mirror-client mirror-client=nonbreakingspace/mirror-client:1.0.${buildNumber} --record"
+          sh "kubectl --kubeconfig='./kubeconfig.yaml' rollout status deployment.apps/mirror-client"
+          echo 'Successfully deployed to production'
+        }
       }
     }
   } catch(e) {
