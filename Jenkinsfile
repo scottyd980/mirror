@@ -14,7 +14,7 @@ node {
       parallel (
         "API": {
           echo 'Building API...'
-          sh "docker build -t nonbreakingspace/mirror-api:${commitId} ./api"
+          sh "docker build -t nonbreakingspace/mirror-api:`${commitId}` ./api"
           sh "docker tag nonbreakingspace/mirror-api:${commitId} nonbreakingspace/mirror-api:latest"
           echo 'Successfully built API'
         },
