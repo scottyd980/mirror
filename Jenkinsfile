@@ -1,6 +1,6 @@
 properties([
   parameters([
-    booleanParam(defaultValue: false, description: 'If set to true, on completion of docker build, the API image will be deployed to production', name: 'deploy_api_to_prod')
+    booleanParam(defaultValue: false, description: 'If set to true, on completion of docker build, the API image will be deployed to production', name: 'deploy_api_to_prod'),
     booleanParam(defaultValue: false, description: 'If set to true, on completion of docker build, the client image will be deployed to production', name: 'deploy_client_to_prod')
   ])
 ])
