@@ -23,7 +23,7 @@ module.exports = function(environment) {
       billing: false,
     },
     DS: {
-      host: 'http://localhost:4000',
+      host: 'http://157.230.67.9:8080',
       wshost: 'ws://localhost:4000',
       namespace: 'api'
     },
