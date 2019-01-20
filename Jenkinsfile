@@ -19,7 +19,7 @@ node {
       echo 'Successfully pushed to Docker Hub'
     }
     stage('Deploy to Production') {
-      if(${params.deploy_to_prod}) {
+      if(params.deploy_to_prod) {
         echo 'Rolling deployment to Kubernetes cluster...'
         sh "kubectl --kubeconfig='./kubeconfig.yaml' set image deployment.apps/mirror-api mirror-api=nonbreakingspace/mirror-api:`git log -1 --pretty=%H` --record"
         sh "kubectl --kubeconfig='./kubeconfig.yaml' rollout status deployment.apps/mirror-api"
