@@ -6,7 +6,7 @@ properties([
 ])
 
 node {
-  def commitId = "${GIT_COMMIT}"
+  def commitId = "`git rev-parse HEAD`"
   def buildNumber = currentBuild.number
   
   try {
@@ -14,7 +14,7 @@ node {
       parallel (
         "API": {
           echo 'Building API...'
-          sh "docker build -t nonbreakingspace/mirror-api:`${commitId}` ./api"
+          sh "docker build -t nonbreakingspace/mirror-api:${commitId} ./api"
           sh "docker tag nonbreakingspace/mirror-api:${commitId} nonbreakingspace/mirror-api:latest"
           echo 'Successfully built API'
         },
