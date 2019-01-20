@@ -68,20 +68,24 @@ node {
     }
     stage('Deploy Client to Production') {
       if(params.deploy_client_to_prod) {
-        "Tag Release Build": {
-          echo "Tagging current build as the release build..."
-          sh "docker tag nonbreakingspace/mirror-client:1.0.${buildNumber} nonbreakingspace/mirror-client:release"
-          docker.withRegistry('https://index.docker.io/v1/', 'docker-hub-credentials-id') {
-            sh "docker push nonbreakingspace/mirror-client"
+        parallel (
+          "Tag Release Build": {
+            echo "Tagging current build as the release build..."
+            sh "docker tag nonbreakingspace/mirror-client:1.0.${buildNumber} nonbreakingspace/mirror-client:release"
+            docker.withRegistry('https://index.docker.io/v1/', 'docker-hub-credentials-id') {
+              sh "docker push nonbreakingspace/mirror-client"
+            }
+            echo "Build has been tagged as release and pushed to Docker Hub"
+          },
+          "Rollout on Kubernetes Cluster": {
+            echo 'Rolling deployment to Kubernetes cluster...'
+            sh "kubectl --kubeconfig='./kubeconfig.yaml' set image deployment.apps/mirror-client mirror-client=nonbreakingspace/mirror-client:1.0.${buildNumber} --record"
+            sh "kubectl --kubeconfig='./kubeconfig.yaml' rollout status deployment.apps/mirror-client"
+            echo 'Successfully deployed to production'
           }
-          echo "Build has been tagged as release and pushed to Docker Hub"
-        },
-        "Rollout on Kubernetes Cluster": {
-          echo 'Rolling deployment to Kubernetes cluster...'
-          sh "kubectl --kubeconfig='./kubeconfig.yaml' set image deployment.apps/mirror-client mirror-client=nonbreakingspace/mirror-client:1.0.${buildNumber} --record"
-          sh "kubectl --kubeconfig='./kubeconfig.yaml' rollout status deployment.apps/mirror-client"
-          echo 'Successfully deployed to production'
-        }
+        )
+      } else {
+        echo 'No deployment to production was requested'
       }
     }
   } catch(e) {
