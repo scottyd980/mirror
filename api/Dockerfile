@@ -188,6 +188,8 @@ RUN apk add --update bash openssl
 
 WORKDIR /app
 
+# #
+
 COPY --from=build /app/_build/prod/rel/mirror ./
 
 EXPOSE 4000
