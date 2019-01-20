@@ -3,12 +3,15 @@ properties([
     booleanParam(defaultValue: false, description: 'If set to true, on completion of docker build, the image will be deployed to production', name: 'deploy_to_prod')
   ])
 ])
+
+def commitId = sh(returnStdout: true, script: 'git rev-parse HEAD')
+
 node {
   try {
     stage("Build API") {
       echo 'Building API...'
-      sh "docker build -t nonbreakingspace/mirror-api:`git log -1 --pretty=%H` ./api"
-      sh "docker tag nonbreakingspace/mirror-api:`git log -1 --pretty=%H` nonbreakingspace/mirror-api:latest"
+      sh "docker build -t nonbreakingspace/mirror-api:${commitId} ./api"
+      sh "docker tag nonbreakingspace/mirror-api:${commitId} nonbreakingspace/mirror-api:latest"
       echo 'Successfully built API'
     }
     stage('Push API to Docker Hub') {
@@ -21,7 +24,7 @@ node {
     stage('Deploy to Production') {
       if(params.deploy_to_prod) {
         echo 'Rolling deployment to Kubernetes cluster...'
-        sh "kubectl --kubeconfig='./kubeconfig.yaml' set image deployment.apps/mirror-api mirror-api=nonbreakingspace/mirror-api:`git log -1 --pretty=%H` --record"
+        sh "kubectl --kubeconfig='./kubeconfig.yaml' set image deployment.apps/mirror-api mirror-api=nonbreakingspace/mirror-api:${commitId} --record"
         sh "kubectl --kubeconfig='./kubeconfig.yaml' rollout status deployment.apps/mirror-api"
         echo 'Successfully deployed to production'
       } else {
