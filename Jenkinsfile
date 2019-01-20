@@ -1,32 +1,9 @@
-// pipeline {
-//   agent any
-//   stages {
-//     stage('Build API') {
-//       steps {
-//         echo 'Building API...'
-//         sh "docker build -t nonbreakingspace/mirror-api:`git log -1 --pretty=%H` ./api"
-//         sh "docker tag nonbreakingspace/mirror-api:`git log -1 --pretty=%H` nonbreakingspace/mirror-api:latest"
-//         echo 'Successfully built API'
-//       }
-//     }
-//     stage('Push API to Docker Hub') {
-//       steps {
-//         echo 'Pushing to Docker Hub...'
-//         docker.withRegistry('https://index.docker.io/v1/', 'docker-hub-credentials-id') {
-//           sh "docker push nonbreakingspace/mirror-api"
-//         }
-//         echo 'Successfully pushed to Docker Hub'
-//       }
-//     }
-//   }
-//   post {
-//     always {
-//       sh "sudo chmod -R 777 ."
-//     }
-//   }
-// }
-
-node { 
+properties([
+  parameters([
+    booleanParam(defaultValue: false, description: 'If set to true, on completion of docker build, the image will be deployed to production', name: 'deploy_to_prod')
+  ])
+])
+node {
   try {
     stage("Build API") {
       echo 'Building API...'
@@ -40,6 +17,16 @@ node {
         sh "docker push nonbreakingspace/mirror-api"
       }
       echo 'Successfully pushed to Docker Hub'
+    }
+    stage('Deploy to Production') {
+      if(${params.deploy_to_prod}) {
+        echo 'Rolling deployment to Kubernetes cluster...'
+        sh "kubectl --kubeconfig='./kubeconfig.yaml' set image deployment.apps/mirror-api mirror-api=nonbreakingspace/mirror-api:`git log -1 --pretty=%H` --record"
+        sh "kubectl --kubeconfig='./kubeconfig.yaml' rollout status deployment.apps/mirror-api"
+        echo 'Successfully deployed to production'
+      } else {
+        echo 'No deployment to production was requested'
+      }
     }
   } catch(e) {
     echo "Pipeline failed"
