@@ -24,10 +24,22 @@ node {
     }
     stage('Deploy to Production') {
       if(params.deploy_to_prod) {
-        echo 'Rolling deployment to Kubernetes cluster...'
-        sh "kubectl --kubeconfig='./kubeconfig.yaml' set image deployment.apps/mirror-api mirror-api=nonbreakingspace/mirror-api:1.0.${buildNumber} --record"
-        sh "kubectl --kubeconfig='./kubeconfig.yaml' rollout status deployment.apps/mirror-api"
-        echo 'Successfully deployed to production'
+        parallel (
+          "Tag Release Build": {
+            sh "Tagging current build as the release build..."
+            sh "docker tag nonbreakingspace/mirror-api:1.0.${buildNumber} nonbreakingspace/mirror-api:release"
+            docker.withRegistry('https://index.docker.io/v1/', 'docker-hub-credentials-id') {
+              sh "docker push nonbreakingspace/mirror-api"
+            }
+            sh "Build has been tagged as release and pushed to Docker Hub"
+          },
+          "Rollout on Kubernetes Cluster": {
+            echo 'Rolling deployment to Kubernetes cluster...'
+            sh "kubectl --kubeconfig='./kubeconfig.yaml' set image deployment.apps/mirror-api mirror-api=nonbreakingspace/mirror-api:1.0.${buildNumber} --record"
+            sh "kubectl --kubeconfig='./kubeconfig.yaml' rollout status deployment.apps/mirror-api"
+            echo 'Successfully deployed to production'
+          }
+        )
       } else {
         echo 'No deployment to production was requested'
       }
