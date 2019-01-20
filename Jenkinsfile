@@ -6,7 +6,7 @@ properties([
 ])
 
 node {
-  def commitId = "`git log -1 --pretty=%H`"
+  def commitId = sh(returnStdout: true, script: 'git rev-parse HEAD')
   def buildNumber = currentBuild.number
   
   try {
