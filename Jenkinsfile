@@ -4,30 +4,18 @@ pipeline {
     stage('Build API') {
       steps {
         echo 'Building API...'
-        sh 'docker build -t mirror ./api'
-        sh 'docker images'
-        sh 'docker run --rm -v ${PWD}/_build:/_build mirror'
+        sh "docker build -t nonbreakingspace/mirror-api:`git log -1 --pretty=%H` ./api"
+        sh "docker tag nonbreakingspace/mirror-api:`git log -1 --pretty=%H` nonbreakingspace/mirror-api:latest"
         echo 'Successfully built API'
       }
     }
-    stage('Deploy API') {
-
+    stage('Push API to Docker Hub') {
       steps {
-        script {
-          archive = "${WORKSPACE}/mirror-${BUILD_NUMBER}.tar.gz"
+        echo 'Pushing to Docker Hub...'
+        docker.withRegistry('https://index.docker.io/v1/', 'docker-hub-credentials-id') {
+          sh "docker push nonbreakingspace/mirror-api"
         }
-        echo "Deploying API (mirror-${BUILD_NUMBER}.tar.gz)..."
-        sh "tar -cvzf ${archive} -C ${WORKSPACE}/_build ."
-        sh "pv ${archive} | ssh deploy@192.241.152.231 'cat | tar xz -C /var/www/mirror'"
-        echo 'Successfully deployed API'
-      }
-    }
-    stage('Start API') {
-
-      steps {
-        echo "Starting API..."
-        sh "cat ./api/startup.sh | ssh -L 3306:localhost:3306 deploy@192.241.152.231"
-        echo 'Successfully started API'
+        echo 'Successfully pushed to Docker Hub'
       }
     }
   }
