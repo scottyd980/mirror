@@ -188,6 +188,8 @@ RUN apk add --update bash openssl
 
 WORKDIR /app
 
+# ENV PORT=4000 DB_HOST="68.183.98.121" USERNAME="admin" PASSWORD="35764652727ab62770b9295cfb80f2bfd5fbec0bb0303efa" DATABASE="mirror_new_prod" SECRET_KEY_BASE="PaiowhrbZBKyE5NxFlvy1tpJ03BvK9jS9IHhoOXfxQ7wbU7VX/cDJLJbPlnjtVeK"
+
 COPY --from=build /app/_build/prod/rel/mirror ./
 
 EXPOSE 4000
