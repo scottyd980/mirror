@@ -7,7 +7,7 @@ properties([
 
 node {
   script {
-    sh "cd ${WORKSPACE}"
+    sh "checkout scm"
   }
   def commitId = "`git rev-parse HEAD`"
   def buildNumber = currentBuild.number
