@@ -96,6 +96,6 @@ node {
   } finally {
     sh "sudo chmod -R 777 ."
     echo 'Cleaning up docker images...'
-    sh "docker image rm `$(docker image ls --filter reference='nonbreakingspace/mirror-api' --quiet)` --force"
+    sh "docker image rm `docker image ls --filter reference='nonbreakingspace/mirror-api' --quiet` --force"
   }
 }
