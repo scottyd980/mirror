@@ -8,13 +8,12 @@ properties([
 node {
   checkout scm
   def commitId = "`git rev-parse HEAD`"
-  def buildNumber = currentBuild.number
+  // def buildNumber = currentBuild.number
   
   try {
     stage("Build") {
       parallel (
         "API": {
-          sh "ls -la"
           echo 'Building API...'
           sh "docker build -t nonbreakingspace/mirror-api:${commitId} ./api"
           sh "docker tag nonbreakingspace/mirror-api:${commitId} nonbreakingspace/mirror-api:latest"
