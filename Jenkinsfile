@@ -95,5 +95,6 @@ node {
     throw e
   } finally {
     sh "sudo chmod -R 777 ."
+    sh "docker system prune -a -f"
   }
 }
