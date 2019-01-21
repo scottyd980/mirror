@@ -9,7 +9,7 @@ node {
   checkout scm
   def commitId = "`git rev-parse HEAD`"
   def deployAPI = sh "[[ '`git log -1`' =~ '[ci deploy api]' ]] && echo true || echo false"
-  def deployClient = sh "[[ '`git log -1`' =~ '[ci deploy api]' ]] && echo true || echo false"
+  def deployClient = sh "[[ '`git log -1`' =~ '[ci deploy client]' ]] && echo true || echo false"
   
   try {
     stage("Build") {
