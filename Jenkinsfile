@@ -8,8 +8,14 @@ properties([
 node {
   checkout scm
   def commitId = "`git rev-parse HEAD`"
-  def deployAPI = sh "[[ '`git log -1`' =~ '[ci deploy api]' ]] && echo true || echo false"
-  def deployClient = sh "[[ '`git log -1`' =~ '[ci deploy client]' ]] && echo true || echo false"
+  def deployAPI = sh (
+      script: "git log -1 --pretty=%B | grep '\\[ci deploy api]'",
+      returnStatus: true
+  ) == 0
+  def deployClient = sh (
+      script: "git log -1 --pretty=%B | grep '\\[ci deploy client]'",
+      returnStatus: true
+  ) == 0
   
   try {
     stage("Build") {
