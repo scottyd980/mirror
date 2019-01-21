@@ -21,9 +21,9 @@ node {
         },
         "Client": {
           echo 'Building Client...'
-          // sh "docker build -t nonbreakingspace/mirror-client:${commitId} ./client"
+          // sh "docker build -t nonbreakingspace/mirror-client:${commitId} ./ui"
           // sh "docker tag nonbreakingspace/mirror-client:${commitId} nonbreakingspace/mirror-client:latest"
-          sh "docker build -t scottyd980/mirror-client:${commitId} ./client"
+          sh "docker build -t scottyd980/mirror-client:${commitId} ./ui"
           sh "docker tag scottyd980/mirror-client:${commitId} scottyd980/mirror-client:latest"
           echo 'Successfully built Client'
         }
