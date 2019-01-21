@@ -23,17 +23,35 @@ spec:
           args: ["foreground"]
           env:
             - name: HOST
-              value: "//157.230.64.249"
+              valueFrom:
+                secretKeyRef:
+                  name: secrets
+                  key: host
             - name: DB_HOST
-              value: "***DB_HOST***"
+              valueFrom:
+                secretKeyRef:
+                  name: secrets
+                  key: db_host
             - name: USERNAME
-              value: "admin"
+              valueFrom:
+                secretKeyRef:
+                  name: secrets
+                  key: db_username
             - name: PASSWORD
-              value: "***DB_PASSWORD***"
+              valueFrom:
+                secretKeyRef:
+                  name: secrets
+                  key: db_password
             - name: DATABASE
-              value: "mirror_new_prod"
+              valueFrom:
+                secretKeyRef:
+                  name: secrets
+                  key: db_name
             - name: SECRET_KEY_BASE
-              value: "***SECRET_KEY_BASE***"
+              valueFrom:
+                secretKeyRef:
+                  name: secrets
+                  key: secret_key_base
           livenessProbe:
             httpGet:
               path: /api/kube_health
