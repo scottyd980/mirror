@@ -1,0 +1,21 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: frontend
+spec:
+  selector:
+    matchLabels:
+      app: mirror
+      tier: frontend
+  replicas: 2
+  template:
+    metadata:
+      labels:
+        app: mirror
+        tier: frontend
+    spec:
+      containers:
+      - name: mirror
+        image: scottyd980/mirror-client:latest
+      imagePullSecrets:
+      - name: regcred2
