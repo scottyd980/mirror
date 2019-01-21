@@ -127,8 +127,8 @@ module.exports = function(environment) {
   }
 
   if (environment === 'production') {
-    ENV.DS.host = '***HTTPS_HOST***'
-    ENV.DS.wshost = '***WSS_HOST***'
+    ENV.DS.host = 'http://157.230.64.192';
+    ENV.DS.wshost = 'ws://157.230.64.192';
   }
 
   return ENV;
