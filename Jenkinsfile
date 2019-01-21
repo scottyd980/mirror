@@ -83,7 +83,6 @@ node {
             // docker.withRegistry('https://index.docker.io/v1/', 'docker-hub-credentials-id') {
             //   sh "docker push nonbreakingspace/mirror-client"
             // }
-
             sh "docker tag scottyd980/mirror-client:${commitId} scottyd980/mirror-client:release"
             docker.withRegistry('https://index.docker.io/v1/', 'docker-personal-credentials-id') {
               sh "docker push scottyd980/mirror-client"
