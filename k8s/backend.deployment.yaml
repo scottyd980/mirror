@@ -4,6 +4,7 @@ metadata:
   name: mirror-backend
 spec:
   replicas: 2
+  revisionHistoryLimit: 5
   selector:
     matchLabels:
       app: mirror

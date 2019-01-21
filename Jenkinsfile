@@ -16,6 +16,10 @@ node {
       script: "git log -1 --pretty=%B | grep '\\[ci deploy client]'",
       returnStatus: true
   ) == 0
+  def deployBoth = sh (
+      script: "git log -1 --pretty=%B | grep '\\[ci deploy both]'",
+      returnStatus: true
+  ) == 0
   
   try {
     stage("Build") {
@@ -59,7 +63,7 @@ node {
       )
     }
     stage('Deploy API to Production') {
-      if(params.deploy_api_to_prod || deployAPI) {
+      if(params.deploy_api_to_prod || deployAPI || deployBoth) {
         parallel (
           "Tag Release Build": {
             echo "Tagging current build as the release build..."
@@ -81,7 +85,7 @@ node {
       }
     }
     stage('Deploy Client to Production') {
-      if(params.deploy_client_to_prod || deployClient) {
+      if(params.deploy_client_to_prod || deployClient || deployBoth) {
         parallel (
           "Tag Release Build": {
             echo "Tagging current build as the release build..."
