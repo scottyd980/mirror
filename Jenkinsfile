@@ -23,6 +23,8 @@ node {
           echo 'Building Client...'
           // sh "docker build -t nonbreakingspace/mirror-client:${commitId} ./client"
           // sh "docker tag nonbreakingspace/mirror-client:${commitId} nonbreakingspace/mirror-client:latest"
+          sh "docker build -t scottyd980/mirror-client:${commitId} ./client"
+          sh "docker tag scottyd980/mirror-client:${commitId} scottyd980/mirror-client:latest"
           echo 'Successfully built Client'
         }
       )
@@ -41,7 +43,10 @@ node {
           // docker.withRegistry('https://index.docker.io/v1/', 'docker-hub-credentials-id') {
           //   sh "docker push nonbreakingspace/mirror-client"
           // }
-          //
+
+          docker.withRegistry('https://index.docker.io/v1/', 'docker-personal-credentials-id') {
+            sh "docker push scottyd980/mirror-client"
+          }
           echo 'Successfully pushed Client to Docker Hub'
         }
       )
@@ -59,8 +64,8 @@ node {
           },
           "Rollout on Kubernetes Cluster": {
             echo 'Rolling deployment to Kubernetes cluster...'
-            sh "kubectl --kubeconfig='./kubeconfig.yaml' set image deployment.apps/mirror-api mirror-api=nonbreakingspace/mirror-api:${commitId} --record"
-            sh "kubectl --kubeconfig='./kubeconfig.yaml' rollout status deployment.apps/mirror-api"
+            sh "kubectl --kubeconfig='./kubeconfig.yaml' set image deployment.apps/mirror-backend mirror=nonbreakingspace/mirror-api:${commitId} --record"
+            sh "kubectl --kubeconfig='./kubeconfig.yaml' rollout status deployment.apps/mirror-backend"
             echo 'Successfully deployed to production'
           }
         )
@@ -73,16 +78,23 @@ node {
         parallel (
           "Tag Release Build": {
             echo "Tagging current build as the release build..."
-            sh "docker tag nonbreakingspace/mirror-client:${commitId} nonbreakingspace/mirror-client:release"
-            docker.withRegistry('https://index.docker.io/v1/', 'docker-hub-credentials-id') {
-              sh "docker push nonbreakingspace/mirror-client"
+            // sh "docker tag nonbreakingspace/mirror-client:${commitId} nonbreakingspace/mirror-client:release"
+            // docker.withRegistry('https://index.docker.io/v1/', 'docker-hub-credentials-id') {
+            //   sh "docker push nonbreakingspace/mirror-client"
+            // }
+
+            sh "docker tag scottyd980/mirror-client:${commitId} scottyd980/mirror-client:release"
+            docker.withRegistry('https://index.docker.io/v1/', 'docker-personal-credentials-id') {
+              sh "docker push scottyd980/mirror-client"
             }
             echo "Build has been tagged as release and pushed to Docker Hub"
           },
           "Rollout on Kubernetes Cluster": {
             echo 'Rolling deployment to Kubernetes cluster...'
-            sh "kubectl --kubeconfig='./kubeconfig.yaml' set image deployment.apps/mirror-client mirror-client=nonbreakingspace/mirror-client:${commitId} --record"
-            sh "kubectl --kubeconfig='./kubeconfig.yaml' rollout status deployment.apps/mirror-client"
+            // sh "kubectl --kubeconfig='./kubeconfig.yaml' set image deployment.apps/mirror-frontend mirror=nonbreakingspace/mirror-client:${commitId} --record"
+            // sh "kubectl --kubeconfig='./kubeconfig.yaml' rollout status deployment.apps/mirror-frontend"
+            sh "kubectl --kubeconfig='./kubeconfig.yaml' set image deployment.apps/mirror-frontend mirror=scottyd980/mirror-client:${commitId} --record"
+            sh "kubectl --kubeconfig='./kubeconfig.yaml' rollout status deployment.apps/mirror-frontend"
             echo 'Successfully deployed to production'
           }
         )
