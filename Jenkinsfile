@@ -8,7 +8,8 @@ properties([
 node {
   checkout scm
   def commitId = "`git rev-parse HEAD`"
-  // def buildNumber = currentBuild.number
+  def deployAPI = sh (script: "git log -1 | grep '\\[ci deploy api\\]'", returnStatus: true) 
+  def deployClient = sh (script: "git log -1 | grep '\\[ci deploy client\\]'", returnStatus: true) 
   
   try {
     stage("Build") {
@@ -52,7 +53,7 @@ node {
       )
     }
     stage('Deploy API to Production') {
-      if(params.deploy_api_to_prod) {
+      if(params.deploy_api_to_prod || deployAPI) {
         parallel (
           "Tag Release Build": {
             echo "Tagging current build as the release build..."
@@ -74,7 +75,7 @@ node {
       }
     }
     stage('Deploy Client to Production') {
-      if(params.deploy_client_to_prod) {
+      if(params.deploy_client_to_prod || deployClient) {
         parallel (
           "Tag Release Build": {
             echo "Tagging current build as the release build..."
