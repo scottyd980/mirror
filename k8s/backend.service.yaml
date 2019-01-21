@@ -15,7 +15,7 @@
 kind: Service
 apiVersion: v1
 metadata:
-  name: mirror
+  name: mirror-backend
 spec:
   selector:
     app: mirror
