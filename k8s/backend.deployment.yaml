@@ -1,22 +1,25 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: mirror-api
+  name: mirror
 spec:
   replicas: 2
   selector:
     matchLabels:
-      app: mirror-api
+      app: mirror
+      tier: backend
   template:
     metadata:
       labels:
-        app: mirror-api
+        app: mirror
+        tier: backend
     spec:
       containers:
-        - name: mirror-api
+        - name: mirror
           image: nonbreakingspace/mirror-api:latest
           ports:
-            - containerPort: 4000
+            - name: http
+              containerPort: 4000
           args: ["foreground"]
           env:
             - name: DB_HOST
@@ -29,11 +32,11 @@ spec:
               value: "mirror_new_prod"
             - name: SECRET_KEY_BASE
               value: "PaiowhrbZBKyE5NxFlvy1tpJ03BvK9jS9IHhoOXfxQ7wbU7VX/cDJLJbPlnjtVeK"
-          livenessProbe:
-            httpGet:
-              path: /api/kube_health
-              port: 8080
-            initialDelaySeconds: 3
-            periodSeconds: 3
+          # livenessProbe:
+          #   httpGet:
+          #     path: /api/kube_health
+          #     port: 8080
+          #   initialDelaySeconds: 3
+          #   periodSeconds: 3
       imagePullSecrets:
       - name: regcred
