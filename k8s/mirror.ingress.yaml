@@ -1,0 +1,12 @@
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  name: mirror-ingress
+spec:
+  rules:
+  - host: usemirror.io
+    http:
+      paths:
+      - backend:
+          serviceName: mirror-frontend
+          servicePort: 80
