@@ -127,8 +127,8 @@ module.exports = function(environment) {
   }
 
   if (environment === 'production') {
-    ENV.DS.host = 'http://usemirror.io';
-    ENV.DS.wshost = 'ws://usemirror.io';
+    ENV.DS.host = 'https://usemirror.io';
+    ENV.DS.wshost = 'wss://usemirror.io';
   }
 
   return ENV;
