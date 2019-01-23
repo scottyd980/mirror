@@ -11,12 +11,10 @@ metadata:
         rewrite ^ https://usemirror.io$request_uri permanent;
       }
     nginx.ingress.kubernetes.io/server-snippet: |
-      location /socket {
-        proxy_http_version 1.1;
-        proxy_set_header Upgrade $http_upgrade;
-        proxy_set_header Connection "upgrade";
-        proxy_set_header Host $host;
-      }
+      proxy_http_version 1.1;
+      proxy_set_header Upgrade $http_upgrade;
+      proxy_set_header Connection "upgrade";
+      proxy_set_header Host $host;
 spec:
   tls:
   - hosts:
@@ -42,15 +40,6 @@ spec:
   - host: www.usemirror.io
     http:
       paths:
-      - path: /
-        backend:
+      - backend:
           serviceName: mirror-frontend
-          servicePort: 80
-      - path: /api
-        backend:
-          serviceName: mirror-backend
-          servicePort: 80
-      - path: /socket
-        backend:
-          serviceName: mirror-backend
           servicePort: 80
