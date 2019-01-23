@@ -6,6 +6,6 @@ defmodule MirrorWeb.HealthController do
   def index(conn, _params) do
     conn
     |> put_status(200)
-    |> json(%{status: "healthy", time: DateTime.utc_now})
+    |> json(%{status: "healthy", time: DateTime.utc_now, remote_ip: conn.remote_ip})
   end
 end
