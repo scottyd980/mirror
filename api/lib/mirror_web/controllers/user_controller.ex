@@ -4,6 +4,8 @@ defmodule MirrorWeb.UserController do
   alias Mirror.Accounts
   alias Mirror.Accounts.User
 
+  require Logger
+
   action_fallback MirrorWeb.FallbackController
 
   def show(conn, %{"id" => id}) do
@@ -39,6 +41,8 @@ defmodule MirrorWeb.UserController do
     user = conn
     |> Mirror.Guardian.Plug.current_resource
     |> User.preload_relationships
+
+    Logger.warn "#{inspect conn}"
 
     conn
     |> render("show.json-api", data: user |> User.preload_relationships)
