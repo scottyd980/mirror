@@ -5,13 +5,25 @@ metadata:
   annotations:  
     kubernetes.io/ingress.class: nginx
     certmanager.k8s.io/cluster-issuer: letsencrypt-prod
+    # [ cert-manager annotations ]
+    nginx.ingress.kubernetes.io/configuration-snippet: |
+      if ($host = 'www.usemirror.io' ) {
+        rewrite ^ https://usemirror.io$request_uri permanent;
+      }
 spec:
   tls:
   - hosts:
     - usemirror.io
+    - www.usemirror.io
     secretName: letsencrypt-prod
   rules:
   - host: usemirror.io
+    http:
+      paths:
+      - backend:
+          serviceName: mirror-frontend
+          servicePort: 80
+  - host: www.usemirror.io
     http:
       paths:
       - backend:
