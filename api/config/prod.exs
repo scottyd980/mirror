@@ -15,7 +15,7 @@ use Mix.Config
 # which you typically run after static files are built.
 config :mirror, MirrorWeb.Endpoint,
   http: [port: "${PORT}"],
-  url: [host: "127.0.0.1"],
+  url: [host: "${HOST}"],
   server: true
 
 # Do not print debug messages in production
