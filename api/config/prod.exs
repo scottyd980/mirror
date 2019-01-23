@@ -16,6 +16,7 @@ use Mix.Config
 config :mirror, MirrorWeb.Endpoint,
   http: [port: "${PORT}"],
   url: [host: "${HOST}"],
+  check_origin: ["${HOST}"],
   server: true
 
 # Do not print debug messages in production
