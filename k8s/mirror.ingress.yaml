@@ -11,11 +11,11 @@ metadata:
         rewrite ^ https://usemirror.io$request_uri permanent;
       }
     nginx.ingress.kubernetes.io/configuration-snippet: |
-      if ($host = 'www.usemirror.com' ) {
+      if ($host = 'usemirror.com' ) {
         rewrite ^ https://usemirror.io$request_uri permanent;
       }
     nginx.ingress.kubernetes.io/configuration-snippet: |
-      if ($host = 'usemirror.com' ) {
+      if ($host = 'www.usemirror.com' ) {
         rewrite ^ https://usemirror.io$request_uri permanent;
       }
     nginx.ingress.kubernetes.io/server-snippet: |
@@ -47,9 +47,21 @@ spec:
         backend:
           serviceName: mirror-backend
           servicePort: 80
-  # - host: www.usemirror.io
-  #   http:
-  #     paths:
-  #     - backend:
-  #         serviceName: mirror-frontend
-  #         servicePort: 80
+  - host: www.usemirror.io
+    http:
+      paths:
+      - backend:
+          serviceName: mirror-frontend
+          servicePort: 80
+  - host: www.usemirror.com
+    http:
+      paths:
+      - backend:
+          serviceName: mirror-frontend
+          servicePort: 80
+  - host: usemirror.com
+    http:
+      paths:
+      - backend:
+          serviceName: mirror-frontend
+          servicePort: 80
