@@ -92,6 +92,23 @@ h1, .h1, h2, .h2, h3, .h3, h4, .h4 {
     }
   }
 
+  &.marketing-block-ltr {
+    display: flex;
+    flex-direction: row;
+    margin-bottom: 20px;
+
+    .marketing-icon {
+      width: 64px;
+      height: 64px;
+      margin-bottom: 0;
+      margin-right: 16px;
+    }
+
+    @media (max-width: $screen-sm-max) {
+      text-align: left;
+    }
+  }
+
   @media (max-width: $screen-sm-max) {
     text-align: center;
   }
@@ -384,4 +401,10 @@ ul.action-list {
 .logo--sm {
   height: 60px;
   width: 60px;
+}
+
+#learn-more {
+  h4 {
+    line-height: 1.5;
+  }
 }
