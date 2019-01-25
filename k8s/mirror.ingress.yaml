@@ -10,6 +10,14 @@ metadata:
       if ($host = 'www.usemirror.io' ) {
         rewrite ^ https://usemirror.io$request_uri permanent;
       }
+    nginx.ingress.kubernetes.io/configuration-snippet: |
+      if ($host = 'www.usemirror.com' ) {
+        rewrite ^ https://usemirror.io$request_uri permanent;
+      }
+    nginx.ingress.kubernetes.io/configuration-snippet: |
+      if ($host = 'usemirror.com' ) {
+        rewrite ^ https://usemirror.io$request_uri permanent;
+      }
     nginx.ingress.kubernetes.io/server-snippet: |
       proxy_http_version 1.1;
       proxy_set_header Upgrade $http_upgrade;
@@ -20,6 +28,8 @@ spec:
   - hosts:
     - usemirror.io
     - www.usemirror.io
+    - usemirror.com
+    - www.usemirror.com
     secretName: letsencrypt-prod
   rules:
   - host: usemirror.io
@@ -37,9 +47,9 @@ spec:
         backend:
           serviceName: mirror-backend
           servicePort: 80
-  - host: www.usemirror.io
-    http:
-      paths:
-      - backend:
-          serviceName: mirror-frontend
-          servicePort: 80
+  # - host: www.usemirror.io
+  #   http:
+  #     paths:
+  #     - backend:
+  #         serviceName: mirror-frontend
+  #         servicePort: 80
