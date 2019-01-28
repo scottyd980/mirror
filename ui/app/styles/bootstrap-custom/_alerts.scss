@@ -4,6 +4,14 @@
   color: $color;
 }
 
+.alert-success {
+  @include alert($brand-success, $brand-success, $white);
+}
+
+.alert-info {
+  @include alert($brand-info, $brand-info, $white);
+}
+
 .alert-danger {
   @include alert($brand-danger, $brand-danger, $white);
 }

@@ -20,8 +20,10 @@
           <div class="form-group input-group-icon">
             {{input type="password" class="form-control" id="login-password" placeholder="Password" value=model.password}}
             {{fa-icon "key" fixedWidth=true}}
+            <p class="help-block text-center">Forgot your {{#link-to "auth.forgot.username"}}username{{/link-to}} or {{#link-to "auth.forgot.password"}}password{{/link-to}}?</p>
           </div>
           <button {{action "doLogin"}} type="submit" class="btn btn-success btn-lg btn-block">Log In</button>
+          <p class="help-block text-center">{{#link-to "auth.register"}}Don't have an account yet?{{/link-to}}</p>
         </form>
       {{/x-card}}
     </div>

@@ -10,6 +10,11 @@ Router.map(function() {
   this.route('auth', function() {
     this.route('login');
     this.route('register');
+
+    this.route('forgot', function() {
+      this.route('password');
+      this.route('username');
+    });
   });
   this.route('app', function() {
     this.route('teams', function() {
