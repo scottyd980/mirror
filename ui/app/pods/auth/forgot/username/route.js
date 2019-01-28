@@ -16,9 +16,14 @@ export default Ember.Route.extend({
   actions: {
     doReset() {
       var _this = this;
+      _this.controller.set('success', false);
+      _this.controller.set('errors', false);
       const user = this.get('currentModel');
       fetch(`${config.DS.host}/${config.DS.namespace}/forgot/username`, {
         method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
         body: JSON.stringify({
           "email": user.email
         })
