@@ -34,6 +34,7 @@
             <span class="help-block">{{errors.password-confirmation-error}}</span>
           </div>
           <button {{action "doRegister"}} type="submit" class="btn btn-success btn-lg btn-block">Sign Up</button>
+          <p class="help-block text-center">{{#link-to "auth.login"}}Already have an account?{{/link-to}}</p>
         </form>
       {{/x-card}}
     </div>
