@@ -61,4 +61,33 @@ defmodule MirrorWeb.UserController do
         |> render(MirrorWeb.ErrorView, "401.json") # 401
     end
   end
+
+  def forgot_username(conn, %{"email" => email}) do
+    with {:ok, user = %User{}} <- Accounts.get_user_by_email(email) do
+      conn
+      |> put_status(200)
+      |> json(%{})
+      # TODO: Send email
+    else
+      _ ->
+        conn
+        |> put_status(200)
+        |> json(%{})
+    end
+  end
+
+  def forgot_password(conn, %{"email" => email}) do
+    with {:ok, user = %User{}} <- Accounts.get_user_by_email(email) do
+      # TODO: Generate code / timestamp
+      # TODO: Send email
+      conn
+      |> put_status(200)
+      |> json(%{})
+    else
+      _ ->
+        conn
+        |> put_status(200)
+        |> json(%{})
+    end
+  end
 end

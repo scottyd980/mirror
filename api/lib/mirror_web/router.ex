@@ -20,6 +20,8 @@ defmodule MirrorWeb.Router do
 
     get "/kube_health", HealthController, :index
     post "/token", UserController, :login
+    post "/forgot/username", UserController, :forgot_username
+    post "/forgot/password", UserController, :forgot_password
     post "/stripe_webhooks", WebhookController, :create
   end
 
