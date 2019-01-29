@@ -4,6 +4,9 @@ defmodule MirrorWeb.UserController do
   alias Mirror.Accounts
   alias Mirror.Accounts.User
 
+  alias Mirror.Email
+  alias Mirror.Mailer
+
   require Logger
 
   action_fallback MirrorWeb.FallbackController
@@ -63,11 +66,13 @@ defmodule MirrorWeb.UserController do
   end
 
   def forgot_username(conn, %{"email" => email}) do
-    with {:ok, user = %User{}} <- Accounts.get_user_by_email(email) do
+    with %User{} = user <- Accounts.get_user_by_email(email) do
+      Email.forgot_username_email(user.email, user.username)
+      |> Mailer.deliver_later
+
       conn
       |> put_status(200)
       |> json(%{})
-      # TODO: Send email
     else
       _ ->
         conn
@@ -77,9 +82,12 @@ defmodule MirrorWeb.UserController do
   end
 
   def forgot_password(conn, %{"email" => email}) do
-    with {:ok, user = %User{}} <- Accounts.get_user_by_email(email) do
-      # TODO: Generate code / timestamp
-      # TODO: Send email
+    with %User{} = user                 <- Accounts.get_user_by_email(email),
+         {:ok, %User{} = updated_user}  <- Accounts.begin_user_password_recovery(user) do
+
+      Email.forgot_password_email(updated_user.email, updated_user.username, updated_user.reset_password_token)
+      |> Mailer.deliver_later
+
       conn
       |> put_status(200)
       |> json(%{})
@@ -87,6 +95,34 @@ defmodule MirrorWeb.UserController do
       _ ->
         conn
         |> put_status(200)
+        |> json(%{})
+    end
+  end
+
+  def reset_password(conn, %{"reset_token" => reset_token, "new_password" => new_password, "new_password_confirmation" => new_password_confirmation}) do
+    attrs = %{
+      password: new_password,
+      password_confirmation: new_password_confirmation
+    }
+
+    with %User{} = user                 <- Accounts.get_user_by_reset_token(reset_token),
+         {:ok, %User{} = updated_user}  <- Accounts.reset_user_password(user, attrs) do
+
+      conn
+      |> put_status(200)
+      |> json(%{})
+    else
+      {:error, changeset} ->
+        conn
+        |> put_status(:unprocessable_entity)
+        |> render(MirrorWeb.ChangesetView, "error.json-api", changeset: changeset)
+      nil ->
+        conn
+        |> put_status(404)
+        |> render(MirrorWeb.ChangesetView, "error.json-api", changeset: %{})
+      _ ->
+        conn
+        |> put_status(500)
         |> json(%{})
     end
   end

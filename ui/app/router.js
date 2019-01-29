@@ -15,6 +15,10 @@ Router.map(function() {
       this.route('password');
       this.route('username');
     });
+
+    this.route('reset', function() {
+      this.route('password', {path: '/password/:uuid'});
+    });
   });
   this.route('app', function() {
     this.route('teams', function() {
