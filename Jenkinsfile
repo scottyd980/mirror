@@ -65,7 +65,7 @@ node {
       if(params.deploy_api_to_prod || deployAPI || params.deploy_client_to_prod || deployClient || deployBoth) {
         withCredentials([string(credentialsId: 'digital-ocean-credentials-id', variable: 'DO_OAUTH')]) {
           sh """
-            curl -X GET -H "Content-Type: application/json" -H "Authorization: Bearer ${env.DO_OAUTH}" "https://api.digitalocean.com/v2/kubernetes/clusters/be06bc7a-8740-4934-95cc-2ef420f1f6d7/kubeconfig" -o ../kubeconfig.yaml
+            curl -X GET -H "Content-Type: application/json" -H "Authorization: Bearer ${env.DO_OAUTH}" "https://api.digitalocean.com/v2/kubernetes/clusters/be06bc7a-8740-4934-95cc-2ef420f1f6d7/kubeconfig" -o ./kubeconfig.yaml
           """
         }
       }
