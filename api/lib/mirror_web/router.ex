@@ -22,6 +22,7 @@ defmodule MirrorWeb.Router do
     post "/token", UserController, :login
     post "/forgot/username", UserController, :forgot_username
     post "/forgot/password", UserController, :forgot_password
+    post "/reset/password", UserController, :reset_password
     post "/stripe_webhooks", WebhookController, :create
   end
 
