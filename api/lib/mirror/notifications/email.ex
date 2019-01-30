@@ -8,7 +8,7 @@ defmodule Mirror.Email do
     |> from("Mirror <noreply@***MAIL_DOMAIN***>")
     |> subject("Someone invited you to join a team!")
     |> put_html_layout({MirrorWeb.LayoutView, "invite2.html"})
-    |> render("invite2.html", access_code: access_code, team: team_name)
+    |> render("invite.html", access_code: access_code, team: team_name)
   end
 
   def forgot_username_email(email_address, username) do
