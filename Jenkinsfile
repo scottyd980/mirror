@@ -83,6 +83,7 @@ node {
           },
           "Rollout on Kubernetes Cluster": {
             echo 'Rolling deployment to Kubernetes cluster...'
+            sh "id -a"
             sh "kubectl --kubeconfig='./kubeconfig.yaml' set image deployment.apps/mirror-backend mirror=nonbreakingspace/mirror-api:${commitId} --record"
             sh "kubectl --kubeconfig='./kubeconfig.yaml' rollout status deployment.apps/mirror-backend"
             echo 'Successfully deployed to production'
