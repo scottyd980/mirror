@@ -60,6 +60,9 @@ config :phoenix, :serve_endpoints, true
 #     config :mirror, MirrorWeb.Endpoint, server: true
 #
 
+config :mirror,
+  url_base: "https://usemirror.io"
+
 config :mirror, MirrorWeb.Endpoint,
   secret_key_base: "${SECRET_KEY_BASE}"
 

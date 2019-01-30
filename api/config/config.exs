@@ -39,6 +39,9 @@ config :mime, :types, %{
 }
 
 config :mirror,
+  url_base: "http://localhost:4200"
+
+config :mirror,
   billing_active: false
 
 config :mirror, Mirror.Guardian,
