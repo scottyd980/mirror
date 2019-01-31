@@ -1,28 +1,43 @@
-FROM ubuntu:16.04
+# Dockerfile
+FROM elixir:1.6.5-alpine as build
 
-RUN apt-get update && apt-get install -y \
-  curl locales aptitude git wget build-essential automake \
-  autoconf m4 nginx
-RUN locale-gen en_US.UTF-8
-ENV LANG=en_US.UTF-8
-ENV LANGUAGE=en_US:en
-ENV LC_ALL=en_US.UTF-8
-ENV TERM=linux
+# install build dependencies
+RUN apk add --update git
+RUN apk add --update make
+RUN apk add --update g++
 
-RUN wget https://packages.erlang-solutions.com/erlang-solutions_1.0_all.deb && \
-  dpkg -i erlang-solutions_1.0_all.deb && \
-  apt-get update && \
-  apt-get install -y \
-    esl-erlang=1:20.3 && \
-  apt-get install elixir
+# prepare build dir
+RUN mkdir /app
+WORKDIR /app
 
-COPY . .
-
+# install hex + rebar
 RUN mix local.hex --force && \
     mix local.rebar --force
 
-RUN export MIX_ENV=prod && \
-    rm -Rf _build && \
-    mix deps.get
+# set build ENV
+ENV MIX_ENV=prod REPLACE_OS_VARS=true
 
-CMD MIX_ENV=prod mix release --env=prod
+# install mix dependencies
+COPY mix.exs mix.lock ./
+RUN mix deps.get
+COPY config ./
+RUN mix deps.compile
+
+# build release
+COPY . .
+RUN mix release --no-tar --verbose --env=prod
+
+# prepare release image
+FROM alpine:3.6
+RUN apk add --update bash openssl
+
+WORKDIR /app
+
+# ENV PORT=4000 DB_HOST="68.183.98.121" USERNAME="admin" PASSWORD="35764652727ab62770b9295cfb80f2bfd5fbec0bb0303efa" DATABASE="mirror_new_prod" SECRET_KEY_BASE="PaiowhrbZBKyE5NxFlvy1tpJ03BvK9jS9IHhoOXfxQ7wbU7VX/cDJLJbPlnjtVeK"
+
+COPY --from=build /app/_build/prod/rel/mirror ./
+
+EXPOSE 4000
+ENV PORT=4000 MIX_ENV=prod REPLACE_OS_VARS=true SHELL=/bin/bash
+
+ENTRYPOINT ["/app/bin/mirror"]

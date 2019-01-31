@@ -19,6 +19,9 @@ module.exports = function(environment) {
       // Here you can pass flags/options to your application instance
       // when it is created
     },
+    FLAGS: {
+      billing: false,
+    },
     DS: {
       host: 'http://localhost:4000',
       wshost: 'ws://localhost:4000',
@@ -61,7 +64,8 @@ module.exports = function(environment) {
     },
     ERROR_MESSAGES: {
       generic: "Something Went Wrong",
-      process: "We Could Not Process Your Request"
+      process: "We Could Not Process Your Request",
+      retrospective_in_progress: "Retrospective In Progress"
     },
     SUCCESS_MESSAGES: {
       generic: "Success!"

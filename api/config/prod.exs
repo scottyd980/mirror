@@ -15,9 +15,9 @@ use Mix.Config
 # which you typically run after static files are built.
 config :mirror, MirrorWeb.Endpoint,
   http: [port: "${PORT}"],
-  url: [host: "localhost", port: "${PORT}"]
-
-
+  url: [host: "${HOST}"],
+  check_origin: ["${HOST}"],
+  server: true
 
 # Do not print debug messages in production
 config :logger, level: :info
@@ -59,6 +59,9 @@ config :phoenix, :serve_endpoints, true
 #
 #     config :mirror, MirrorWeb.Endpoint, server: true
 #
+
+config :mirror,
+  url_base: "https://usemirror.io"
 
 config :mirror, MirrorWeb.Endpoint,
   secret_key_base: "${SECRET_KEY_BASE}"

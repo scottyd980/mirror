@@ -30,6 +30,7 @@ defmodule MirrorWeb.RetrospectiveController do
     retrospective_params = Map.put(retrospective_params, "moderator_id", current_user.id)
     team = Teams.get_team!(retrospective_params["team_id"])
     retrospective_params = Map.put(retrospective_params, "team_id", team.id)
+    retrospective_params = Map.put(retrospective_params, "team_uuid", team.uuid)
 
     case Helpers.User.user_is_team_member?(current_user, team) do
       true ->
@@ -41,6 +42,10 @@ defmodule MirrorWeb.RetrospectiveController do
           |> put_status(:created)
           |> render("show.json-api", data: retrospective |> Retrospective.preload_relationships)
         else
+          {:ok, {:error, :retrospective_in_progress}} ->
+            conn
+            |> put_status(409)
+            |> render(MirrorWeb.ErrorView, "409.json-api")
           {:error, changeset} ->
             conn
             |> put_status(:unprocessable_entity)
@@ -79,7 +84,7 @@ defmodule MirrorWeb.RetrospectiveController do
 
     case Helpers.User.user_is_team_admin?(current_user, retrospective.team) || Helpers.User.user_is_moderator?(current_user, retrospective) do
       true ->
-        with {:ok, %Retrospective{} = retrospective} <- Retrospectives.update_retrospective(retrospective, retrospective_params) 
+        with {:ok, %Retrospective{} = retrospective} <- Retrospectives.update_retrospective(retrospective, retrospective_params)
         do
           MirrorWeb.Endpoint.broadcast("retrospective:#{retrospective.id}", "retrospective_update", MirrorWeb.RetrospectiveView.render("show.json", data: retrospective |> Retrospective.preload_relationships))
           render(conn, "show.json-api", data: retrospective |> Retrospective.preload_relationships)

@@ -124,8 +124,8 @@
         <table border="0" cellpadding="0" cellspacing="0" width="100%" style="max-width: 600px;">
           <tr>
             <td align="center" valign="top" style="padding: 36px 24px;">
-              <a href="https://usemirror.io" target="_blank" style="display: inline-block;">
-                <img src="https://i.imgur.com/8ofVXjn.png" alt="Mirror" border="0" width="48" style="display: block; width: 100px; max-width: 100px; min-width: 100px;">
+              <a href="<%= Application.get_env(:mirror, :url_base) %>" target="_blank" style="display: inline-block;">
+                <img src="<%= Application.get_env(:mirror, :url_base) %>/img/mirror-logo.png" alt="Mirror" border="0" width="48" style="display: block; width: 100px; max-width: 100px; min-width: 100px;">
               </a>
             </td>
           </tr>
@@ -176,38 +176,8 @@
           <!-- start copy -->
           <tr>
             <td align="left" bgcolor="#ffffff" style="padding: 24px; font-family: 'Source Sans Pro', Helvetica, Arial, sans-serif; font-size: 16px; line-height: 24px;">
-              <p style="margin: 0; color: #222;">Mirror helps distributed teams run productive, successful retrospectives.</p>
-              <p style="margin: 0; margin-top: 10px; color: #222;">You were invited by another Mirror user to join their team: <strong><%= @team %></strong>.</p>
-              <p style="margin: 0; margin-top: 10px; color: #222;">You can click the button below to join the team.</p>
-            </td>
-          </tr>
-          <!-- end copy -->
-
-          <!-- start button -->
-          <tr>
-            <td align="left" bgcolor="#ffffff">
-              <table border="0" cellpadding="0" cellspacing="0" width="100%">
-                <tr>
-                  <td align="center" bgcolor="#ffffff" style="padding: 12px;">
-                    <table border="0" cellpadding="0" cellspacing="0">
-                      <tr>
-                        <td align="center" bgcolor="#31b0d5" style="border-radius: 6px;">
-                          <a href="http://localhost:4200/app/teams/join/<%= @access_code %>" target="_blank" style="display: inline-block; padding: 16px 36px; font-family: 'Source Sans Pro', Helvetica, Arial, sans-serif; font-size: 16px; color: #ffffff; text-decoration: none; border-radius: 6px;">Join The Team</a>
-                        </td>
-                      </tr>
-                    </table>
-                  </td>
-                </tr>
-              </table>
-            </td>
-          </tr>
-          <!-- end button -->
-
-          <!-- start copy -->
-          <tr>
-            <td align="left" bgcolor="#ffffff" style="padding: 24px; font-family: 'Source Sans Pro', Helvetica, Arial, sans-serif; font-size: 16px; line-height: 24px;">
-              <p style="margin: 0; color: #222;">If that doesn't work, copy and paste the following link in your browser:</p>
-              <p style="margin: 0;"><a href="http://localhost:4200/app/teams/join/<%= @access_code %>" target="_blank">http://localhost:4200/app/teams/join/<%= @access_code %></a></p>
+              <p style="margin: 0; margin-top: 10px; color: #222;">A request was made to recover the username associated with this email address.</p>
+              <p style="margin: 0; margin-top: 10px; color: #222;">The username that we have on file for this email address is: <strong><%= @username %></strong>.</p>
             </td>
           </tr>
           <!-- end copy -->

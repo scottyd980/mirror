@@ -6,6 +6,8 @@ defmodule MirrorWeb.RetrospectiveActionController do
 
   alias Mirror.Helpers
 
+  require Logger
+
   action_fallback MirrorWeb.FallbackController
 
   def create(conn, %{"data" => data}) do
@@ -14,20 +16,22 @@ defmodule MirrorWeb.RetrospectiveActionController do
     action_params = Map.put(action_params, "user_id", current_user.id)
 
     feedback = Retrospectives.get_feedback!(action_params["feedback_id"])
-    
+
     retrospective = Retrospectives.get_retrospective!(feedback.retrospective_id)
     |> Retrospective.preload_relationships
-    
+
     team = retrospective.team
 
     case Helpers.User.user_is_team_member?(current_user, team) && Helpers.User.user_is_moderator?(current_user, retrospective) do
       true ->
         with {:ok, %Action{} = action} <- Retrospectives.create_action(action_params) do
-          MirrorWeb.Endpoint.broadcast("retrospective:#{retrospective.id}", "feedback_action_change", MirrorWeb.RetrospectiveActionView.render("show.json-api", data: action |> Action.preload_relationships))
-          
+          action = action |> Action.preload_relationships
+
+          MirrorWeb.Endpoint.broadcast("retrospective:#{retrospective.id}", "feedback_action_change", MirrorWeb.RetrospectiveActionView.render("show.json-api", data: action))
+
           conn
           |> put_status(:created)
-          |> render("show.json-api", data: action |> Action.preload_relationships)
+          |> render("show.json-api", data: action)
         else
           {:error, changeset} ->
             conn
@@ -47,10 +51,10 @@ defmodule MirrorWeb.RetrospectiveActionController do
     action = Retrospectives.get_action!(id)
 
     feedback = Retrospectives.get_feedback!(action.feedback_id)
-    
+
     retrospective = Retrospectives.get_retrospective!(feedback.retrospective_id)
     |> Retrospective.preload_relationships
-    
+
     team = retrospective.team
 
     case Helpers.User.user_is_team_member?(current_user, team) do
@@ -65,12 +69,12 @@ defmodule MirrorWeb.RetrospectiveActionController do
 
   def update(conn, %{"id" => id}) do
     current_user = Mirror.Guardian.Plug.current_resource(conn)
-    
+
     action = Retrospectives.get_action!(id)
     action_params = JaSerializer.Params.to_attributes(conn.body_params)
 
     feedback = Retrospectives.get_feedback!(action_params["feedback_id"])
-    
+
     retrospective = Retrospectives.get_retrospective!(feedback.retrospective_id)
     |> Retrospective.preload_relationships
 
@@ -78,9 +82,13 @@ defmodule MirrorWeb.RetrospectiveActionController do
 
     case Helpers.User.user_is_team_member?(current_user, team) && Helpers.User.user_is_moderator?(current_user, retrospective) do
       true ->
-        with {:ok, %Action{} = action} <- Retrospectives.update_action(action, action_params) do
-          MirrorWeb.Endpoint.broadcast("retrospective:#{retrospective.id}", "feedback_action_change", MirrorWeb.RetrospectiveActionView.render("show.json-api", data: action |> Action.preload_relationships))
-          render(conn, "show.json-api", data: action |> Action.preload_relationships)
+        with {:ok, %Action{} = updated_action} <- Retrospectives.update_action(action, action_params) do
+
+          updated_action = updated_action |> Action.preload_relationships()
+          Logger.warn "#{inspect updated_action}"
+
+          MirrorWeb.Endpoint.broadcast("retrospective:#{retrospective.id}", "feedback_action_change", MirrorWeb.RetrospectiveActionView.render("show.json-api", data: updated_action))
+          render(conn, "show.json-api", data: updated_action)
         else
           {:error, changeset} ->
             conn
@@ -96,11 +104,11 @@ defmodule MirrorWeb.RetrospectiveActionController do
 
   def delete(conn, %{"id" => id}) do
     current_user = Mirror.Guardian.Plug.current_resource(conn)
-    
-    action = Retrospectives.get_action!(id)
+
+    action = Retrospectives.get_action!(id) |> Action.preload_relationships
 
     feedback = Retrospectives.get_feedback!(action.feedback_id)
-    
+
     retrospective = Retrospectives.get_retrospective!(feedback.retrospective_id)
     |> Retrospective.preload_relationships
 
@@ -109,6 +117,7 @@ defmodule MirrorWeb.RetrospectiveActionController do
     case Helpers.User.user_is_team_member?(current_user, team) && Helpers.User.user_is_moderator?(current_user, retrospective) do
       true ->
         with {:ok, %Action{}} <- Retrospectives.delete_action(action) do
+          MirrorWeb.Endpoint.broadcast("retrospective:#{retrospective.id}", "feedback_action_deleted", MirrorWeb.RetrospectiveActionView.render("show.json-api", data: action))
           conn
           |> put_status(:ok)
           |> render("delete.json-api")
