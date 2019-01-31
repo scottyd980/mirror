@@ -10,6 +10,15 @@ Router.map(function() {
   this.route('auth', function() {
     this.route('login');
     this.route('register');
+
+    this.route('forgot', function() {
+      this.route('password');
+      this.route('username');
+    });
+
+    this.route('reset', function() {
+      this.route('password', {path: '/password/:uuid'});
+    });
   });
   this.route('app', function() {
     this.route('teams', function() {
@@ -52,22 +61,26 @@ Router.map(function() {
         this.route('profile');
       });
     });
-    this.route('organizations', function() {
-      this.route('create');
 
-      this.route('organization', { path: '/:id'}, function() {
-        this.route('dashboard', function() {
-          this.route('teams', function() {
-            this.route('team', function() {
-              this.route('dashboard', function() {});
+    if(config.FLAGS.billing) {
+      this.route('organizations', function() {
+        this.route('create');
+
+        this.route('organization', { path: '/:id'}, function() {
+          this.route('dashboard', function() {
+            this.route('teams', function() {
+              this.route('team', function() {
+                this.route('dashboard', function() {});
+              });
             });
+            this.route('billing');
+            this.route('members');
           });
-          this.route('billing');
-          this.route('members');
         });
+        this.route('dashboard');
       });
-      this.route('dashboard');
-    });
+    }
+
   });
 });
 

@@ -63,8 +63,8 @@ defmodule Mirror.Retrospectives do
         retrospective
         |> Retrospective.preload_relationships()
       else
-        {:error, changeset} ->
-          Repo.rollback changeset
+        {:error, :retrospective_in_progress} -> {:error, :retrospective_in_progress}
+        {:error, changeset} -> Repo.rollback changeset
       end
     end
   end

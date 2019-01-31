@@ -1,0 +1,43 @@
+<div class="pad-bottom-md text-center">
+  <img src="/img/mirror-logo.svg" class="logo--sm"/>
+  <h2 class="pad-top-sm">Forgotten Password Reset</h2>
+</div>
+
+<div class="container">
+  <div class="row">
+    <div class="col-sm-8 col-sm-offset-2 col-md-6 col-md-offset-3">
+      {{#x-card}}
+        {{#if success}}
+          <div class="alert alert-success" role="alert">
+            {{fa-icon "check-circle"}} Awesome! Your password was successfully reset. You can now login using your new password.
+          </div>
+        {{/if}}
+        {{#if info}}
+          <div class="alert alert-info" role="alert">
+            {{fa-icon "info-circle"}} Uh oh! It looks like we couldn't update your password. You may need to request a new password reset (a reset only lasts 24 hours for security).
+          </div>
+        {{/if}}
+        {{#if errors.length}}
+          <div class="alert alert-danger" role="alert">
+            {{fa-icon "exclamation-triangle"}} Please correct the highlighted fields below.
+          </div>
+        {{/if}}
+        <form>
+          <p><strong>Go ahead and choose a new password.</strong></p>
+          <p class="help-block">We'll update our records so you can easily log in next time.</p>
+          <div class="form-group input-group-icon {{if errors.password-error 'has-error'}}">
+            {{input type="password" class="form-control" id="reset-password" placeholder="Password (6 char min.)" value=model.new_password}}
+            {{fa-icon "key" fixedWidth=true}}
+            <span class="help-block">{{errors.password-error}}</span>
+          </div>
+          <div class="form-group input-group-icon {{if errors.password-confirmation-error 'has-error'}}">
+            {{input type="password" class="form-control" id="reset-password-confirmation" placeholder="Confirm Password" value=model.new_password_confirmation}}
+            {{fa-icon "repeat" fixedWidth=true}}
+            <span class="help-block">{{errors.password-confirmation-error}}</span>
+          </div>
+          <button {{action "doReset"}} type="submit" class="btn btn-success btn-lg btn-block">Reset My Password</button>
+        </form>
+      {{/x-card}}
+    </div>
+  </div>
+</div>

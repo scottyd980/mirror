@@ -27,7 +27,7 @@ config :mirror, Mirror.Mailer,
   api_key: "***MAILGUN_API_KEY***",
   domain: "***MAIL_DOMAIN***"
 
-config :stripity_stripe, 
+config :stripity_stripe,
   api_key: "***STRIPE_API_KEY***",
   webhook_secret: "***STRIPE_WEBHOOK_SECRET***"
 
@@ -37,6 +37,12 @@ config :phoenix, :format_encoders,
 config :mime, :types, %{
   "application/vnd.api+json" => ["json-api"]
 }
+
+config :mirror,
+  url_base: "http://localhost:4200"
+
+config :mirror,
+  billing_active: false
 
 config :mirror, Mirror.Guardian,
   issuer: "Mirror",
