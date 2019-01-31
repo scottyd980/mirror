@@ -8,6 +8,8 @@ defmodule Mirror.Accounts do
 
   alias Mirror.Accounts.User
 
+  @day 86400
+
   @doc """
   Returns the list of users.
 
@@ -36,6 +38,43 @@ defmodule Mirror.Accounts do
 
   """
   def get_user!(id), do: Repo.get!(User, id)
+
+  @doc """
+  Gets a single user by email.
+
+  ## Examples
+
+      iex> get_user!(123)
+      %User{}
+
+      iex> get_user!(456)
+      ** (Ecto.NoResultsError)
+
+  """
+  def get_user_by_email(email), do: Repo.get_by(User, email: email)
+
+  def get_user_by_reset_token(reset_token) do
+    case Repo.get_by(User, reset_password_token: reset_token) do
+        %User{} = user ->
+            case (user.reset_token_sent_at + @day) > DateTime.to_unix(DateTime.utc_now()) do
+                true -> user
+                false -> nil
+            end
+        nil -> nil
+    end
+  end
+
+  def begin_user_password_recovery(user) do
+    user
+    |> User.password_recovery_changeset()
+    |> Repo.update()
+  end
+
+  def reset_user_password(user, attrs) do
+    user
+    |> User.password_reset_changeset(attrs)
+    |> Repo.update()
+  end
 
   @doc """
   Gets a single user.

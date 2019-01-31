@@ -17,6 +17,7 @@ export default Ember.Route.extend({
   actions: {
     doLogin() {
       var _this = this;
+      _this.controller.set('errors', false);
       const user = this.get('currentModel');
       this.get('session')
         .authenticate(

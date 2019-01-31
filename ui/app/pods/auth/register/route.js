@@ -14,6 +14,7 @@ export default Ember.Route.extend({
   actions: {
     doRegister() {
       var _this = this;
+      _this.controller.set('errors', false);
       _this.get('currentModel').save().then(() => {
         _this.get('session')
           .authenticate('authenticator:mirror', _this.get('currentModel').get('username'), _this.get('currentModel').get('password'));
