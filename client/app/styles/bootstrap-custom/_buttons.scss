@@ -1,0 +1,99 @@
+@mixin btn-base($bg, $color, $border) {
+  transition: background 0.25s ease-in-out, color 0.25s ease-in-out;
+
+  &:hover {
+    background: $bg;
+    color: $color;
+    border-color: $bg;
+  }
+
+  &:focus, &.focus, &.active, &:active, &:active:focus, &:active.focus, 
+  &.active:focus, &.active.focus, &.active.hover, &:active:hover, &.active:hover, &:active.hover {
+    outline: 0;
+    -webkit-box-shadow: none;
+    box-shadow: none;
+    background: $bg;
+    color: $color;
+    border-color: $bg;
+  }
+}
+
+@mixin btn-outline($color, $border, $bg-hover, $text-hover: #ffffff) {
+  background: transparent;
+  border: 1px solid $border;
+  color: $color;
+  font-weight: 300;
+  transition: background 0.25s ease-in-out, color 0.25s ease-in-out;
+
+  &:hover {
+    background: $bg-hover;
+    color: $text-hover;
+  }
+
+  &:focus {
+    outline: 0px;
+  }
+
+  &.active {
+    -webkit-box-shadow: none;
+    box-shadow: none;
+  }
+
+  &:active:hover, &:active:focus, &:active.focus, 
+  &.active:hover, &.active:focus, &.active.hover, 
+  &:active:hover, &.active:hover, &:active.hover {
+    border: 1px solid $border;
+  }
+}
+
+.btn-default {
+  @include button-variant($btn-default-color, $btn-default-bg, $btn-default-border);
+}
+.btn-primary {
+  @include button-variant($btn-primary-color, $btn-primary-bg, $btn-primary-border);
+  @include btn-base($btn-primary-hover-bg, $btn-primary-hover-color, $btn-primary-border);
+
+  &.btn-outline {
+    @include btn-outline($brand-primary, $brand-primary, $brand-primary);
+  }
+}
+// Success appears as green
+.btn-success {
+  @include button-variant($btn-success-color, $btn-success-bg, $btn-success-border);
+  @include btn-base($btn-success-hover-bg, $btn-success-hover-color, $btn-success-border);
+
+  &.btn-outline {
+    @include btn-outline($brand-success, $brand-success, $brand-success);
+  }
+}
+// Info appears as blue-green
+.btn-info {
+  @include button-variant($btn-info-color, $btn-info-bg, $btn-info-border);
+  @include btn-base($btn-info-hover-bg, $btn-info-hover-color, $btn-info-border);
+
+  &.btn-outline {
+    @include btn-outline($brand-info, $brand-info, $brand-info);
+  }
+}
+// Warning appears as orange
+.btn-warning {
+  @include button-variant($btn-warning-color, $btn-warning-bg, $btn-warning-border);
+  @include btn-base($btn-warning-hover-bg, $btn-warning-hover-color, $btn-warning-border);
+
+  &.btn-outline {
+    @include btn-outline($brand-warning, $brand-warning, $brand-warning);
+  }
+}
+// Danger and error appear as red
+.btn-danger {
+  @include button-variant($btn-danger-color, $btn-danger-bg, $btn-danger-border);
+  @include btn-base($btn-danger-hover-bg, $btn-danger-hover-color, $btn-danger-border);
+
+  &.btn-outline {
+    @include btn-outline($brand-danger, $brand-danger, $brand-danger);
+  }
+
+  &.btn-outline-alt {
+    @include btn-outline(#ffffff, #ffffff, #ffffff, $brand-danger);
+  }
+}
