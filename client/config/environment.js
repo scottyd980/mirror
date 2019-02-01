@@ -22,7 +22,7 @@ module.exports = function(environment) {
       // when it is created
     },
     FLAGS: {
-      billing: false,
+      billing: true,
     },
     DS: {
       host: 'http://localhost:4000',

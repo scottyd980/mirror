@@ -1,0 +1,26 @@
+<header class="contextual-nav">
+  <div class="container">
+    <div class="row">
+      <div class="col-md-12">
+        <div class="title-pane">
+          <h2 class="text-center">{{model.team.name}}</h2>
+        </div>
+        <div class="tab-pane">
+          <ul class="title-tabs">
+            <li>{{#link-to "app.teams.team.dashboard.retrospectives" model.team}}Retrospectives{{/link-to}}</li>
+            <li>{{#link-to "app.teams.team.dashboard.members" model.team}}Members{{/link-to}}</li>
+            <li>{{#link-to "app.teams.team.dashboard.history" model.team}}History{{/link-to}}</li>
+            {{#if isAdmin}}
+              <li>{{#link-to "app.teams.team.dashboard.preferences" model.team}}Preferences{{/link-to}}</li>
+              {{#if billing_active}}
+                <li>{{#link-to "app.teams.team.dashboard.billing" model.team}}Billing{{/link-to}}</li>
+              {{/if}}
+            {{/if}}
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+</header>
+
+{{outlet}}

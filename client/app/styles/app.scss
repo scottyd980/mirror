@@ -197,7 +197,7 @@ ul.table-list {
       color: $white;
     }
 
-    div {
+    & > div {
       display: table-cell;
 
       @media (max-width: $screen-xs-max) {
@@ -407,4 +407,8 @@ ul.action-list {
   h4 {
     line-height: 1.5;
   }
+}
+
+.ember-tooltip .tooltip-inner {
+  background-color: #3a3c47;
 }
