@@ -1,0 +1,29 @@
+<ul class="table-list">
+  {{#each (sort-by "id:desc" teams) as |team|}}
+    <li>
+      <div class="info">
+        <h4>{{team.name}}</h4>
+        <p class="expiration">
+          <span class="muted-text">{{pluralize team.members.length "member"}}</span>
+        </p>
+      </div>
+      <div class="actions">
+        {{#unless hideDelete}}
+          <a class="btn btn-danger btn-outline btn-xs"
+            {{action onConfirm "Are you sure you want to remove this team from your organization?" (action deleteTeam team)}}>
+            {{fa-icon "times" fixedWidth=true}}
+            {{#ember-tooltip side="bottom"}}
+              Remove From Organization
+            {{/ember-tooltip}}
+          </a>
+        {{/unless}}
+        <a class="btn btn-success btn-outline btn-xs" {{action viewTeam team}}>
+          {{fa-icon "arrow-right" fixedWidth=true}}
+          {{#ember-tooltip side="bottom"}}
+            View
+          {{/ember-tooltip}}
+        </a>
+      </div>
+    </li>
+  {{/each}}
+</ul>

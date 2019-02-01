@@ -1,0 +1,54 @@
+<ul class="table-list">
+  {{#each sortedRetros as |retrospective|}}
+    <li>
+      <div class="score {{concat retrospective.scoreType "-bg"}}">
+        {{#if retrospective.averageScore}}
+          {{retrospective.averageScore}}
+        {{else}}
+          N/A
+        {{/if}}
+      </div>
+      <div class="info">
+        <h4>{{retrospective.name}}</h4>
+        {{#if showTeams}}
+          <div class="retro-team-container">
+            <div class="retro-team-icon">
+              {{fa-icon "group" fixedWidth=true}}
+            </div>
+            <div class="retro-team">
+              <span class="team-name">{{retrospective.team.name}}</span>
+            </div>
+          </div>
+        {{/if}}
+        <div class="retro-participants-container">
+          <div class="retro-participants-icon">
+            {{fa-icon "user" fixedWidth=true}}
+          </div>
+          <div class="retro-participants">
+            {{#each retrospective.participants as |participant|}}
+              <span class="participant-name">{{participant.username}}</span>
+            {{/each}}
+          </div>
+        </div>
+      </div>
+      <div class="actions">
+        {{#if isAdmin}}
+          {{#if onDelete}}
+            <a {{action onConfirm "Are you sure you want to delete this retrospective from your team's history?" (action onDelete retrospective)}} class="btn btn-danger btn-outline btn-xs">
+              {{fa-icon "times" fixedWidth=true}}
+              {{#ember-tooltip side="bottom"}}
+                Delete
+              {{/ember-tooltip}}
+            </a>
+          {{/if}}
+        {{/if}}
+        {{#link-to "app.retrospectives.history" retrospective.id class="btn btn-info btn-outline btn-xs"}}
+          {{fa-icon "list" fixedWidth=true}}
+          {{#ember-tooltip side="bottom"}}
+            Summary
+          {{/ember-tooltip}}
+        {{/link-to}}
+      </div>
+    </li>
+  {{/each}}
+</ul>
