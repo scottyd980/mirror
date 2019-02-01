@@ -17,10 +17,29 @@ Router.map(function() {
     });
 
     this.route('reset', function() {
-      this.route('password');
+      this.route('password', { path: '/password/:uuid' });
     });
   });
-  this.route('app', function() {});
+  this.route('app', function() {
+    this.route('error');
+    this.route('loading');
+
+    this.route('teams', function() {
+      this.route('create');
+      this.route('join');
+      this.route('access', { path: '/join/:access_code' });
+      this.route('team', { path: '/:id' }, function() {
+        this.route('dashboard', function() {
+          this.route('members');
+          this.route('history');
+          this.route('retrospectives');
+          this.route('preferences');
+          this.route('billing');
+          this.route('loading');
+        });
+      });
+    });
+  });
 });
 
 export default Router;
