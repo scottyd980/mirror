@@ -42,7 +42,7 @@ config :mirror,
   url_base: "http://localhost:4200"
 
 config :mirror,
-  billing_active: false
+  billing_active: true
 
 config :mirror, Mirror.Guardian,
   issuer: "Mirror",

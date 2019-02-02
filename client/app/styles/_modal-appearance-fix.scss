@@ -9,7 +9,7 @@
   z-index: 1027;
 }
 
-.ember-modal-dialog.modal {
+.ember-modal-dialog {
   display: block;
   overflow: hidden;
   position: fixed;
@@ -29,7 +29,7 @@
   }
 }
 
-.modal-open .ember-modal-dialog.modal {
+.modal-open .ember-modal-dialog {
   overflow-x: hidden;
   overflow-y: auto;
 }

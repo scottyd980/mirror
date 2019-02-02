@@ -1,0 +1,56 @@
+<ul class="action-list">
+  {{#each sortedMembers as |member|}}
+    <li class="three-actions">
+      <div class="list-item">{{gravatar-image class="gravatar-nav" email=member.email}} {{member.username}}</div>
+      <div class="list-actions">
+        {{#if isAdmin}}
+          {{#if (array-contains member.teamAdmin team)}}
+            {{#if (not-eq member.id currentUser.id)}}
+              <a role="button"
+                {{action "onConfirm" "Are you sure you want to take away this member's admin rights?" (action onRemoveAdmin member team)}} class="btn btn-warning btn-outline btn-xs">
+                {{fa-icon "arrow-down" fixedWidth=true}}
+                {{#ember-tooltip side="bottom"}}
+                  Remove Admin Priveleges
+                {{/ember-tooltip}}
+              </a>
+            {{/if}}
+          {{else}}
+            <a role="button"
+              {{action "onConfirm" "Are you sure you want to make this team member an admin?" (action onMakeAdmin member team)}} class="btn btn-success btn-outline btn-xs">
+              {{fa-icon "arrow-up" fixedWidth=true}}
+              {{#ember-tooltip side="bottom"}}
+                Promote To Admin
+              {{/ember-tooltip}}
+            </a>
+          {{/if}}
+          {{#if (eq member.id currentUser.id)}}
+            <a role="button" {{action "onConfirm" "Are you sure you want to leave the team?" (action onDelete member team)}} class="btn btn-danger btn-outline btn-xs">
+              {{fa-icon "sign-out" fixedWidth=true}}
+              {{#ember-tooltip side="bottom"}}
+                Leave Team
+              {{/ember-tooltip}}
+            </a>
+          {{else}}
+            <a role="button"
+              {{action "onConfirm" "Are you sure you want to remove this member from the team?" (action onDelete member team)}}
+              class="btn btn-danger btn-outline btn-xs">
+              {{fa-icon "user-times" fixedWidth=true}}
+              {{#ember-tooltip side="bottom"}}
+                Remove From Team
+              {{/ember-tooltip}}
+            </a>
+          {{/if}}
+        {{else}}
+          {{#if (eq member.id currentUser.id)}}
+            <a role="button" {{action "onConfirm" "Are you sure you want to leave the team?" (action onDelete member team)}} class="btn btn-danger btn-outline btn-xs">
+              {{fa-icon "sign-out" fixedWidth=true}}
+              {{#ember-tooltip side="bottom"}}
+                Leave Team
+              {{/ember-tooltip}}
+            </a>
+          {{/if}}
+        {{/if}}
+      </div>
+    </li>
+  {{/each}}
+</ul>
