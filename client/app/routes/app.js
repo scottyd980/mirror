@@ -20,16 +20,16 @@ export default Route.extend(AuthenticatedRouteMixin, {
     });
   },
   actions: {
-    // confirmAction(message, action) {
-    //     this.get('notificationCenter').confirm({
-    //         title: ENV.CONFIRM_MESSAGES.generic,
-    //         message: message,
-    //         action: action
-    //     });
-    // },
-    // closeConfirm(action) {
-    //   action();
-    //   this.get('notificationCenter').clear();
-    // }
+    confirmAction(message, action) {
+        this.get('notifications').confirm({
+            title: ENV.CONFIRM_MESSAGES.generic,
+            message: message,
+            action: action
+        });
+    },
+    closeConfirm(action) {
+      action();
+      this.get('notifications').clear();
+    }
   }
 });

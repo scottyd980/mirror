@@ -1,0 +1,49 @@
+<div class="container">
+  <div class="row">
+    <div class="col-md-8">
+      {{#x-card title="Preferences"}}
+        <h4>Feedback Anonymity</h4>
+        <ul class="toggle-buttons">
+          <li class="two-wide">
+            <div class="radio-button">
+              <input checked={{if (eq model.team.isAnonymous "true") "checked"}} type="radio" id={{concat "is-anon-true-" model.team.id}}
+                value="true" name={{concat "is-anon-" model.team.id}}>
+              <label for={{concat "is-anon-true-" model.team.id}} class="radio-list--item">
+                Anonymous
+                <span>No team members will see who posted what feedback</span>
+              </label>
+            </div>
+          </li>
+          <li class="two-wide">
+            <div class="radio-button">
+              <input checked={{if (eq model.team.isAnonymous "false") "checked"}} type="radio" id={{concat "is-anon-false-" model.team.id}}
+                value="false" name={{concat "is-anon-" model.team.id}}>
+              <label for={{concat "is-anon-false-" model.team.id}} class="radio-list--item">
+                Public
+                <span>All team members will see who posted what feedback</span>
+              </label>
+            </div>
+          </li>
+        </ul>
+        <p><small>Typically, newer teams feel more comfortable in an anonymous environment, while more mature teams openly discuss their feedback in public. This setting will not change past retrospectives - it will only affect retrospectives going forward.</small></p>
+        <div class="card-footer">
+          <a role="button" {{action "updateTeam" model.team}} class="btn btn-success">Update Preferences</a>
+        </div>
+      {{/x-card}}
+    </div>
+    <div class="col-md-4">
+      {{#x-card title="Delete Team"}}
+        <p>This will delete the team. This action cannot be undone - please carefully consider this action before you proceed.</p>
+        <div class="card-footer">
+          <a role="button" onclick={{action "onConfirm" "Are you sure you want to delete this team? This action cannot be undone." (action "deleteTeam" model.team)}} class="btn btn-danger">Delete Team</a>
+        </div>
+      {{/x-card}}
+    </div>
+  </div>
+</div>
+
+{{#if currentlyLoading}}
+  <div class="loading-screen">
+    {{x-loader message=loadingMessage}}
+  </div>
+{{/if}}
