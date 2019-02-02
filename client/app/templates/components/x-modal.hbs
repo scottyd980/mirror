@@ -1,0 +1,11 @@
+{{#modal-dialog container-class='modal' translucentOverlay=true targetAttachment='none'}}
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button {{action onClose}} type="button" class="close" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        <h4 class="modal-title">{{title}}</h4>
+      </div>
+      {{yield}}
+    </div>
+  </div>
+{{/modal-dialog}}
