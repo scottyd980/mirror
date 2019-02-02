@@ -1,0 +1,55 @@
+<div class="container">
+  <div class="row">
+    <div class="{{if isAdmin "col-md-8"}} {{if (not isAdmin) "col-md-12"}}">
+      {{#x-card title="Members"}}
+        {{x-list/team/member
+          members=model.members
+          team=model.team
+          currentUser=model.currentUser
+          isAdmin=isAdmin
+          onMakeAdmin=(action "addAdmin")
+          onRemoveAdmin=(action "removeAdmin")
+          onDelete=(action "deleteMember")}}
+      {{/x-card}}
+    </div>
+    {{#if isAdmin}}
+      <div class="col-md-4">
+        {{#x-card title="Add Team Members"}}
+          <p>You can invite new people to the team by sending them an invitation.</p>
+          <p>Before they become a member of the team, new team members must accept your invitation by clicking on the link to join your team in the email they receive.</p>
+          <div class="card-footer">
+            <a role="button" onclick={{action (mut showAddTeamMembersModal) true}} class="btn btn-success">Invite New Team Members</a>
+          </div>
+        {{/x-card}}
+      </div>
+    {{/if}}
+  </div>
+</div>
+
+{{#if showAddTeamMembersModal}}
+  {{#x-modal onClose=(action "cancelAddTeamMembers") title="Invite New Team Members"}}
+    {{#x-modal-body}}
+      <form {{action "addTeamMemberEmail" newTeamMemberEmail on="submit"}}>
+        {{#each teamMemberEmails as |teamMemberEmail index|}}
+          <div class="form-group {{if (not (eq index 0)) "input-group"}} input-group-icon {{if teamMemberEmail.error "has-error"}}">
+            {{input type="text" class="form-control" id=(concat "team-member-email-" teamMemberEmail.index) placeholder="Team Member Email" value=teamMemberEmail.email}}
+            {{fa-icon "user" fixedWidth=true}}
+            {{#if (not (eq index 0))}}
+              <div class="input-group-btn">
+                <button {{action "removeTeamMemberEmail" teamMemberEmail}} class="btn btn-danger simple-action" type="button">-</button>
+              </div>
+            {{/if}}
+          </div>
+          {{#if teamMemberEmail.error}}
+            <p class="help-block creation text-danger">{{teamMemberEmail.error}}</p>
+          {{/if}}
+        {{/each}}
+        <button class="btn btn-success simple-action" type="submit">Add Another</button>
+      </form>
+    {{/x-modal-body}}
+    {{#x-modal-footer}}
+      <a role="button" {{action "cancelAddTeamMembers"}} class="btn btn-default btn-outline">Cancel</a>
+      <a role="button" {{action "addTeamMembers"}} class="btn btn-success">Send Invitations</a>
+    {{/x-modal-footer}}
+  {{/x-modal}}
+{{/if}}
