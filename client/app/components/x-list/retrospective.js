@@ -15,5 +15,10 @@ export default Component.extend({
     }
 
     return 0;
-  })
+  }),
+  actions: {
+    onConfirm(message, action) {
+      this.get('notifications').confirmAction(message, action);
+    }
+  }
 });
