@@ -35,9 +35,12 @@ Router.map(function() {
           this.route('retrospectives');
           this.route('preferences');
           this.route('billing');
-          this.route('loading');
         });
       });
+    });
+
+    this.route('retrospectives', function() {
+      this.route('history', { path: '/history/:id' });
     });
   });
 });
