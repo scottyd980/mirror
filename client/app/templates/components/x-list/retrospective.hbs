@@ -34,7 +34,7 @@
       <div class="actions">
         {{#if isAdmin}}
           {{#if onDelete}}
-            <a role="button" {{action onConfirm "Are you sure you want to delete this retrospective from your team's history?" (action onDelete retrospective)}} class="btn btn-danger btn-outline btn-xs">
+            <a role="button" {{action "onConfirm" "Are you sure you want to delete this retrospective from your team's history?" (action onDelete retrospective)}} class="btn btn-danger btn-outline btn-xs">
               {{fa-icon "times" fixedWidth=true}}
               {{#ember-tooltip side="bottom"}}
                 Delete
