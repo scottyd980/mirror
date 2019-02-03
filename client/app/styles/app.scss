@@ -263,7 +263,7 @@ ul.table-list {
         }
       }
 
-      &.retro-participants-container, &.retro-team-container {
+      .retro-participants-container, .retro-team-container {
         display: table;
 
         @media (max-width: $screen-xs-max) {
