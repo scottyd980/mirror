@@ -8,9 +8,9 @@ export default Component.extend({
     const retroAId = parseInt(retroA.id),
           retroBId = parseInt(retroB.id);
 
-    if(retroAId > retroBId) {
+    if(retroAId < retroBId) {
       return 1;
-    } else if(retroBId > retroAId) {
+    } else if(retroBId < retroAId) {
       return -1;
     }
 
