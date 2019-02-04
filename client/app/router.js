@@ -41,6 +41,13 @@ Router.map(function() {
 
     this.route('retrospectives', function() {
       this.route('history', { path: '/history/:id' });
+      this.route('retrospective', { path: '/:id' }, function() {
+        this.route('start');
+        this.route('score');
+        this.route('aggregate');
+        this.route('feedback');
+        this.route('summary');
+      });
     });
   });
 });

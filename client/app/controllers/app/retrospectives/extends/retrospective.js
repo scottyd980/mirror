@@ -1,0 +1,80 @@
+import Controller from '@ember/controller';
+import ENV from 'mirror/config/environment';
+
+export default Controller.extend({
+  actions: {
+    changeRetrospectiveState(currentStateSegment, direction) {
+      const retrospective = this.get('model').retrospective;
+
+      //TODO: Need to account for games here
+      const currentState = ENV.retrospective.sticky_notes.states.indexOf(currentStateSegment);
+
+      retrospective.set('state', (currentState + direction));
+      retrospective.save();
+    },
+    moveFeedback(id, state) {
+      this.store.findRecord('feedback', id).then((fb) => {
+        fb.set('state', state);
+        fb.save();
+      });
+    },
+    cancelRetrospective() {
+      const retrospective = this.get('model').retrospective;
+      retrospective.set('cancelled', true);
+      retrospective.save().then(() => {
+        this.transitionToRoute('app.teams.team.dashboard.retrospectives', this.get('model').team.id).then(() => {
+          this.get('notifications').success({
+            title: ENV.SUCCESS_MESSAGES.generic,
+            message: "The retrospective was successfully cancelled."
+          });
+        });
+      }).catch(() => {
+        this.get('notifications').error({
+          title: ENV.ERROR_MESSAGES.generic,
+          message: "We experienced an unexpected error. Please try again."
+        });
+      });
+    },
+    openActionModal(feedback) {
+      let actionMessage = '';
+
+      feedback.get('action').then((action) => {
+        if (action) {
+          actionMessage = action.get('message');
+        }
+
+        this.set('activeFeedback', feedback);
+        this.set('actionMessage', actionMessage);
+        this.set('isActionModalShowing', true);
+      });
+    },
+    closeActionModal() {
+      this.set('isActionModalShowing', false);
+      this.set('activeFeedback', null);
+      this.set('actionMessage', '');
+    },
+    submitActionItem() {
+      const feedback = this.controller.get('activeFeedback');
+      const message = this.controller.get('actionMessage');
+
+      feedback.get('action').then((action) => {
+        if (message.trim() !== "" && action) {
+          action.set('message', message);
+          action.save();
+        } else if (message.trim() !== "") {
+          this.store.createRecord('action', {
+            message: message,
+            feedback: feedback
+          }).save();
+        } else if (message.trim() === "" && action) {
+          action.destroyRecord();
+        }
+
+        this.send('closeActionModal');
+      });
+    },
+    onConfirm(message, action) {
+      this.get('notifications').confirmAction(message, action);
+    }
+  }
+});
