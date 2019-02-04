@@ -1,0 +1,21 @@
+{{outlet}}
+
+{{#if isActionModalShowing}}
+  {{#x-modal
+    onClose=(action "closeActionModal")
+    title="Take Action"
+  }}
+    {{#x-modal-body}}
+      <p>If your team wants to do something in regards to this feedback, enter how you plan to take action.</p>
+      {{textarea class="form-control" value=actionMessage}}
+    {{/x-modal-body}}
+    {{#x-modal-footer}}
+      <a role="button" {{action "closeActionModal"}} class="btn btn-default btn-outline">Cancel</a>
+      {{#if activeFeedback.action.message}}
+        <a role="button" {{action "submitActionItem"}} class="btn btn-success">Update</a>
+      {{else}}
+        <a role="button" {{action "submitActionItem"}} class="btn btn-success">Submit</a>
+      {{/if}}
+    {{/x-modal-footer}}
+  {{/x-modal}}
+{{/if}}
