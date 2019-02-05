@@ -16,10 +16,10 @@
             <div class="card-header">
               {{x-timer}}
             </div>
-            <a role="button" onclick={{action "changeRetrospectiveState" "start" 1}} class="btn btn-block btn-success btn-lg btn-callout">Continue {{fa-icon "angle-right" fixedWidth=true}}</a>
+            <a role="button" onclick={{action "changeRetrospectiveState" model.retrospective "start" 1}} class="btn btn-block btn-success btn-lg btn-callout">Continue {{fa-icon "angle-right" fixedWidth=true}}</a>
             <div class="row">
               <div class="col-xs-12">
-                <a role="button" onclick={{action "onConfirm" "Are you sure you want to cancel the retrospective in progress?" (action "cancelRetrospective" retrospective)}} class="btn btn-block btn-danger btn-outline">{{fa-icon "times" fixedWidth=true}} Cancel</a>
+                <a role="button" onclick={{action "onConfirm" "Are you sure you want to cancel the retrospective in progress?" (action "cancelRetrospective" model.retrospective)}} class="btn btn-block btn-danger btn-outline">{{fa-icon "times" fixedWidth=true}} Cancel</a>
               </div>
             </div>
           {{/x-card/callout}}

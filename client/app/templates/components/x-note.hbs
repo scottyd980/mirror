@@ -1,0 +1,21 @@
+<div class="note--top">
+  {{#if (eq isAnonymous "false")}}
+    <div class="note--provider">
+      {{data.user.username}}
+    </div>
+  {{/if}}
+  <div class="note--content">
+    {{yield}}
+  </div>
+</div>
+<div class="note--bottom">
+  <div class="note--action">
+    {{#if isModerator}}
+      <a role="button" {{action onFlag}} class="btn btn-default btn-outline-alt"><i class="fa fa-flag fa-fw"></i> <span class="hidden-xs">Flag{{if data.action.message "ged"}} For Action</span></a>
+    {{else}}
+      {{#if data.action.message}}
+        <div class="text-right"><i class="fa fa-flag"></i></div>
+      {{/if}}
+    {{/if}}
+  </div>
+</div>
