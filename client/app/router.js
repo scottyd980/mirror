@@ -47,6 +47,11 @@ Router.map(function() {
         this.route('aggregate');
         this.route('feedback');
         this.route('summary');
+
+        this.route('sticky-notes', function() {
+          this.route('board-negative');
+          this.route('board-positive');
+        });
       });
     });
   });

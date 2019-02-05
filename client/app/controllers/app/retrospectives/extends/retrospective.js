@@ -3,9 +3,7 @@ import ENV from 'mirror/config/environment';
 
 export default Controller.extend({
   actions: {
-    changeRetrospectiveState(currentStateSegment, direction) {
-      const retrospective = this.get('model').retrospective;
-
+    changeRetrospectiveState(retrospective, currentStateSegment, direction) {
       //TODO: Need to account for games here
       const currentState = ENV.retrospective.sticky_notes.states.indexOf(currentStateSegment);
 
@@ -18,8 +16,7 @@ export default Controller.extend({
         fb.save();
       });
     },
-    cancelRetrospective() {
-      const retrospective = this.get('model').retrospective;
+    cancelRetrospective(retrospective) {
       retrospective.set('cancelled', true);
       retrospective.save().then(() => {
         this.transitionToRoute('app.teams.team.dashboard.retrospectives', this.get('model').team.id).then(() => {
@@ -54,8 +51,8 @@ export default Controller.extend({
       this.set('actionMessage', '');
     },
     submitActionItem() {
-      const feedback = this.controller.get('activeFeedback');
-      const message = this.controller.get('actionMessage');
+      const feedback = this.get('activeFeedback');
+      const message = this.get('actionMessage');
 
       feedback.get('action').then((action) => {
         if (message.trim() !== "" && action) {

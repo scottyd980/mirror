@@ -1,0 +1,52 @@
+<div class="nav-push">
+  <div class="container">
+    <div class="row">
+      <div class="col-md-8">
+        {{#x-card title="Provide feedback for the sprint" overlay=submitted}}
+          <div class="row feedbacks">
+            {{#each model.gameInput as |input|}}
+              <div class="col-md-6">
+                <label for={{concat input.idPrefix "-textarea"}}>
+                  <p><strong>{{input.label}}</strong></p>
+                </label>
+                {{textarea rows="10" data-type=input.type id=(concat input.idPrefix "-textarea") class="form-control" value=input.value}}
+              </div>
+            {{/each}}
+          </div>
+          <div class="card-footer">
+            {{#if submitted}}
+              <button disabled id="feedback-submit" {{action "submitFeedback"}} class="btn btn-success mg-bottom-lg">{{fa-icon "check" fixedWidth=true}} Feedback Submitted</button>
+            {{else}}
+              <button id="feedback-submit" {{action "submitFeedback"}} class="btn btn-success mg-bottom-lg">Submit Feedback</button>
+            {{/if}}
+          </div>
+        {{/x-card}}
+      </div>
+      <div class="col-md-4">
+        {{#if model.parent.isModerator}}
+          {{#x-card/callout title="Moderator"}}
+            <div class="card-header">
+              {{x-timer}}
+            </div>
+            <a role="button" onclick={{action "changeRetrospectiveState" model.parent.retrospective "feedback" 1}} class="btn btn-block btn-success btn-lg btn-callout">Continue {{fa-icon "angle-right" fixedWidth=true}}</a>
+            <div class="row">
+              <div class="col-xs-6">
+                <a role="button" onclick={{action "changeRetrospectiveState" model.parent.retrospective "feedback" -1}} class="btn btn-block btn-info btn-outline">{{fa-icon "angle-left" fixedWidth=true}} Back</a>
+              </div>
+              <div class="col-xs-6">
+                <a role="button" onclick={{action "onConfirm" "Are you sure you want to cancel the retrospective in progress?" (action "cancelRetrospective" model.parent.retrospective)}} class="btn btn-block btn-danger btn-outline">{{fa-icon "times" fixedWidth=true}} Cancel</a>
+              </div>
+            </div>
+          {{/x-card/callout}}
+        {{/if}}
+        {{#x-card title="Participants"}}
+          {{x-list/retrospective/submission
+                members=model.parent.retrospective.participants
+                submitted=model.feedbackSubmissions 
+                currentUser=model.parent.currentUser
+            }}
+        {{/x-card}}
+      </div>
+    </div>
+  </div>
+</div>
