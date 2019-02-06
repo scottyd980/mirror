@@ -15,7 +15,7 @@
       <div class="actions">
         {{#unless hideDelete}}
           <a role="button" class="btn btn-danger btn-outline btn-xs"
-            {{action onConfirm "Are you sure you want to delete this organization? This action can not be undone. This will also stop all future billing for this organization and its teams." (action onDelete organization)}}>
+            {{action "onConfirm" "Are you sure you want to delete this organization? This action can not be undone. This will also stop all future billing for this organization and its teams." (action onDelete organization)}}>
             {{fa-icon "times" fixedWidth=true}}
             {{#ember-tooltip side="bottom"}}
               Delete
