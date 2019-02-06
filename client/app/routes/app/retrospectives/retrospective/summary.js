@@ -1,7 +1,6 @@
 import Route from '@ember/routing/route';
 import { hash } from 'rsvp';
 import { inject as service } from '@ember/service';
-import $ from 'jquery';
 
 export default Route.extend({
   retroSvc: service('retrospective'),
