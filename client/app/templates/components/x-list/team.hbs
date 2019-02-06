@@ -10,7 +10,7 @@
       <div class="actions">
         {{#unless hideDelete}}
           <a role="button" class="btn btn-danger btn-outline btn-xs"
-            {{action onConfirm "Are you sure you want to remove this team from your organization?" (action deleteTeam team)}}>
+            {{action "onConfirm" "Are you sure you want to remove this team from your organization?" (action deleteTeam team)}}>
             {{fa-icon "times" fixedWidth=true}}
             {{#ember-tooltip side="bottom"}}
               Remove From Organization
