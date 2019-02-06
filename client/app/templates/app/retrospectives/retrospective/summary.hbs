@@ -1,0 +1,74 @@
+<div class="nav-push">
+  <div class="container">
+    <div class="row">
+      <div class="col-md-8">
+        {{#x-card title="Score Summary"}}
+          <div class="row">
+            <div class="col-sm-4">
+              <p><strong>Lowest Score</strong></p>
+              <div class="color-box danger-bg text-center white-text">
+                <p>{{fa-icon "star-o" fixedWidth=true}} {{low_score.score}}</p>
+              </div>
+            </div>
+
+            <div class="mg-bottom-md visible-xs"></div>
+
+            <div class="col-sm-4">
+              <p><strong>Average Score</strong></p>
+              <div class="color-box warning-bg text-center">
+                <p>{{fa-icon "star-half-o" fixedWidth=true}} {{average_score}}</p>
+              </div>
+            </div>
+
+            <div class="mg-bottom-md visible-xs"></div>
+
+            <div class="col-sm-4">
+              <p><strong>Highest Score</strong></p>
+              <div class="color-box primary-bg text-center white-text">
+                <p>{{fa-icon "star" fixedWidth=true}} {{high_score.score}}</p>
+              </div>
+            </div>
+          </div>
+        {{/x-card}}
+        {{#x-card title="Feedback Summary"}}
+          <div class="row">
+            <div class="col-md-12">
+              <ul class="icons-list">
+                {{#each (sort-by "category" model.feedback) as |feedback|}}
+                  <li class={{concat "icons-list--" feedback.category}}>
+                    <div class="pre">{{feedback.message}}</div>
+                    {{#if feedback.action.message}}
+                      <strong>Action:</strong> {{feedback.action.message}}
+                    {{/if}}
+                  </li>
+                {{else}}
+                  <li class="icons-list--negative">It looks like there was no feedback for this retrospective.</li>
+                {{/each}}
+              </ul>
+            </div>
+          </div>
+        {{/x-card}}
+      </div>
+      <div class="col-md-4">
+        {{#x-card/callout title=(concat model.parent.retrospective.name " Summary")}}
+          <div class="card-header">
+            {{fa-icon "thumbs-up"}}
+          </div>
+          {{#link-to "app.teams.team.dashboard.retrospectives" model.parent.retrospective.team.id class="btn btn-block btn-success btn-lg btn-callout"}}Team Dashboard {{fa-icon "angle-right" fixedWidth=true}}{{/link-to}}
+          <div class="row">
+            <div class="col-xs-12">
+              <p class="text-center">Great job! The retrospective for {{model.parent.retrospective.name}} is complete!</p>
+            </div>
+          </div>
+        {{/x-card/callout}}
+        {{#x-card title="Participants"}}
+          {{x-list/retrospective/submission
+                members=model.parent.retrospective.participants
+                currentUser=model.parent.currentUser
+                userList=true
+            }}
+        {{/x-card}}
+      </div>
+    </div>
+  </div>
+</div>
