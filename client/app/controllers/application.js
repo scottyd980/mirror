@@ -5,8 +5,8 @@ import { inject as service } from '@ember/service';
 
 export default Controller.extend({
   session: service(),
+  billing_active: ENV.FLAGS.billing,
   actions: {
-    billing_active: ENV.FLAGS.billing,
     navbarCollapse(target) {
       // Do not collapse on desktop (i.e. if the button navbar toggle is hidden)
       if ($('button.navbar-toggle').is(':hidden')) {
