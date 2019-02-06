@@ -1,0 +1,61 @@
+<div class="nav-push">
+  <div class="container">
+    <div class="row">
+      <div class="col-md-8">
+        {{#x-card title="Sprint Scores"}}
+          <div class="row">
+            <div class="col-sm-4">
+              <p><strong>Lowest Score</strong></p>
+              <div class="color-box danger-bg text-center white-text">
+                <p>{{fa-icon "star-o" fixedWidth=true}} {{low_score.score}}</p>
+              </div>
+            </div>
+
+            <div class="mg-bottom-md visible-xs"></div>
+
+            <div class="col-sm-4">
+              <p><strong>Average Score</strong></p>
+              <div class="color-box warning-bg text-center">
+                <p>{{fa-icon "star-half-o" fixedWidth=true}} {{average_score}}</p>
+              </div>
+            </div>
+
+            <div class="mg-bottom-md visible-xs"></div>
+
+            <div class="col-sm-4">
+              <p><strong>Highest Score</strong></p>
+              <div class="color-box primary-bg text-center white-text">
+                <p>{{fa-icon "star" fixedWidth=true}} {{high_score.score}}</p>
+              </div>
+            </div>
+          </div>
+        {{/x-card}}
+      </div>
+      <div class="col-md-4">
+        {{#if model.parent.isModerator}}
+          {{#x-card/callout title="Moderator"}}
+            <div class="card-header">
+              {{x-timer}}
+            </div>
+            <a role="button" onclick={{action "changeRetrospectiveState" model.parent.retrospective "aggregate" 1}} class="btn btn-block btn-success btn-lg btn-callout">Continue {{fa-icon "angle-right" fixedWidth=true}}</a>
+            <div class="row">
+              <div class="col-xs-6">
+                <a role="button" onclick={{action "changeRetrospectiveState" model.parent.retrospective "aggregate" -1}} class="btn btn-block btn-info btn-outline">{{fa-icon "angle-left" fixedWidth=true}} Back</a>
+              </div>
+              <div class="col-xs-6">
+                <a role="button" onclick={{action "onConfirm" "Are you sure you want to cancel the retrospective in progress?" (action "cancelRetrospective" model.parent.retrospective)}} class="btn btn-block btn-danger btn-outline">{{fa-icon "times" fixedWidth=true}} Cancel</a>
+              </div>
+            </div>
+          {{/x-card/callout}}
+        {{/if}}
+        {{#x-card title="Participants"}}
+          {{x-list/retrospective/submission
+                members=model.parent.retrospective.participants
+                currentUser=model.parent.currentUser
+                userList=true
+            }}
+        {{/x-card}}
+      </div>
+    </div>
+  </div>
+</div>
