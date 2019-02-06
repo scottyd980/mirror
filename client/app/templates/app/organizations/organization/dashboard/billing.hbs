@@ -1,0 +1,84 @@
+{{#unless model.cards}}
+  <div class="alert page-alert alert-warning" role="alert">
+    <div class="container">
+      {{fa-icon "exclamation-triangle" fixedWidth=true}}
+      <span class="sr-only">Warning:</span>
+      We can not begin billing an organization until the billing frequency has been selected and a payment method has
+      been set.
+    </div>
+  </div>
+{{/unless}}
+
+<div class="container">
+  <div class="row">
+    <div class="col-md-8">
+      {{#x-card title="Billing"}}
+        All teams start with a free, no obligation, month-long trial period. At the end of the trial period, a payment
+        method is required for teams to continue running retrospectives.
+        We offer both monthly and yearly plans - yearly plans recieve a substantial discount versus our monthly plans.
+      {{/x-card}}
+      {{#x-card title="Payment Methods"}}
+        {{#if model.cards}}
+          {{x-list/billing
+            cards=model.cards 
+            default_payment=model.organization.default_payment
+            onMakeDefault=(action "makeDefaultBillingInformation")
+            onDelete=(action "deleteBillingInformation")
+          }}
+        {{else}}
+          There are currently no cards stored for your organization.
+        {{/if}}
+      {{/x-card}}
+    </div>
+    <div class="col-md-4">
+      {{#x-card title="Billing Frequency"}}
+        <ul class="toggle-buttons">
+          <li class="three-wide">
+            <div class="radio-button">
+              <input checked={{if (eq model.organization.billing_frequency "none") "checked"}} type="radio" id={{concat "billing-freq-none-" model.organization.id}}
+                value="none" name={{concat "billing-freq-" model.organization.id}} >
+              <label for={{concat "billing-freq-none-" model.organization.id}} class="radio-list--item">
+                None
+                <span>Trial Only</span>
+              </label>
+            </div>
+          </li>
+          <li class="three-wide">
+            <div class="radio-button">
+              <input checked={{if (eq model.organization.billing_frequency "monthly") "checked"}} type="radio" id={{concat "billing-freq-month-" model.organization.id}}
+                value="monthly" name={{concat "billing-freq-" model.organization.id}} >
+              <label for={{concat "billing-freq-month-" model.organization.id}} class="radio-list--item">
+                Monthly
+                <span>$10 / Team</span>
+              </label>
+            </div>
+          </li>
+          <li class="three-wide">
+            <div class="radio-button">
+              <input checked={{if (eq model.organization.billing_frequency "yearly") "checked"}} type="radio" id={{concat "billing-freq-year-" model.organization.id}}
+                value="yearly" name={{concat "billing-freq-" model.organization.id}} >
+              <label for={{concat "billing-freq-year-" model.organization.id}} class="radio-list--item">
+                Yearly
+                <span>$100 / Team</span>
+              </label>
+            </div>
+          </li>
+        </ul>
+        <div class="card-footer">
+          <a role="button" {{action "updateBillingFrequency"}} class="btn btn-success">Update Billing Frequency</a>
+        </div>
+      {{/x-card}}
+      {{x-card/billing
+        title="Add New Payment Method"
+        afterSubmission=(action "newOrganizationBilling")
+        loadMethod=(action "toggleLoadingScreen" "Updating Payment Methods...")
+      }}
+    </div>
+  </div>
+</div>
+
+{{#if currentlyLoading}}
+  <div class="loading-screen">
+    {{x-loader message=loadingMessage}}
+  </div>
+{{/if}}
