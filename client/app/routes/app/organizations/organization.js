@@ -7,7 +7,7 @@ export default Route.extend({
       throw ENV.ERROR_CODES.not_found;
     });
   },
-  redirect(model) {
-    this.transitionTo('app.organizations.organization.dashboard', model);
-  },
+  // redirect(model) {
+  //   this.transitionTo('app.organizations.organization.dashboard', model);
+  // },
 });
