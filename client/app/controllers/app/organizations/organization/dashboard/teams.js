@@ -22,7 +22,7 @@ export default Controller.extend({
         //this.send('invalidateApplicationModel');
         this.toggleLoadingScreen();
       }).catch((error) => {
-        // TODO: Handle error
+        // TODO: Handle error 
         this.toggleLoadingScreen();
       });
     }
