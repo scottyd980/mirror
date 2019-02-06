@@ -1,1 +1,142 @@
-{{outlet}}
+<div class="container">
+  <div class="row">
+    {{#if model.team.organization}}
+      <div class="col-md-8">
+        {{#x-card title="Billing"}}
+          <h3>Billing is managed by a team's parent organization.</h3>
+          <h4 class="pad-bottom-sm">The organization that manages this team is: <strong>{{model.team.organization.name}}</strong>.</h4>
+          {{#if (contains model.currentUser model.team.organization.admins)}}
+            <p>
+              Since you are the organization administrator, you can update billing preferences for your team in your organization's billing preferences.
+            </p>
+            <div class="card-footer">
+              {{#link-to "app.organizations.organization.dashboard" model.team.organization.id class="btn btn-success"}}View Organization Preferences{{/link-to}}
+            </div>
+          {{else}}
+            <p>If changes to billing need to be made, please talk to your organization administrator.</p>
+          {{/if}}
+        {{/x-card}}
+      </div>
+      <div class="col-md-4">
+        {{#x-card title="Billing Status"}}
+          <ul class="icons-list">
+            {{#if (contains model.team.organization.billing_status active_billing_types)}}
+              <li class="icons-list--active">
+                Active
+              </li>
+            {{else}}
+              <li class="icons-list--inactive">
+                Inactive
+              </li>
+            {{/if}}
+          </ul>
+        {{/x-card}}
+      </div>
+    {{else}}
+      <div class="col-md-12">
+        {{#x-card title="Billing"}}
+          <h3 class="text-center">Billing is managed by a team's parent organization.</h3>
+          <p class="text-center pad-bottom-lg">Since your team does not have a parent organization yet, you must either add it to an existing organization, or create a new organization to provide billing information.</p>
+          <div class="row">
+            {{#if model.user_organizations}}
+              <div class="col-md-6 text-center marketing-block marketing-block-stacked">
+                <img class="marketing-icon" src="/img/marketing/use-user.svg" alt="add to your organization">
+                <h4>Add To One Of Your Organizations</h4>
+                <p>It's easy to add the team to an organization that you already administer.</p>
+                <a role="button" {{action "toggleJoinOwnOrganizationModal"}} class="btn btn-success btn-block">Join One Of Your Organizations</a>
+              </div>
+            {{/if}}
+            <div class="{{if model.user_organizations "col-md-6" "col-md-12"}} text-center marketing-block marketing-block-stacked">
+              <img class="marketing-icon" src="/img/marketing/cha-plus.svg" alt="create a new organization">
+              <h4>Create A New Organization</h4>
+              <p>If you don't already have an organization, you can create one in a single step.</p>
+              <a role="button" {{action "toggleCreateNewOrganizationModal"}} class="btn btn-success btn-block">Create A New Organization</a>
+            </div>
+            {{!--<div class="{{if model.user_organizations "col-md-4" "col-md-6"}} text-center marketing-block marketing-block-stacked">
+              <img class="marketing-icon" src="/img/marketing/use-user-user-user.svg" />
+              <h4>Add To Another Organization</h4>
+              <p>If you don't own the organization, you can submit a request for your team to be added.</p>
+              <a {{action "toggleJoinAnotherOrganizationModal"}} class="btn btn-success btn-block">Request To Add To Another Organization</a>
+            </div>--}}
+          </div>
+        {{/x-card}}
+      </div>
+    {{/if}}
+  </div>
+</div>
+
+{{#if isJoinOwnOrganizationModalShowing}}
+  {{#x-modal
+    onClose=(action "toggleJoinOwnOrganizationModal")
+    title="Join One Of Your Organizations"
+  }}
+    {{#x-modal-body}}
+      <p>Select the organization below that you want the team to be a member of.</p>
+      <ul class="radio-list">
+        {{#each model.user_organizations as |organization|}}
+          <li>
+            <div class="radio-button">
+              <input type="radio" id={{concat "organization-" organization.id}} value={{organization.id}} name="billing-add-organization">
+              <label for={{concat "organization-" organization.id}} class="radio-list--item">
+                {{organization.name}}
+              </label>
+            </div>
+          </li>
+        {{/each}}
+      </ul>
+      {{#if orgError}}
+        <p class="help-block creation text-danger">{{orgError}}</p>
+      {{/if}}
+    {{/x-modal-body}}
+    {{#x-modal-footer}}
+      <a role="button" {{action "toggleJoinOwnOrganizationModal"}} class="btn btn-default btn-outline">Cancel</a>
+      <a role="button" {{action "joinOwnOrganization"}} class="btn btn-success">Join</a>
+    {{/x-modal-footer}}
+  {{/x-modal}}
+{{/if}}
+
+{{#if isCreateNewOrganizationModalShowing}}
+  {{#x-modal
+    onClose=(action "toggleCreateNewOrganizationModal")
+    title="Create A New Organization"
+  }}
+    {{#x-modal-body}}
+      <p>Enter the name of the organization you'd like to create below. You will automatically become an admin of the organization and this team will automatically be added to the organization.</p>
+      <div class="form-group input-group-icon">
+        {{input type="text" class="form-control" placeholder="Organization Name" value=newOrganizationName}}
+        {{fa-icon "group" fixedWidth=true}}
+      </div>
+      {{#if orgError}}
+        <p class="help-block creation text-danger">{{orgError}}</p>
+      {{/if}}
+    {{/x-modal-body}}
+    {{#x-modal-footer}}
+      <a role="button" {{action "toggleCreateNewOrganizationModal"}} class="btn btn-default btn-outline">Cancel</a>
+      <a role="button" {{action "createOrganization"}} class="btn btn-success">Create</a>
+    {{/x-modal-footer}}
+  {{/x-modal}}
+{{/if}}
+
+{{#if isJoinAnotherOrganizationModalShowing}}
+  {{#x-modal
+    onClose=(action "toggleJoinAnotherOrganizationModal")
+    title="Join Another Organization"
+  }}
+    {{#x-modal-body}}
+      Select the organization below that you want the team to be a member of.
+      {{#each model.user_organizations as |organization|}}
+        {{organization.name}}
+      {{/each}}
+    {{/x-modal-body}}
+    {{#x-modal-footer}}
+      <a role="button" {{action "toggleJoinAnotherOrganizationModal"}} class="btn btn-default btn-outline">Cancel</a>
+      <a role="button" {{action "startRetrospective"}} class="btn btn-success">Join</a>
+    {{/x-modal-footer}}
+  {{/x-modal}}
+{{/if}}
+
+{{#if currentlyLoading}}
+  <div class="loading-screen">
+    {{x-loader message=loadingMessage}}
+  </div>
+{{/if}}
