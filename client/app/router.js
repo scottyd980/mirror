@@ -54,6 +54,17 @@ Router.map(function() {
         });
       });
     });
+
+    if(config.FLAGS.billing) {
+      this.route('organizations', function() {
+        this.route('create');
+
+        this.route('organization', { path: '/:id' }, function() {
+          this.route('dashboard');
+        });
+        this.route('dashboard');
+      });
+    }
   });
 });
 
