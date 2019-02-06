@@ -1,0 +1,31 @@
+<div class="container">
+  <div class="row">
+    <div class="col-md-8">
+      {{#x-card title="Teams"}}
+        {{#if model.teams}}
+          {{x-list/team
+              teams=model.teams
+              viewTeam=(action "viewTeam")
+              deleteTeam=(action "removeTeam")
+          }}
+        {{else}}
+          There are no teams associated with your organization.
+        {{/if}}
+      {{/x-card}}
+    </div>
+    <div class="col-md-4">
+      {{#x-card title="Create"}}
+        <p>Teams are generally created by a member of the team itself. Retrospectives and team members are managed through the team dashboard.</p>
+        <div class="card-footer">
+          {{#link-to "app.teams.create" class="btn btn-success"}}Create A Team{{/link-to}}
+        </div>
+      {{/x-card}}
+    </div>
+  </div>
+</div>
+
+{{#if currentlyLoading}}
+  <div class="loading-screen">
+    {{x-loader message=loadingMessage}}
+  </div>
+{{/if}}
