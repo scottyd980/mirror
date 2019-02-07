@@ -1,5 +1,8 @@
 module.exports = {
   root: true,
+  globals: {
+    "Stripe": true
+  },
   parserOptions: {
     ecmaVersion: 2017,
     sourceType: 'module'
