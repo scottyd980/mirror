@@ -15,7 +15,7 @@
         </p>
       </div>
       <div class="actions">
-        {{#unless (or (eq card.id default_payment.id) card.is_expired)}}
+        {{#if (and (not-eq card.id default_payment.id) (not card.is_expired))}}
           <a
             role="button"
             {{action "onConfirm" "Are you sure you want to make this the default payment method?" (action onMakeDefault card)}}
@@ -25,7 +25,7 @@
               Make Default
             {{/ember-tooltip}}
           </a>
-        {{/unless}}
+        {{/if}}
         <a 
           role="button"
           {{action "onConfirm" "Are you sure you want to remove this payment method?" (action onDelete card)}} class="btn btn-danger btn-outline btn-xs">

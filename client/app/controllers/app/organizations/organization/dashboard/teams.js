@@ -21,7 +21,7 @@ export default Controller.extend({
       team.save().then(() => {
         //this.send('invalidateApplicationModel');
         this.toggleLoadingScreen();
-      }).catch((error) => {
+      }).catch(() => {
         // TODO: Handle error
         this.toggleLoadingScreen();
       });
