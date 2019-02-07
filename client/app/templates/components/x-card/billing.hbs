@@ -1,1 +1,30 @@
-{{yield}}
+{{#x-card title=title}}
+  <p>All payments are processed using Stripe. We do not store your full credit card number or CVC code.</p>
+  <div class="form-group">
+    <label for="org-billing-name">
+      Name
+    </label>
+    {{input id="org-billing-name" type="text" class="form-control" value=customer_name}}
+  </div>
+  <div class="form-group">
+    <label for="org-billing-card">
+      Card
+    </label>
+    <div id="org-billing-card" class="form-control stripe">
+      {{!-- a Stripe Element will be inserted here. --}}
+    </div>
+  </div>
+  <div class="form-group">
+    <label for="org-billing-zip">
+      Billing Zip Code
+    </label>
+    {{input id="org-billing-zip" maxlength="5" type="text" class="form-control" value=zipcode}}
+  </div>
+
+  {{!-- Used to display form errors --}}
+  <div id="card-errors"></div>
+
+  <div class="card-footer">
+    <a role="button" {{action "processCreditCard"}} class="btn btn-success">Add Billing Information</a>
+  </div>
+{{/x-card}}
