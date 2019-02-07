@@ -19,7 +19,7 @@ export default Controller.extend({
     cancelRetrospective(retrospective) {
       retrospective.set('cancelled', true);
       retrospective.save().then(() => {
-        this.transitionToRoute('app.teams.team.dashboard.retrospectives', this.get('model').team.id).then(() => {
+        this.transitionToRoute('app.teams.team.dashboard.retrospectives', retrospective.get('team.id')).then(() => {
           this.get('notifications').success({
             title: ENV.SUCCESS_MESSAGES.generic,
             message: "The retrospective was successfully cancelled."
