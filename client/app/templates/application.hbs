@@ -9,13 +9,13 @@
         <span class="icon-bar"></span>
       </button>
       {{#if session.isAuthenticated}}
-        <div onclick={{action "navbarCollapse" value="target"}}>
+        <div role="button" onclick={{action "navbarCollapse" value="target"}}>
           {{#link-to "app.index" class="navbar-brand navbar-brand-icon"}}
             Mirror <sup class="navbar-beta">beta</sup>
           {{/link-to}}
         </div>
       {{else}}
-        <div onclick={{action "navbarCollapse" value="target"}}>
+        <div role="button" onclick={{action "navbarCollapse" value="target"}}>
           {{#link-to "index" class="navbar-brand navbar-brand-icon"}}
             Mirror <sup class="navbar-beta">beta</sup>
           {{/link-to}}
@@ -23,7 +23,7 @@
       {{/if}}
     </div>
 
-    <div class="collapse navbar-collapse" onclick={{action "navbarCollapse" value="target"}} id="navbar-collapse">
+    <div role="button" class="collapse navbar-collapse" onclick={{action "navbarCollapse" value="target"}} id="navbar-collapse">
       {{#if session.isAuthenticated}}
         <ul class="nav navbar-nav navbar-right navbar-auth">
           <li>{{#link-to "app.index"}}Dashboard{{/link-to}}</li>
