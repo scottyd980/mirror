@@ -34,7 +34,6 @@ export default Route.extend({
       throw ENV.ERROR_CODES.not_found;
     });
 
-    // TODO: Maybe don't need this
     const currentUser = this.get('session').get('currentUser');
 
     return hash({

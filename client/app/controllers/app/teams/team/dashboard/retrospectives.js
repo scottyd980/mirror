@@ -63,8 +63,6 @@ export default Controller.extend({
       });
     },
     joinRetrospective(retrospective_id) {
-      var _this = this;
-  
       return fetch(`${ENV.DS.host}/${ENV.DS.namespace}/retrospective_participants`, {
         method: 'POST',
         headers: {
@@ -78,18 +76,17 @@ export default Controller.extend({
         if (response.status === ENV.STATUS_CODES.created || response.status === ENV.STATUS_CODES.ok) {
           response.json().then((resp) => {
             // Always direct to start, the retrospective controller will handle additional re-routing
-            _this.transitionToRoute('app.retrospectives.retrospective.start', resp.data.attributes["retrospective-id"]);
+            this.transitionToRoute('app.retrospectives.retrospective.start', resp.data.attributes["retrospective-id"]);
           });
         } else {
-          if (response.status === ENV.STATUS_CODES.unprocessable_entity) {
-            _this.get('notifications').error({
-              title: ENV.ERROR_MESSAGES.generic,
-              message: "We experienced an unexpected error trying to join the retrospective. Please try again."
-            });
-          }
+          throw new Error('Unexpected response from server');
         }
+      }).catch(() => {
+        this.get('notifications').error({
+          title: ENV.ERROR_MESSAGES.generic,
+          message: "We experienced an unexpected error trying to join the retrospective. Please try again."
+        });
       });
-      // TODO: Add catch
     }
   }
 });

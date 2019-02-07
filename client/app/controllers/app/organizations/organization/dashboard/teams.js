@@ -1,4 +1,5 @@
 import Controller from '@ember/controller';
+import ENV from 'mirror/config/environment';
 
 export default Controller.extend({
   isAdmin: false,
@@ -19,11 +20,13 @@ export default Controller.extend({
       this.toggleLoadingScreen("Removing Team...");
       team.set('organization', null);
       team.save().then(() => {
-        //this.send('invalidateApplicationModel');
         this.toggleLoadingScreen();
       }).catch(() => {
-        // TODO: Handle error
         this.toggleLoadingScreen();
+        this.get('notifications').error({
+          title: ENV.ERROR_MESSAGES.generic,
+          message: "We experienced an unexpected error trying to remove the team from your organization. Please try again."
+        });
       });
     }
   }

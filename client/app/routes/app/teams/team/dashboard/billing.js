@@ -9,7 +9,6 @@ export default Route.extend({
     return hash({
       team: this.modelFor('app.teams.team'),
       user_organizations: this.get('session.currentUser').get('organizations'),
-      // TODO: Remove?
       currentUser: this.get('session').get('currentUser')
     });
   },

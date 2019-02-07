@@ -27,11 +27,13 @@ export default Route.extend({
           this.transitionTo('app.teams.team.dashboard.retrospectives', resp.data.relationships.team.data.id);
         });
       } else {
-        // TODO: Test this and catch this
-        if (response.status === ENV.STATUS_CODES.unprocessable_entity) {
-          throw ENV.ERROR_CODES.server_error;
-        }
+        throw ENV.ERROR_CODES.server_error;
       }
+    }).catch(() => {
+      this.get('notifications').error({
+        title: ENV.ERROR_MESSAGES.generic,
+        message: "We experienced an unexpected error trying to join the team. Please try again."
+      });
     });
   }
 });

@@ -21,7 +21,6 @@ export default Route.extend({
       }).then((data) => {
         return data.next_sprint;
       }),
-      // TODO: Maybe remove this
       currentUser: this.get('session').get('currentUser')
     })
   },
