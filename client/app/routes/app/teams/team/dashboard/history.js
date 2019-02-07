@@ -12,7 +12,6 @@ export default Route.extend({
           team: this.modelFor('app.teams.team').get('id')
         }
       }),
-      // TODO: Remove?
       currentUser: this.get('session').get('currentUser')
     });
   },
