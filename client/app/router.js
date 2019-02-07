@@ -21,9 +21,6 @@ Router.map(function() {
     });
   });
   this.route('app', function() {
-    this.route('error');
-    this.route('loading');
-
     this.route('teams', function() {
       this.route('create');
       this.route('join');
