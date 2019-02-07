@@ -9,7 +9,6 @@ export default Route.extend({
     return hash({
       team: this.modelFor('app.teams.team'),
       members: this.modelFor('app.teams.team').get('members'),
-      // TODO: Remove?
       currentUser: this.get('session').get('currentUser')
     });
   },
@@ -21,7 +20,7 @@ export default Route.extend({
       showAddTeamMembersModal: false,
       adminWarning: false,
     });
-    
+
     controller.set('isAdmin', models.team.get('admins').includes(models.currentUser));
     controller.set('teamMemberEmails', A());
     controller.set('newMemberIndex', 2);

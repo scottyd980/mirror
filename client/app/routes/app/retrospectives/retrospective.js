@@ -25,7 +25,6 @@ export default Route.extend({
       throw ENV.ERROR_CODES.not_found;
     });
 
-    // TODO: Remove this?
     const currentUser = this.get('session').get('currentUser');
 
     const isModerator = retrospective.then((retrospective) => {

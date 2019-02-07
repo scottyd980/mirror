@@ -68,13 +68,14 @@ export default RetrospectiveController.extend({
               this.submitFeedback(uuid.hash);
             });
           } else {
-            this.get('notifications').error({
-              title: ENV.ERROR_MESSAGES.process,
-              message: "There was a problem submitting your feedback. Please try again."
-            });
+            throw new Error('Unexpected response from server');
           }
+        }).catch(() => {
+          this.get('notifications').error({
+            title: ENV.ERROR_MESSAGES.process,
+            message: "There was a problem submitting your feedback. Please try again."
+          });
         });
-        // TODO: Catch
       }
     }
   }

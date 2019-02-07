@@ -61,14 +61,13 @@ export default Controller.extend({
           });
           _this.get('model').team.reload();
         } else {
-          if(response.status === ENV.STATUS_CODES.unprocessable_entity) {
-            _this.get('notifications').error({
-              title: ENV.ERROR_MESSAGES.generic,
-              message: "We experienced an unexpected error. Please try again."
-            });
-          }
+          throw new Error('Unexpected response from server');
         }
-        // TODO: Catch
+      }).catch(() => {
+        this.get('notifications').error({
+          title: ENV.ERROR_MESSAGES.process,
+          message: "We experienced an unexpected error. Please try again."
+        });
       });
     },
     removeAdmin(member, team) {
@@ -92,14 +91,13 @@ export default Controller.extend({
           });
           _this.get('model').team.reload();
         } else {
-          if(response.status === ENV.STATUS_CODES.unprocessable_entity) {
-            _this.get('notifications').error({
-              title: ENV.ERROR_MESSAGES.generic,
-              message: "We experienced an unexpected error. Please try again."
-            });
-          }
+          throw new Error('Unexpected response from server');
         }
-        // TODO: Catch
+      }).catch(() => {
+        this.get('notifications').error({
+          title: ENV.ERROR_MESSAGES.process,
+          message: "We experienced an unexpected error. Please try again."
+        });
       });
     },
     deleteMember(member, team) {
@@ -131,12 +129,13 @@ export default Controller.extend({
             message: "It looks like you're currently the only admin on the team. In order to leave the team, you must assign another admin. If you would like to delete the team instead, please go to the team's preferences."
           });
         } else {
-          _this.get('notifications').error({
-            title: ENV.ERROR_MESSAGES.generic,
-            message: "We experienced an unexpected error. Please try again."
-          });
+          throw new Error('Unexpected response from server');
         }
-        // TODO: CAtch
+      }).catch(() => {
+        this.get('notifications').error({
+          title: ENV.ERROR_MESSAGES.process,
+          message: "We experienced an unexpected error. Please try again."
+        });
       });
     },
 
@@ -201,13 +200,9 @@ export default Controller.extend({
             }); 
           });
         } else {
-          _this.get('notifications').error({
-            title: ENV.ERROR_MESSAGES.generic,
-            message: "We experienced an unexpected error trying to send team member invitations. Please try again."
-          });
+          throw new Error('Unexpected response from server');
         }
       }).catch(() => {
-        // TODO: Better catch
         _this.get('notifications').error({
           title: ENV.ERROR_MESSAGES.generic,
           message: "We experienced an unexpected error trying to send team member invitations. Please try again."

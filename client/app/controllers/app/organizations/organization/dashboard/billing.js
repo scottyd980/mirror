@@ -23,7 +23,6 @@ export default Controller.extend({
       card.set('zip_code', token.card.address_zip);
       card.set('organization', this.get('model.organization'));
       card.save().then(() => {
-        //TODO: TEST THESE
         this.send('invalidateApplicationModel');
         this.toggleLoadingScreen();
       });

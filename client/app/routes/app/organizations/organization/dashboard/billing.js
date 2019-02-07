@@ -7,7 +7,6 @@ export default Route.extend({
   model() {
     return hash({
       organization: this.modelFor('app.organizations.organization'),
-      //TODO: Remove?
       currentUser: this.get('session').get('currentUser'),
       cards: this.store.query('card', {
         filter: {
