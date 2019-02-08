@@ -9,7 +9,7 @@
               {{#x-note/drop onDrop=(action "moveFeedback") data=0}}
                 {{#each positive_feedback as |fb|}}
                   {{#if (eq fb.state 0)}}
-                    {{#x-note
+                    {{#x-note/draggable
                         data=fb 
                         isAnonymous=model.parent.retrospective.isAnonymous 
                         isModerator=model.parent.isModerator 
@@ -17,7 +17,7 @@
                         onFlag=(action "openActionModal" fb)
                     }}
                       {{fb.message}}
-                    {{/x-note}}
+                    {{/x-note/draggable}}
                   {{/if}}
                 {{/each}}
               {{/x-note/drop}}
@@ -28,7 +28,7 @@
               {{#x-note/drop onDrop=(action "moveFeedback") data=1}}
                 {{#each positive_feedback as |fb|}}
                   {{#if (eq fb.state 1)}}
-                    {{#x-note
+                    {{#x-note/draggable
                         data=fb 
                         isAnonymous=model.parent.retrospective.isAnonymous 
                         isModerator=model.parent.isModerator 
@@ -36,7 +36,7 @@
                         onFlag=(action "openActionModal" fb)
                     }}
                       {{fb.message}}
-                    {{/x-note}}
+                    {{/x-note/draggable}}
                   {{/if}}
                 {{/each}}
               {{/x-note/drop}}
@@ -47,7 +47,7 @@
               {{#x-note/drop onDrop=(action "moveFeedback") data=2}}
                 {{#each positive_feedback as |fb|}}
                   {{#if (eq fb.state 2)}}
-                    {{#x-note
+                    {{#x-note/draggable
                         data=fb 
                         isAnonymous=model.parent.retrospective.isAnonymous 
                         isModerator=model.parent.isModerator 
@@ -55,7 +55,7 @@
                         onFlag=(action "openActionModal" fb)
                     }}
                       {{fb.message}}
-                    {{/x-note}}
+                    {{/x-note/draggable}}
                   {{/if}}
                 {{/each}}
               {{/x-note/drop}}
