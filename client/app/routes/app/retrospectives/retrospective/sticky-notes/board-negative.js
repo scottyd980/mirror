@@ -21,6 +21,8 @@ export default Route.extend({
       return fb.get('category') === "negative";
     }));
 
+    controller.set('current_feedback_count', negativeFeedback.findIndex(fb => fb.get('state') === 1) + 1);
+
     controller.set('negative_feedback', negativeFeedback);
   },
   _shuffle(array) {

@@ -1,7 +1,7 @@
 import RetrospectiveController from 'mirror/controllers/app/retrospectives/extends/retrospective';
 
 export default RetrospectiveController.extend({
-  currentFeedbackCount: 1,
+  current_feedback_count: 1,
   actions: {
     moveFeedback(feedback, direction) {
       const start_idx = 0,
@@ -32,7 +32,7 @@ export default RetrospectiveController.extend({
       })
 
       Promise.all(updated_feedback).then(() => {
-        this.set('currentFeedbackCount', new_idx + 1);
+        this.set('current_feedback_count', new_idx + 1);
       });
     },
   }
