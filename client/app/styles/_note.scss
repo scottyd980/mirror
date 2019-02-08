@@ -7,6 +7,8 @@
     margin-bottom: 15px !important;
     display: flex;
     flex-direction: column;
+    font-size: 22px;
+    text-align: center;
 
     &:last-of-type {
         margin-bottom: 0 !important;
@@ -80,4 +82,11 @@
 .dz-border {
     border: 3px dashed #bbb;
     padding: 2px;
+}
+
+.feedback-nav a {
+    color: $brand-secondary;
+    &:hover, &:focus, &:active {
+        color: darken($brand-secondary, 10%);
+    }
 }

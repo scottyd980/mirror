@@ -146,7 +146,9 @@ export default Service.extend({
   _listen_for_retrospective_action_item(channel) {
     channel.on('feedback_action_change', (resp) => {
       // We don't want to push these changes to the moderator
-      this.get('store').pushPayload(JSON.parse(JSON.stringify(resp)));
+      if(parseInt(resp.data.relationships.user.data.id) !== parseInt(this.get('session').get('currentUser.id'))) {
+        this.get('store').pushPayload(JSON.parse(JSON.stringify(resp)));
+      }
     });
   },
 

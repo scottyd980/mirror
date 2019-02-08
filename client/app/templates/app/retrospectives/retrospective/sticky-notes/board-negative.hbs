@@ -2,33 +2,13 @@
   <div class="container">
     <div class="row">
       <div class="col-md-8">
-        {{#x-card title="What Could Be Better" overlay=submitted}}
-          <div class="row drop-zones">
-            <div class="dz">
-              <p><strong>To Do</strong></p>
-              {{#x-note/drop onDrop=(action "moveFeedback") data=0}}
-                {{#each negative_feedback as |fb|}}
-                  {{#if (eq fb.state 0)}}
-                    {{#x-note
-                        data=fb 
-                        isAnonymous=model.parent.retrospective.isAnonymous 
-                        isModerator=model.parent.isModerator 
-                        type="bad"
-                        onFlag=(action "openActionModal" fb)
-                    }}
-                      {{fb.message}}
-                    {{/x-note}}
-                  {{/if}}
-                {{/each}}
-              {{/x-note/drop}}
-            </div>
-
-            <div class="dz">
-              <p><strong>In Progress</strong></p>
-              {{#x-note/drop onDrop=(action "moveFeedback") data=1}}
+        {{#x-card title="What Could Be Better"}}
+          <div class="row">
+            <div class="col-md-12 d-flex flex-row">
+              <div class="feedback-col flex-fill">
                 {{#each negative_feedback as |fb|}}
                   {{#if (eq fb.state 1)}}
-                    {{#x-note
+                    {{#x-note/static
                         data=fb 
                         isAnonymous=model.parent.retrospective.isAnonymous 
                         isModerator=model.parent.isModerator 
@@ -36,29 +16,17 @@
                         onFlag=(action "openActionModal" fb)
                     }}
                       {{fb.message}}
-                    {{/x-note}}
+                    {{/x-note/static}}
                   {{/if}}
                 {{/each}}
-              {{/x-note/drop}}
-            </div>
-
-            <div class="dz">
-              <p><strong>Done</strong></p>
-              {{#x-note/drop onDrop=(action "moveFeedback") data=2}}
-                {{#each negative_feedback as |fb|}}
-                  {{#if (eq fb.state 2)}}
-                    {{#x-note
-                        data=fb 
-                        isAnonymous=model.parent.retrospective.isAnonymous 
-                        isModerator=model.parent.isModerator 
-                        type="bad"
-                        onFlag=(action "openActionModal" fb)
-                    }}
-                      {{fb.message}}
-                    {{/x-note}}
-                  {{/if}}
-                {{/each}}
-              {{/x-note/drop}}
+              </div>
+              {{#if model.parent.isModerator}}
+                <div class="feedback-nav d-flex flex-column mg-left-md">
+                  <a role="button" {{action "moveFeedback" negative_feedback -1}}>{{fa-icon "arrow-circle-up" size=5 fixedWidth=true}}</a>
+                  <a role="button" {{action "moveFeedback" negative_feedback 1}}>{{fa-icon "arrow-circle-down" size=5 fixedWidth=true}}</a>
+                  <h4 class="text-center mg-top-sm"><strong>{{currentFeedbackCount}}/{{negative_feedback.length}}</strong></h4>
+                </div>
+              {{/if}}
             </div>
           </div>
         {{/x-card}}
