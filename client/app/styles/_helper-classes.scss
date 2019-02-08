@@ -222,6 +222,10 @@
   color: $brand-primary;
 }
 
+.secondary-text {
+  color: $brand-secondary;
+}
+
 .success-text {
   color: $brand-success;
 }
@@ -276,4 +280,24 @@
 
 .full-width {
   width: 100% !important;
+}
+
+.d-flex {
+  display: -ms-flexbox!important;
+  display: flex!important;
+}
+
+.flex-column {
+  -ms-flex-direction: column!important;
+  flex-direction: column!important;
+}
+
+.flex-row {
+  -ms-flex-direction: row!important;
+  flex-direction: row!important;
+}
+
+.flex-fill {
+  -ms-flex: 1 1 auto!important;
+  flex: 1 1 auto!important;
 }
