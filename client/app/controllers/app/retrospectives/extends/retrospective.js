@@ -17,13 +17,17 @@ export default Controller.extend({
       });
     },
     cancelRetrospective(retrospective) {
+      // TODO: next_sprint not reverting fast enough.
       retrospective.set('cancelled', true);
       retrospective.save().then(() => {
-        this.transitionToRoute('app.teams.team.dashboard.retrospectives', retrospective.get('team.id')).then(() => {
-          this.get('notifications').success({
-            title: ENV.SUCCESS_MESSAGES.generic,
-            message: "The retrospective was successfully cancelled."
-          });
+        setTimeout(() => {
+          this.transitionToRoute('app.teams.team.dashboard.retrospectives', retrospective.get('team.id')).then(() => {
+            // this.send('invalidateApplicationModel');
+            this.get('notifications').success({
+              title: ENV.SUCCESS_MESSAGES.generic,
+              message: "The retrospective was successfully cancelled."
+            });
+          }), 0
         });
       }).catch(() => {
         this.get('notifications').error({
