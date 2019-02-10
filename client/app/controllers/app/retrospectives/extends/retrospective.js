@@ -1,7 +1,14 @@
 import Controller from '@ember/controller';
 import ENV from 'mirror/config/environment';
+import { computed } from '@ember/object';
+import { inject as service } from '@ember/service';
 
 export default Controller.extend({
+  session: service(),
+  retroSvc: service('retrospective'),
+  isModerator: computed('retroSvc.get_moderator', 'session.currentUser', function() {
+    return this.get('retroSvc.get_moderator.id') === this.get('session.currentUser.id');
+  }),
   actions: {
     changeRetrospectiveState(retrospective, currentStateSegment, direction) {
       //TODO: Need to account for games here

@@ -84,6 +84,7 @@ defmodule Mirror.Retrospectives do
   def update_retrospective(%Retrospective{} = retrospective, attrs) do
     retrospective
     |> Retrospective.changeset(%{state: attrs["state"], cancelled: attrs["cancelled"]})
+    |> Retrospective.active_feedback_changeset(%{active_feedback_id: attrs["active-feedback_id"]})
     |> Repo.update()
   end
 
@@ -352,9 +353,25 @@ defmodule Mirror.Retrospectives do
 
   """
   def create_feedback(attrs \\ %{}) do
-    %Feedback{}
+    {:ok, feedback} = %Feedback{}
     |> Feedback.changeset(attrs)
     |> Repo.insert()
+
+    feedback = feedback
+    |> Feedback.preload_relationships()
+
+    retrospective = feedback.retrospective
+    |> Retrospective.preload_relationships()
+
+    case retrospective.active_feedback_id do
+        nil ->
+            retrospective
+            |> Retrospective.active_feedback_changeset(%{active_feedback_id: feedback.id})
+            |> Repo.update()
+        _ -> nil
+    end
+
+    {:ok, feedback}
   end
 
   @doc """

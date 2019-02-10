@@ -15,6 +15,7 @@ export default Route.extend({
   setupController(controller, model) {
     this._super(...arguments);
 
+    // TODO: Need to make only a single item show up on the initial load
     const feedback = model.feedback;
 
     const negativeFeedback = this._shuffle(feedback.filter((fb) => {
@@ -22,7 +23,6 @@ export default Route.extend({
     }));
 
     controller.set('current_feedback_count', negativeFeedback.findIndex(fb => fb.get('state') === 1) + 1);
-
     controller.set('negative_feedback', negativeFeedback);
   },
   _shuffle(array) {

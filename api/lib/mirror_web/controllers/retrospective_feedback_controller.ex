@@ -30,6 +30,7 @@ defmodule MirrorWeb.RetrospectiveFeedbackController do
           feedback = feedback |> Feedback.preload_relationships
           feedback = Map.put(feedback, :uuid, feedback_params["uuid"])
           MirrorWeb.Endpoint.broadcast("retrospective:#{feedback_params["retrospective_id"]}", "feedback_added", MirrorWeb.RetrospectiveFeedbackView.render("show.json-api", data: feedback))
+          # MirrorWeb.Endpoint.broadcast("retrospective:#{feedback_params["retrospective_id"]}", "retrospective_feedback_update", MirrorWeb.RetrospectiveView.render("show.json-api", data: feedback.retrospective |> Retrospective.preload_relationships))
           conn
           |> put_status(:created)
           |> render("show.json-api", data: feedback |> Feedback.preload_relationships)
@@ -77,7 +78,7 @@ defmodule MirrorWeb.RetrospectiveFeedbackController do
 
     case Helpers.User.user_is_moderator?(current_user, retrospective) do
       true ->
-        with {:ok, %Feedback{} = feedback} <- Retrospectives.update_feedback(feedback, feedback_params) 
+        with {:ok, %Feedback{} = feedback} <- Retrospectives.update_feedback(feedback, feedback_params)
         do
           MirrorWeb.Endpoint.broadcast("retrospective:#{retrospective.id}", "retrospective_update", MirrorWeb.RetrospectiveFeedbackView.render("show.json-api", data: feedback |> Feedback.preload_relationships))
           render(conn, "show.json-api", data: feedback |> Feedback.preload_relationships)

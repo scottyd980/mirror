@@ -16,6 +16,7 @@ defmodule Mirror.Retrospectives.Retrospective do
     belongs_to :team, Team
     belongs_to :moderator, User
     belongs_to :game, Game
+    belongs_to :active_feedback, Feedback
     has_many :scores, Score, on_delete: :delete_all
     has_many :feedbacks, Feedback, on_delete: :delete_all
     has_many :feedback_submissions, FeedbackSubmission, on_delete: :delete_all
@@ -32,9 +33,14 @@ defmodule Mirror.Retrospectives.Retrospective do
     |> validate_required([:name, :state, :is_anonymous, :cancelled, :team_id, :moderator_id, :game_id])
   end
 
+  def active_feedback_changeset(retrospective, attrs) do
+    retrospective
+    |> cast(attrs, [:active_feedback_id])
+  end
+
   def preload_relationships(retrospective) do
     retrospective
-    |> Repo.preload([:team, :moderator, :participants, :scores, :feedbacks, :game, :feedback_submissions, :score_submissions], force: true)
+    |> Repo.preload([:team, :moderator, :participants, :scores, :feedbacks, :game, :feedback_submissions, :score_submissions, :active_feedback], force: true)
   end
 
   def create(params) do
