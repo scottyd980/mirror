@@ -39,14 +39,6 @@ defmodule MirrorWeb.RetrospectiveView do
     include: false,
     identifiers: :always
 
-  has_one :active_feedback,
-    links: [
-      self: "/api/feedbacks/"
-    ],
-    serializer: FeedbackSerializer,
-    include: false,
-    identifiers: :always
-
   has_many :feedbacks,
     links: [
       self: "/api/feedbacks/"

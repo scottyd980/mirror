@@ -95,7 +95,6 @@ export default Service.extend({
     this._listen_for_retrospective_feedback_change(channel);
     this._listen_for_retrospective_action_item(channel);
     this._listen_for_retrospective_action_item_deleted(channel);
-    //this._listen_for_retrospective_feedback_update(channel);
   },
 
   _listen_for_joined_retrospective(channel) {
@@ -143,15 +142,6 @@ export default Service.extend({
       this.get('store').pushPayload(JSON.parse(JSON.stringify(resp)));
     });
   },
-
-  // _listen_for_retrospective_feedback_update(channel) {
-  //   channel.on('retrospective_feedback_update', (resp) => {
-  //     // We want this to push to store to everyone, except the current user
-  //     if(parseInt(resp.data.relationships.user.data.id) !== parseInt(this.get('session').get('currentUser.id'))) {
-  //       this.get('store').pushPayload(JSON.parse(JSON.stringify(resp)));
-  //     }
-  //   });
-  // },
 
   _listen_for_retrospective_feedback_change(channel) {
     channel.on('feedback_state_change', (resp) => {
