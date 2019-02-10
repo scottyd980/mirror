@@ -12,7 +12,7 @@
                     {{#x-note/draggable
                         data=fb 
                         isAnonymous=model.parent.retrospective.isAnonymous 
-                        isModerator=model.parent.isModerator 
+                        isModerator=isModerator 
                         type="good"
                         onFlag=(action "openActionModal" fb)
                     }}
@@ -31,7 +31,7 @@
                     {{#x-note/draggable
                         data=fb 
                         isAnonymous=model.parent.retrospective.isAnonymous 
-                        isModerator=model.parent.isModerator 
+                        isModerator=isModerator 
                         type="good"
                         onFlag=(action "openActionModal" fb)
                     }}
@@ -50,7 +50,7 @@
                     {{#x-note/draggable
                         data=fb 
                         isAnonymous=model.parent.retrospective.isAnonymous 
-                        isModerator=model.parent.isModerator 
+                        isModerator=isModerator 
                         type="good"
                         onFlag=(action "openActionModal" fb)
                     }}
@@ -64,7 +64,7 @@
         {{/x-card}}
       </div>
       <div class="col-md-4">
-        {{#if model.parent.isModerator}}
+        {{#if isModerator}}
           {{#x-card/callout title="Moderator"}}
             <div class="card-header">
               {{x-timer}}

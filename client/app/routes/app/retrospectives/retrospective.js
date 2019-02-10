@@ -9,35 +9,23 @@ export default Route.extend({
   socket: service(),
   retroSvc: service('retrospective'),
   model(params) {
-    const retrospective = this.get('store').findRecord('retrospective', params.id).catch(() => {
-      throw ENV.ERROR_CODES.not_found;
-    });
+    return this.get('store').findRecord('retrospective', params.id)
+    .then((retrospective) => {
+      return retrospective.get('team').then((team) => {
+        return team.get('members').then((team_members) => {
+          const currentUser = this.get('session').get('currentUser');
 
-    const team = retrospective.then((retrospective) => {
-      return retrospective.get('team');
-    }).catch(() => {
-      throw ENV.ERROR_CODES.not_found;
-    });
-
-    const team_members = team.then((team) => {
-      return team.get('members');
-    }).catch(() => {
-      throw ENV.ERROR_CODES.not_found;
-    });
-
-    const currentUser = this.get('session').get('currentUser');
-
-    const isModerator = retrospective.then((retrospective) => {
-      return currentUser.get('id') === retrospective.get('moderator.id');
-    });
-
-    return hash({
-      retrospective: retrospective,
-      team: team,
-      team_members: team_members,
-      currentUser: currentUser,
-      isModerator: isModerator
-    });
+          const isModerator = currentUser.get('id') === retrospective.get('moderator.id');
+          return hash({
+            retrospective: retrospective,
+            team: team,
+            team_members: team_members,
+            currentUser: currentUser,
+            isModerator: isModerator
+          });
+        }).catch(() => { throw ENV.ERROR_CODES.not_found});
+      }).catch(() => { throw ENV.ERROR_CODES.not_found});
+    }).catch(() => { throw ENV.ERROR_CODES.not_found});
   },
   redirect(model) {
     const state = model.retrospective.get('state');
@@ -54,13 +42,15 @@ export default Route.extend({
     controller.set('isActionModalShowing', false);
     controller.set('actionMessage', '');
 
-    this.get('retroSvc').join_retrospective_channel(model.retrospective.get('id'));
+    this.get('retroSvc').join_retrospective_channel(model.retrospective);
 
     $(window).on('navigationListener', function (e) {
       _this.updateRetrospectiveState(e);
     });
 
-    if (model.isModerator) {
+    const isModerator= this.get('session.currentUser.id') === model.retrospective.get('moderator.id');
+
+    if (isModerator) {
       $(window).on('popstate', function (e) {
         $(window).trigger('navigationListener', [e]);
       });
