@@ -5,11 +5,27 @@ import { inject as service } from '@ember/service';
 export default Route.extend({
   retroSvc: service('retrospective'),
   model() {
-    return hash({
-      parent: this.modelFor('app.retrospectives.retrospective'),
-      scores: this.modelFor('app.retrospectives.retrospective').retrospective.get('scores'),
-      feedback: this.modelFor('app.retrospectives.retrospective').retrospective.get('feedbacks')
-    });
+    const parent = this.modelFor('app.retrospectives.retrospective')
+
+    return this.get('store').findRecord('retrospective', parent.retrospective.get('id'))
+    .then((retrospective) => {
+      return Promise.all([retrospective.get('team'), retrospective.get('scores'), retrospective.get('feedbacks')]).then((results) => {
+        const team = results[0],
+              scores = results[1],
+              feedback = results[2];
+        
+        return team.get('members').then((team_members) => {
+          return hash({
+            retrospective,
+            team,
+            team_members,
+            scores,
+            feedback
+          });
+        }).catch(() => { throw ENV.ERROR_CODES.not_found});
+      },
+      () => { throw ENV.ERROR_CODES.not_found; });
+    }).catch(() => { throw ENV.ERROR_CODES.not_found });
   },
   setupController(controller, model) {
     this._super(...arguments);

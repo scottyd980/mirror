@@ -11,7 +11,6 @@ export default DS.Model.extend({
   moderator: belongsTo('user'),
   participants: hasMany('user'),
   scores: hasMany('score'),
-  active_feedback: belongsTo('feedback'),
   feedbacks: hasMany('feedback', {inverse: 'retrospective'}),
   feedbackSubmissions: hasMany('feedback_submission'),
   scoreSubmissions: hasMany('score_submission'),

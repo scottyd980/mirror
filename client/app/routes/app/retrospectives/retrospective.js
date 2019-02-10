@@ -15,13 +15,12 @@ export default Route.extend({
         return team.get('members').then((team_members) => {
           const currentUser = this.get('session').get('currentUser');
 
-          const isModerator = currentUser.get('id') === retrospective.get('moderator.id');
           return hash({
-            retrospective: retrospective,
-            team: team,
-            team_members: team_members,
-            currentUser: currentUser,
-            isModerator: isModerator
+            retrospective,
+            team,
+            team_members,
+            // TODO: REMOVE
+            currentUser
           });
         }).catch(() => { throw ENV.ERROR_CODES.not_found});
       }).catch(() => { throw ENV.ERROR_CODES.not_found});
@@ -48,7 +47,7 @@ export default Route.extend({
       _this.updateRetrospectiveState(e);
     });
 
-    const isModerator= this.get('session.currentUser.id') === model.retrospective.get('moderator.id');
+    const isModerator = this.get('session.currentUser.id') === model.retrospective.get('moderator.id');
 
     if (isModerator) {
       $(window).on('popstate', function (e) {

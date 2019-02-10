@@ -89,7 +89,7 @@ module.exports = function(environment) {
           {
             name: "negative",
             idPrefix: "went-poorly",
-            label: "What went poorly?",
+            label: "What could be improved?",
             type: "negative",
             value: ""
           },

@@ -7,18 +7,33 @@ import { set } from '@ember/object';
 export default Route.extend({
   session: service(),
   model() {
-    return hash({
-      parent: this.modelFor('app.retrospectives.retrospective'),
-      feedback: this.modelFor('app.retrospectives.retrospective').retrospective.get('feedbacks'),
-      feedbackSubmissions: this.modelFor('app.retrospectives.retrospective').retrospective.get('feedbackSubmissions'),
-      // TODO: not game specific
-      gameInput: ENV.retrospective["sticky_notes"].feedback
-    });
+    const parent = this.modelFor('app.retrospectives.retrospective')
+
+    return this.get('store').findRecord('retrospective', parent.retrospective.get('id'))
+    .then((retrospective) => {
+      return Promise.all([retrospective.get('team'), retrospective.get('feedbacks'), retrospective.get('feedbackSubmissions')]).then((results) => {
+        const team = results[0],
+              feedback = results[1],
+              feedbackSubmissions = results[2];
+        
+        return team.get('members').then((team_members) => {
+          return hash({
+            retrospective,
+            team,
+            team_members,
+            feedback,
+            feedbackSubmissions,
+            gameInput: ENV.retrospective["sticky_notes"].feedback
+          });
+        }).catch(() => { throw ENV.ERROR_CODES.not_found});
+      },
+      () => { throw ENV.ERROR_CODES.not_found; });
+    }).catch(() => { throw ENV.ERROR_CODES.not_found });
   },
   setupController(controller, model) {
-    const feedback = model.feedback;
-
     this._super(...arguments);
+    
+    const feedback = model.feedback;
 
     controller.set('submitted', false);
 
