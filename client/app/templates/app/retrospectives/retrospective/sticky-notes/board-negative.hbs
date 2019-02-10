@@ -6,21 +6,17 @@
           <div class="row">
             <div class="col-md-12 d-flex flex-row">
               <div class="feedback-col flex-fill">
-                {{#each negative_feedback as |fb|}}
-                  {{#if (eq fb.state 1)}}
-                    {{#x-note/static
-                        data=fb 
-                        isAnonymous=model.parent.retrospective.isAnonymous 
-                        isModerator=model.parent.isModerator 
-                        type="bad"
-                        onFlag=(action "openActionModal" fb)
-                    }}
-                      {{fb.message}}
-                    {{/x-note/static}}
-                  {{/if}}
-                {{/each}}
+                {{#x-note/static
+                    data=model.parent.retrospective.active_feedback 
+                    isAnonymous=model.parent.retrospective.isAnonymous 
+                    isModerator=isModerator 
+                    type="bad"
+                    onFlag=(action "openActionModal" model.parent.retrospective.active_feedback)
+                }}
+                  {{model.parent.retrospective.active_feedback.message}}
+                {{/x-note/static}}
               </div>
-              {{#if model.parent.isModerator}}
+              {{#if isModerator}}
                 <div class="feedback-nav d-flex flex-column mg-left-md">
                   <a role="button" {{action "moveFeedback" negative_feedback -1}}>{{fa-icon "arrow-circle-up" size=5 fixedWidth=true}}</a>
                   <a role="button" {{action "moveFeedback" negative_feedback 1}}>{{fa-icon "arrow-circle-down" size=5 fixedWidth=true}}</a>
@@ -32,7 +28,7 @@
         {{/x-card}}
       </div>
       <div class="col-md-4">
-        {{#if model.parent.isModerator}}
+        {{#if isModerator}}
           {{#x-card/callout title="Moderator"}}
             <div class="card-header">
               {{x-timer}}
