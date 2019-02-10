@@ -1,18 +1,23 @@
 import RetrospectiveController from 'mirror/controllers/app/retrospectives/extends/retrospective';
+import { computed } from '@ember/object';
 
 export default RetrospectiveController.extend({
   current_feedback_count: 1,
+  active_feedback: computed('model.feedback.@each.state', function() {
+    const feedback = this.get('model.feedback');
+    return feedback.find((fb) => {
+      return fb.get('state') === 1;
+    })
+  }),
   actions: {
     moveFeedback(feedback, direction) {
-      const retrospective = this.get('model').parent.retrospective;
-
       const start_idx = 0,
             end_idx = feedback.length - 1;
 
       let new_idx;
 
       const active_idx = feedback.findIndex((fb) => {
-        return fb.get('id') === retrospective.get('active_feedback.id');
+        return fb.get('state') === 1;
       });
 
       if(active_idx === 0 && direction === -1) {
@@ -23,11 +28,17 @@ export default RetrospectiveController.extend({
         new_idx = active_idx + direction;
       }
 
-      
+      feedback.forEach((fb) => {
+        fb.set('state', 0);
+      });
 
-      retrospective.set('active_feedback', feedback[new_idx]);
-      
-      retrospective.save().then(() => {
+      feedback[new_idx].set('state', 1);
+
+      const updated_feedback = feedback.map((fb) => {
+        return fb.save();
+      })
+
+      Promise.all(updated_feedback).then(() => {
         this.set('current_feedback_count', new_idx + 1);
       });
     },

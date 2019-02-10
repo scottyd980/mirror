@@ -5,6 +5,9 @@ defmodule Mirror.Retrospectives do
 
   import Ecto.Query, warn: false
   alias Mirror.Repo
+  alias Mirror.Helpers
+
+  require Logger
 
   alias Mirror.Retrospectives.Retrospective
 
@@ -84,7 +87,6 @@ defmodule Mirror.Retrospectives do
   def update_retrospective(%Retrospective{} = retrospective, attrs) do
     retrospective
     |> Retrospective.changeset(%{state: attrs["state"], cancelled: attrs["cancelled"]})
-    |> Retrospective.active_feedback_changeset(%{active_feedback_id: attrs["active-feedback_id"]})
     |> Repo.update()
   end
 
@@ -357,21 +359,10 @@ defmodule Mirror.Retrospectives do
     |> Feedback.changeset(attrs)
     |> Repo.insert()
 
-    feedback = feedback
-    |> Feedback.preload_relationships()
-
-    retrospective = feedback.retrospective
-    |> Retrospective.preload_relationships()
-
-    case retrospective.active_feedback_id do
-        nil ->
-            retrospective
-            |> Retrospective.active_feedback_changeset(%{active_feedback_id: feedback.id})
-            |> Repo.update()
-        _ -> nil
+    case Helpers.Retrospective.setup_feedback(feedback) do
+        {:ok, new_attrs} -> update_feedback(feedback, new_attrs)
+        {:noreply} -> {:ok, feedback}
     end
-
-    {:ok, feedback}
   end
 
   @doc """
@@ -387,6 +378,7 @@ defmodule Mirror.Retrospectives do
 
   """
   def update_feedback(%Feedback{} = feedback, attrs) do
+    Logger.warn "#{inspect attrs}"
     feedback
     |> Feedback.changeset(%{
         state: attrs["state"]

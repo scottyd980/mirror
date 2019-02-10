@@ -37,21 +37,21 @@
             <div class="card-header">
               {{x-timer}}
             </div>
-            <a role="button" onclick={{action "changeRetrospectiveState" model.parent.retrospective "aggregate" 1}} class="btn btn-block btn-success btn-lg btn-callout">Continue {{fa-icon "angle-right" fixedWidth=true}}</a>
+            <a role="button" onclick={{action "changeRetrospectiveState" model.retrospective "aggregate" 1}} class="btn btn-block btn-success btn-lg btn-callout">Continue {{fa-icon "angle-right" fixedWidth=true}}</a>
             <div class="row">
               <div class="col-xs-6">
-                <a role="button" onclick={{action "changeRetrospectiveState" model.parent.retrospective "aggregate" -1}} class="btn btn-block btn-info btn-outline">{{fa-icon "angle-left" fixedWidth=true}} Back</a>
+                <a role="button" onclick={{action "changeRetrospectiveState" model.retrospective "aggregate" -1}} class="btn btn-block btn-info btn-outline">{{fa-icon "angle-left" fixedWidth=true}} Back</a>
               </div>
               <div class="col-xs-6">
-                <a role="button" onclick={{action "onConfirm" "Are you sure you want to cancel the retrospective in progress?" (action "cancelRetrospective" model.parent.retrospective)}} class="btn btn-block btn-danger btn-outline">{{fa-icon "times" fixedWidth=true}} Cancel</a>
+                <a role="button" onclick={{action "onConfirm" "Are you sure you want to cancel the retrospective in progress?" (action "cancelRetrospective" model.retrospective)}} class="btn btn-block btn-danger btn-outline">{{fa-icon "times" fixedWidth=true}} Cancel</a>
               </div>
             </div>
           {{/x-card/callout}}
         {{/if}}
         {{#x-card title="Participants"}}
           {{x-list/retrospective/submission
-                members=model.parent.retrospective.participants
-                currentUser=model.parent.currentUser
+                members=model.retrospective.participants
+                currentUser=currentUser
                 userList=true
             }}
         {{/x-card}}
