@@ -1,5 +1,6 @@
 import Service from '@ember/service';
 import { inject as service } from '@ember/service';
+import { computed } from '@ember/object';
 
 export default Service.extend({
   socket: service(),
@@ -10,10 +11,12 @@ export default Service.extend({
   team_channel: null,
   retrospective_channel: null,
   pre_retrospective: null,
+  active_retrospective: null,
 
   init() {
     this._super(...arguments);
     this.set('channel', null);
+    this.set('active_retrospective');
     this.set('pre_retrospective', {
       in_progress: false,
       retrospective_id: null
@@ -22,6 +25,9 @@ export default Service.extend({
   start(retrospective) {
     return retrospective.save();
   },
+  get_moderator: computed('active_retrospective', function() {
+    return this.get('active_retrospective.moderator');
+  }),
   lookup_in_progress() {
     this.get('team_channel').push('check_retrospective_in_progress', {});
   },
@@ -62,11 +68,12 @@ export default Service.extend({
   },
 
   // Retrospective
-  join_retrospective_channel(retrospective_id) {
-    var retrospective_channel = this.get('socket').joinChannel(`retrospective:${retrospective_id}`);
+  join_retrospective_channel(retrospective) {
+    var retrospective_channel = this.get('socket').joinChannel(`retrospective:${retrospective.get('id')}`);
     retrospective_channel.then((chan) => {
       this.listen_for_retrospective_events(chan);
       this.set('retrospective_channel', chan);
+      this.set('active_retrospective', retrospective);
     });
   },
 
@@ -74,6 +81,7 @@ export default Service.extend({
     var retrospective_channel = this.get('socket').leaveChannel(`retrospective:${retrospective_id}`);
     retrospective_channel.then((/* chan */) => {
       this.set('retrospective_channel', null);
+      this.set('active_retrospective', null);
     });
   },
 

@@ -2,88 +2,41 @@
   <div class="container">
     <div class="row">
       <div class="col-md-8">
-        {{#x-card title="What Went Well" overlay=submitted}}
-          <div class="row drop-zones">
-            <div class="dz">
-              <p><strong>To Do</strong></p>
-              {{#x-note/drop onDrop=(action "moveFeedback") data=0}}
-                {{#each positive_feedback as |fb|}}
-                  {{#if (eq fb.state 0)}}
-                    {{#x-note/draggable
-                        data=fb 
-                        isAnonymous=model.parent.retrospective.isAnonymous 
-                        isModerator=model.parent.isModerator 
-                        type="good"
-                        onFlag=(action "openActionModal" fb)
-                    }}
-                      {{fb.message}}
-                    {{/x-note/draggable}}
-                  {{/if}}
-                {{/each}}
-              {{/x-note/drop}}
-            </div>
-
-            <div class="dz">
-              <p><strong>In Progress</strong></p>
-              {{#x-note/drop onDrop=(action "moveFeedback") data=1}}
-                {{#each positive_feedback as |fb|}}
-                  {{#if (eq fb.state 1)}}
-                    {{#x-note/draggable
-                        data=fb 
-                        isAnonymous=model.parent.retrospective.isAnonymous 
-                        isModerator=model.parent.isModerator 
-                        type="good"
-                        onFlag=(action "openActionModal" fb)
-                    }}
-                      {{fb.message}}
-                    {{/x-note/draggable}}
-                  {{/if}}
-                {{/each}}
-              {{/x-note/drop}}
-            </div>
-
-            <div class="dz">
-              <p><strong>Done</strong></p>
-              {{#x-note/drop onDrop=(action "moveFeedback") data=2}}
-                {{#each positive_feedback as |fb|}}
-                  {{#if (eq fb.state 2)}}
-                    {{#x-note/draggable
-                        data=fb 
-                        isAnonymous=model.parent.retrospective.isAnonymous 
-                        isModerator=model.parent.isModerator 
-                        type="good"
-                        onFlag=(action "openActionModal" fb)
-                    }}
-                      {{fb.message}}
-                    {{/x-note/draggable}}
-                  {{/if}}
-                {{/each}}
-              {{/x-note/drop}}
-            </div>
-          </div>
-        {{/x-card}}
+        <h3 class="title">What Went Well</h3>
+        {{#x-note/static
+            data=active_feedback 
+            isAnonymous=model.retrospective.isAnonymous 
+            isModerator=isModerator 
+            type="good"
+            onFlag=(action "openActionModal" active_feedback)
+            onPrevious=(action "moveFeedback" model.feedback -1)
+            onNext=(action "moveFeedback" model.feedback 1)
+            counter=card_state
+        }}
+          {{active_feedback.message}}
+        {{/x-note/static}}
       </div>
       <div class="col-md-4">
-        {{#if model.parent.isModerator}}
+        {{#if isModerator}}
           {{#x-card/callout title="Moderator"}}
             <div class="card-header">
               {{x-timer}}
             </div>
-            <a role="button" onclick={{action "changeRetrospectiveState" model.parent.retrospective "sticky-notes.board-positive" 1}} class="btn btn-block btn-success btn-lg btn-callout">Continue {{fa-icon "angle-right" fixedWidth=true}}</a>
+            <a role="button" onclick={{action "changeRetrospectiveState" model.retrospective "sticky-notes.board-positive" 1}} class="btn btn-block btn-success btn-lg btn-callout">Continue {{fa-icon "angle-right" fixedWidth=true}}</a>
             <div class="row">
               <div class="col-xs-6">
-                <a role="button" onclick={{action "changeRetrospectiveState" model.parent.retrospective "sticky-notes.board-positive" -1}} class="btn btn-block btn-info btn-outline">{{fa-icon "angle-left" fixedWidth=true}} Back</a>
+                <a role="button" onclick={{action "changeRetrospectiveState" model.retrospective "sticky-notes.board-positive" -1}} class="btn btn-block btn-info btn-outline">{{fa-icon "angle-left" fixedWidth=true}} Back</a>
               </div>
               <div class="col-xs-6">
-                <a role="button" onclick={{action "onConfirm" "Are you sure you want to cancel the retrospective in progress?" (action "cancelRetrospective" model.parent.retrospective)}} class="btn btn-block btn-danger btn-outline">{{fa-icon "times" fixedWidth=true}} Cancel</a>
+                <a role="button" onclick={{action "onConfirm" "Are you sure you want to cancel the retrospective in progress?" (action "cancelRetrospective" model.retrospective)}} class="btn btn-block btn-danger btn-outline">{{fa-icon "times" fixedWidth=true}} Cancel</a>
               </div>
             </div>
           {{/x-card/callout}}
         {{/if}}
         {{#x-card title="Participants"}}
           {{x-list/retrospective/submission
-                members=model.parent.retrospective.participants
-                currentUser=model.parent.currentUser
+                members=model.retrospective.participants
+                currentUser=currentUser
                 userList=true
             }}
         {{/x-card}}
@@ -91,3 +44,23 @@
     </div>
   </div>
 </div>
+
+{{#if isActionModalShowing}}
+  {{#x-modal
+    onClose=(action "closeActionModal")
+    title="Take Action"
+  }}
+    {{#x-modal-body}}
+      <p>If your team wants to do something in regards to this feedback, enter how you plan to take action.</p>
+      {{textarea class="form-control" value=actionMessage}}
+    {{/x-modal-body}}
+    {{#x-modal-footer}}
+      <a role="button" {{action "closeActionModal"}} class="btn btn-default btn-outline">Cancel</a>
+      {{#if activeFeedback.action.message}}
+        <a role="button" {{action "submitActionItem"}} class="btn btn-success">Update</a>
+      {{else}}
+        <a role="button" {{action "submitActionItem"}} class="btn btn-success">Submit</a>
+      {{/if}}
+    {{/x-modal-footer}}
+  {{/x-modal}}
+{{/if}}

@@ -20,7 +20,7 @@ export default RetrospectiveController.extend({
           category: feedback.type,
           message: feedback.value,
           user: this.get('session').get('currentUser'),
-          retrospective: this.get('model').parent.retrospective,
+          retrospective: this.get('model').retrospective,
           uuid: uuid
         });
 
@@ -62,7 +62,7 @@ export default RetrospectiveController.extend({
             'Authorization': `Bearer ${this.get('session').get('session.content.authenticated.access_token')}`
           }
         }).then((response) => {
-          if (response.status === 200) {
+          if (response.status === 200 || response.status === 201) {
             response.json().then((uuid) => {
               this.get('uuid').set('hash', uuid.hash);
               this.submitFeedback(uuid.hash);

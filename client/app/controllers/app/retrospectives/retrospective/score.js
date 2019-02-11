@@ -16,7 +16,7 @@ export default RetrospectiveController.extend({
 
     if (typeof sprintScore !== "undefined") {
       score.set('score', sprintScore);
-      score.set('retrospective', this.get('model').parent.retrospective);
+      score.set('retrospective', this.get('model').retrospective);
       score.set('user', this.get('session').get('currentUser'));
       score.set('uuid', uuid);
 
