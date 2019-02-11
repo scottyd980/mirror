@@ -1,0 +1,43 @@
+<div class="nav-push">
+  <div class="container">
+    <div class="row">
+      <div class="col-md-8">
+        {{#x-card title="Recent Retrospectives"}}
+          {{#if model.recent_retrospectives}}
+            {{x-list/retrospective
+              retrospectives=model.recent_retrospectives
+              isAdmin=isAdmin
+              showTeams=true
+            }}
+          {{else}}
+            <p>It doesn't look like you've had any recent retrospectives!</p>
+          {{/if}}
+        {{/x-card}}
+      </div>
+      <div class="col-md-4">
+        {{#x-card title="Your Teams"}}
+          {{#if model.teams}}
+            {{x-list/team
+              teams=model.teams
+              viewTeam=(action "viewTeam")
+              hideDelete=true
+            }}
+          {{else}}
+            <p>It doesn't look like you're a member of any teams!</p>
+          {{/if}}
+        {{/x-card}}
+        {{#if billing_active}}
+          {{#if model.organizations}}
+            {{#x-card title="Your Organizations"}}
+              {{x-list/organization
+                organizations=model.organizations
+                onView=(action "viewOrganization")
+                hideDelete=true
+              }}
+            {{/x-card}}
+          {{/if}}
+        {{/if}}
+      </div>
+    </div>
+  </div>
+</div>

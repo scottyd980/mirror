@@ -1,0 +1,32 @@
+<div class="pad-bottom-md text-center">
+  <img src="/img/mirror-logo.svg" class="logo--sm" alt="logo">
+  <h2 class="pad-top-sm">Forgotten Username</h2>
+</div>
+
+<div class="container">
+  <div class="row">
+    <div class="col-sm-8 col-sm-offset-2 col-md-6 col-md-offset-3">
+      {{#x-card}}
+        {{#if success}}
+          <div class="alert alert-info" role="alert">
+            {{fa-icon "info-circle"}} Great! If you entered an email address we have on file, you'll receive an email with your username shortly.
+          </div>
+        {{/if}}
+        {{#if errors}}
+          <div class="alert alert-danger" role="alert">
+            {{fa-icon "exclamation-triangle"}} Something went wrong. Please try again.
+          </div>
+        {{/if}}
+        <form>
+          <p><strong>Please enter the email address that you used to create your account.</strong></p>
+          <p class="help-block">We'll send you an email with your username.</p>
+          <div class="form-group input-group-icon">
+            {{input type="text" class="form-control" id="login-username" placeholder="Email Address" value=model.email}}
+            {{fa-icon "envelope" fixedWidth=true}}
+          </div>
+          <button {{action "doReset"}} type="submit" class="btn btn-success btn-lg btn-block">Send Email</button>
+        </form>
+      {{/x-card}}
+    </div>
+  </div>
+</div>

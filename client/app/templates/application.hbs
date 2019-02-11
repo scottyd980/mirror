@@ -1,0 +1,71 @@
+<nav class="navbar navbar-custom navbar-fixed-top {{if session.isAuthenticated "navbar-logged-in"}}">
+  <div class="container">
+    
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar-collapse" aria-expanded="false">
+        <span class="sr-only">Toggle navigation</span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      {{#if session.isAuthenticated}}
+        <div role="button" onclick={{action "navbarCollapse" value="target"}}>
+          {{#link-to "app.index" class="navbar-brand navbar-brand-icon"}}
+            Mirror <sup class="navbar-beta">beta</sup>
+          {{/link-to}}
+        </div>
+      {{else}}
+        <div role="button" onclick={{action "navbarCollapse" value="target"}}>
+          {{#link-to "index" class="navbar-brand navbar-brand-icon"}}
+            Mirror <sup class="navbar-beta">beta</sup>
+          {{/link-to}}
+        </div>
+      {{/if}}
+    </div>
+
+    <div role="button" class="collapse navbar-collapse" onclick={{action "navbarCollapse" value="target"}} id="navbar-collapse">
+      {{#if session.isAuthenticated}}
+        <ul class="nav navbar-nav navbar-right navbar-auth">
+          <li>{{#link-to "app.index"}}Dashboard{{/link-to}}</li>
+          <li class="dropdown">
+            <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Teams <span class="caret"></span></a>
+            <ul class="dropdown-menu">
+              {{#each filteredTeams as |team|}}
+                <li>{{#link-to "app.teams.team.dashboard.retrospectives" team}}{{team.name}}{{/link-to}}</li>
+              {{/each}}
+              {{#if filteredTeams}}
+                <li class="divider"></li>
+              {{/if}}
+              <li>{{#link-to "app.teams.create"}}Create A Team{{/link-to}}</li>
+              <li>{{#link-to "app.teams.join"}}Join A Team{{/link-to}}</li>
+            </ul>
+          </li>
+          <li class="dropdown">
+            <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">{{gravatar-image class="gravatar-nav" email=session.currentUser.email}} {{session.currentUser.username}} <span class="caret"></span></a>
+            <ul class="dropdown-menu">
+              {{#if billing_active}}
+                <li>{{#link-to "app.organizations.dashboard"}}Organizations{{/link-to}}</li>
+                <li class="divider"></li>
+              {{/if}}
+              <li><a href="#" {{action "logout"}}>Logout</a></li>
+            </ul>
+          </li>
+        </ul>
+      {{else}}
+        <form class="navbar-form navbar-right">
+          {{#link-to "auth.register" class="btn"}}Sign Up{{/link-to}}
+        </form>
+        <ul class="nav navbar-nav navbar-right">
+          <li><a href="#" {{action "scrollToLearnMore"}}>Learn More</a></li>
+          <li>{{#link-to "auth.login"}}Log In{{/link-to}}</li>
+        </ul>
+      {{/if}}
+    </div>
+  </div>
+</nav>
+
+{{outlet}}
+
+<footer>
+  Crafted with {{fa-icon "heart"}} in North Carolina
+</footer>
