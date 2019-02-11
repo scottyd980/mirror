@@ -52,9 +52,12 @@ export default Route.extend({
   _markFeedbackSubmitted(feedbacks) {
     if (feedbacks) {
       this.currentModel.gameInput.forEach((input) => {
-        set(input, 'value', feedbacks.find((feedback) => {
+        const fb = feedbacks.find((feedback) => {
           return feedback.get('category') === input.type;
-        }).get('message'));
+        });
+        if(fb) {
+          set(input, 'value', fb.get('message'));
+        }
       });
     }
     this.controller.set('submitted', true);
