@@ -1,0 +1,76 @@
+$brand-primary:         #4ABDAC;
+$brand-secondary:       #31b0d4;
+$brand-success:         #02C8A7;
+$brand-info:            #31b0d5;//#7CDBD5;
+$brand-warning:         #F9BE02;
+$brand-danger:          #F53240;
+
+$brand-dark:            #273135;
+$brand-light:           #CCCCCC;
+$white:                 #FFFFFF;
+
+$brand-dark-text:       #000000;
+$brand-light-text:      #898E95;
+
+$brand-list-hover:      #F4F4F4;
+
+$brand-border: rgba(73,80,84,.15);
+
+$btn-default-color: $brand-dark;
+
+$btn-primary-color: $brand-primary;
+$btn-primary-border: $brand-primary;
+$btn-primary-hover-bg: $brand-primary;
+$btn-primary-hover-color: $white;
+$btn-primary-bg: $white;
+
+$btn-success-color: $white;
+$btn-success-border: $brand-success;
+$btn-success-hover-bg: darken($brand-success, 5%);
+$btn-success-hover-color: $white;
+$btn-success-bg: $brand-success;
+
+$btn-info-color: $white;
+$btn-info-border: $brand-info;
+$btn-info-hover-bg: darken($brand-info, 5%);
+$btn-info-hover-color: $white;
+$btn-info-bg: $brand-info;
+
+$btn-warning-color: $white;
+$btn-warning-border: $brand-warning;
+$btn-warning-hover-bg: darken($brand-warning, 5%);
+$btn-warning-hover-color: $white;
+$btn-warning-bg: $brand-warning;
+
+$btn-danger-color: $white;
+$btn-danger-border: $brand-danger;
+$btn-danger-hover-bg: darken($brand-danger, 10%);
+$btn-danger-hover-color: $white;
+$btn-danger-bg: $brand-danger;
+
+$navbar-custom-link-color: #000;
+$navbar-custom-link-hover-color: $navbar-custom-link-color;
+$navbar-custom-link-active-color: $navbar-custom-link-color;
+$navbar-custom-link-disabled-color: $navbar-custom-link-color;
+
+$navbar-custom-link-bg: transparent;
+$navbar-custom-link-hover-bg: $navbar-custom-link-bg;
+$navbar-custom-link-active-bg: $navbar-custom-link-bg;
+$navbar-custom-link-disabled-bg: $navbar-custom-link-bg;
+
+$navbar-custom-bg: rgba(255,255,255,0.98);
+$navbar-custom-border: rgba(73,80,84,.15);
+
+$navbar-custom-brand-color: #000;
+$navbar-custom-brand-hover-color: $navbar-custom-brand-color;
+
+$navbar-custom-brand-hover-bg: transparent;
+
+$navbar-custom-color: #000;
+
+$navbar-custom-toggle-hover-bg: transparent;
+$navbar-custom-toggle-icon-bar-bg: $brand-dark;
+
+$navbar-custom-button-color: $brand-danger;
+$navbar-custom-button-hover-color: #fff;
+$navbar-custom-button-border: $brand-danger;

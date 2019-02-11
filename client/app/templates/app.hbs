@@ -1,0 +1,18 @@
+{{outlet}}
+
+{{#each notifications.notifications as |notification|}}
+  {{#if (eq notification.type "confirm")}}
+    {{#x-modal/confirm
+      title=notification.title
+      type=notification.type
+      onConfirmAction=notification.action}}
+      {{notification.message}}
+    {{/x-modal/confirm}}
+  {{else}}
+    {{#x-modal/notification
+      title=notification.title
+      type=notification.type}}
+      {{notification.message}}
+    {{/x-modal/notification}}
+  {{/if}}
+{{/each}}

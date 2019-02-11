@@ -7,7 +7,7 @@ defmodule Mirror.Email do
     |> to(email_address)
     |> from("Mirror <noreply@***MAIL_DOMAIN***>")
     |> subject("Someone invited you to join a team!")
-    |> put_html_layout({MirrorWeb.LayoutView, "invite2.html"})
+    |> put_html_layout({MirrorWeb.LayoutView, "invite.html"})
     |> render("invite.html", access_code: access_code, team: team_name)
   end
 

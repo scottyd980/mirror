@@ -1,0 +1,14 @@
+<ul class="action-list">
+  {{#each sortedMembers as |member|}}
+    <li class="progress-list">
+      <div class="list-item">{{gravatar-image class="gravatar-nav" email=member.email}} {{member.username}}</div>
+      <div class="list-actions">
+        {{#if (contains member joined_members)}}
+          {{fa-icon "check" class="success-text"}}
+        {{else}}
+          {{fa-icon "refresh" class="info-text" spin=true}}
+        {{/if}}
+      </div>
+    </li>
+  {{/each}}
+</ul>
