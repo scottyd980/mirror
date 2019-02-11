@@ -2,56 +2,41 @@
   <div class="container">
     <div class="row">
       <div class="col-md-8">
-        {{#x-card title="What Could Be Better"}}
-          <div class="row">
-            <div class="col-md-12 d-flex flex-row">
-              <div class="feedback-col flex-fill">
-                {{#each negative_feedback as |fb|}}
-                  {{#if (eq fb.state 1)}}
-                    {{#x-note/static
-                        data=fb 
-                        isAnonymous=model.parent.retrospective.isAnonymous 
-                        isModerator=model.parent.isModerator 
-                        type="bad"
-                        onFlag=(action "openActionModal" fb)
-                    }}
-                      {{fb.message}}
-                    {{/x-note/static}}
-                  {{/if}}
-                {{/each}}
-              </div>
-              {{#if model.parent.isModerator}}
-                <div class="feedback-nav d-flex flex-column mg-left-md">
-                  <a role="button" {{action "moveFeedback" negative_feedback -1}}>{{fa-icon "arrow-circle-up" size=5 fixedWidth=true}}</a>
-                  <a role="button" {{action "moveFeedback" negative_feedback 1}}>{{fa-icon "arrow-circle-down" size=5 fixedWidth=true}}</a>
-                  <h4 class="text-center mg-top-sm"><strong>{{current_feedback_count}}/{{negative_feedback.length}}</strong></h4>
-                </div>
-              {{/if}}
-            </div>
-          </div>
-        {{/x-card}}
+        <h3 class="title">What Could Be Improved</h3>
+        {{#x-note/static
+            data=active_feedback 
+            isAnonymous=model.retrospective.isAnonymous 
+            isModerator=isModerator 
+            type="bad"
+            onFlag=(action "openActionModal" active_feedback)
+            onPrevious=(action "moveFeedback" model.feedback -1)
+            onNext=(action "moveFeedback" model.feedback 1)
+            counter=card_state
+        }}
+          {{active_feedback.message}}
+        {{/x-note/static}}
       </div>
       <div class="col-md-4">
-        {{#if model.parent.isModerator}}
+        {{#if isModerator}}
           {{#x-card/callout title="Moderator"}}
             <div class="card-header">
               {{x-timer}}
             </div>
-            <a role="button" onclick={{action "changeRetrospectiveState" model.parent.retrospective "sticky-notes.board-negative" 1}} class="btn btn-block btn-success btn-lg btn-callout">Continue {{fa-icon "angle-right" fixedWidth=true}}</a>
+            <a role="button" onclick={{action "changeRetrospectiveState" model.retrospective "sticky-notes.board-negative" 1}} class="btn btn-block btn-success btn-lg btn-callout">Continue {{fa-icon "angle-right" fixedWidth=true}}</a>
             <div class="row">
               <div class="col-xs-6">
-                <a role="button" onclick={{action "changeRetrospectiveState" model.parent.retrospective "sticky-notes.board-negative" -1}} class="btn btn-block btn-info btn-outline">{{fa-icon "angle-left" fixedWidth=true}} Back</a>
+                <a role="button" onclick={{action "changeRetrospectiveState" model.retrospective "sticky-notes.board-negative" -1}} class="btn btn-block btn-info btn-outline">{{fa-icon "angle-left" fixedWidth=true}} Back</a>
               </div>
               <div class="col-xs-6">
-                <a role="button" onclick={{action "onConfirm" "Are you sure you want to cancel the retrospective in progress?" (action "cancelRetrospective" model.parent.retrospective)}} class="btn btn-block btn-danger btn-outline">{{fa-icon "times" fixedWidth=true}} Cancel</a>
+                <a role="button" onclick={{action "onConfirm" "Are you sure you want to cancel the retrospective in progress?" (action "cancelRetrospective" model.retrospective)}} class="btn btn-block btn-danger btn-outline">{{fa-icon "times" fixedWidth=true}} Cancel</a>
               </div>
             </div>
           {{/x-card/callout}}
         {{/if}}
         {{#x-card title="Participants"}}
           {{x-list/retrospective/submission
-                members=model.parent.retrospective.participants
-                currentUser=model.parent.currentUser
+                members=model.retrospective.participants
+                currentUser=currentUser
                 userList=true
             }}
         {{/x-card}}

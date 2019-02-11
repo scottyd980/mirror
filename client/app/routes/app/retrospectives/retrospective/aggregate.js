@@ -1,16 +1,28 @@
 import Route from '@ember/routing/route';
 import { hash } from 'rsvp';
+import ENV from 'mirror/config/environment';
 
 export default Route.extend({
   model() {
-    // Need to reload scores in case someone left the retrospective but isn't listening for changes.
-    const scores = this.modelFor('app.retrospectives.retrospective').retrospective.hasMany('scores');
-    scores.reload();
+    const parent = this.modelFor('app.retrospectives.retrospective')
 
-    return hash({
-      parent: this.modelFor('app.retrospectives.retrospective'),
-      scores: this.modelFor('app.retrospectives.retrospective').retrospective.get('scores')
-    });
+    return this.get('store').findRecord('retrospective', parent.retrospective.get('id'))
+    .then((retrospective) => {
+      return Promise.all([retrospective.get('team'), retrospective.get('scores')]).then((results) => {
+        const team = results[0],
+              scores = results[1];
+        
+        return team.get('members').then((team_members) => {
+          return hash({
+            retrospective,
+            team,
+            team_members,
+            scores
+          });
+        }).catch(() => { throw ENV.ERROR_CODES.not_found});
+      },
+      () => { throw ENV.ERROR_CODES.not_found; });
+    }).catch(() => { throw ENV.ERROR_CODES.not_found });
   },
   setupController(controller, model) {
     this._super(...arguments);

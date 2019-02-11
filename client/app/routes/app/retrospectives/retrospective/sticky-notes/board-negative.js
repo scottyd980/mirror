@@ -1,29 +1,32 @@
 import Route from '@ember/routing/route';
 import { hash } from 'rsvp';
+import ENV from 'mirror/config/environment';
 
 export default Route.extend({
   model() {
-    // Need to reload feedbacks in case someone left the retrospective but isn't listening for changes.
-    const feedbacks = this.modelFor('app.retrospectives.retrospective').retrospective.hasMany('feedbacks');
-    feedbacks.reload();
+    const parent = this.modelFor('app.retrospectives.retrospective')
 
-    return hash({
-      parent: this.modelFor('app.retrospectives.retrospective'),
-      feedback: this.modelFor('app.retrospectives.retrospective').retrospective.get('feedbacks')
-    });
-  },
-  setupController(controller, model) {
-    this._super(...arguments);
+    return this.get('store').findRecord('retrospective', parent.retrospective.get('id'))
+    .then((retrospective) => {
+      return Promise.all([retrospective.get('team'), retrospective.get('feedbacks'), ]).then((results) => {
+        const team = results[0],
+              feedback = results[1];
 
-    const feedback = model.feedback;
-
-    const negativeFeedback = this._shuffle(feedback.filter((fb) => {
-      return fb.get('category') === "negative";
-    }));
-
-    controller.set('current_feedback_count', negativeFeedback.findIndex(fb => fb.get('state') === 1) + 1);
-
-    controller.set('negative_feedback', negativeFeedback);
+        const negativeFeedback = this._shuffle(feedback.filter((fb) => {
+          return fb.get('category') === "negative";
+        }));
+        
+        return team.get('members').then((team_members) => {
+          return hash({
+            retrospective,
+            team,
+            team_members,
+            feedback: negativeFeedback
+          });
+        }).catch(() => { throw ENV.ERROR_CODES.not_found});
+      },
+      () => { throw ENV.ERROR_CODES.not_found; });
+    }).catch(() => { throw ENV.ERROR_CODES.not_found });
   },
   _shuffle(array) {
     let currentIndex = array.length, temporaryValue, randomIndex;

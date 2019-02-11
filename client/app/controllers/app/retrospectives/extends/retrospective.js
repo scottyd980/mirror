@@ -1,14 +1,26 @@
 import Controller from '@ember/controller';
 import ENV from 'mirror/config/environment';
+import { computed } from '@ember/object';
+import { inject as service } from '@ember/service';
 
 export default Controller.extend({
+  session: service(),
+  retroSvc: service('retrospective'),
+  currentUser: computed('session.currentUser', function() {
+    return this.get('session.currentUser');
+  }),
+  isModerator: computed('retroSvc.get_moderator', 'session.currentUser', function() {
+    return this.get('retroSvc.get_moderator.id') === this.get('session.currentUser.id');
+  }),
   actions: {
     changeRetrospectiveState(retrospective, currentStateSegment, direction) {
       //TODO: Need to account for games here
+      //TODO: Also account for loading here
       const currentState = ENV.retrospective.sticky_notes.states.indexOf(currentStateSegment);
-
-      retrospective.set('state', (currentState + direction));
-      retrospective.save();
+      this.get('store').findRecord('retrospective', retrospective.get('id'), { reload: true }).then((retro) => {
+        retro.set('state', (currentState + direction));
+        retro.save();
+      })
     },
     moveFeedback(id, state) {
       this.store.findRecord('feedback', id).then((fb) => {
@@ -22,9 +34,8 @@ export default Controller.extend({
       retrospective.save().then(() => {
         setTimeout(() => {
           this.transitionToRoute('app.teams.team.dashboard.retrospectives', retrospective.get('team.id')).then(() => {
-            // this.send('invalidateApplicationModel');
             this.get('notifications').success({
-              title: ENV.SUCCESS_MESSAGES.generic,
+              title: "Retrospective Cancelled",
               message: "The retrospective was successfully cancelled."
             });
           }), 0

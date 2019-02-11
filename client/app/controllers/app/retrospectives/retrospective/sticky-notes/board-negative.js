@@ -1,7 +1,17 @@
 import RetrospectiveController from 'mirror/controllers/app/retrospectives/extends/retrospective';
+import { computed } from '@ember/object';
 
 export default RetrospectiveController.extend({
   current_feedback_count: 1,
+  active_feedback: computed('model.feedback.@each.state', function() {
+    const feedback = this.get('model.feedback');
+    return feedback.find((fb) => {
+      return fb.get('state') === 1;
+    })
+  }),
+  card_state: computed('current_feedback_count', 'model.feedback.[]', function() {
+    return `${this.get('current_feedback_count')}/${this.get('model.feedback').length}`;
+  }),
   actions: {
     moveFeedback(feedback, direction) {
       const start_idx = 0,
