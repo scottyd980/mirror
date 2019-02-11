@@ -2,30 +2,19 @@
   <div class="container">
     <div class="row">
       <div class="col-md-8">
-        {{#x-card title="What Went Well"}}
-          <div class="row">
-            <div class="col-md-12 d-flex flex-row">
-              <div class="feedback-col flex-fill">
-                {{#x-note/static
-                    data=active_feedback 
-                    isAnonymous=model.retrospective.isAnonymous 
-                    isModerator=isModerator 
-                    type="good"
-                    onFlag=(action "openActionModal" active_feedback)
-                }}
-                  {{active_feedback.message}}
-                {{/x-note/static}}
-              </div>
-              {{#if isModerator}}
-                <div class="feedback-nav d-flex flex-column mg-left-md">
-                  <a role="button" {{action "moveFeedback" model.feedback -1}}>{{fa-icon "arrow-circle-up" size=5 fixedWidth=true}}</a>
-                  <a role="button" {{action "moveFeedback" model.feedback 1}}>{{fa-icon "arrow-circle-down" size=5 fixedWidth=true}}</a>
-                  <h4 class="text-center mg-top-sm"><strong>{{current_feedback_count}}/{{model.feedback.length}}</strong></h4>
-                </div>
-              {{/if}}
-            </div>
-          </div>
-        {{/x-card}}
+        <h3 class="title">What Went Well</h3>
+        {{#x-note/static
+            data=active_feedback 
+            isAnonymous=model.retrospective.isAnonymous 
+            isModerator=isModerator 
+            type="good"
+            onFlag=(action "openActionModal" active_feedback)
+            onPrevious=(action "moveFeedback" model.feedback -1)
+            onNext=(action "moveFeedback" model.feedback 1)
+            counter=card_state
+        }}
+          {{active_feedback.message}}
+        {{/x-note/static}}
       </div>
       <div class="col-md-4">
         {{#if isModerator}}
