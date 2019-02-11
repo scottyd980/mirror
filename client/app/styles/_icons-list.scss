@@ -1,0 +1,43 @@
+@mixin icon-list--icon($icon, $color) {
+    &:before {
+        content: $icon;
+        color: $color;
+    }
+}
+
+@import "icons-list-feedback";
+@import "icons-list-key";
+
+ul.icons-list {
+  padding-left: 0px;
+  list-style: none;
+
+  li {
+    padding-bottom: 10px;
+    padding-top: 10px;
+    border-bottom: 1px solid $brand-border;
+    position: relative;
+    padding-left: 24px;
+
+    .pre {
+      white-space: pre-line;
+    }
+
+    &:before {
+      position: absolute;
+      font-family: FontAwesome;
+      margin-left: -24px; /* same as padding-left set on li */
+      width: 24px; /* same as padding-left set on li */
+    }
+
+    &:first-of-type {
+      padding-top: 0;
+    }
+
+    &:last-of-type {
+      border-bottom: none;
+      padding-bottom: 0;
+    }
+  }
+  
+}

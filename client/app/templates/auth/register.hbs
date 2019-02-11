@@ -1,0 +1,42 @@
+<div class="pad-bottom-md text-center">
+  <img src="/img/mirror-logo.svg" alt="logo" class="logo--sm">
+  <h2 class="pad-top-sm">Sign Up</h2>
+</div>
+
+<div class="container">
+  <div class="row">
+    <div class="col-sm-8 col-sm-offset-2 col-md-6 col-md-offset-3">
+      {{#x-card}}
+        {{#if errors.length}}
+          <div class="alert alert-danger" role="alert">
+            {{fa-icon "exclamation-triangle"}} Please correct the highlighted fields below.
+          </div>
+        {{/if}}
+        <form>
+          <div class="form-group input-group-icon {{if errors.username-error "has-error"}}">
+            {{input type="text" class="form-control" id="register-username" placeholder="Username" value=model.username}}
+            {{fa-icon "user" fixedWidth=true}}
+            <span class="help-block">{{errors.username-error}}</span>
+          </div>
+          <div class="form-group input-group-icon {{if errors.email-error "has-error"}}">
+            {{input type="email" class="form-control" id="register-email" placeholder="Email Address" value=model.email}}
+            {{fa-icon "envelope" fixedWidth=true}}
+            <span class="help-block">{{errors.email-error}}</span>
+          </div>
+          <div class="form-group input-group-icon {{if errors.password-error "has-error"}}">
+            {{input type="password" class="form-control" id="register-password" placeholder="Password (6 char min.)" value=model.password}}
+            {{fa-icon "key" fixedWidth=true}}
+            <span class="help-block">{{errors.password-error}}</span>
+          </div>
+          <div class="form-group input-group-icon {{if errors.password-confirmation-error "has-error"}}">
+            {{input type="password" class="form-control" id="register-password-confirmation" placeholder="Confirm Password" value=model.passwordConfirmation}}
+            {{fa-icon "repeat" fixedWidth=true}}
+            <span class="help-block">{{errors.password-confirmation-error}}</span>
+          </div>
+          <button {{action "doRegister"}} type="submit" class="btn btn-success btn-lg btn-block">Sign Up</button>
+          <p class="help-block text-center">{{#link-to "auth.login"}}Already have an account?{{/link-to}}</p>
+        </form>
+      {{/x-card}}
+    </div>
+  </div>
+</div>

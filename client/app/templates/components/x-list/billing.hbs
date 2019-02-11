@@ -1,0 +1,40 @@
+<ul class="table-list">
+  {{#each (sort-by "id:desc" cards) as |card|}}
+    <li class={{if (eq card.id default_payment.id) "default"}}>
+      <div class="card-brand">
+        <img class="img-responsive" src={{compute (action "cardImage" card)}} alt="credit card" >
+      </div>
+      <div class="info">
+        <h4>{{card.brand}} xxxxx-{{card.last4}}</h4>
+        <p class="expiration muted-text">
+          {{#if card.is_expired}}
+            <span class="danger-text">Expired {{card.exp_month}}/{{card.exp_year}}</span>
+          {{else}}
+            Expires {{card.exp_month}}/{{card.exp_year}}
+          {{/if}}&nbsp;• Added {{moment-format card.added_date "MMMM Do, YYYY"}}
+        </p>
+      </div>
+      <div class="actions">
+        {{#if (and (not-eq card.id default_payment.id) (not card.is_expired))}}
+          <a
+            role="button"
+            {{action "onConfirm" "Are you sure you want to make this the default payment method?" (action onMakeDefault card)}}
+            class="btn btn-success btn-outline btn-xs">
+            {{fa-icon "check" fixedWidth=true}}
+            {{#ember-tooltip side="bottom"}}
+              Make Default
+            {{/ember-tooltip}}
+          </a>
+        {{/if}}
+        <a 
+          role="button"
+          {{action "onConfirm" "Are you sure you want to remove this payment method?" (action onDelete card)}} class="btn btn-danger btn-outline btn-xs">
+          {{fa-icon "times" fixedWidth=true}}
+          {{#ember-tooltip side="bottom"}}
+            Delete
+          {{/ember-tooltip}}
+        </a>
+      </div>
+    </li>
+  {{/each}}
+</ul>

@@ -1,4 +1,6 @@
 {
     "elixir.projectPath": "api/",
-    "editor.acceptSuggestionOnEnter": "on"
+    "editor.acceptSuggestionOnEnter": "on",
+    "html.format.enable": true,
+    "html.format.indentHandlebars": true
 }

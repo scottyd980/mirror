@@ -7,6 +7,7 @@ export default Ember.Route.extend({
     var _this = this;
     return RSVP.hash({
       team: this.modelFor('app.teams.team'),
+      // TODO: Maybe we don't need this in all models, can do as computed property on controller
       currentUser: _this.get('session').get('currentUser')
     });
   },
