@@ -307,20 +307,17 @@ ul.action-list {
     border-bottom: 1px solid $brand-border;
     padding-top: 10px;
     min-height: 43px;
+    display: flex;
 
     &.three-actions {
       .list-actions {
-        width: 90px;
-        position: absolute;
-        right: 35px;
+        margin-left: auto;
+        min-width: 90px;
       }
 
       .list-item {
-        margin-right: 120px;
         overflow: hidden;
-        position: relative;
-        padding-left: 120px;
-        left: -120px;
+        flex: 1 1 auto;
         top: 2px;
         text-overflow: ellipsis;
         white-space: nowrap;
@@ -329,20 +326,17 @@ ul.action-list {
 
     &.progress-list {
       .list-actions {
-        width: 90px;
-        position: absolute;
-        right: 35px;
+        margin-left: auto;
+        min-width: 90px;
       }
 
       .list-item {
-        margin-right: 120px;
         overflow: hidden;
-        position: relative;
-        padding-left: 120px;
-        left: -120px;
+        flex: 1 1 auto;
         top: 2px;
         text-overflow: ellipsis;
         white-space: nowrap;
+        vertical-align: middle;
       }
     }
 
@@ -355,14 +349,11 @@ ul.action-list {
     }
 
     .list-actions {
-      float: left;
       text-align: right;
     }
 
     .list-item {
-      float: left;
       vertical-align: middle;
-      width: 100%;
     }
 
     &:first-of-type {
@@ -411,4 +402,21 @@ ul.action-list {
 
 .ember-tooltip .tooltip-inner {
   background-color: #3a3c47;
+}
+
+h3.title {
+  text-transform: uppercase;
+  font-size: 14px;
+  letter-spacing: 1px;
+  margin-bottom: 0;
+  font-weight: 500;
+  color: #949CA4;
+  margin-bottom: 15px;
+
+  &:before {
+    content: "";
+    font-family: FontAwesome;
+    padding-right: 5px;
+    color: #02C8A7;
+  }
 }

@@ -6,12 +6,12 @@
           {{x-list/retrospective/member
                 members=model.team_members
                 joined_members=model.retrospective.participants 
-                currentUser=model.currentUser
+                currentUser=currentUser
             }}
         {{/x-card}}
       </div>
       <div class="col-md-4">
-        {{#if model.isModerator}}
+        {{#if isModerator}}
           {{#x-card/callout title="Moderator"}}
             <div class="card-header">
               {{x-timer}}

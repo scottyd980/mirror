@@ -50,21 +50,21 @@
         {{/x-card}}
       </div>
       <div class="col-md-4">
-        {{#x-card/callout title=(concat model.parent.retrospective.name " Summary")}}
+        {{#x-card/callout title=(concat model.retrospective.name " Summary")}}
           <div class="card-header">
             {{fa-icon "thumbs-up"}}
           </div>
-          {{#link-to "app.teams.team.dashboard.retrospectives" model.parent.retrospective.team.id class="btn btn-block btn-success btn-lg btn-callout"}}Team Dashboard {{fa-icon "angle-right" fixedWidth=true}}{{/link-to}}
+          {{#link-to "app.teams.team.dashboard.retrospectives" model.retrospective.team.id class="btn btn-block btn-success btn-lg btn-callout"}}Team Dashboard {{fa-icon "angle-right" fixedWidth=true}}{{/link-to}}
           <div class="row">
             <div class="col-xs-12">
-              <p class="text-center">Great job! The retrospective for {{model.parent.retrospective.name}} is complete!</p>
+              <p class="text-center">Great job! The retrospective for {{model.retrospective.name}} is complete!</p>
             </div>
           </div>
         {{/x-card/callout}}
         {{#x-card title="Participants"}}
           {{x-list/retrospective/submission
-                members=model.parent.retrospective.participants
-                currentUser=model.parent.currentUser
+                members=model.retrospective.participants
+                currentUser=currentUser
                 userList=true
             }}
         {{/x-card}}

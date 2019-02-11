@@ -298,6 +298,10 @@
 }
 
 .flex-fill {
-  -ms-flex: 1 1 auto!important;
-  flex: 1 1 auto!important;
+  -ms-flex: 1 1 auto !important;
+  flex: 1 1 auto !important;
+}
+
+.h-100 {
+  height: 100%;
 }
