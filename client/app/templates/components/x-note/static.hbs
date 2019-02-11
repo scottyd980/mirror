@@ -1,21 +1,45 @@
-<div class="note--top">
-  {{#if (eq isAnonymous "false")}}
-    <div class="note--provider">
-      {{data.user.username}}
+<div class="note static {{type}}">
+  <div class="d-flex flex-row flex-fill h-100">
+    <div class="note--section flex-fill">
+      <div class="note--top">
+        {{#if (eq isAnonymous "false")}}
+          <div class="note--provider">
+            {{data.user.username}}
+          </div>
+        {{/if}}
+        <div class="note--content">
+          {{yield}}
+        </div>
+      </div>
     </div>
-  {{/if}}
-  <div class="note--content">
-    {{yield}}
-  </div>
-</div>
-<div class="note--bottom">
-  <div class="note--action">
     {{#if isModerator}}
-      <a role="button" {{action onFlag}} class="btn btn-default btn-outline-alt"><i class="fa fa-flag fa-fw"></i> <span class="hidden-xs">Flag{{if data.action.message "ged"}} For Action</span></a>
-    {{else}}
-      {{#if data.action.message}}
-        <div class="text-right"><i class="fa fa-flag"></i></div>
-      {{/if}}
+      <div class="note--state">{{counter}}</div>
+      <div class="note--actions d-flex flex-column">
+        <div class="note--actions--action">
+          <a {{action onNext}} role="button">
+            {{fa-icon "long-arrow-right" size=2 fixedWidth=true}}<br>
+            <span>Next</span>
+          </a>
+        </div>
+        <div class="note--actions--action">
+          <a {{action onPrevious}} role="button">
+            {{fa-icon "long-arrow-left" size=2 fixedWidth=true}}<br>
+            <span>Previous</span>
+          </a>
+        </div>
+        <div class="note--actions--action">
+          <a {{action onFlag}} role="button">
+            {{fa-icon "flag" size=2 fixedWidth=true}}<br>
+            <span>Flag{{if data.action.message "ged"}} For Action</span>
+          </a>
+        </div>
+      </div>
     {{/if}}
   </div>
 </div>
+{{#if data.action.message}}
+  <div class="note--action-item d-flex">
+    <div>{{fa-icon "exclamation-triangle" class="secondary-text mg-right-sm" fixedWidth=true}}</div>
+    <div class="note--action-item--content">{{data.action.message}}</div>
+  </div>
+{{/if}}

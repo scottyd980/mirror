@@ -1,6 +1,7 @@
 .note {
     width: 100%;
     min-height: 400px;
+    height: 100%;
     padding: 15px;
     color: $white;
     border-radius: 2px;
@@ -9,6 +10,7 @@
     flex-direction: column;
     font-size: 22px;
     text-align: center;
+    position: relative;
 
     &:last-of-type {
         margin-bottom: 0 !important;
@@ -22,6 +24,20 @@
         @extend .danger-bg;
     }
 
+    &.static { 
+        margin-bottom: 30px !important;
+        border-radius: 2px;
+
+        .note--section {
+            padding-right: 15px;
+            padding-bottom: 40px;
+            display: flex;
+            justify-content: center;
+            flex-direction: column;
+            text-align: center;
+        }
+    }
+
     .note--provider {
         text-transform: uppercase;
         font-size: 11px;
@@ -33,8 +49,6 @@
     }
 
     .note--top {
-        margin-bottom: auto;
-
         .note--content {
             white-space: pre-line;
 
@@ -89,4 +103,86 @@
     &:hover, &:focus, &:active {
         color: darken($brand-secondary, 10%);
     }
+}
+
+.note--actions {
+    margin: -15px -15px -15px 0 !important;
+    padding: 15px;
+    padding-left: 18px;
+    box-shadow: inset 15px 0 15px -8px rgba(0, 0, 0, 0.2);
+    max-width: 120px;
+    border-top-right-radius: 2px;
+    border-bottom-right-radius: 2px;
+
+    @media (max-width: $screen-md-max) {
+        max-width: 90px;
+    }
+}
+
+.note.bad .note--actions {
+    background: darken($brand-danger, 15%);
+}
+
+.note.good .note--actions {
+    background: darken($brand-success, 15%);
+}
+
+.note--actions--action {
+    line-height: 14px;
+    a {
+        position: relative;
+        color: rgba(0,0,0,0.6);
+        transition: 0.1s;
+
+        &:hover {
+            color: rgba(255,255,255,0.6);
+            text-decoration: none;
+        }
+
+        span {
+            font-size: 13px;
+            position: relative;
+            text-transform: uppercase;
+            font-weight: bold;
+
+            @media (max-width: $screen-md-max) {
+                font-size: 12px;
+            }
+        }
+    }
+
+    &:first-of-type {
+        border-bottom: 1px solid rgba(0,0,0,0.15);
+        padding-bottom: 10px;
+        margin-bottom: 10px;
+    }
+
+    &:last-of-type {
+        margin-top: auto;
+    }
+}
+
+.note--state {
+    position: absolute;
+    bottom: 15px;
+    left: 15px;
+    color: rgba(0,0,0,0.5);
+}
+
+.note--action-item {
+    background: #fff;
+    margin-top: 15px;
+    margin-top: -30px;
+    padding: 15px;
+    margin-bottom: 30px;
+    border-bottom-left-radius: 2px;
+    border-bottom-right-radius: 2px;
+    border: 2px solid #e9ecef;
+    border-top: none;
+    margin-right: 15px;
+    margin-left: 15px;
+}
+
+.note--action-item--content {
+    white-space: pre-line;
 }

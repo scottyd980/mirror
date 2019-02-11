@@ -9,6 +9,9 @@ export default RetrospectiveController.extend({
       return fb.get('state') === 1;
     })
   }),
+  card_state: computed('current_feedback_count', 'model.feedback.[]', function() {
+    return `${this.get('current_feedback_count')}/${this.get('model.feedback').length}`;
+  }),
   actions: {
     moveFeedback(feedback, direction) {
       const start_idx = 0,
