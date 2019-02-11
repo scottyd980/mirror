@@ -29,7 +29,7 @@ export default RetrospectiveController.extend({
     } else {
       this.get('notifications').error({
         title: ENV.ERROR_MESSAGES.process,
-        message: "You must select a score before submitting. Please try again."
+        message: "You must select a score before submitting. Please select a score and try submitting again."
       });
     }
   },

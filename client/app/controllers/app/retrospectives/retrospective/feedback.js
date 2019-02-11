@@ -52,29 +52,40 @@ export default RetrospectiveController.extend({
 
   actions: {
     submitFeedback() {
-      const uuid = this.get('uuid').get('hash');
-      if (uuid) {
-        this.submitFeedback(uuid);
-      } else {
-        fetch(`${ENV.DS.host}/${ENV.DS.namespace}/uuid`, {
-          type: 'GET',
-          headers: {
-            'Authorization': `Bearer ${this.get('session').get('session.content.authenticated.access_token')}`
-          }
-        }).then((response) => {
-          if (response.status === 200 || response.status === 201) {
-            response.json().then((uuid) => {
-              this.get('uuid').set('hash', uuid.hash);
-              this.submitFeedback(uuid.hash);
+      const feedbackExists = this.get('model').gameInput.some((feedback) => {
+        return (feedback.value.trim() !== "") ? true : false;
+      });
+
+      if(feedbackExists) {
+        const uuid = this.get('uuid').get('hash');
+        if (uuid) {
+          this.submitFeedback(uuid);
+        } else {
+          fetch(`${ENV.DS.host}/${ENV.DS.namespace}/uuid`, {
+            type: 'GET',
+            headers: {
+              'Authorization': `Bearer ${this.get('session').get('session.content.authenticated.access_token')}`
+            }
+          }).then((response) => {
+            if (response.status === 200 || response.status === 201) {
+              response.json().then((uuid) => {
+                this.get('uuid').set('hash', uuid.hash);
+                this.submitFeedback(uuid.hash);
+              });
+            } else {
+              throw new Error('Unexpected response from server');
+            }
+          }).catch(() => {
+            this.get('notifications').error({
+              title: ENV.ERROR_MESSAGES.process,
+              message: "There was a problem submitting your feedback. Please try again."
             });
-          } else {
-            throw new Error('Unexpected response from server');
-          }
-        }).catch(() => {
-          this.get('notifications').error({
-            title: ENV.ERROR_MESSAGES.process,
-            message: "There was a problem submitting your feedback. Please try again."
           });
+        }
+      } else {
+        this.get('notifications').error({
+          title: ENV.ERROR_MESSAGES.process,
+          message: "You must enter some feedback before submitting. Please enter some feedback and try submitting again."
         });
       }
     }
