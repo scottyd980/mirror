@@ -13,14 +13,10 @@ export default Route.extend({
     .then((retrospective) => {
       return retrospective.get('team').then((team) => {
         return team.get('members').then((team_members) => {
-          const currentUser = this.get('session').get('currentUser');
-
           return hash({
             retrospective,
             team,
-            team_members,
-            // TODO: REMOVE
-            currentUser
+            team_members
           });
         }).catch(() => { throw ENV.ERROR_CODES.not_found});
       }).catch(() => { throw ENV.ERROR_CODES.not_found});
