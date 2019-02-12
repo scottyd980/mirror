@@ -74,3 +74,6 @@ config :mirror, Mirror.Repo,
   password: "${PASSWORD}",
   database: "${DATABASE}",
   pool_size: 10
+
+config :statix,
+  host: "${STATSD_HOST}"

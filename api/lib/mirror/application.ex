@@ -16,6 +16,8 @@ defmodule Mirror.Application do
       # worker(Mirror.Worker, [arg1, arg2, arg3]),
     ]
 
+    setup_probes()
+
     # See https://hexdocs.pm/elixir/Supervisor.html
     # for other strategies and supported options
     opts = [strategy: :one_for_one, name: Mirror.Supervisor]
@@ -27,5 +29,41 @@ defmodule Mirror.Application do
   def config_change(changed, _new, removed) do
     MirrorWeb.Endpoint.config_change(changed, removed)
     :ok
+  end
+
+  def setup_probes() do
+    if Application.get_env(:instruments, :disabled) != true do
+      {:ok, _} = Application.ensure_all_started(:instruments)
+      interval = 1_000
+
+      Instruments.Probe.define(
+        "erlang.process_count",
+        :gauge,
+        mfa: {:erlang, :system_info, [:process_count]},
+        report_interval: interval
+      )
+
+      Instruments.Probe.define(
+        "erlang.memory",
+        :gauge,
+        mfa: {:erlang, :memory, []},
+        keys: [:total, :atom, :processes],
+        report_interval: interval
+      )
+
+      Instruments.Probe.define(
+        "erlang.statistics.run_queue",
+        :gauge,
+        mfa: {:erlang, :statistics, [:run_queue]},
+        report_interval: interval
+      )
+
+      Instruments.Probe.define(
+        "erlang.system_info.process_count",
+        :gauge,
+        mfa: {:erlang, :system_info, [:process_count]},
+        report_interval: interval
+      )
+    end
   end
 end
