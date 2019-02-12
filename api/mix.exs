@@ -52,7 +52,8 @@ defmodule Mirror.Mixfile do
       {:uuid, "~> 1.1"},
       {:stripity_stripe, "~> 2.0"},
       {:edeliver, "~> 1.5.0"},
-      {:distillery, "~> 1.5", runtime: false}
+      {:distillery, "~> 1.5", runtime: false},
+      {:instruments, "~> 1.1.1"}
     ]
   end
 

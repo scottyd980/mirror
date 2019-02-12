@@ -53,6 +53,11 @@ spec:
                 secretKeyRef:
                   name: secrets
                   key: secret_key_base
+            - name: STATSD_HOST
+              valueFrom:
+                secretKeyRef:
+                  name: secrets
+                  key: statsd_host
           livenessProbe:
             httpGet:
               path: /api/kube_health

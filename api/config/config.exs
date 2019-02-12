@@ -9,6 +9,9 @@ use Mix.Config
 config :mirror,
   ecto_repos: [Mirror.Repo]
 
+config :mirror, Mirror.Repo,
+  loggers: [{Ecto.LogEntry, :log, []}, {Mirror.Metrics.Repo, :record_metric, []}]
+
 # Configures the endpoint
 config :mirror, MirrorWeb.Endpoint,
   url: [host: "localhost"],
@@ -43,6 +46,16 @@ config :mirror,
 
 config :mirror,
   billing_active: false
+
+config :statix,
+  prefix: "mirror_app.#{Mix.env}",
+  host: "localhost",
+  port: 8125
+
+config :instruments,
+  reporter_module: Instruments.Statix,
+  statsd_port: 8125,
+  disabled: false
 
 config :mirror, Mirror.Guardian,
   issuer: "Mirror",

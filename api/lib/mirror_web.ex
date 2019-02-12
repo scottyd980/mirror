@@ -23,6 +23,7 @@ defmodule MirrorWeb do
       import Plug.Conn
       import MirrorWeb.Router.Helpers
       import MirrorWeb.Gettext
+      plug Mirror.Metrics.Plug
     end
   end
 
