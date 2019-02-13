@@ -25,7 +25,8 @@ ul.icons-list {
 
     &:before {
       position: absolute;
-      font-family: FontAwesome;
+      font-family: 'Font Awesome 5 Pro';
+      font-weight: 500;
       margin-left: -24px; /* same as padding-left set on li */
       width: 24px; /* same as padding-left set on li */
     }

@@ -20,7 +20,7 @@ export default RetrospectiveController.extend({
       score.set('user', this.get('session').get('currentUser'));
       score.set('uuid', uuid);
 
-      $('#score-submit').html("<i class='fa fa-fw fa-refresh fa-spin'></i> Submitting Score...");
+      $('#score-submit').html("<i class='fa fa-fw fa-sync-alt fa-spin'></i> Submitting Score...");
       $('#score-submit').prop('disabled', true);
 
       score.save().then(() => {
