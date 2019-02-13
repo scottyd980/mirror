@@ -19,7 +19,8 @@
 
       &:before {
         content: "\f101"; /* FontAwesome Unicode */
-        font-family: FontAwesome;
+        font-family: 'Font Awesome 5 Pro';
+        font-weight: 500;
         padding-right: 5px;
         color: $brand-success;
       }
@@ -53,7 +54,8 @@
 
       &:after {
         content: '\f00c';
-        font-family: FontAwesome;
+        font-family: 'Font Awesome 5 Pro';
+        font-weight: 500;
         left: 50%;
         top: 50%;
         width: auto;

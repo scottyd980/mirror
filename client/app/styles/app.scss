@@ -3,6 +3,11 @@
 @import 'bootstrap-custom/variables';
 @import 'helper-classes';
 
+@import 'font-awesome/light.scss';
+@import 'font-awesome/regular.scss';
+@import 'font-awesome/solid.scss';
+@import 'font-awesome/fontawesome.scss';
+
 @import 'bootstrap-custom/navbar';
 @import 'bootstrap-custom/buttons';
 @import 'bootstrap-custom/forms';
@@ -148,7 +153,8 @@ ul.tips {
     &:before {
       position: absolute;
       content: "\f00c"; /* FontAwesome Unicode */
-      font-family: FontAwesome;
+      font-family: 'Font Awesome 5 Pro';
+      font-weight: 500;
       margin-left: -24px; /* same as padding-left set on li */
       width: 24px; /* same as padding-left set on li */
       color: $brand-success;
@@ -181,9 +187,10 @@ ul.table-list {
         top: -7px;
         left: -7px;
         content: "\f00c";
-        font-family: "FontAwesome";
+        font-family: "Font Awesome 5 Pro";
         background: $brand-success;
         font-size: 20px;
+        font-weight: 500;
         width: 28px;
         height: 28px;
         text-align: center;
@@ -414,8 +421,9 @@ h3.title {
   margin-bottom: 15px;
 
   &:before {
-    content: "";
-    font-family: FontAwesome;
+    content: "\f101";
+    font-family: 'Font Awesome 5 Pro';
+    font-weight: 500;
     padding-right: 5px;
     color: #02C8A7;
   }

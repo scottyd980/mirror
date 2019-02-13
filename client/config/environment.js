@@ -34,6 +34,9 @@ module.exports = function(environment) {
       routeIfAlreadyAuthenticated: 'app.index',
       routeAfterAuthentication: 'app.index'
     },
+    fontawesome: {
+      defaultPrefix: 'fas' // light icons
+    },
     STATUS_CODES: {
       ok: 200,
       created: 201,

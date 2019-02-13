@@ -5,18 +5,18 @@ metadata:
   annotations:  
     kubernetes.io/ingress.class: nginx
     certmanager.k8s.io/cluster-issuer: letsencrypt-prod
-    # [ cert-manager annotations ]
     nginx.ingress.kubernetes.io/configuration-snippet: |
       if ($host = 'www.usemirror.io' ) {
         rewrite ^ https://usemirror.io$request_uri permanent;
       }
-    nginx.ingress.kubernetes.io/configuration-snippet: |
       if ($host = 'usemirror.com' ) {
         rewrite ^ https://usemirror.io$request_uri permanent;
       }
-    nginx.ingress.kubernetes.io/configuration-snippet: |
       if ($host = 'www.usemirror.com' ) {
         rewrite ^ https://usemirror.io$request_uri permanent;
+      }
+      if ($host = 'www.nonbreakingmonitor.com' ) {
+        rewrite ^ https://nonbreakingmonitor.com$request_uri permanent;
       }
     nginx.ingress.kubernetes.io/server-snippet: |
       proxy_http_version 1.1;
@@ -30,6 +30,8 @@ spec:
     - www.usemirror.io
     - usemirror.com
     - www.usemirror.com
+    - nonbreakingmonitor.com
+    - www.nonbreakingmonitor.com
     secretName: letsencrypt-prod
   rules:
   - host: usemirror.io
@@ -64,4 +66,22 @@ spec:
       paths:
       - backend:
           serviceName: mirror-frontend
+          servicePort: 80
+  - host: nonbreakingmonitor.com
+    http:
+      paths:
+      - path: /
+        backend:
+          serviceName: grafana
+          servicePort: 80
+      - path: /elastic
+        backend:
+          serviceName: elk-stack-elasticsearch-client
+          servicePort: 9200
+  - host: www.nonbreakingmonitor.com
+    http:
+      paths:
+      - path: /
+        backend:
+          serviceName: grafana
           servicePort: 80
