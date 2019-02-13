@@ -14,6 +14,7 @@ WORKDIR /ui
 COPY package.json .
 COPY package-lock.json .
 COPY bower.json .
+COPY .npmrc .
 
 RUN rm -rf node_modules
 RUN rm -rf bower_components
