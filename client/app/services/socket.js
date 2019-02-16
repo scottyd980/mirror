@@ -1,6 +1,6 @@
 import Service from '@ember/service';
 import ENV from 'mirror/config/environment';
-import { Socket } from 'ember-phoenix';
+import { Socket, LongPoll } from 'ember-phoenix';
 import { inject as service } from '@ember/service';
 
 export default Service.extend({
@@ -11,7 +11,9 @@ export default Service.extend({
   init() {
     this._super(...arguments);
     this.set('channels', {});
-    this.socket = new Socket(`${ENV.DS.wshost}/socket`);
+    this.socket = new Socket(`${ENV.DS.wshost}/socket`, {
+      transport: LongPoll
+    });
     this.socket.connect();
   },
 
