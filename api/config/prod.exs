@@ -76,4 +76,5 @@ config :mirror, Mirror.Repo,
   pool_size: 10
 
 config :statix,
-  host: "${STATSD_HOST}"
+  host: "${STATSD_HOST}",
+  prefix: "mirror_app.#{Mix.env}.${POD_NAME}"
