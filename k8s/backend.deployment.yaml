@@ -58,6 +58,10 @@ spec:
                 secretKeyRef:
                   name: secrets
                   key: statsd_host
+            - name: POD_NAME
+              valueFrom:
+                fieldRef:
+                  fieldPath: metadata.name
           livenessProbe:
             httpGet:
               path: /api/kube_health
