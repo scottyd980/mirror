@@ -31,7 +31,7 @@
   position: relative;
 }
 
-.input-group-icon > .fa {
+.input-group-icon > .svg-inline--fa {
   position: absolute;
   top: 18px;
   left: 15px;
@@ -44,12 +44,12 @@
   padding-left: 45px;
 }
 
-.form-control:focus + .fa {
+.form-control:focus + .svg-inline--fa {
     color: $brand-success;
     transition: color 0.15s ease-in-out;
 }
 
-.form-control:read-only:focus + .fa {
+.form-control:read-only:focus + .svg-inline--fa {
   color: #000;
   transition: none;
 }
