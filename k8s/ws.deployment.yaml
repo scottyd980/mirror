@@ -1,0 +1,68 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: mirror-ws
+spec:
+  replicas: 1
+  revisionHistoryLimit: 5
+  selector:
+    matchLabels:
+      app: mirror
+      tier: ws
+  template:
+    metadata:
+      labels:
+        app: mirror
+        tier: ws
+    spec:
+      containers:
+        - name: mirror
+          image: nonbreakingspace/mirror-api:latest
+          ports:
+            - name: http
+              containerPort: 4000
+          args: ["foreground"]
+          env:
+            - name: HOST
+              valueFrom:
+                secretKeyRef:
+                  name: secrets
+                  key: host
+            - name: DB_HOST
+              valueFrom:
+                secretKeyRef:
+                  name: secrets
+                  key: db_host
+            - name: USERNAME
+              valueFrom:
+                secretKeyRef:
+                  name: secrets
+                  key: db_username
+            - name: PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: secrets
+                  key: db_password
+            - name: DATABASE
+              valueFrom:
+                secretKeyRef:
+                  name: secrets
+                  key: db_name
+            - name: SECRET_KEY_BASE
+              valueFrom:
+                secretKeyRef:
+                  name: secrets
+                  key: secret_key_base
+            - name: STATSD_HOST
+              valueFrom:
+                secretKeyRef:
+                  name: secrets
+                  key: statsd_host
+          livenessProbe:
+            httpGet:
+              path: /api/kube_health
+              port: http
+            initialDelaySeconds: 3
+            periodSeconds: 3
+      imagePullSecrets:
+      - name: regcred
