@@ -6,6 +6,7 @@ export default Service.extend({
   store: service(),
   session: service(),
   uuid: service(),
+  notifications: service('notification'),
 
   team_channel: null,
   retrospective_channel: null,
@@ -47,7 +48,7 @@ export default Service.extend({
       this.listen_for_team_events(chan);
       this.set('team_channel', chan);
       this.lookup_in_progress(team_id);
-    }).catch((e) => {
+    }).catch(() => {
       this.get('notifications').error({
         title: ENV.ERROR_MESSAGES.time_out,
         message: "Your connection to our server has timed out. This usually occurs after you are away from Mirror for a while. Please refresh the page to solve the issue."
@@ -75,7 +76,7 @@ export default Service.extend({
       this.listen_for_retrospective_events(chan);
       this.set('retrospective_channel', chan);
       this.set('active_retrospective', retrospective);
-    }).catch((e) => {
+    }).catch(() => {
       this.get('notifications').error({
         title: ENV.ERROR_MESSAGES.time_out,
         message: "Your connection to our server has timed out. This usually occurs after you are away from Mirror for a while. Please refresh the page to solve the issue."
@@ -88,7 +89,7 @@ export default Service.extend({
     retrospective_channel.then((/* chan */) => {
       this.set('retrospective_channel', null);
       this.set('active_retrospective', null);
-    }).catch((e) => {
+    }).catch(() => {
       this.get('notifications').error({
         title: ENV.ERROR_MESSAGES.time_out,
         message: "Your connection to our server has timed out. This usually occurs after you are away from Mirror for a while. Please refresh the page to solve the issue."
