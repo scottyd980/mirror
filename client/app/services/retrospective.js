@@ -51,6 +51,8 @@ export default Service.extend({
       this.listen_for_team_events(chan);
       this.set('team_channel', chan);
       this.lookup_in_progress(team_id);
+    }).catch((e) => {
+      console.log(e);
     });
 
     return this.get('pre_retrospective');
@@ -74,6 +76,8 @@ export default Service.extend({
       this.listen_for_retrospective_events(chan);
       this.set('retrospective_channel', chan);
       this.set('active_retrospective', retrospective);
+    }).catch((e) => {
+      console.log(e);
     });
   },
 
@@ -82,6 +86,8 @@ export default Service.extend({
     retrospective_channel.then((/* chan */) => {
       this.set('retrospective_channel', null);
       this.set('active_retrospective', null);
+    }).catch((e) => {
+      console.log(e);
     });
   },
 
