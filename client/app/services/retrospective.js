@@ -52,7 +52,7 @@ export default Service.extend({
     }).catch(() => {
       this.get('notifications').error({
         title: ENV.ERROR_MESSAGES.time_out,
-        message: "Your connection to our server has timed out. This usually occurs after you are away from Mirror for a while. Please refresh the page to solve the issue."
+        message: "<p>Your connection to our server has timed out. This usually occurs after you are away from Mirror for a while.</p><p>Please <strong>refresh the page</strong> to resolve the issue.</p>"
       });
     });
 
@@ -80,7 +80,7 @@ export default Service.extend({
     }).catch(() => {
       this.get('notifications').error({
         title: ENV.ERROR_MESSAGES.time_out,
-        message: "Your connection to our server has timed out. This usually occurs after you are away from Mirror for a while. Please refresh the page to solve the issue."
+        message: "<p>Your connection to our server has timed out. This usually occurs after you are away from Mirror for a while.</p><p>Please <strong>refresh the page</strong> to resolve the issue.</p>"
       });
     });
   },
@@ -93,7 +93,7 @@ export default Service.extend({
     }).catch(() => {
       this.get('notifications').error({
         title: ENV.ERROR_MESSAGES.time_out,
-        message: "Your connection to our server has timed out. This usually occurs after you are away from Mirror for a while. Please refresh the page to solve the issue."
+        message: "<p>Your connection to our server has timed out. This usually occurs after you are away from Mirror for a while.</p><p>Please <strong>refresh the page</strong> to resolve the issue.</p>"
       });
     });
   },
