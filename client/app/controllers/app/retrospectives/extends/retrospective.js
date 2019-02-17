@@ -9,8 +9,8 @@ export default Controller.extend({
   currentUser: computed('session.currentUser', function() {
     return this.get('session.currentUser');
   }),
-  isModerator: computed('retroSvc.get_moderator', 'session.currentUser', function() {
-    return this.get('retroSvc.get_moderator.id') === this.get('session.currentUser.id');
+  isModerator: computed('model.retrospective.moderator.id', 'session.currentUser', function() {
+    return this.get('model.retrospective.moderator.id') === this.get('session.currentUser.id');
   }),
   actions: {
     changeRetrospectiveState(retrospective, currentStateSegment, direction) {

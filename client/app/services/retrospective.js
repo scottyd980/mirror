@@ -1,6 +1,5 @@
 import Service from '@ember/service';
 import { inject as service } from '@ember/service';
-import { computed } from '@ember/object';
 
 export default Service.extend({
   socket: service(),
@@ -25,9 +24,6 @@ export default Service.extend({
   start(retrospective) {
     return retrospective.save();
   },
-  get_moderator: computed('active_retrospective', function() {
-    return this.get('active_retrospective.moderator');
-  }),
   lookup_in_progress() {
     this.get('team_channel').push('check_retrospective_in_progress', {});
   },
