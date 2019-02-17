@@ -48,7 +48,10 @@ export default Service.extend({
       this.set('team_channel', chan);
       this.lookup_in_progress(team_id);
     }).catch((e) => {
-      this.join_team_channel(team_id);
+      this.get('notifications').error({
+        title: ENV.ERROR_MESSAGES.time_out,
+        message: "Your connection to our server has timed out. Please refresh the page."
+      });
     });
 
     return this.get('pre_retrospective');
@@ -73,7 +76,10 @@ export default Service.extend({
       this.set('retrospective_channel', chan);
       this.set('active_retrospective', retrospective);
     }).catch((e) => {
-      this.join_retrospective_channel(retrospective);
+      this.get('notifications').error({
+        title: ENV.ERROR_MESSAGES.time_out,
+        message: "Your connection to our server has timed out. Please refresh the page."
+      });
     });
   },
 
@@ -83,7 +89,10 @@ export default Service.extend({
       this.set('retrospective_channel', null);
       this.set('active_retrospective', null);
     }).catch((e) => {
-      this.leave_retrospective_channel(retrospective_id);
+      this.get('notifications').error({
+        title: ENV.ERROR_MESSAGES.time_out,
+        message: "Your connection to our server has timed out. Please refresh the page."
+      });
     });
   },
 
