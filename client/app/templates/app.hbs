@@ -6,13 +6,13 @@
       title=notification.title
       type=notification.type
       onConfirmAction=notification.action}}
-      {{notification.message}}
+      {{{notification.message}}}
     {{/x-modal/confirm}}
   {{else}}
     {{#x-modal/notification
       title=notification.title
       type=notification.type}}
-      {{notification.message}}
+      {{{notification.message}}}
     {{/x-modal/notification}}
   {{/if}}
 {{/each}}
