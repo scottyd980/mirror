@@ -1,5 +1,6 @@
 import Service from '@ember/service';
 import { inject as service } from '@ember/service';
+import ENV from 'mirror/config/environment';
 
 export default Service.extend({
   socket: service(),
