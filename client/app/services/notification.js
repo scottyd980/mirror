@@ -34,9 +34,9 @@ export default Service.extend({
   currentPathDidChange: function () {
     this.clear();
   },
-  confirmAction(message, action) {
+  confirmAction(message, action, title) {
     this.confirm({
-      title: ENV.CONFIRM_MESSAGES.generic,
+      title: title || ENV.CONFIRM_MESSAGES.generic,
       message: message,
       action: action
     });
