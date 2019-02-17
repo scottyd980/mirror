@@ -69,6 +69,7 @@ module.exports = function(environment) {
     },
     ERROR_MESSAGES: {
       generic: "Something Went Wrong",
+      time_out: "Connection Interruption",
       process: "We Could Not Process Your Request",
       retrospective_in_progress: "Retrospective In Progress"
     },
