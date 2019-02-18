@@ -1,6 +1,7 @@
 import RetrospectiveRoute from 'mirror/routes/demo/extends/retrospective';
 import ENV from 'mirror/config/environment';
 import { schedule } from '@ember/runloop';
+import { set } from '@ember/object';
 
 export default RetrospectiveRoute.extend({
   model() {
@@ -13,11 +14,20 @@ export default RetrospectiveRoute.extend({
       gameInput: ENV.retrospective["sticky_notes"].feedback
     }
   },
-  setupController(controller) {
+  setupController(controller, model) {
     this._super(...arguments);
+
+    if(ENV.DEMO.user_feedback.length === 0) {
+      // Reset fields, assume they came from a new start.
+      controller.set('submitted', false);
+      model.gameInput.forEach((input) => {
+        set(input, 'value', '');
+      });
+    }
 
     schedule('afterRender', this, function() {
       controller.start_tour(ENV.TOUR.feedback);
+      controller.begin_feedback();
     });
   }
 });

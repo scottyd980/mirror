@@ -7,11 +7,6 @@ export default RetrospectiveController.extend({
   submitted: false,
   showModal: false,
 
-  init() {
-    this._super(...arguments);
-    this.begin_feedback();
-  },
-
   begin_feedback: function() {
     later(this, function() {
       this.get('model.feedbackSubmissions').pushObject(ENV.DEMO.feedback_submissions[0]);
