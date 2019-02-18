@@ -9,16 +9,16 @@ export default RetrospectiveController.extend({
 
   init() {
     this._super(...arguments);
-    this.begin_feedback();
+    this.begin_score();
   },
 
-  begin_feedback: function() {
+  begin_score: function() {
     later(this, function() {
-      this.get('model.feedbackSubmissions').pushObject(ENV.DEMO.feedback_submissions[0]);
+      this.get('model.scoreSubmissions').pushObject(ENV.DEMO.score_submissions[0]);
       later(this, function() {
-        this.get('model.feedbackSubmissions').pushObject(ENV.DEMO.feedback_submissions[1]);
-      }, 800);
-    }, 1400);
+        this.get('model.scoreSubmissions').pushObject(ENV.DEMO.score_submissions[1]);
+      }, 900);
+    }, 500);
   },
 
   start_tour() {
@@ -185,24 +185,20 @@ export default RetrospectiveController.extend({
       this.send('close');
     },
     submit: function() {
-      const feedbackExists = this.get('model').gameInput.some((feedback) => {
-        return (feedback.value.trim() !== "") ? true : false;
-      });
-
-      if(feedbackExists) {
-        this.get('model.feedbackSubmissions').pushObject({
+      const sprintScore = $('input[name="sprintScore"]:checked').val();
+      console.log(sprintScore);
+    
+      if (typeof sprintScore !== "undefined") {
+        this.get('model.scoreSubmissions').pushObject({
           user: ENV.DEMO.current_user,
           submitted: true
         });
-        this.get('model').gameInput.forEach((feedback) => {
-          if(feedback.value.trim() !== "") {
-            ENV.DEMO.user_feedback.pushObject({
-              category: feedback.type,
-              message: feedback.value,
-              user: ENV.DEMO.current_user
-            });
-          }
-        });
+  
+        ENV.DEMO.user_score.pushObject({
+          score: parseInt(sprintScore),
+          user: ENV.DEMO.current_user
+        })
+
         this.set('submitted', true);
       } else {
         $('.tippy-popper').hide();
