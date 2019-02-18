@@ -45,7 +45,7 @@ export default RetrospectiveController.extend({
           ],
           title: "Providing Feedback",
           text: [
-            "During this step, each team member enters feedback. Different games offer different types of feedback options."
+            "Here, each team member enters feedback. Different games offer various types of feedback options."
           ]
         }
       },
@@ -106,6 +106,66 @@ export default RetrospectiveController.extend({
           title: "Participant Status",
           text: [
             "We keep you informed of who has submitted their feedback already and who is still working."
+          ]
+        }
+      },
+      {
+        id: 'tour-feedback-back',
+        options: {
+          attachTo: {
+            element: '#tour-feedback-back',
+            on: 'bottom'
+          },
+          buttons: [
+            {
+              classes: 'btn btn-default shepherd-button-secondary',
+              text: 'Exit',
+              type: 'cancel'
+            },
+            {
+              classes: 'btn btn-info',
+              text: 'Back',
+              type: 'back'
+            },
+            {
+              classes: 'btn btn-info',
+              text: 'Next',
+              type: 'next'
+            }
+          ],
+          title: "Navigation Options",
+          text: [
+            "Now that we're in the retrospective, you also have the ability to go back to the previous step. Similar to the rest of the retrospective, all team members will navigate with you."
+          ]
+        }
+      },
+      {
+        id: 'tour-feedback-continue',
+        options: {
+          attachTo: {
+            element: '#tour-feedback-continue',
+            on: 'bottom'
+          },
+          buttons: [
+            {
+              classes: 'btn btn-default shepherd-button-secondary',
+              text: 'Exit',
+              type: 'cancel'
+            },
+            {
+              classes: 'btn btn-info',
+              text: 'Back',
+              type: 'back'
+            },
+            {
+              classes: 'btn btn-info',
+              text: 'Close',
+              type: 'next'
+            }
+          ],
+          title: "Continuing The Retrospective",
+          text: [
+            "Once you've entered your feedback, let's move on to the next step."
           ]
         }
       }
