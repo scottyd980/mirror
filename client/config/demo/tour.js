@@ -577,7 +577,7 @@ module.exports = function() {
           title: "Retrospective Summary",
           text: [
             "You'll notice that everything that was in the sprint is now aggregated on the summary page.",
-            "This summary page is kept in your team's history, so you'll always have a way to go back and find any feedback that was provided during the retrospective"
+            "This summary page is kept in your team's history, so you'll always have a way to go back and find any feedback that was provided during the retrospective."
           ]
         }
       },
