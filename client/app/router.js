@@ -66,6 +66,11 @@ Router.map(function() {
       });
     }
   });
+
+  this.route('demo', function() {
+    this.route('start');
+    this.route('feedback');
+  });
 });
 
 export default Router;

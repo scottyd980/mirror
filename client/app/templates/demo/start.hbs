@@ -1,0 +1,67 @@
+<div class="nav-push pre-login">
+  <div class="container">
+    <div class="row">
+      <div class="col-md-8">
+        <div id="tour-join">
+          {{#x-card title="Waiting for team members to join..."}}
+            {{demo/x-list/retrospective/member
+                members=model.team_members
+                joined_members=model.retrospective.participants 
+                currentUser=model.current_user
+            }}
+          {{/x-card}}
+        </div>
+      </div>
+      <div class="col-md-4">
+        <div id="tour-moderator">
+          {{#x-card/callout title="Moderator"}}
+            <div class="card-header">
+              {{x-timer}}
+            </div>
+            <a role="button" {{action "continue" "demo.feedback"}} id="tour-continue" class="btn btn-block btn-success btn-lg btn-callout">Continue {{fa-icon "angle-right" fixedWidth=true}}</a>
+            <div class="row">
+              <div class="col-xs-12">
+                <a role="button" {{action "cancel"}} id="tour-cancel" class="btn btn-block btn-danger btn-outline">{{fa-icon "times" fixedWidth=true}} Cancel</a>
+              </div>
+            </div>
+          {{/x-card/callout}}
+        </div>
+        {{#x-card title="While you wait..."}}
+          <p>Take a minute to remember what happened over the last sprint and be prepared to discuss ways the sprint was great, as well as ways to improve.</p>
+        {{/x-card}}
+      </div>
+    </div>
+  </div>
+</div>
+
+{{#if showModal}}
+  {{#x-modal
+    onClose=(action "start")
+    title="Welcome to the Mirror Demo!"
+  }}
+    {{#x-modal-body}}
+      <h5>Retrospectives</h5>
+      <p>
+        Retrospectives are an extremely useful ceremony where you can learn what's going great with your team... and what's not so great. Even if your team isn't agile, retrospectives are a very powerful way to solicit feedback from your team, and improve based on that feedback. We think regardless of how you run retrospectives, they're worth the time and effort to integrate it into your schedule.
+      </p>
+      <hr>
+      <h5>Purpose of the demo</h5>
+      <p>
+        This demo lets you test out Mirror with some bot-powered participants. You can see how a normal retrospective would proceed, should you choose to try using Mirror with your team. While the participants aren't real, the rest is. You'll see how a retrospective game works and how it can be used to drive discussion.
+      </p>
+      <hr>
+      <h5>Moderating the demo</h5>
+      <p>
+        For this demo, we've made you the retrospective moderator, so you'll set the pace that the retrospective happens. You have a timer available to you, to help you time-box discussions. You also have navigation buttons, which will progress you through the retrospective.
+      </p>
+      <hr>
+      <h5>Using the demo</h5>
+      <p>
+        As you go through this demo retrospective, there is a tour of Mirror's features and functionality. The tour will explain, step-by-step, how each step and interaction works. If you're ready to demo, let's get it started!
+      </p>
+    {{/x-modal-body}}
+    {{#x-modal-footer}}
+      <button {{action "start"}} type="button" class="btn btn-info">Start The Retrospective</button>
+    {{/x-modal-footer}}
+  {{/x-modal}}
+{{/if}}
