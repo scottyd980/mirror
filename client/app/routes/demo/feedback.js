@@ -13,11 +13,11 @@ export default RetrospectiveRoute.extend({
       gameInput: ENV.retrospective["sticky_notes"].feedback
     }
   },
-  setupController(controller, model) {
+  setupController(controller) {
     this._super(...arguments);
 
     schedule('afterRender', this, function() {
-      controller.start_tour();
+      controller.start_tour(ENV.TOUR.feedback);
     });
   }
 });

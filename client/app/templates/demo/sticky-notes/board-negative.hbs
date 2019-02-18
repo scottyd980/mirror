@@ -4,18 +4,20 @@
       <div class="col-md-8">
         {{#if model.feedback}}
           <h3 class="title">What Could Be Improved</h3>
-          {{#x-note/static
-              data=active_feedback 
-              isAnonymous=model.retrospective.isAnonymous 
-              isModerator=true 
-              type="bad"
-              onFlag=(action "openActionModal" active_feedback)
-              onPrevious=(action "moveFeedback" model.feedback -1)
-              onNext=(action "moveFeedback" model.feedback 1)
-              counter=card_state
-          }}
-            {{active_feedback.message}}
-          {{/x-note/static}}
+          <div id="tour-card">
+            {{#x-note/static
+                data=active_feedback 
+                isAnonymous=model.retrospective.isAnonymous 
+                isModerator=true 
+                type="bad"
+                onFlag=(action "openActionModal" active_feedback)
+                onPrevious=(action "moveFeedback" model.feedback -1)
+                onNext=(action "moveFeedback" model.feedback 1)
+                counter=card_state
+            }}
+              {{active_feedback.message}}
+            {{/x-note/static}}
+          </div>
         {{else}}
           {{#x-card title="What Could Be Improved"}}
             It looks like no one had an opinion on what could be improved! Are you sure there's nothing you could be doing better at all? <strong>Make sure the team acknowledges problem areas, or no one will be able to learn from them!</strong>

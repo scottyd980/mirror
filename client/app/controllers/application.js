@@ -18,6 +18,11 @@ export default Controller.extend({
       }
 
       $('.navbar-collapse').collapse('hide');
+    },
+
+    viewDemo() {
+      ENV.DEMO_CONFIG.state = null;
+      this.transitionToRoute('demo');
     }
   }
 });

@@ -9,13 +9,13 @@
         <span class="icon-bar"></span>
       </button>
       {{#if session.isAuthenticated}}
-        <div role="button" onclick={{action "navbarCollapse" value="target"}}>
+        <div onclick={{action "navbarCollapse" value="target"}}>
           {{#link-to "app.index" class="navbar-brand navbar-brand-icon"}}
             Mirror <sup class="navbar-beta">beta</sup>
           {{/link-to}}
         </div>
       {{else}}
-        <div role="button" onclick={{action "navbarCollapse" value="target"}}>
+        <div onclick={{action "navbarCollapse" value="target"}}>
           {{#link-to "index" class="navbar-brand navbar-brand-icon"}}
             Mirror <sup class="navbar-beta">beta</sup>
           {{/link-to}}
@@ -23,7 +23,7 @@
       {{/if}}
     </div>
 
-    <div role="button" class="collapse navbar-collapse" onclick={{action "navbarCollapse" value="target"}} id="navbar-collapse">
+    <div class="collapse navbar-collapse" onclick={{action "navbarCollapse" value="target"}} id="navbar-collapse">
       {{#if session.isAuthenticated}}
         <ul class="nav navbar-nav navbar-right navbar-auth">
           <li>{{#link-to "app.index"}}Dashboard{{/link-to}}</li>
@@ -56,7 +56,7 @@
           {{#link-to "auth.register" class="btn"}}Sign Up{{/link-to}}
         </form>
         <ul class="nav navbar-nav navbar-right">
-          <li>{{#link-to "demo"}}Demo{{/link-to}}</li>
+          <li><a href="#" {{action "viewDemo"}}>Demo</a></li>
           <li><a href="#" {{action "scrollToLearnMore"}}>Learn More</a></li>
           <li>{{#link-to "auth.login"}}Log In{{/link-to}}</li>
         </ul>
