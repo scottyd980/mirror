@@ -16,7 +16,9 @@
             </div>
             <div class="card-footer">
               {{#if submitted}}
-                <button disabled id="tour-submit-feedback" {{action "submit"}} class="btn btn-success mg-bottom-lg">{{fa-icon "check" fixedWidth=true}} Feedback Submitted</button>
+                <span id="tour-submit-feedback">
+                  <button disabled {{action "submit"}} class="btn btn-success mg-bottom-lg">{{fa-icon "check" fixedWidth=true}} Feedback Submitted</button>
+                </span>
               {{else}}
                 <button id="tour-submit-feedback" {{action "submit"}} class="btn btn-success mg-bottom-lg">Submit Feedback</button>
               {{/if}}
