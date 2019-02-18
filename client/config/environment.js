@@ -70,7 +70,7 @@ module.exports = function(environment) {
     ERROR_MESSAGES: {
       generic: "Something Went Wrong",
       time_out: "Connection Interruption",
-      process: "We Could Not Process Your Request",
+      process: "Failed to Process Request",
       retrospective_in_progress: "Retrospective In Progress"
     },
     SUCCESS_MESSAGES: {
@@ -109,8 +109,122 @@ module.exports = function(environment) {
     },
     stripe: {
       publishableKey: "***STRIPE_PUBLISHABLE_KEY***"
+    },
+    DEMO: {
+      user_feedback: [],
+      team_members: [
+        {
+          id: 1,
+          username: "Demo - YOU"
+        },
+        {
+          id: 2,
+          username: "Bobby Tables - Bot 1",
+        },
+        {
+          id: 3,
+          username: "R2-D2 - Bot 2",
+        },
+        {
+          id: 4,
+          username: "Skynet - Bot 3",
+        }
+      ],
+      feedbacks: [
+        {
+          category: "good",
+          message: "asdasda",
+          user: {
+            id: 3,
+            username: "R2-D2 - Bot 2",
+          },
+          uuid: "abc123"
+        }
+      ],
+      feedback_submissions: [
+        {
+          user: {
+            id: 3,
+            username: "R2-D2 - Bot 2",
+          },
+          submitted: true
+        },
+        {
+          user: {
+            id: 4,
+            username: "Skynet - Bot 3",
+          },
+          submitted: true
+        }
+      ],
+      current_user: {
+        id: 1,
+        username: "Demo - YOU"
+      },
+      retrospectives: [
+        {
+          id: 1,
+          name: "Demo Retrospective",
+          state: 0,
+          game: 1,
+          participants: [
+            {
+              id: 1,
+              username: "Demo - YOU"
+            }
+          ],
+          moderator: {
+            id: 1,
+            username: "Demo - YOU"
+          },
+          scores: [],
+          feedbacks: [],
+          feedback_submissions: []
+        },
+        {
+          id: 1,
+          name: "Demo Retrospective",
+          state: 1,
+          game: 1,
+          participants: [
+            {
+              id: 1,
+              username: "Demo - YOU"
+            },
+            {
+              id: 3,
+              username: "R2-D2 - Bot 2",
+            },
+            {
+              id: 4,
+              username: "Skynet - Bot 3",
+            }
+          ],
+          moderator: {
+            id: 1,
+            username: "Demo - YOU"
+          },
+          scores: [],
+          feedbacks: [],
+          feedback_submissions: []
+        },
+      ]
     }
   };
+
+  // name: attr('string'),
+  // state: attr('number', {defaultValue: 0}),
+  // isAnonymous: attr('string'),
+  // game: attr('number'),
+  // team: belongsTo('team'),
+  // moderator: belongsTo('user'),
+  // participants: hasMany('user'),
+  // scores: hasMany('score'),
+  // feedbacks: hasMany('feedback', {inverse: 'retrospective'}),
+  // feedbackSubmissions: hasMany('feedback_submission'),
+  // scoreSubmissions: hasMany('score_submission'),
+  // cancelled: attr('boolean'),
+  // updatedAt: attr('date')
 
   if (environment === 'development') {
     // ENV.APP.LOG_RESOLVER = true;

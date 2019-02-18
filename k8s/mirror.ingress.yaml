@@ -7,7 +7,7 @@ metadata:
     certmanager.k8s.io/cluster-issuer: letsencrypt-prod
     # In case we ever go back to real websockets
     # nginx.org/websocket-services: mirror-backend
-    # nginx.ingress.kubernetes.io/upstream-hash-by: "$remote_addr"
+    nginx.ingress.kubernetes.io/upstream-hash-by: "$remote_addr"
     nginx.ingress.kubernetes.io/configuration-snippet: |
       if ($host = 'www.usemirror.io' ) {
         rewrite ^ https://usemirror.io$request_uri permanent;

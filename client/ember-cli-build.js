@@ -8,6 +8,14 @@ module.exports = function(defaults) {
       'bootstrapVersion': 3,
       'importBootstrapFont': false,
       'importBootstrapCSS': false
+    },
+    shepherd: {
+      theme: 'square-dark'
+    },
+    sassOptions: {
+      includePaths: [
+        'node_modules/shepherd.js/src/scss'
+      ]
     }
   });
 
