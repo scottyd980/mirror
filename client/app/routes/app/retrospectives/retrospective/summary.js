@@ -33,9 +33,9 @@ export default Route.extend({
 
     const scores = model.scores.sortBy('score');
 
-    const average = scores.reduce((total, score) => {
+    const average = +parseFloat(scores.reduce((total, score) => {
       return total + score.get('score');
-    }, 0) / scores.length;
+    }, 0) / scores.length).toFixed(1);
 
     controller.set('low_score', (typeof scores[0] !== "undefined" ? scores[0] : { score: "N/A" }));
     controller.set('high_score', (typeof scores[scores.length - 1] !== "undefined" ? scores[scores.length - 1] : { score: "N/A" }));
