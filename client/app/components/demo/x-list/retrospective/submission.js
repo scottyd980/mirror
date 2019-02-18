@@ -6,10 +6,14 @@ export default Component.extend({
   tagName: "",
   sortedMembers: sort('members', 'memberSortDefinition'),
   memberSortDefinition: null,
-  joined_member_ids: computed('joined_members.[]', function() {
-    return this.get('joined_members').map((member) => {
-      return member.id;
-    });
+
+  submitted_member_ids: computed('submitted.[]', function() {
+    if(this.get('submitted')) {
+      return this.get('submitted').map((submission) => {
+        return submission.user.id;
+      });
+    }
+    return [];
   }),
 
   init() {
