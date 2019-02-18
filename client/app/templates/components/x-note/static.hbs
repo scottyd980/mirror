@@ -15,23 +15,27 @@
     {{#if isModerator}}
       <div class="note--state">{{counter}}</div>
       <div class="note--actions d-flex flex-column">
-        <div class="note--actions--action">
-          <a {{action onNext}} role="button">
-            {{fa-icon "long-arrow-right" size=2 fixedWidth=true}}<br>
-            <span>Next</span>
-          </a>
+        <div class="note--actions--navigation">
+          <div class="note--actions--action">
+            <a {{action onNext}} role="button">
+              {{fa-icon "long-arrow-right" size=2 fixedWidth=true}}<br>
+              <span>Next</span>
+            </a>
+          </div>
+          <div class="note--actions--action">
+            <a {{action onPrevious}} role="button">
+              {{fa-icon "long-arrow-left" size=2 fixedWidth=true}}<br>
+              <span>Previous</span>
+            </a>
+          </div>
         </div>
         <div class="note--actions--action">
-          <a {{action onPrevious}} role="button">
-            {{fa-icon "long-arrow-left" size=2 fixedWidth=true}}<br>
-            <span>Previous</span>
-          </a>
-        </div>
-        <div class="note--actions--action">
-          <a {{action onFlag}} role="button">
-            {{fa-icon "flag" size=2 fixedWidth=true}}<br>
-            <span>Flag{{if data.action.message "ged"}} For Action</span>
-          </a>
+          <div class="note--actions--flag">
+            <a {{action onFlag}} role="button">
+              {{fa-icon "flag" size=2 fixedWidth=true}}<br>
+              <span>Flag{{if data.action.message "ged"}} For Action</span>
+            </a>
+          </div>
         </div>
       </div>
     {{/if}}

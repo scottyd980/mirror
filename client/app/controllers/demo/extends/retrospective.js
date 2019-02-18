@@ -9,6 +9,14 @@ export default Controller.extend({
       this.get('tour').cancel();
     }
   },
+  start_tour(steps) {
+    const tour = this.get('tour');
+    tour.set('defaultStepOptions', {
+      scrollTo: true
+    });
+    tour.addSteps(steps);
+    tour.start();
+  },
   actions: {
     continue: function(route, extraAction) {
       this.cancel_tour();

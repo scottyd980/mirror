@@ -1,6 +1,7 @@
 'use strict';
 
 const demo = require('./demo/setup');
+const tour = require('./demo/tour');
 
 module.exports = function(environment) {
   let ENV = {
@@ -116,7 +117,8 @@ module.exports = function(environment) {
     DEMO_CONFIG: {
       base: demo(),
       state: null,
-    }
+    },
+    TOUR: tour()
   };
 
   if (environment === 'development') {

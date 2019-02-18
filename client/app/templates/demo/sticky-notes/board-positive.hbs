@@ -4,18 +4,20 @@
       <div class="col-md-8">
         {{#if model.feedback}}
           <h3 class="title">What Went Well</h3>
-          {{#x-note/static
-              data=active_feedback 
-              isAnonymous=model.retrospective.isAnonymous 
-              isModerator=true 
-              type="good"
-              onFlag=(action "openActionModal" active_feedback)
-              onPrevious=(action "moveFeedback" model.feedback -1)
-              onNext=(action "moveFeedback" model.feedback 1)
-              counter=card_state
-          }}
-            {{active_feedback.message}}
-          {{/x-note/static}}
+          <div id="tour-card">
+            {{#x-note/static
+                data=active_feedback 
+                isAnonymous=model.retrospective.isAnonymous 
+                isModerator=true 
+                type="good"
+                onFlag=(action "openActionModal" active_feedback)
+                onPrevious=(action "moveFeedback" model.feedback -1)
+                onNext=(action "moveFeedback" model.feedback 1)
+                counter=card_state
+            }}
+              {{active_feedback.message}}
+            {{/x-note/static}}
+          </div>
         {{else}}
           {{#x-card title="What Went Well"}}
             It looks like no one had an opinion on what went well! There has to be something that went well, right? <strong>Make sure the team celebrates success, no matter how small!</strong>

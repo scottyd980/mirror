@@ -2,9 +2,15 @@ import RetrospectiveRoute from 'mirror/routes/demo/extends/retrospective';
 import ENV from 'mirror/config/environment';
 
 export default RetrospectiveRoute.extend({
+  fromBack: false,
   beforeModel() {
-    ENV.DEMO = JSON.parse(JSON.stringify(ENV.DEMO_CONFIG.base));
-    ENV.DEMO_CONFIG.state = "in_progress";
+    if(ENV.DEMO_CONFIG.state !== "in_progress") {
+      ENV.DEMO = JSON.parse(JSON.stringify(ENV.DEMO_CONFIG.base));
+      ENV.DEMO_CONFIG.state = "in_progress";
+      this.set('fromBack', false);
+    } else {
+      this.set('fromBack', true);
+    }
   },
   model() {
     return {
@@ -15,6 +21,8 @@ export default RetrospectiveRoute.extend({
   },
   setupController(controller) {
     this._super(...arguments);
-    controller.set('showModal', true)
+    if(!this.get('fromBack')) {
+      controller.set('showModal', true);
+    }
   }
 });
