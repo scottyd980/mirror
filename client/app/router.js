@@ -70,6 +70,14 @@ Router.map(function() {
   this.route('demo', function() {
     this.route('start');
     this.route('feedback');
+
+    this.route('sticky-notes', function() {
+      this.route('board-negative');
+      this.route('board-positive');
+    });
+    this.route('score');
+    this.route('aggregate');
+    this.route('summary');
   });
 });
 

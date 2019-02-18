@@ -1,0 +1,70 @@
+<div class="nav-push pre-login">
+  <div class="container">
+    <div class="row">
+      <div class="col-md-8">
+        {{#if model.feedback}}
+          <h3 class="title">What Could Be Improved</h3>
+          {{#x-note/static
+              data=active_feedback 
+              isAnonymous=model.retrospective.isAnonymous 
+              isModerator=true 
+              type="bad"
+              onFlag=(action "openActionModal" active_feedback)
+              onPrevious=(action "moveFeedback" model.feedback -1)
+              onNext=(action "moveFeedback" model.feedback 1)
+              counter=card_state
+          }}
+            {{active_feedback.message}}
+          {{/x-note/static}}
+        {{else}}
+          {{#x-card title="What Could Be Improved"}}
+            It looks like no one had an opinion on what could be improved! Are you sure there's nothing you could be doing better at all? <strong>Make sure the team acknowledges problem areas, or no one will be able to learn from them!</strong>
+          {{/x-card}}
+        {{/if}}
+      </div>
+      <div class="col-md-4">
+        {{#x-card/callout title="Moderator"}}
+          <div class="card-header">
+            {{x-timer}}
+          </div>
+          <a role="button" {{action "continue" "demo.sticky-notes.board-positive"}} id="tour-continue" class="btn btn-block btn-success btn-lg btn-callout">Continue {{fa-icon "angle-right" fixedWidth=true}}</a>
+          <div class="row">
+            <div class="col-xs-6">
+              <a role="button" {{action "back" "demo.feedback"}} id="tour-back" class="btn btn-block btn-info btn-outline">{{fa-icon "angle-left" fixedWidth=true}} Back</a>
+            </div>
+            <div class="col-xs-6">
+              <a role="button" {{action "cancel"}} id="tour-cancel" class="btn btn-block btn-danger btn-outline">{{fa-icon "times" fixedWidth=true}} Cancel</a>
+            </div>
+          </div>
+        {{/x-card/callout}}
+        {{#x-card title="Participants"}}
+          {{demo/x-list/retrospective/submission
+            members=model.retrospective.participants
+            currentUser=currentUser
+            userList=true
+          }}
+        {{/x-card}}
+      </div>
+    </div>
+  </div>
+</div>
+
+{{#if isActionModalShowing}}
+  {{#x-modal
+    onClose=(action "closeActionModal")
+    title="Take Action"
+  }}
+    {{#x-modal-body}}
+      <p>If your team wants to do something in regards to this feedback, enter how you plan to take action.</p>
+      {{textarea class="form-control" value=actionMessage}}
+    {{/x-modal-body}}
+    {{#x-modal-footer}}
+      <a role="button" {{action "closeActionModal"}} class="btn btn-default btn-outline">Cancel</a>
+      {{#if activeFeedback.action.message}}
+        <a role="button" {{action "submitActionItem"}} class="btn btn-success">Update</a>
+      {{else}}
+        <a role="button" {{action "submitActionItem"}} class="btn btn-success">Submit</a>
+      {{/if}}
+    {{/x-modal-footer}}
+  {{/x-modal}}
+{{/if}}
