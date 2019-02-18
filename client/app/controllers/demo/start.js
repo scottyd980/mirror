@@ -133,7 +133,7 @@ export default RetrospectiveController.extend({
           ],
           title: "Continuing The Retrospective",
           text: [
-            "Since you are the moderator, once everyone you expect to join has joined, go ahead and click the big continue button!"
+            "Since you are the moderator, once everyone is ready, you can continue on!"
           ]
         }
       }
