@@ -11,11 +11,18 @@ export default RetrospectiveRoute.extend({
       scoreSubmissions: ENV.DEMO.retrospectives[4].score_submissions
     }
   },
-  setupController(controller) {
+  setupController(controller, model) {
     this._super(...arguments);
+
+    if(ENV.DEMO.user_score.length === 0) {
+      // Reset fields, assume they came from a new start.
+      controller.set('submitted', false);
+      this.controller.set('score', null);
+    }
 
     schedule('afterRender', this, function() {
       controller.start_tour(ENV.TOUR.score);
+      controller.begin_score();
     });
   }
 });

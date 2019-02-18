@@ -7,11 +7,6 @@ export default RetrospectiveController.extend({
   submitted: false,
   showModal: false,
 
-  init() {
-    this._super(...arguments);
-    this.begin_score();
-  },
-
   begin_score: function() {
     later(this, function() {
       this.get('model.scoreSubmissions').pushObject(ENV.DEMO.score_submissions[0]);
