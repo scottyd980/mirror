@@ -12,7 +12,7 @@ export default Service.extend({
     this._super(...arguments);
     this.set('channels', {});
     this.socket = new Socket(`${ENV.DS.wshost}/socket`, {
-      transport: LongPoll
+      //transport: LongPoll
     });
     this.socket.connect();
   },
@@ -38,6 +38,7 @@ export default Service.extend({
           reject("authorization error");
         }).receive("timeout", () => {
           // Joining the channel timed out
+          console.log(_this.get('socket'));
           reject("Connection interruption");
         });
       } else {
