@@ -38,7 +38,6 @@ export default Service.extend({
           reject("authorization error");
         }).receive("timeout", () => {
           // Joining the channel timed out
-          console.log(_this.get('socket'));
           reject("Connection interruption");
         });
       } else {
