@@ -1,6 +1,6 @@
 import Service from '@ember/service';
 import ENV from 'mirror/config/environment';
-import { Socket, LongPoll } from 'ember-phoenix';
+import { Socket /*,LongPoll*/ } from 'ember-phoenix';
 import { inject as service } from '@ember/service';
 
 export default Service.extend({
