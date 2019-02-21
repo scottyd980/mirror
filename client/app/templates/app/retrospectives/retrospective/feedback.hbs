@@ -3,16 +3,18 @@
     <div class="row">
       <div class="col-md-8">
         {{#x-card title="Provide feedback for the sprint" overlay=submitted}}
-          <div class="row feedbacks">
-            {{#each model.gameInput as |input|}}
-              <div class="col-md-6">
-                <label for={{concat input.idPrefix "-textarea"}}>
-                  <p><strong>{{input.label}}</strong></p>
-                </label>
-                {{textarea rows="10" data-type=input.type id=(concat input.idPrefix "-textarea") class="form-control" value=input.value}}
-              </div>
-            {{/each}}
-          </div>
+          {{#each feedbackInput as |item index|}}
+            <div class="row feedbacks {{if index "mg-top-md"}} {{if (eq item.length 1) "d-flex-md justify-content-center"}}">
+              {{#each item as |input item_index|}}
+                <div class="col-md-6 {{if item_index "mg-top-md-down"}}">
+                  <label for={{concat input.idPrefix "-textarea"}}>
+                    <p><strong>{{input.label}}</strong></p>
+                  </label>
+                  {{textarea rows="10" data-type=input.type id=(concat input.idPrefix "-textarea") class="form-control" value=input.value}}
+                </div>
+              {{/each}}
+            </div>
+          {{/each}}
           <div class="card-footer">
             {{#if submitted}}
               <button disabled id="feedback-submit" {{action "submitFeedback"}} class="btn btn-success mg-bottom-lg">{{fa-icon "check" fixedWidth=true}} Feedback Submitted</button>

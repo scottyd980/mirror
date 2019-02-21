@@ -23,6 +23,19 @@
         {{#x-card title="Start A Retrospective"}}
           <div class="row">
             <div class="col-md-2 col-sm-3 text-center">
+              <img class="icons icons--thumbnail" src="/img/icons/start.svg" alt="start">
+            </div>
+            <div class="col-md-10 col-sm-9 text-center-xs">
+              <h4>Begin A Retrospective</h4>
+              <p>If you are planning to moderate this retrospective, click below to get started. You'll choose the game your team will play, and you'll control the pace of the retrospective. If you're looking to join a retrospective in progress, wait here until the retrospective starts.</p>
+            </div>
+          </div>
+          <div class="card-footer">
+            <a role="button" {{action "toggleGameChoiceModal"}} class="btn btn-success">Let's Start This Thing {{fa-icon "arrow-right" fixedWidth=true}}</a>
+          </div>
+        {{/x-card}}
+        {{!-- <div class="row">
+            <div class="col-md-2 col-sm-3 text-center">
               <img class="icons icons--thumbnail" src="/img/icons/sticky-notes.svg" alt="sticky notes">
             </div>
             <div class="col-md-10 col-sm-9 text-center-xs">
@@ -32,8 +45,7 @@
           </div>
           <div class="card-footer">
             <a role="button" {{action "enterRetrospectiveType" "sticky_notes"}} class="btn btn-success">Let's Start This Thing {{fa-icon "arrow-right" fixedWidth=true}}</a>
-          </div>
-        {{/x-card}}
+          </div> --}}
       {{/unless}}
     </div>
     <div class="col-md-4">
@@ -53,6 +65,36 @@
     </div>
   </div>
 </div>
+{{#if isGameChoiceModalShowing}}
+  {{#x-modal
+    onClose=(action "toggleGameChoiceModal")
+    title="Choose a Game"
+  }}
+    {{#x-modal-body}}
+      <div class="row">
+        <div class="col-md-2 col-sm-3 text-center">
+          <img class="icons icons--thumbnail" src="/img/icons/sticky-notes.svg" alt="sticky notes">
+        </div>
+        <div class="col-md-10 col-sm-9 text-center-xs">
+          <h4>Sticky Notes</h4>
+          <p>Sticky notes is a simple game for retrospectives to extract important feedback from the team. It asks members for what their favorite part and least favorite part of the sprint were.</p>
+          <a role="button" {{action "enterRetrospectiveType" "sticky_notes"}} class="btn btn-success">Choose Sticky Notes {{fa-icon "arrow-right" fixedWidth=true}}</a>
+        </div>
+      </div>
+      <hr>
+      <div class="row">
+        <div class="col-md-2 col-sm-3 text-center">
+          <img class="icons icons--thumbnail" src="/img/icons/three-little-pigs.svg" alt="sticky notes">
+        </div>
+        <div class="col-md-10 col-sm-9 text-center-xs">
+          <h4>Three Little Pigs</h4>
+          <p>Three little pigs revisits the childhood story to drive conversation around how to make the team more solid by pointing out what is currently unstable, as well as areas that are already strong.</p>
+          <a role="button" {{action "enterRetrospectiveType" "three_little_pigs"}} class="btn btn-success">Choose Three Little Pigs {{fa-icon "arrow-right" fixedWidth=true}}</a>
+        </div>
+      </div>
+    {{/x-modal-body}}
+  {{/x-modal}}
+{{/if}}
 {{#if isRetroStartModalShowing}}
   {{#x-modal
 onClose=(action "cancelEnterRetrospectiveType")

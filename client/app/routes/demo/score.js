@@ -11,7 +11,7 @@ export default RetrospectiveRoute.extend({
       scoreSubmissions: ENV.DEMO.retrospectives[4].score_submissions
     }
   },
-  setupController(controller, model) {
+  setupController(controller) {
     this._super(...arguments);
 
     if(ENV.DEMO.user_score.length === 0) {

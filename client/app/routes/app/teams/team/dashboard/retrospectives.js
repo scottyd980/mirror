@@ -33,7 +33,7 @@ export default Route.extend({
       hasRetroInProgress: false,
       isRetroStartModalShowing: false,
       iseBillingModalShowing: false,
-      gameToStart: false,
+      gameToStart: null,
       currentlyLoading: false
     });
 

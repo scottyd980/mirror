@@ -2,6 +2,8 @@
 
 const demo = require('./demo/setup');
 const tour = require('./demo/tour');
+const sticky_notes = require('./games/sticky-notes');
+const three_little_pigs = require('./games/three-little-pigs');
 
 module.exports = function(environment) {
   let ENV = {
@@ -88,27 +90,8 @@ module.exports = function(environment) {
       'yearly'
     ],
     retrospective: {
-      sticky_notes: {
-        type_id: 1,
-        states: ["start", "feedback", "sticky-notes.board-negative", "sticky-notes.board-positive", "score", "aggregate", "summary"],
-        min_complete_state: 6,
-        feedback: [
-          {
-            name: "negative",
-            idPrefix: "went-poorly",
-            label: "What could be improved?",
-            type: "negative",
-            value: ""
-          },
-          {
-            name: "positive",
-            idPrefix: "went-well",
-            label: "What went well?",
-            type: "positive",
-            value: ""
-          }
-        ]
-      }
+      sticky_notes: sticky_notes(),
+      three_little_pigs: three_little_pigs()
     },
     stripe: {
       publishableKey: "pk_test_vd8mdRI6jcKLykIaVSgQCRwz"

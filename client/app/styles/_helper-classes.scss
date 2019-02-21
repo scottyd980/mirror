@@ -305,3 +305,20 @@
 .h-100 {
   height: 100%;
 }
+
+.justify-content-center {
+  justify-content: center;
+}
+
+.d-flex-md {
+  display: block;
+  @media (min-width: $screen-md-min) {
+    display: flex;
+  }
+}
+
+.mg-top-md-down {
+  @media (max-width: $screen-sm-max) {
+    @include add-margin(top, 20px);
+  }
+}

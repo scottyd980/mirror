@@ -8,7 +8,9 @@ export default Controller.extend({
     const state = this.get('model.retrospective.state');
 
     //TODO: Will eventually want to make game type dynamic as well
-    const dynamicRouteSegment = ENV.retrospective.sticky_notes.states[state];
+    const current_game = Object.keys(ENV.retrospective).find(key => ENV.retrospective[key].type_id === this.get('model.retrospective.game'));
+    
+    const dynamicRouteSegment = ENV.retrospective[current_game].states[state];
     this.transitionToRoute('app.retrospectives.retrospective.' + dynamicRouteSegment, this.get('model'));
   }),
   retrospectiveCancelled: observer('model.retrospective.cancelled', function () {

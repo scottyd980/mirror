@@ -27,11 +27,19 @@ ul.icons-list {
         @include icon-list--icon("\f235", $brand-danger);
     }
 
-     .icons-list--active {
+    .icons-list--active {
         @include icon-list--icon("\f111", $brand-success);
     }
 
-     .icons-list--inactive {
-        @include icon-list--icon("\f111", $brand-danger);
+    .icons-list--stick {
+        @include icon-list--icon("\f72a", $brand-warning);
+    }
+    
+    .icons-list--brick {
+        @include icon-list--icon("\f2fc", $brand-success);
+    }
+
+    .icons-list--straw {
+        @include icon-list--icon("\f72e", $brand-danger);
     }
 }
