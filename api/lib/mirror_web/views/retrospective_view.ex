@@ -5,7 +5,7 @@ defmodule MirrorWeb.RetrospectiveView do
   alias MirrorWeb.{TeamSerializer, UserSerializer, ScoreSerializer, FeedbackSerializer, FeedbackSubmissionSerializer, ScoreSubmissionSerializer}
   alias MirrorWeb.UserSerializer
 
-  attributes [:name, :state, :is_anonymous, :cancelled]
+  attributes [:name, :state, :is_anonymous, :cancelled, :game]
 
   has_one :team,
     links: [
@@ -62,4 +62,8 @@ defmodule MirrorWeb.RetrospectiveView do
     serializer: ScoreSubmissionSerializer,
     include: false,
     identifiers: :always
+
+    def game(struct, _conn) do
+      struct.game.id
+    end
 end

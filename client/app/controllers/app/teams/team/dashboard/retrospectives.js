@@ -13,12 +13,14 @@ export default Controller.extend({
   gameToStart: false,
   isAdmin: false,
   currentlyLoading: false,
+
   toggleLoadingScreen(message) {
     this.set('loadingMessage', message);
     this.toggleProperty('currentlyLoading');
   },
   actions: {
     enterRetrospectiveType(game_to_start) {
+      this.send('toggleGameChoiceModal');
       this.set('isRetroStartModalShowing', true);
       this.set('gameToStart', game_to_start);
     },
@@ -28,7 +30,10 @@ export default Controller.extend({
     toggleBillingModal() {
       this.toggleProperty('isBillingModalShowing');
     },
-    startRetrospective(/* TODO: game */) {
+    toggleGameChoiceModal() {
+      this.toggleProperty('isGameChoiceModalShowing');
+    },
+    startRetrospective() {
       let retrospective = this.store.createRecord('retrospective', {
         name: 'Sprint ' + this.model.nextSprint,
         team: this.model.team,

@@ -24,8 +24,11 @@ export default Route.extend({
   },
   redirect(model) {
     const state = model.retrospective.get('state');
+    
     // TODO: Dynamic depending on game
-    const dynamicRouteSegment = ENV.retrospective.sticky_notes.states[state];
+    const current_game = Object.keys(ENV.retrospective).find(key => ENV.retrospective[key].type_id === model.retrospective.get('game'));
+
+    const dynamicRouteSegment = ENV.retrospective[current_game].states[state];
     this.transitionTo('app.retrospectives.retrospective.' + dynamicRouteSegment);
   },
   setupController(controller, model) {
@@ -60,7 +63,9 @@ export default Route.extend({
     const path = window.location.pathname;
     if (path.startsWith('/app/retrospectives/')) {
       const stateSegment = path.replace(/\/app\/retrospectives\/\d+\//, '').replace(/\//g, ".");
-      const state = ENV.retrospective.sticky_notes.states.indexOf(stateSegment);
+      const current_game = Object.keys(ENV.retrospective).find(key => ENV.retrospective[key].type_id === retrospective.get('game'));
+
+      const state = ENV.retrospective[current_game].states.indexOf(stateSegment);
 
       retrospective.set('state', state);
       retrospective.save();

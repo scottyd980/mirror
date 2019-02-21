@@ -49,6 +49,12 @@ Router.map(function() {
           this.route('board-negative');
           this.route('board-positive');
         });
+
+        this.route('three-little-pigs', function() {
+          this.route('board-sticks');
+          this.route('board-bricks');
+          this.route('board-straw');
+        });
       });
     });
 

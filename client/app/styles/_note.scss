@@ -20,6 +20,10 @@
         @extend .success-bg;
     }
 
+    &.average {
+        @extend .warning-bg;
+    }
+
     &.bad {
         @extend .danger-bg;
     }
