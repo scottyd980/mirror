@@ -3,11 +3,22 @@ import { inject as service } from '@ember/service';
 import { Promise } from 'rsvp';
 import fetch from 'fetch';
 import ENV from 'mirror/config/environment';
-import { set } from '@ember/object';
+import { set, computed } from '@ember/object';
 
 export default RetrospectiveController.extend({
   session: service(),
   uuid: service(),
+
+  feedbackInput: computed('model.gameInput', function() {
+    const chunkSize = 2;
+    const gameInput = this.get('model.gameInput');
+
+    let chunks = [];
+    for (let i=0,len=gameInput.length; i<len; i+=chunkSize) {
+      chunks.push(gameInput.slice(i, i+chunkSize));
+    }
+    return chunks;
+  }),
 
   submitted: false,
 

@@ -16,7 +16,9 @@ export default Controller.extend({
     changeRetrospectiveState(retrospective, currentStateSegment, direction) {
       //TODO: Need to account for games here
       //TODO: Also account for loading here
-      const currentState = ENV.retrospective.sticky_notes.states.indexOf(currentStateSegment);
+      const current_game = Object.keys(ENV.retrospective).find(key => ENV.retrospective[key].type_id === retrospective.get('game'));
+
+      const currentState = ENV.retrospective[current_game].states.indexOf(currentStateSegment);
       this.get('store').findRecord('retrospective', retrospective.get('id'), { reload: true }).then((retro) => {
         retro.set('state', (currentState + direction));
         retro.save();

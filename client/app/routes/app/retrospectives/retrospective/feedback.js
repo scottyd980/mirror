@@ -16,6 +16,8 @@ export default Route.extend({
               feedback = results[1],
               feedbackSubmissions = results[2];
         
+        const current_game = Object.keys(ENV.retrospective).find(key => ENV.retrospective[key].type_id === retrospective.get('game'));
+        
         return team.get('members').then((team_members) => {
           return hash({
             retrospective,
@@ -23,7 +25,7 @@ export default Route.extend({
             team_members,
             feedback,
             feedbackSubmissions,
-            gameInput: ENV.retrospective["sticky_notes"].feedback
+            gameInput: ENV.retrospective[current_game].feedback
           });
         }).catch(() => { throw ENV.ERROR_CODES.not_found});
       },
