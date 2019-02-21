@@ -24,8 +24,6 @@ export default Route.extend({
   },
   redirect(model) {
     const state = model.retrospective.get('state');
-    
-    // TODO: Dynamic depending on game
     const current_game = Object.keys(ENV.retrospective).find(key => ENV.retrospective[key].type_id === model.retrospective.get('game'));
 
     const dynamicRouteSegment = ENV.retrospective[current_game].states[state];

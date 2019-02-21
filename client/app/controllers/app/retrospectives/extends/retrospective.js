@@ -14,7 +14,6 @@ export default Controller.extend({
   }),
   actions: {
     changeRetrospectiveState(retrospective, currentStateSegment, direction) {
-      //TODO: Need to account for games here
       //TODO: Also account for loading here
       const current_game = Object.keys(ENV.retrospective).find(key => ENV.retrospective[key].type_id === retrospective.get('game'));
 
