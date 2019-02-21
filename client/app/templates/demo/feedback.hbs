@@ -5,8 +5,8 @@
         <div id="tour-feedback">
           {{#x-card title="Provide feedback for the sprint" overlay=submitted}}
             <div class="row feedbacks">
-              {{#each model.gameInput as |input|}}
-                <div class="col-md-6">
+              {{#each model.gameInput as |input index|}}
+                <div class="col-md-6 {{if index "mg-top-md-down"}}">
                   <label for={{concat input.idPrefix "-textarea"}}>
                     <p><strong>{{input.label}}</strong></p>
                   </label>
