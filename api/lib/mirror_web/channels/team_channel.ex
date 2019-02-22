@@ -5,13 +5,18 @@ defmodule Mirror.TeamChannel do
   alias Mirror.Teams
   alias Mirror.Teams.Team
 
+  require Logger
+
   alias Mirror.Helpers.User
 
-  #TODO: NOT SURE IF EVERYTHING IS AS PROTECTED AS IT NEEDS TO BE
   def join("team:" <> team_id, %{"token" => token}, socket) do
     case authenticate(socket, Mirror.Guardian, token) do
       {:ok, authed_socket} ->
-        {:ok, %{message: "Joined"}, authed_socket}
+        {user, team} = get_basic_data(authed_socket)
+        case User.user_is_team_member?(user, team) do
+          true -> {:ok, %{message: "Joined"}, authed_socket}
+          _ -> {:error, :authentication_required}
+        end
       {:error, reason} ->
         {:error, :authentication_required}
     end
@@ -28,6 +33,7 @@ defmodule Mirror.TeamChannel do
       true ->
         {retro_in_progress, retro} = Team.check_retrospective_in_progress(team)
         handle_retro_in_progress_response(socket, retro_in_progress, retro)
+      _ -> nil
     end
 
     {:noreply, socket}
