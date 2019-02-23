@@ -6,6 +6,7 @@ import { inject as service } from '@ember/service';
 export default Controller.extend({
   session: service(),
   retroSvc: service('retrospective'),
+  isLoading: false,
   currentUser: computed('session.currentUser', function() {
     return this.get('session.currentUser');
   }),
@@ -14,15 +15,22 @@ export default Controller.extend({
   }),
   actions: {
     changeRetrospectiveState(retrospective, currentStateSegment, direction) {
-      //TODO: Also account for loading here
+      this.set('isLoading', true);
       const current_game = Object.keys(ENV.retrospective).find(key => ENV.retrospective[key].type_id === retrospective.get('game'));
 
       const currentState = ENV.retrospective[current_game].states.indexOf(currentStateSegment);
       this.get('store').findRecord('retrospective', retrospective.get('id'), { reload: true }).then((retro) => {
         retro.set('state', (currentState + direction));
-        retro.save();
-      })
+        retro.save().then(() => {
+          this.set('isLoading', false);
+        }).catch(() => {
+          this.set('isLoading', false);
+        });
+      }).catch(() => {
+        this.set('isLoading', false);
+      });
     },
+    
     moveFeedback(id, state) {
       this.store.findRecord('feedback', id).then((fb) => {
         fb.set('state', state);
