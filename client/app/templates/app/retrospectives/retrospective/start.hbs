@@ -31,3 +31,9 @@
     </div>
   </div>
 </div>
+
+{{#if isLoading}}
+  <div class="loading-screen">
+    {{x-loader message="Loading..."}}
+  </div>
+{{/if}}
