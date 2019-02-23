@@ -12,9 +12,9 @@ export default Route.extend({
         const team = results[0],
               feedback = results[1];
 
-        const strawFeedback = this._shuffle(feedback.filter((fb) => {
+        const strawFeedback = this._shift(this._shuffle(feedback.filter((fb) => {
           return fb.get('category') === "straw";
-        }));
+        })));
         
         return team.get('members').then((team_members) => {
           return hash({
@@ -39,6 +39,13 @@ export default Route.extend({
       array[randomIndex] = temporaryValue;
     }
 
+    return array;
+  },
+  _shift(array) {
+    const firstElement = array.findIndex((val) => {
+      return val.get('state') === 1;
+    });
+    array.splice(0, 0, array.splice(firstElement, 1)[0]);
     return array;
   }
 });
