@@ -12,12 +12,13 @@ export default Route.extend({
     this._super(controller, model);
     controller.set('success', false);
     controller.set('errors', false);
+    controller.set('isLoading', false);
   },
   actions: {
     doReset() {
-      var _this = this;
-      _this.controller.set('success', false);
-      _this.controller.set('errors', false);
+      this.controller.set('isLoading', true);
+      this.controller.set('success', false);
+      this.controller.set('errors', false);
       const user = this.get('currentModel');
       fetch(`${ENV.DS.host}/${ENV.DS.namespace}/forgot/password`, {
         method: 'POST',
@@ -28,18 +29,20 @@ export default Route.extend({
           "email": user.email
         })
       }).then((response) => {
+        this.controller.set('isLoading', false);
         if(response.status === 200) {
           response.json().then(() => {
-            _this.controller.set('errors', false);
-            _this.controller.set('success', true);
+            this.controller.set('errors', false);
+            this.controller.set('success', true);
           });
         } else {
-          _this.controller.set('success', false);
-          _this.controller.set('errors', true);
+          this.controller.set('success', false);
+          this.controller.set('errors', true);
         }
       }).catch(() => {
-        _this.controller.set('success', false);
-        _this.controller.set('errors', true);
+        this.controller.set('isLoading', false);
+        this.controller.set('success', false);
+        this.controller.set('errors', true);
       });
     }
   }

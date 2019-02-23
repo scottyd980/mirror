@@ -29,3 +29,9 @@
     </div>
   </div>
 </div>
+
+{{#if isLoading}}
+  <div class="loading-screen">
+    {{x-loader message="Logging In..."}}
+  </div>
+{{/if}}

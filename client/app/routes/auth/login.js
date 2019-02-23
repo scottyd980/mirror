@@ -12,20 +12,22 @@ export default Route.extend({
   setupController(controller, model) {
     this._super(controller, model);
     controller.set('errors', false);
+    controller.set('isLoading', false);
   },
   actions: {
     doLogin() {
-      var _this = this;
-      _this.controller.set('errors', false);
+      this.controller.set('errors', false);
+      this.controller.set('isLoading', true);
       const user = this.get('currentModel');
-      this.get('session')
-        .authenticate(
-          'authenticator:mirror', user.username, user.password
-        ).then(() => {
-          this.send('invalidateApplicationModel');
-        }).catch(() => {
-          _this.controller.set('errors', true);
-        });
+
+      this.get('session').authenticate('authenticator:mirror', user.username, user.password)
+      .then(() => {
+        this.controller.set('isLoading', false);
+        this.send('invalidateApplicationModel');
+      }).catch(() => {
+        this.controller.set('isLoading', false);
+        this.controller.set('errors', true);
+      });
     }
   }
 });
