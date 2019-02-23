@@ -9,17 +9,20 @@ export default Route.extend({
   setupController(controller, model) {
     this._super(controller, model);
     controller.set('errors', {});
+    controller.set('isLoading', false);
   },
   actions: {
     doRegister() {
-      var _this = this;
-      _this.controller.set('errors', false);
-      _this.get('currentModel').save().then(() => {
-        _this.get('session')
-          .authenticate('authenticator:mirror', _this.get('currentModel').get('username'), _this.get('currentModel').get('password'));
+      this.controller.set('isLoading', true);
+      this.controller.set('errors', false);
+      this.get('currentModel').save().then(() => {
+        this.controller.set('isLoading', false);
+        this.get('session')
+          .authenticate('authenticator:mirror', this.get('currentModel').get('username'), this.get('currentModel').get('password'));
       }).catch((resp) => {
+        this.controller.set('isLoading', false);
         const { errors } = resp;
-        _this.controller.set('errors', _this._createErrors(errors));
+        this.controller.set('errors', this._createErrors(errors));
       });
     }
   },
