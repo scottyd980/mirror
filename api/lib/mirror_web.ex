@@ -19,7 +19,7 @@ defmodule MirrorWeb do
 
   def controller do
     quote do
-      use Phoenix.Controller, namespace: MirrorWeb
+      use Phoenix.Controller, namespace: MirrorWeb, log: false
       import Plug.Conn
       import MirrorWeb.Router.Helpers
       import MirrorWeb.Gettext
@@ -51,7 +51,7 @@ defmodule MirrorWeb do
 
   def channel do
     quote do
-      use Phoenix.Channel
+      use Phoenix.Channel, log_join: false, log_handle_in: false
       import MirrorWeb.Gettext
     end
   end

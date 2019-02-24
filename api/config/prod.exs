@@ -78,3 +78,13 @@ config :mirror, Mirror.Repo,
 config :statix,
   host: "${STATSD_HOST}",
   prefix: "mirror_app.#{Mix.env}.${POD_NAME}"
+
+config :logger,
+  format: {Timber.Formatter, :format},
+  backends: [Timber.LoggerBackends.HTTP]
+
+config :mirror, MirrorWeb.Endpoint,
+  instrumenters: [Timber.Phoenix]
+
+config :mirror, Mirror.Repo,
+  loggers: [{Timber.Ecto, :log, []}, {Mirror.Metrics.Repo, :record_metric, []}]
