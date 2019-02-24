@@ -88,3 +88,8 @@ config :mirror, MirrorWeb.Endpoint,
 
 config :mirror, Mirror.Repo,
   loggers: [{Timber.Ecto, :log, []}, {Mirror.Metrics.Repo, :record_metric, []}]
+
+config :timber_phoenix, Timber.Phoenix,
+  controller_actions_blacklist: [
+    {MirrorWeb.HealthController, :index}
+  ]
