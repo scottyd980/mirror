@@ -22,6 +22,7 @@ COPY mix.exs mix.lock ./
 RUN mix deps.get
 COPY config ./
 RUN mix deps.compile
+RUN mix deps.clean mime --build
 
 # build release
 COPY . .

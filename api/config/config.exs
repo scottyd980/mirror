@@ -63,6 +63,9 @@ config :mirror, Mirror.Guardian,
   verify_issuer: true, # optional
   secret_key: System.get_env("GUARDIAN_SECRET") || "nGeq4o2xpePnwn46bhB4ItyiuiwM3doUuWi5T7yprcbWtF0xdpB5DqjkAEa6/2a/"
 
+config :timber,
+  api_key: "11066_bb4e9270d05296de:117e4a52c2e7b474cd6835b7e464ee7f85cd5619b74c31263ec987e113aa7687"
+
 config :mirror, Mirror.Guardian.AuthPipeline,
   module: Mirror.Guardian,
   error_handler: Mirror.Guardian.AuthErrorHandler

@@ -40,6 +40,7 @@ defmodule Mirror.Mixfile do
       {:mariaex, ">= 0.0.0"},
       {:gettext, "~> 0.11"},
       {:cowboy, "~> 1.0"},
+      {:plug_cowboy, "~> 1.0"},
       {:cors_plug, "~> 1.5"},
       {:guardian, "~> 1.0"},
       {:comeonin, "~> 4.0"},
@@ -53,7 +54,11 @@ defmodule Mirror.Mixfile do
       {:stripity_stripe, "~> 2.0"},
       {:edeliver, "~> 1.5.0"},
       {:distillery, "~> 1.5", runtime: false},
-      {:instruments, "~> 1.1.1"}
+      {:instruments, "~> 1.1.1"},
+      {:timber, "~> 3.0"},
+      {:timber_phoenix, "~> 1.0"},
+      {:timber_plug, "~> 1.0"},
+      {:timber_ecto, git: "https://github.com/scottyd980/timber-elixir-ecto.git", branch: "v1.x"}
     ]
   end
 

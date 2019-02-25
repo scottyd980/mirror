@@ -45,8 +45,6 @@ defmodule MirrorWeb.UserController do
     |> Mirror.Guardian.Plug.current_resource
     |> User.preload_relationships
 
-    Logger.warn "#{inspect conn}"
-
     conn
     |> render("show.json-api", data: user |> User.preload_relationships)
   end
