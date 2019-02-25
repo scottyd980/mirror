@@ -17,6 +17,7 @@ defmodule Mirror.Application do
     ]
 
     setup_probes()
+    Timber.Phoenix.add_controller_to_blacklist(MirrorWeb.HealthController)
 
     # See https://hexdocs.pm/elixir/Supervisor.html
     # for other strategies and supported options

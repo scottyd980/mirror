@@ -85,7 +85,6 @@ defmodule MirrorWeb.RetrospectiveActionController do
         with {:ok, %Action{} = updated_action} <- Retrospectives.update_action(action, action_params) do
 
           updated_action = updated_action |> Action.preload_relationships()
-          Logger.warn "#{inspect updated_action}"
 
           MirrorWeb.Endpoint.broadcast("retrospective:#{retrospective.id}", "feedback_action_change", MirrorWeb.RetrospectiveActionView.render("show.json-api", data: updated_action))
           render(conn, "show.json-api", data: updated_action)
