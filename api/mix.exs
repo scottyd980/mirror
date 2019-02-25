@@ -57,6 +57,7 @@ defmodule Mirror.Mixfile do
       {:instruments, "~> 1.1.1"},
       {:timber, "~> 3.0"},
       {:timber_phoenix, "~> 1.0"},
+      {:timber_plug, "~> 1.0"},
       {:timber_ecto, git: "https://github.com/scottyd980/timber-elixir-ecto.git", branch: "v1.x"}
     ]
   end
