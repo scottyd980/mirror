@@ -1,8 +1,0 @@
-deps
-_build
-ecl_Crash.dump
-node_modules
-priv/static/*
-uploads/files/*
-.git
-.gitignore
