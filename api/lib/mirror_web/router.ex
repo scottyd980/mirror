@@ -9,16 +9,25 @@ defmodule MirrorWeb.Router do
     plug Mirror.Guardian.AuthPipeline
   end
 
+  pipeline :logger do
+    plug Timber.Plug.Event
+  end
+
   pipeline :json_api do
     plug JaSerializer.ContentTypeNegotiation
     plug JaSerializer.Deserializer
   end
 
-  # NON-JSON API Endpoints - Open endpoints
   scope "/api", MirrorWeb do
     pipe_through [:api]
 
     get "/kube_health", HealthController, :index
+  end
+
+  # NON-JSON API Endpoints - Open endpoints
+  scope "/api", MirrorWeb do
+    pipe_through [:logger, :api]
+
     post "/token", UserController, :login
     post "/forgot/username", UserController, :forgot_username
     post "/forgot/password", UserController, :forgot_password
@@ -28,7 +37,7 @@ defmodule MirrorWeb.Router do
 
   # NON-JSON API Endpoints - Authorized endpoints
   scope "/api", MirrorWeb do
-    pipe_through [:api, :auth]
+    pipe_through [:logger, :api, :auth]
 
     get "/user/current", UserController, :current
     get "/teams/:id/next_sprint", TeamController, :find_next_sprint
@@ -45,14 +54,14 @@ defmodule MirrorWeb.Router do
 
   # JSON API Endpoints - Open endpoints
   scope "/api", MirrorWeb do
-    pipe_through [:api, :json_api]
+    pipe_through [:logger, :api, :json_api]
 
     post "/register", UserController, :create
   end
 
   # JSON API Endpoints - Authorized endpoints
   scope "/api", MirrorWeb do
-    pipe_through [:api, :auth, :json_api]
+    pipe_through [:logger, :api, :auth, :json_api]
 
     resources "/users", UserController, only: [:show]
     resources "/teams", TeamController, only: [:index, :create, :show, :update, :delete]
