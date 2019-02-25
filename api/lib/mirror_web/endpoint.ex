@@ -17,8 +17,6 @@ defmodule MirrorWeb.Endpoint do
     plug Phoenix.CodeReloader
   end
 
-  plug Plug.Logger
-
   plug Plug.Parsers,
     parsers: [MirrorWeb.Parsers.Webhook, :urlencoded, :multipart, :json],
     pass: ["*/*"],
@@ -34,7 +32,7 @@ defmodule MirrorWeb.Endpoint do
     store: :cookie,
     key: "_mirror_key",
     signing_salt: "Vwj+XpU+"
-  
+
   plug CORSPlug
 
   plug MirrorWeb.Router
