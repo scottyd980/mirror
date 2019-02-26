@@ -6,19 +6,19 @@ import { inject as service } from '@ember/service';
 
 export default Route.extend(AuthenticatedRouteMixin, {
   session: service(),
-  afterModel() {
-    return fetch(`${ENV.DS.host}/${ENV.DS.namespace}/user/current`, {
-      type: 'GET',
-      headers: {
-        'Authorization': `Bearer ${this.get('session').get('session.content.authenticated.access_token')}`
-      }
-    }).then((raw) => {
-      return raw.json().then((data) => {
-        const currentUser = this.store.push(data);
-        this.set('session.currentUser', currentUser);
-      });
-    });
-  },
+  // afterModel() {
+  //   return fetch(`${ENV.DS.host}/${ENV.DS.namespace}/user/current`, {
+  //     type: 'GET',
+  //     headers: {
+  //       'Authorization': `Bearer ${this.get('session').get('session.content.authenticated.access_token')}`
+  //     }
+  //   }).then((raw) => {
+  //     return raw.json().then((data) => {
+  //       const currentUser = this.store.push(data);
+  //       this.set('session.currentUser', currentUser);
+  //     });
+  //   });
+  // },
   actions: {
     confirmAction(message, action) {
         this.get('notifications').confirm({
