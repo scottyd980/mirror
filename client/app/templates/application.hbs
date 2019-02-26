@@ -68,5 +68,15 @@
 {{outlet}}
 
 <footer id="page-footer">
-  Crafted with {{fa-icon "heart"}} in North Carolina
+  <div class="container">
+    <div class="row">
+      <div class="col-md-6 text-left">
+        &copy; 2019 Non-Breaking Space, LLC<br/>
+        Crafted with {{fa-icon "heart"}} in North Carolina
+      </div>
+      <div class="col-md-6 text-right policy-links">
+        {{#link-to "policy.terms-of-service" class="success-text--link"}}Terms of Service{{/link-to}} · {{#link-to "policy.privacy" class="success-text--link"}}Privacy Policy{{/link-to}}
+      </div>
+    </div>
+  </div>
 </footer>

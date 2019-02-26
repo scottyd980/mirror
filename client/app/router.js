@@ -3,7 +3,11 @@ import config from './config/environment';
 
 const Router = EmberRouter.extend({
   location: config.locationType,
-  rootURL: config.rootURL
+  rootURL: config.rootURL,
+  didTransition() {
+    this._super(...arguments);
+    window.scrollTo(0, 0);
+  }
 });
 
 Router.map(function() {
@@ -84,6 +88,11 @@ Router.map(function() {
     this.route('score');
     this.route('aggregate');
     this.route('summary');
+  });
+
+  this.route('policy', function() {
+    this.route('terms-of-service');
+    this.route('privacy');
   });
 });
 
