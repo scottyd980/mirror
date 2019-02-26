@@ -25,7 +25,7 @@ export default Controller.extend({
       team.destroyRecord().then(() => {
         this.toggleLoadingScreen();
         this.send('invalidateApplicationModel');
-        this.transitionTo('app');
+        this.transitionToRoute('app');
       });
     },
     onConfirm(message, action) {
