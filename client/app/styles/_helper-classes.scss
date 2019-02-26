@@ -230,6 +230,15 @@
   color: $brand-success;
 }
 
+.success-text--link {
+  color: $brand-success;
+
+  &:hover, &:focus {
+    text-decoration: none;
+    color: darken($brand-success, 5%);
+  }
+}
+
 .info-text {
   color: $brand-info;
 }

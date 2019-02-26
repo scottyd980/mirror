@@ -3,18 +3,35 @@ import ApplicationRouteMixin from 'ember-simple-auth/mixins/application-route-mi
 import { hash } from 'rsvp';
 import { inject as service } from '@ember/service';
 import $ from 'jquery';
+import ENV from 'mirror/config/environment'
 
 export default Route.extend(ApplicationRouteMixin, {
   session: service(),
+  beforeModel() {
+    if(this.get('session.isAuthenticated') && !this.get('session.currentUser')) {
+      return fetch(`${ENV.DS.host}/${ENV.DS.namespace}/user/current`, {
+        type: 'GET',
+        headers: {
+          'Authorization': `Bearer ${this.get('session').get('session.content.authenticated.access_token')}`
+        }
+      }).then((raw) => {
+        return raw.json().then((data) => {
+          const currentUser = this.store.push(data);
+          this.set('session.currentUser', currentUser);
+        });
+      });
+    } else {
+      return;
+    }
+  },
   model() {
     return hash({});
   },
   setupController(controller, model) {
-    const _this = this;
-    _this._super(controller, model);
+    this._super(...arguments);
 
-    if(_this.get('session.isAuthenticated')) {
-      model.filteredTeams = _this.get('session.currentUser').get('teams').sortBy('id');
+    if(this.get('session.isAuthenticated')) {
+      model.filteredTeams = this.get('session.currentUser').get('teams').sortBy('id');
     }
 
     controller.setProperties(model);
