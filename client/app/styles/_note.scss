@@ -39,6 +39,7 @@
             justify-content: center;
             flex-direction: column;
             text-align: center;
+            padding-top: 30px;
         }
     }
 
@@ -50,6 +51,8 @@
         margin: -3px;
         margin-bottom: 3px;
         color: rgba(255,255,255,0.8);
+        position: absolute;
+        top: 15px;
     }
 
     .note--top {

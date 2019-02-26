@@ -85,11 +85,15 @@ defmodule Mirror.Teams.Team do
     team = team
     |> Team.preload_relationships
 
-    case team.organization do
-      nil ->
-        {:ok, _} = Billing.process_subscription(original_team.organization)
-      organization ->
-        {:ok, _} = Billing.process_subscription(organization)
+    case Application.get_env(:mirror, :billing_active) do
+      true ->
+        case team.organization do
+          nil ->
+            {:ok, _} = Billing.process_subscription(original_team.organization)
+          organization ->
+            {:ok, _} = Billing.process_subscription(organization)
+        end
+      _ -> nil
     end
 
     resp
@@ -107,16 +111,30 @@ defmodule Mirror.Teams.Team do
 
     current_org = team.organization
 
-    Repo.transaction fn ->
-        with {:ok, team}  <- Repo.delete(team),
-             removed_sub  <- Billing.process_subscription(current_org)
-        do
-            team
-        else
-            {:error, changeset} ->
-                Repo.rollback changeset
-                {:error, changeset}
+    case Application.get_env(:mirror, :billing_active) do
+      true ->
+        Repo.transaction fn ->
+            with {:ok, team}  <- Repo.delete(team),
+                removed_sub  <- Billing.process_subscription(current_org)
+            do
+                team
+            else
+                {:error, changeset} ->
+                    Repo.rollback changeset
+                    {:error, changeset}
+            end
         end
+      _ ->
+        Repo.transaction fn ->
+          with {:ok, team}  <- Repo.delete(team)
+          do
+              team
+          else
+              {:error, changeset} ->
+                  Repo.rollback changeset
+                  {:error, changeset}
+          end
+      end
     end
   end
 
