@@ -1,6 +1,6 @@
 import Route from '@ember/routing/route';
 import ENV from 'mirror/config/environment'
-import fetch from 'fetch';
+//import fetch from 'fetch';
 import AuthenticatedRouteMixin from 'ember-simple-auth/mixins/authenticated-route-mixin';
 import { inject as service } from '@ember/service';
 
