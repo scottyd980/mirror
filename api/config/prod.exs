@@ -68,7 +68,6 @@ config :mirror, MirrorWeb.Endpoint,
 
 # Configure your database
 config :mirror, Mirror.Repo,
-  adapter: Ecto.Adapters.MySQL,
   hostname: "${DB_HOST}",
   username: "${USERNAME}",
   password: "${PASSWORD}",
@@ -88,4 +87,4 @@ config :mirror, MirrorWeb.Endpoint,
   instrumenters: [Timber.Phoenix]
 
 config :mirror, Mirror.Repo,
-  loggers: [{Timber.Ecto, :log, []}, {Mirror.Metrics.Repo, :record_metric, []}]
+  log: false

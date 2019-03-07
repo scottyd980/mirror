@@ -9,8 +9,7 @@ use Mix.Config
 config :mirror,
   ecto_repos: [Mirror.Repo]
 
-config :mirror, Mirror.Repo,
-  loggers: [{Ecto.LogEntry, :log, []}, {Mirror.Metrics.Repo, :record_metric, []}]
+config :phoenix, :json_library, Jason
 
 # Configures the endpoint
 config :mirror, MirrorWeb.Endpoint,
@@ -35,7 +34,7 @@ config :stripity_stripe,
   webhook_secret: "***STRIPE_WEBHOOK_SECRET***"
 
 config :phoenix, :format_encoders,
-  "json-api": Poison
+  "json-api": Jason
 
 config :mime, :types, %{
   "application/vnd.api+json" => ["json-api"]

@@ -33,14 +33,15 @@ defmodule Mirror.Mixfile do
   # Type `mix help deps` for examples and options.
   defp deps do
     [
-      {:phoenix, "~> 1.3.2"},
+      {:phoenix, "~> 1.4.0"},
       {:phoenix_pubsub, "~> 1.0"},
-      {:phoenix_ecto, "~> 3.2"},
+      {:ecto_sql, "~> 3.0"},
+      {:phoenix_ecto, "~> 4.0"},
       {:phoenix_html, "~> 2.11.2"},
       {:mariaex, ">= 0.0.0"},
       {:gettext, "~> 0.11"},
-      {:cowboy, "~> 1.0"},
-      {:plug_cowboy, "~> 1.0"},
+      {:plug_cowboy, "~> 2.0"},
+      {:plug, "~> 1.7"},
       {:cors_plug, "~> 1.5"},
       {:guardian, "~> 1.0"},
       {:comeonin, "~> 4.0"},
@@ -58,8 +59,9 @@ defmodule Mirror.Mixfile do
       {:timber, "~> 3.0"},
       {:timber_phoenix, "~> 1.0"},
       {:timber_plug, "~> 1.0"},
-      {:timber_ecto, git: "https://github.com/scottyd980/timber-elixir-ecto.git", branch: "v1.x"}
-    ]
+      {:jason, "~> 1.0"},
+      {:timber_ecto, "~> 2.0"}
+   ]
   end
 
   # Aliases are shortcuts or tasks specific to the current project.

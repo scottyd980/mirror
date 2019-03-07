@@ -1,5 +1,7 @@
 defmodule Mirror.Repo do
-  use Ecto.Repo, otp_app: :mirror
+  use Ecto.Repo,
+    otp_app: :mirror,
+    adapter: Ecto.Adapters.MySQL
 
   @doc """
   Dynamically loads the repository url from the
