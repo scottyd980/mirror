@@ -38,7 +38,6 @@ config :phoenix, :stacktrace_depth, 20
 
 # Configure your database
 config :mirror, Mirror.Repo,
-  adapter: Ecto.Adapters.MySQL,
   username: "root",
   password: "",
   database: "mirror_new_dev",
