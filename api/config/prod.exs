@@ -74,12 +74,7 @@ config :mirror, Mirror.Repo,
   database: "${DATABASE}",
   pool_size: 20,
   ownership_timeout: 60_000,
-  ssl: true,
-  ssl_opts: [
-    cacertfile: Path.expand("../priv/ssl/ca.pem", __DIR__),
-    keyfile: Path.expand("../priv/ssl/client-key.pem", __DIR__),
-    certfile: Path.expand("../priv/ssl/client-cert.pem", __DIR__)
-  ]
+  ssl: true
 
 config :statix,
   host: "${STATSD_HOST}",
