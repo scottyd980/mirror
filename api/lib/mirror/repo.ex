@@ -7,6 +7,7 @@ defmodule Mirror.Repo do
   Dynamically loads the repository url from the
   DATABASE_URL environment variable.
   """
+  #
   def init(_, config) do
     if config[:ssl] do
       cert_dir = Application.app_dir(:mirror, "priv/ssl")
