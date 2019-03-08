@@ -76,9 +76,9 @@ config :mirror, Mirror.Repo,
   ownership_timeout: 60_000,
   ssl: true,
   ssl_opts: [
-    cacertfile: Path.expand("priv/ssl/ca.pem", __DIR__),
-    keyfile: Path.expand("priv/ssl/client-key.pem", __DIR__),
-    certfile: Path.expand("priv/ssl/client-cert.pem", __DIR__)
+    cacertfile: Path.expand("../priv/ssl/ca.pem", __DIR__),
+    keyfile: Path.expand("../priv/ssl/client-key.pem", __DIR__),
+    certfile: Path.expand("../priv/ssl/client-cert.pem", __DIR__)
   ]
 
 config :statix,
