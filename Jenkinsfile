@@ -79,7 +79,7 @@ node {
       if(params.run_database_migrations || runMigrations || deployAll) {
         withCredentials([string(credentialsId: 'DB_HOST', variable: 'DB_HOST'), string(credentialsId: 'USERNAME', variable: 'USERNAME'), string(credentialsId: 'PASSWORD', variable: 'PASSWORD'), string(credentialsId: 'DATABASE', variable: 'DATABASE')]) {
           sh "docker build --target build -t nonbreakingspace/mirror-api-migrator:latest ./api"
-          sh "docker run --env DB_HOST=${env.DB_HOST} --env USERNAME=${env.USERNAME} --env PASSWORD=${env.PASSWORD} --env DATABASE=${env.DATABASE} --env MIX_ENV=prod nonbreakingspace/mirror-api-migrator:latest mix ecto.migrate"
+          sh "docker run --env DB_HOST=${env.DB_HOST} --env USERNAME=${env.USERNAME} --env PASSWORD=${env.PASSWORD} --env DATABASE=${env.DATABASE} --env MIX_ENV=migration nonbreakingspace/mirror-api-migrator:latest mix ecto.migrate"
         }
       }
     }
