@@ -1,7 +1,8 @@
 properties([
   parameters([
     booleanParam(defaultValue: false, description: 'If set to true, on completion of docker build, the API image will be deployed to production', name: 'deploy_api_to_prod'),
-    booleanParam(defaultValue: false, description: 'If set to true, on completion of docker build, the client image will be deployed to production', name: 'deploy_client_to_prod')
+    booleanParam(defaultValue: false, description: 'If set to true, on completion of docker build, the client image will be deployed to production', name: 'deploy_client_to_prod'),
+    booleanParam(defaultValue: false, description: 'If set to true, on completion of docker build, any new database migrations will be run', name: 'run_database_migrations')
   ])
 ])
 
@@ -16,8 +17,12 @@ node {
       script: "git log -1 --pretty=%B | grep '\\[ci deploy client]'",
       returnStatus: true
   ) == 0
-  def deployBoth = sh (
-      script: "git log -1 --pretty=%B | grep '\\[ci deploy both]'",
+  def runMigrations = sh (
+      script: "git log -1 --pretty=%B | grep '\\[ci run migrations]'",
+      returnStatus: true
+  ) == 0
+  def deployAll = sh (
+      script: "git log -1 --pretty=%B | grep '\\[ci deploy all]'",
       returnStatus: true
   ) == 0
   
@@ -62,7 +67,7 @@ node {
       )
     }
     stage('Update Kubernetes Config YAML') {
-      if(params.deploy_api_to_prod || deployAPI || params.deploy_client_to_prod || deployClient || deployBoth) {
+      if(params.deploy_api_to_prod || deployAPI || params.deploy_client_to_prod || deployClient || deployAll) {
         withCredentials([string(credentialsId: 'digital-ocean-credentials-id', variable: 'DO_OAUTH')]) {
           sh """
             curl -X GET -H "Content-Type: application/json" -H "Authorization: Bearer ${env.DO_OAUTH}" "https://api.digitalocean.com/v2/kubernetes/clusters/be06bc7a-8740-4934-95cc-2ef420f1f6d7/kubeconfig" -o ./kubeconfig.yaml
@@ -70,8 +75,16 @@ node {
         }
       }
     }
+    stage('Run Database Migrations') {
+      if(params.run_database_migrations || runMigrations || deployAll) {
+        withCredentials([string(credentialsId: 'DB_HOST', variable: 'DB_HOST'), string(credentialsId: 'USERNAME', variable: 'USERNAME'), string(credentialsId: 'PASSWORD', variable: 'PASSWORD'), string(credentialsId: 'DATABASE', variable: 'DATABASE')]) {
+          sh "docker build --target build -t nonbreakingspace/mirror-api-migrator:latest ./api"
+          sh "docker run nonbreakingspace/mirror-api-migrator:latest --env DB_HOST='${env.DB_HOST}' --env USERNAME='${env.USERNAME}' --env PASSWORD='${env.PASSWORD}' --env DATABASE='${env.DATABASE}' MIX_ENV=PROD mix ecto.migrate"
+        }
+      }
+    }
     stage('Deploy API to Production') {
-      if(params.deploy_api_to_prod || deployAPI || deployBoth) {
+      if(params.deploy_api_to_prod || deployAPI || deployAll) {
         parallel (
           "Tag Release Build": {
             echo "Tagging current build as the release build..."
@@ -94,7 +107,7 @@ node {
       }
     }
     stage('Deploy Client to Production') {
-      if(params.deploy_client_to_prod || deployClient || deployBoth) {
+      if(params.deploy_client_to_prod || deployClient || deployAll) {
         parallel (
           "Tag Release Build": {
             echo "Tagging current build as the release build..."
