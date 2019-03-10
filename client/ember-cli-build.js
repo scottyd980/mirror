@@ -16,6 +16,9 @@ module.exports = function(defaults) {
       includePaths: [
         'node_modules/shepherd.js/src/scss'
       ]
+    },
+    'ember-cli-babel': {
+      includePolyfill: true
     }
   });
 
