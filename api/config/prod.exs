@@ -73,8 +73,8 @@ config :mirror, Mirror.Repo,
   password: "${PASSWORD}",
   database: "${DATABASE}",
   pool_size: 20,
-  ownership_timeout: 60_000
-  #ssl: true
+  ownership_timeout: 60_000,
+  ssl: true
 
 config :statix,
   host: "${STATSD_HOST}",
