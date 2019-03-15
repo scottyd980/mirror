@@ -26,6 +26,12 @@
     margin-right: 2px;
   }
 
+  @media screen and (-ms-high-contrast: active), (-ms-high-contrast: none) {
+    .navbar-brand-icon:before {
+      background-position-y: 0px;
+    }
+  }
+
   &.navbar-logged-in {
     .navbar-brand,
     .navbar-nav li a {

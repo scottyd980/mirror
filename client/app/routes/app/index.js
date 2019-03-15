@@ -5,6 +5,23 @@ import { inject as service } from '@ember/service';
 
 export default Route.extend({
   session: service(),
+  beforeModel() {
+    if(this.get('session.isAuthenticated') && !this.get('session.currentUser')) {
+      return fetch(`${ENV.DS.host}/${ENV.DS.namespace}/user/current`, {
+        type: 'GET',
+        headers: {
+          'Authorization': `Bearer ${this.get('session').get('session.content.authenticated.access_token')}`
+        }
+      }).then((raw) => {
+        return raw.json().then((data) => {
+          const currentUser = this.store.push(data);
+          this.set('session.currentUser', currentUser);
+        });
+      });
+    } else {
+      return;
+    }
+  },
   model() {
     const current_user = this.get('session.currentUser');
 

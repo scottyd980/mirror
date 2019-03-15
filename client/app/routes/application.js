@@ -3,7 +3,8 @@ import ApplicationRouteMixin from 'ember-simple-auth/mixins/application-route-mi
 import { hash } from 'rsvp';
 import { inject as service } from '@ember/service';
 import $ from 'jquery';
-import ENV from 'mirror/config/environment'
+import ENV from 'mirror/config/environment';
+import fetch from 'fetch';
 
 export default Route.extend(ApplicationRouteMixin, {
   session: service(),

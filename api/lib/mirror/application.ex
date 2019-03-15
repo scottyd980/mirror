@@ -19,6 +19,13 @@ defmodule Mirror.Application do
     setup_probes()
     Timber.Phoenix.add_controller_to_blacklist(MirrorWeb.HealthController)
 
+    :ok = :telemetry.attach(
+      "timber-ecto-query-handler",
+      [:mirror, :repo, :query],
+      &Timber.Ecto.handle_event/4,
+      [query_time_ms_threshold: 1_000]
+    )
+
     # See https://hexdocs.pm/elixir/Supervisor.html
     # for other strategies and supported options
     opts = [strategy: :one_for_one, name: Mirror.Supervisor]

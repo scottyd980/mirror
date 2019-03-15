@@ -1,7 +1,9 @@
 defmodule MirrorWeb.Endpoint do
   use Phoenix.Endpoint, otp_app: :mirror
 
-  socket "/socket", MirrorWeb.UserSocket
+  socket "/socket", MirrorWeb.UserSocket,
+    websocket: true, # or list of options
+    longpoll: true
 
   # Serve at "/" the static files from "priv/static" directory.
   #
