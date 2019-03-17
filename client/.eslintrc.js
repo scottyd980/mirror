@@ -1,6 +1,10 @@
 module.exports = {
+  globals: {
+    server: true,
+  },
   root: true,
   globals: {
+    server: true,
     "Stripe": true
   },
   parserOptions: {
