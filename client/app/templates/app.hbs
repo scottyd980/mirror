@@ -1,4 +1,7 @@
-{{outlet}}
+{{! template-lint-disable no-triple-curlies }}
+<div class="post-login">
+  {{outlet}}
+</div>
 
 {{#each notifications.notifications as |notification|}}
   {{#if (eq notification.type "confirm")}}

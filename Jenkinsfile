@@ -45,6 +45,12 @@ node {
         }
       )
     }
+    stage("Test") {
+      echo "Testing Client..."
+      sh "docker build -t scottyd980/mirror-client-test:latest ./client --target build"
+      sh "docker run scottyd980/mirror-client-test:latest ember test"
+      echo "Successfully tested Client"
+    }
     stage('Push to Docker Hub') {
       parallel(
         "API": {
