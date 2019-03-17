@@ -6,6 +6,19 @@ RUN apk add --update git \
     g++ \
     python
 
+RUN echo @edge http://nl.alpinelinux.org/alpine/edge/community >> /etc/apk/repositories \
+    && echo @edge http://nl.alpinelinux.org/alpine/edge/main >> /etc/apk/repositories \
+    && apk add --no-cache \
+    chromium@edge \
+    nss@edge \
+    freetype@edge \
+    harfbuzz@edge \
+    && rm -rf /var/cache/*
+
+# Testem looks for google-chrome
+RUN ln -s /usr/bin/chromium-browser /usr/bin/google-chrome
+
+RUN npm config set unsafe-perm true
 RUN npm install -g ember-cli bower
 
 RUN mkdir /ui  
