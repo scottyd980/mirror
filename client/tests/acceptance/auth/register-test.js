@@ -40,4 +40,13 @@ module('Acceptance | auth/register', function(hooks) {
     });
     assert.notEqual(currentURL(), '/app');
   });
+
+  test('login link works', async function(assert) {
+    await visit('/auth/register');
+    const loginLink = findAll('a').find((element) => {
+      return element.textContent.trim() === 'Already have an account?';
+    });
+    await click(loginLink);
+    assert.equal(currentURL(), '/auth/login');
+  });
 });
