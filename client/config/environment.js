@@ -125,6 +125,9 @@ module.exports = function(environment) {
     // ENV.APP.LOG_TRANSITIONS = true;
     // ENV.APP.LOG_TRANSITIONS_INTERNAL = true;
     // ENV.APP.LOG_VIEW_LOOKUPS = true;
+    ENV['ember-cli-mirage'] = {
+      enabled: false
+    };
   }
 
   if (environment === 'test') {
@@ -147,6 +150,9 @@ module.exports = function(environment) {
     // here you can enable a production-specific feature
     ENV.DS.host = '***HTTPS_HOST***'
     ENV.DS.wshost = '***WSS_HOST***'
+    ENV['ember-cli-mirage'] = {
+      enabled: false
+    };
   }
 
   return ENV;

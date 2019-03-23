@@ -19,6 +19,24 @@ module.exports = function(defaults) {
     },
     'ember-cli-babel': {
       includePolyfill: true
+    },
+    'esw-cache-fallback': {
+      patterns: [
+        '/api/(.+)',
+        (EmberApp.env() === 'development') ? 'http://localhost:4000/api/(.+)': undefined
+      ],
+    },
+    'asset-cache': {
+      // which asset files to include, glob paths are allowed!
+      // defaults to `['assets/**/*']`
+      include: [
+        'assets/**/*',
+        'img/**/*',
+        'favicon/**/*',
+        'favicon.ico',
+        'fonts/fa-*',
+        'fonts/line-*'
+      ]
     }
   });
 
