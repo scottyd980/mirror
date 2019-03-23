@@ -23,7 +23,7 @@ module.exports = function(defaults) {
     'esw-cache-fallback': {
       patterns: [
         '/api/(.+)',
-        (EmberApp.env() === 'development') ? 'http://localhost:4000/api/(.+)': undefined
+        'http://localhost:4000/api/(.+)'
       ],
     },
     'asset-cache': {
