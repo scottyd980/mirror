@@ -17,6 +17,10 @@ module.exports = function(/* environment, appConfig */) {
         src: '/img/mirror-logo.png',
         sizes: '200x200'
       },
+      {
+        src: '/img/mirror-logo-large.png',
+        sizes: '512x512'
+      },
     ],
     ms: {
       tileColor: '#fff'
