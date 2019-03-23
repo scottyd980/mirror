@@ -42,7 +42,7 @@
             </ul>
           </li>
           <li class="dropdown">
-            <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">{{gravatar-image class="gravatar-nav" email=session.currentUser.email}} {{session.currentUser.username}} <span class="caret"></span></a>
+            <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">{{gravatar-image alt="gravatar" class="gravatar-nav" email=session.currentUser.email}} {{session.currentUser.username}} <span class="caret"></span></a>
             <ul class="dropdown-menu">
               {{#if billing_active}}
                 <li>{{#link-to "app.organizations.dashboard"}}Organizations{{/link-to}}</li>
