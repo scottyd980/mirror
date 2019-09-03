@@ -12,9 +12,11 @@ export default Route.extend({
         const team = results[0],
               feedback = results[1];
 
-        const strawFeedback = this._shift(this._shuffle(feedback.filter((fb) => {
+        const filteredFeedback = feedback.filter((fb) => {
           return fb.get('category') === "straw";
-        })));
+        });
+
+        const strawFeedback = filteredFeedback.length > 0 ? this._shift(this._shuffle(filteredFeedback)) : [];
         
         return team.get('members').then((team_members) => {
           return hash({
