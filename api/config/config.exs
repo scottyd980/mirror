@@ -27,7 +27,7 @@ config :logger, :console,
 config :mirror, Mirror.Mailer,
   adapter: Bamboo.MailgunAdapter,
   api_key: "***MAILGUN_API_KEY***",
-  domain: "***MAIL_DOMAIN***"
+  domain: "***MAIL_DOMAIN"
 
 config :stripity_stripe,
   api_key: "***STRIPE_API_KEY***",

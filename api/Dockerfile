@@ -34,7 +34,7 @@ RUN apk add --update bash openssl
 
 WORKDIR /app
 
-# ENV PORT=4000 DB_HOST="***DB_HOST***" USERNAME="***DB_USERNAME***" PASSWORD="***DB_PASSWORD***" DATABASE="***DB_NAME***" SECRET_KEY_BASE="***SECRET_KEY_BASE***"
+# #
 
 COPY --from=build /app/_build/prod/rel/mirror ./
 
