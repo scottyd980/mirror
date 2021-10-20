@@ -5,7 +5,7 @@ defmodule Mirror.Email do
   def invitation_email(email_address, access_code, team_name) do
     new_email()
     |> to(email_address)
-    |> from("Mirror <noreply@***MAIL_DOMAIN***>")
+    |> from("Mirror <noreply@mail.usemirror.io>")
     |> subject("Someone invited you to join a team!")
     |> put_html_layout({MirrorWeb.LayoutView, "invite.html"})
     |> render("invite.html", access_code: access_code, team: team_name)
@@ -14,7 +14,7 @@ defmodule Mirror.Email do
   def forgot_username_email(email_address, username) do
     new_email()
     |> to(email_address)
-    |> from("Mirror <noreply@***MAIL_DOMAIN***>")
+    |> from("Mirror <noreply@mail.usemirror.io>")
     |> subject("Your Forgotten Username Request")
     |> put_html_layout({MirrorWeb.LayoutView, "username.html"})
     |> render("username.html", username: username)
@@ -23,7 +23,7 @@ defmodule Mirror.Email do
   def forgot_password_email(email_address, username, uuid) do
     new_email()
     |> to(email_address)
-    |> from("Mirror <noreply@***MAIL_DOMAIN***>")
+    |> from("Mirror <noreply@mail.usemirror.io>")
     |> subject("Your Password Reset Request")
     |> put_html_layout({MirrorWeb.LayoutView, "password.html"})
     |> render("password.html", username: username, uuid: uuid)

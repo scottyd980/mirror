@@ -94,7 +94,7 @@ module.exports = function(environment) {
       three_little_pigs: three_little_pigs()
     },
     stripe: {
-      publishableKey: "***STRIPE_PUBLISHABLE_KEY***"
+      publishableKey: "pk_test_vd8mdRI6jcKLykIaVSgQCRwz"
     },
     DEMO: demo(),
     DEMO_CONFIG: {
@@ -107,7 +107,7 @@ module.exports = function(environment) {
         name: 'GoogleAnalytics',
         environments: ['development', 'production'],
         config: {
-          id: '***GOOGLE_ANALYTICS_KEY***',
+          id: 'UA-135512273-1',
           // Use `analytics_debug.js` in development
           debug: environment === 'development',
           // Use verbose tracing of GA events
@@ -148,8 +148,8 @@ module.exports = function(environment) {
 
   if (environment === 'production') {
     // here you can enable a production-specific feature
-    ENV.DS.host = '***HTTPS_HOST***'
-    ENV.DS.wshost = '***WSS_HOST***'
+    ENV.DS.host = 'https://usemirror.io';
+    ENV.DS.wshost = 'wss://usemirror.io';
     ENV['ember-cli-mirage'] = {
       enabled: false
     };
