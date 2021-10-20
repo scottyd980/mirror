@@ -1,7 +1,7 @@
 APP="mirror"
 
 BUILD_HOST="***BUILD_HOST***"
-BUILD_USER="***BUILD_USER"
+BUILD_USER="***BUILD_USER***"
 BUILD_AT="/tmp/edeliver/$APP/builds"
 
 RELEASE_DIR="/tmp/edeliver/$APP/builds/_build/prod/rel/$APP"
